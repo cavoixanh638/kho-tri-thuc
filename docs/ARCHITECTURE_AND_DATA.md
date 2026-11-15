@@ -1,6 +1,6 @@
 # KIẾN TRÚC VÀ DỮ LIỆU — BẢN THIẾT KẾ THẢO LUẬN
 
-**Cập nhật:** 15/11/2026 · **Bám theo:** `MASTER_PLAN.md` v4.2.  
+**Cập nhật:** 15/11/2026 · **Bám theo:** `MASTER_PLAN.md` v4.2. **Rà soát lựa chọn R1 (15/11/2026)** — đối chiếu 2–3 phương án thay thế cho mỗi thành phần tại Mục 14.  
 **Phân loại quyết định:** **ĐỀ XUẤT CHỐT** = phương án ưu tiên để lập trình; **CẦN THỬ** = phải kiểm chứng trên môi trường thật; **CHƯA CHỐT** = cần người dùng/điều kiện thực tế quyết định. Không nhầm đề xuất thành chức năng đã hoàn thành.
 
 ## 1. Quyết định công nghệ tổng quan
@@ -9,24 +9,24 @@
 |---|---|---|---|
 | Kiến trúc | Modular monolith + worker riêng từ cùng codebase | ĐỀ XUẤT CHỐT | Triển khai đơn giản, phân ranh module rõ, không microservice |
 | Frontend | React + TypeScript + Vite | ĐỀ XUẤT CHỐT | PWA, UI nhiều bộ lọc, không cần Next.js/SSR |
-| UI components | Tailwind CSS + shadcn/ui + Lucide | ĐỀ XUẤT CHỐT | Tùy chỉnh dễ, không khóa vào thư viện nặng |
+| UI components | Mantine v9 + CSS Modules + Lucide/Tabler | ĐỀ XUẤT CHỐT SAU SO SÁNH | Có sẵn nhiều component/filter/form, giảm thời gian phát triển, không ghép thêm shadcn làm UI chính |
 | Routing | React Router | ĐỀ XUẤT CHỐT | Trang Thêm/Thư viện/Chi tiết/Tìm kiếm/Cài đặt |
 | Server state | TanStack Query | ĐỀ XUẤT CHỐT | Cache/invalidation, trạng thái loading/lỗi |
-| Biểu mẫu | React Hook Form + Zod | ĐỀ XUẤT CHỐT | Validation nhất quán với TypeScript |
+| Biểu mẫu | Mantine Form + Zod khi cần | ĐỀ XUẤT CHỐT SAU SO SÁNH | Đồng bộ Mantine, không thêm framework form thứ hai mặc định |
 | PWA | vite-plugin-pwa + Web Share Target (nếu hỗ trợ) | CẦN THỬ | Kiểm tra thực tế trên Android; fallback dán link |
-| Backend | Python 3.12+ / FastAPI / Pydantic | ĐỀ XUẤT CHỐT | Tái sử dụng hệ sinh thái xử lý tài liệu/video |
-| ORM/migration | SQLAlchemy 2 + Alembic | ĐỀ XUẤT CHỐT | Migration minh bạch, tránh sửa DB bằng tay |
+| Backend | Python 3.12+ / Django 6 + Django Ninja | ĐỀ XUẤT CHỐT SAU SO SÁNH | Django auth, admin, ORM, migration sẵn; Ninja tạo OpenAPI |
+| ORM/migration | Django ORM + Django migrations | ĐỀ XUẤT CHỐT SAU SO SÁNH | Không phải bảo trì ORM/migration thứ hai |
 | DB | PostgreSQL (phiên bản hỗ trợ, pin theo Docker) | ĐỀ XUẤT CHỐT | Nghiệp vụ + FTS + chỉ mục, không cần vector ngay |
 | Search | PostgreSQL full text + unaccent + pg_trgm | CẦN THỬ | Đo chất lượng tiếng Việt, không mặc định FTS hiểu từ ghép |
-| Queue | Procrastinate (PostgreSQL-backed) | CẦN THỬ | Không thêm Redis; cần đánh giá bảo trì, retry, crash recovery |
+| Queue | Procrastinate + Django integration (PostgreSQL-backed) | CẦN THỬ | Có Django migration/admin, nhưng phải kiểm thử crash/retry và rủi ro bảo trì |
 | File chính | Backblaze B2 riêng tư, S3-compatible API + boto3 | ĐỀ XUẤT CHỐT | Giá thấp, file ID độc lập nhà cung cấp |
 | Video | yt-dlp stable + ffprobe/FFmpeg; Cobalt adapter dự phòng | CẦN THỬ | Phụ thuộc nền tảng/IP; không bảo đảm mọi link |
 | PDF text | pypdf mặc định; pdfplumber bổ sung nếu cần | CẦN THỬ | Giấy phép BSD/MIT thuận lợi; PyMuPDF AGPL cần duyệt giấy phép trước khi dùng |
 | Word / Excel | python-docx / openpyxl | ĐỀ XUẤT CHỐT | Trích chữ, bảng, sheet ở mức cơ bản |
 | Bài báo web | Trafilatura | CẦN THỬ | Không bắt buộc Playwright |
 | AI phân loại | AI provider adapter, JSON có schema; manual/rule fallback | CHƯA CHỐT | Chọn dịch vụ sau bài kiểm thử giá/chất lượng/riêng tư |
-| MCP | Official Python MCP SDK, remote Streamable HTTP | ĐỀ XUẤT CHỐT | Gọi lại service nội bộ, không chọc thẳng DB |
-| MCP auth | OAuth2.1 authorization code + PKCE, read scope | CHƯA CHỐT nhà cung cấp IdP | Bắt buộc an toàn khi công khai dữ liệu cá nhân |
+| MCP | Official Python MCP SDK v2 (`MCPServer`), Streamable HTTP | ĐỀ XUẤT CHỐT SAU SO SÁNH | Bám spec mới, không dùng ví dụ official SDK v1 `FastMCP` |
+| MCP auth | Django OAuth Toolkit >=3.4, OAuth2.1/PKCE, read scope | CẦN THỬ CHẤT LƯỢNG KẾT NỐI | Có hỗ trợ MCP metadata/CIMD/DCR; fallback Auth0/ZITADEL nếu không đạt |
 | Host | 1 VPS Linux hoặc Oracle nếu cấp được tài nguyên | CHƯA CHỐT | Ưu tiên rẻ, ổn định, Docker Compose |
 | HTTPS | Caddy reverse proxy, same-origin cho UI/API | ĐỀ XUẤT CHỐT | TLS, tránh CORS phức tạp |
 | Backup | pg_dump + bản sao file/provider khác; restore drill | ĐỀ XUẤT CHỐT | Không phụ thuộc một kho/VM |
@@ -43,7 +43,7 @@ Android/Windows Browser (PWA)
  HTTPS / Caddy [1 origin]
     /            /api/v1          /mcp (P1, riêng xác thực)
     |                |                 |
-Frontend static   FastAPI -------- MCP adapter
+Frontend static   Django Ninja --- MCP adapter (official SDK v2)
                       |
              Service layer (quyền, nghiệp vụ)
                   /       \
@@ -124,7 +124,7 @@ Mỗi module gồm request/response schema, service, persistence/query, test. Kh
 | `GET /api/v1/topics` / `GET /api/v1/projects` | Phân nhóm, dự án |
 | `GET /api/v1/health` | Liveness; readiness cần xác thực/quyền nội bộ |
 
-Các API thay đổi dữ liệu cần đăng nhập, CSRF/session protection, rate limit. File lớn nên upload trực tiếp qua presigned PUT có kiểm soát thay vì proxy toàn bộ qua FastAPI.
+Các API thay đổi dữ liệu cần đăng nhập, CSRF/session protection, rate limit. File lớn nên upload trực tiếp qua presigned PUT có kiểm soát thay vì proxy toàn bộ qua Django Ninja.
 
 ### 4.3. Quy tắc ingest
 
@@ -182,7 +182,7 @@ Có thể triển khai các bảng theo bước (Bước 1 lõi/source/assets/jo
 - Dữ liệu không biết = NULL, không thay bằng 0 hoặc chuỗi trống suy đoán.
 - Unique/checksum giúp phát hiện file trùng; unique theo platform/external_id khi đáng tin, có ngoại lệ đối với nguồn không chắc.
 - Index theo saved_at, kind, project/topic join, platform/id, checksum, trash; tạo search vector/index riêng cho text; kiểm thử accent-insensitive.
-- Mọi thay đổi DB qua Alembic và có rollback strategy; nếu migration không thể rollback, phải có backup và runbook.
+- Mọi thay đổi DB qua Django migrations và có rollback strategy; nếu migration không thể rollback, phải có backup và runbook.
 - Không có cascade delete phá file/bản sao ngay khi xóa UI. Xóa mềm trước; hard-delete là tác vụ riêng có xác nhận.
 
 ## 6. Search
@@ -217,7 +217,7 @@ Giao diện nội bộ:
 
 ## 8. Tác vụ nền
 
-Ưu tiên Postgres-backed Procrastinate để không phải dựng Redis. **CẦN THỬ:** chạy song song 2 worker, retry/backoff, crash trước/sau commit, idempotency, resume, giám sát trạng thái. Dự án Procrastinate đang tìm maintainer bổ sung; nếu không phù hợp, dùng cơ chế job Postgres có lease + SKIP LOCKED được kiểm thử kỹ trước khi tự viết.
+Ưu tiên Django + Procrastinate trên PostgreSQL để không phải dựng Redis và tận dụng Django migrations/admin của Procrastinate. **CẦN THỬ:** chạy song song 2 worker, retry/backoff, crash trước/sau commit, idempotency, resume, giám sát trạng thái. Dự án Procrastinate đang tìm maintainer bổ sung; nếu không phù hợp, đánh giá Chancy hoặc PgQueuer trước khi cân nhắc tự viết queue PostgreSQL có lease/SKIP LOCKED.
 
 Hàng đợi phân luồng: `download`, `metadata`, `extract`, `classify`, `backup`. Đặt concurrency thấp; giới hạn size, time, CPU/RAM; từng stage độc lập.
 
@@ -225,8 +225,8 @@ Hàng đợi phân luồng: `download`, `metadata`, `extract`, `classify`, `back
 
 ### 9.1. Ứng dụng web (Bước 1)
 
-- Single admin account, đăng ký bằng CLI/setup flow một lần; không public sign-up.
-- Mật khẩu băm Argon2id (hoặc dịch vụ định danh ngoài nếu người dùng chọn); session cookie HttpOnly Secure SameSite, CSRF cho thao tác có thay đổi, rate limit đăng nhập.
+- Single admin account qua `createsuperuser`/setup có kiểm soát của Django; không public sign-up.
+- Dùng Django Auth và Django session; ưu tiên password hasher Argon2id, cookie HttpOnly Secure SameSite, CSRF của Django cho thao tác có thay đổi, rate limit đăng nhập.
 - Audit thao tác xóa/sửa/đổi quyền, quyền file trong mọi request.
 - Secrets qua environment/secret manager; TLS HTTPS; không đưa B2 key vào frontend.
 - URL từ người dùng phải qua SSRF protections; sandbox/giới hạn tải video và xử lý tài liệu.
@@ -235,7 +235,7 @@ Hàng đợi phân luồng: `download`, `metadata`, `extract`, `classify`, `back
 
 - Remote endpoint `/mcp` qua HTTPS **hoặc** Secure MCP Tunnel nếu môi trường hỗ trợ.
 - MCP server chỉ cấp `knowledge:read`, không expose tool sửa/xóa trong phiên bản đầu.
-- Cho phép ChatGPT kết nối bằng OAuth2.1 Authorization Code + PKCE (Identity Provider/authorization server là quyết định riêng ở Bước 3); token kiểm audience/issuer/expiry/scope; không dùng public API key tĩnh làm bảo vệ duy nhất của kho riêng tư.
+- Cho phép ChatGPT kết nối bằng OAuth2.1 Authorization Code + PKCE (thử Django OAuth Toolkit >=3.4, kiểm tra MCP discovery/CIMD/DCR ở Bước 3); token kiểm audience/issuer/expiry/scope; không dùng public API key tĩnh làm bảo vệ duy nhất của kho riêng tư.
 - Công cụ mặc định: `search`, `fetch`, `list_items`, `get_item`; `get_asset` chỉ sau khi kiểm tra hành vi tải file/ quyền truy cập.
 - Các MCP tool phải dùng cùng service layer và ACL với REST API; giới hạn số bản ghi, kích thước text và loại dữ liệu được đọc.
 - `search`/`fetch` **không bắt buộc cho mọi custom MCP**, nhưng **nên có để tương thích company knowledge/deep research**. Phải kiểm thử result schema và nguồn dẫn trong ChatGPT thật.
@@ -247,7 +247,7 @@ Hàng đợi phân luồng: `download`, `metadata`, `extract`, `classify`, `back
 ### 10.1. Docker Compose đích
 
 - `caddy`: TLS, static frontend, reverse proxy /api và /mcp.
-- `api`: FastAPI.
+- `api`: Django ASGI + Django Ninja.
 - `worker`: cùng image Python, process worker.
 - `postgres`: volume durable, backup.
 - Tùy chọn job scheduler dựa queue/cron; không thêm Redis/Elasticsearch lúc đầu.
@@ -256,7 +256,7 @@ Hàng đợi phân luồng: `download`, `metadata`, `extract`, `classify`, `back
 ### 10.2. CI/CD
 
 - Frontend: typecheck, ESLint, unit, build.
-- Backend: Ruff, mypy mức phù hợp, pytest, migration validation.
+- Backend: Ruff, kiểm tra kiểu phù hợp, pytest/pytest-django, `makemigrations --check` và migration validation.
 - E2E: Playwright browser tests trên dữ liệu giả (không lưu test data lên production).
 - Docker build + smoke compose + dependency/license scan.
 - Staging với bucket DB tách riêng; deploy production chỉ sau PASS, có rollback.
@@ -282,18 +282,21 @@ Hàng đợi phân luồng: `download`, `metadata`, `extract`, `classify`, `back
 | D04 | Dùng API AI nào cho phân loại? | Adapter đa provider, quyết sau test | Privacy/cost |
 | D05 | Dữ liệu nội bộ/công việc có được gửi AI ngoài? | Mặc định KHÔNG | Phân nhóm AI trên dữ liệu nhạy cảm |
 | D06 | Backup thứ hai dùng Drive hay khác? | Drive qua rclone nếu kết nối ổn; có phương án thay | Bảo vệ dữ liệu |
-| D07 | Đăng nhập single-user cục bộ hay SSO? | Single-user + session bảo mật | Vận hành/độ phức tạp |
+| D07 | Đăng nhập single-user cục bộ hay SSO? | Django Auth + session bảo mật, không public signup | Vận hành/độ phức tạp |
 | D08 | UX Android Share Target có đạt không? | Test thực; fallback dán link | Kênh tiếp nhận |
 | D09 | Video bị chặn tải xử lý thế nào? | Giữ link, cho upload file riêng | Kỳ vọng |
 | D10 | ChatGPT workspace có quyền custom MCP? | Kiểm tra khi đến Bước 3 | Có thể cần admin |
 | D11 | Thời gian giữ thùng rác và bản sao? | 30 ngày thùng rác (đề xuất) | Dung lượng/an toàn |
 | D12 | Trích toàn văn Excel và file lớn tới đâu? | Giới hạn kích thước/tổng ô, có trạng thái partial | RAM, search chất lượng |
 
-**Quyết định nên chốt ngay để bắt đầu code:** React/TS/Vite; FastAPI; PostgreSQL; B2; mô hình mục tri thức/nguồn/file; API contract; luồng nhập & nhóm; chính sách an toàn dữ liệu. Các quyết định D01–D12 còn mở không được viện làm lý do trì hoãn giao diện demo và test local, nhưng thông số liên quan bảo mật và backup phải chốt trước sản xuất.
+**Quyết định nên chốt ngay để bắt đầu code:** React/TS/Vite + Mantine; Django 6 + Django Ninja; PostgreSQL; B2; mô hình mục tri thức/nguồn/file; API contract; luồng nhập & nhóm; chính sách an toàn dữ liệu. Các quyết định D01–D12 còn mở không được viện làm lý do trì hoãn giao diện demo và test local, nhưng thông số liên quan bảo mật và backup phải chốt trước sản xuất.
 
 ## 13. Tham chiếu kỹ thuật (kiểm tra lại khi pin phiên bản)
 
-- FastAPI: https://fastapi.tiangolo.com/
+- Django 6: https://docs.djangoproject.com/en/6.0/
+- Django Ninja: https://django-ninja.dev/
+- Django OAuth Toolkit MCP: https://django-oauth-toolkit.readthedocs.io/en/latest/
+- Mantine: https://mantine.dev/
 - React: https://react.dev/ · Vite: https://vite.dev/
 - PostgreSQL: https://www.postgresql.org/docs/
 - Procrastinate: https://procrastinate.readthedocs.io/
@@ -307,3 +310,4 @@ Hàng đợi phân luồng: `download`, `metadata`, `extract`, `classify`, `back
 - MCP SDK: https://github.com/modelcontextprotocol/python-sdk
 - OpenAI MCP / Plugins: https://developers.openai.com/api/docs/mcp
 - OpenAI MCP authentication: https://developers.openai.com/plugins/build/auth
+- MCP official Python SDK v2: https://github.com/modelcontextprotocol/python-sdk
