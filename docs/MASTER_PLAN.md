@@ -1,7 +1,7 @@
-# KHO TRI THỨC — KẾ HOẠCH TỔNG THỂ V4.5
+# KHO TRI THỨC — KẾ HOẠCH TỔNG THỂ V4.6 (BẢN KẾ HOẠCH CHỐT)
 ## Nhỏ khi vận hành, sẵn đường nâng cấp dài hạn
 
-**Ngày:** 15/11/2026 · **Thay thế v4.4** · **Trạng thái:** thiết kế, chưa có mã nguồn ứng dụng.  
+**Ngày:** 15/11/2026 · **Thay thế v4.5** · **Trạng thái:** thiết kế, chưa có mã nguồn ứng dụng.  
 **Nguồn quyết định:** người dùng muốn **Google Drive là kho file chính**, sử dụng cá nhân, tự sắp xếp theo lĩnh vực/dự án/xem theo ngày, có thể kết nối ChatGPT và mở rộng AI trong tương lai. Tránh cả overengineering lẫn làm quá sơ sài dẫn đến viết lại hệ thống.
 
 ## 1. Mục tiêu của bản đầu
@@ -24,10 +24,10 @@
 5. **Storage driver nhỏ ngay từ đầu:** `DriveStorage` hiện thực giao diện `save/open/verify/delete/locate`. Chưa cần hiện thực B2/R2 hoặc migration engine.
 6. **Job trạng thái bền vững, idempotent:** lỗi Google API/worker restart không được làm mất item hoặc tạo nhiều bản sao do retry.
 7. **Trích xuất được version hóa:** lưu tên parser/phiên bản, hash file đầu vào, thời điểm, nội dung/locator và trạng thái; sau này thay parser, OCR, ASR không làm mất bản gốc và chỉnh sửa thủ công.
-8. **Tìm kiếm qua `SearchService`:** PostgreSQL FTS/trigram ban đầu; ngay khi lập trình phải thử cấu hình từ điển tiếng Việt có `unaccent`, chỉ mục GIN và fallback cho số hiệu/tên viết tắt; có thể bổ sung Typesense/pgvector sau mà không đổi API/UX.
+8. **Tìm kiếm qua `SearchService`:** PostgreSQL FTS/trigram ban đầu; **hai chỉ mục GIN riêng cho `Item` metadata và `DerivedContent` văn bản**, hợp nhất kết quả theo `item_id`, chỉ dùng bản trích xuất hiện hành. Thử cấu hình từ điển tiếng Việt có `unaccent` và fallback cho số hiệu/tên viết tắt; có thể bổ sung Typesense/pgvector sau mà không đổi API/UX.
 9. **Portable export:** xuất danh mục/nhóm/ghi chú/quan hệ và mapping `item_id ↔ asset_id ↔ drive_file_id` thành JSON có `schema_version`, kèm file manifest và một bản DB backup. Người dùng có đường khôi phục khi đổi máy/chuyển lưu trữ.
 10. **Lựa chọn công nghệ không khóa nâng cấp:** một Django monolith phân module, frontend React tĩnh; khi cần ASR/AI nặng tách worker thành tiến trình/máy khác, không thiết kế microservice sớm.
-11. **Trải nghiệm đa phương tiện đúng từ đầu:** thumbnail sinh/cached riêng cho thư viện (không dùng trực tiếp URL thumbnail Drive hết hạn); phát video từ Drive khi sẵn sàng, cache file cục bộ ngắn hạn **chỉ nếu test chứng minh cần**.
+11. **Trải nghiệm đa phương tiện đúng từ đầu:** thumbnail sinh/cached riêng cho thư viện (không dùng trực tiếp URL thumbnail Drive hết hạn); **PDF render bằng `pypdfium2`, ảnh Android xử lý `ImageOps.exif_transpose()` trước resize**, không sửa bản gốc; phát video từ Drive khi sẵn sàng, cache file cục bộ ngắn hạn **chỉ nếu test chứng minh cần**.
 12. **Kênh đọc cho ChatGPT có kiểm chứng:** nếu xuất văn bản từ PostgreSQL ra Drive, phải xuất theo phiên bản, cập nhật cùng file và đo độ trễ; không cam kết ChatGPT lập chỉ mục hoặc đọc 100% nội dung.
 
 ## 3. Lựa chọn công nghệ cân bằng
@@ -82,7 +82,7 @@
 
 **Mốc A — Nền tảng đúng và lưu Drive được (P0):** Django LTS, PostgreSQL, API, ID ổn định, storage driver Drive/OAuth, upload–open–verify, một worker, màn hình Thêm/Thư viện với thumbnail riêng, backup đầu tiên và thử quy trình khôi phục OAuth/Client.
 
-**Mốc B — Dùng được hàng ngày (P0):** metadata video/web, trích chữ và phụ đề nguồn, **benchmark PDF tiếng Việt (pypdf/PyMuPDF và giấy phép)**, AI gợi ý nhóm, lĩnh vực/dự án/ngày/tag, tìm kiếm tiếng Việt có dấu/không dấu có kiểm thử, Android dán/chia sẻ link khi nền tảng hỗ trợ.
+**Mốc B — Dùng được hàng ngày (P0):** metadata video/web, trích chữ và phụ đề nguồn, **benchmark 3 thư viện `pypdf`/`pypdfium2`/`PyMuPDF` để chọn extractor chữ**, AI gợi ý nhóm, lĩnh vực/dự án/ngày/tag, tìm kiếm hai GIN index (`Item` + `DerivedContent`) có dấu/không dấu có kiểm thử; Android dán/chia sẻ link khi nền tảng hỗ trợ.
 
 **Mốc C — Khai thác ChatGPT (P1):** thử Google Drive app với file gốc **và** bản xuất tri thức từ PostgreSQL; nếu định dạng không đọc được, metadata nhóm không đủ hoặc cần truy vấn tag/dự án chính xác, triển khai MCP chỉ đọc. Không ngầm tuyên bố ChatGPT hiểu file MP4 chỉ vì lưu trên Drive.
 
@@ -101,7 +101,7 @@ Trước khi thông báo PASS từng mốc, phải có kiểm thử file Drive t
 
 **Quy ước tài liệu:** `MASTER_PLAN.md` quản lý mục tiêu/phạm vi, `ARCHITECTURE_AND_DATA.md` giải thích kỹ thuật và so sánh phương án, `ROADMAP_AND_TESTS.md` là backlog và nghiệm thu, `AGENTS.md` là quy tắc Codex. Không bổ sung 17 file tài liệu thiết kế.
 
-**Trạng thái khi cập nhật:** Chỉ có tài liệu; chưa tạo frontend/backend, chưa thử Google Drive API với tài khoản của người dùng, chưa có production.
+**Trạng thái khi cập nhật:** V4.6 là **baseline giao Codex** cho phát triển, không khẳng định đây là kết quả triển khai. Chỉ có tài liệu; chưa tạo frontend/backend, chưa thử Google Drive API với tài khoản của người dùng, chưa có production.
 
 
 ## 9. Bổ sung sau phản biện kỹ thuật — các quyết định có điều kiện
@@ -110,9 +110,9 @@ Trước khi thông báo PASS từng mốc, phải có kiểm thử file Drive t
 | --- | --- | --- |
 | ChatGPT và PostgreSQL | Thiết kế `KnowledgeExportService`: thử xuất **mỗi Item một tài liệu văn bản đại diện** lên Drive (tiêu đề, chủ đề, dự án, ghi chú, văn bản/phụ đề có sẵn, nguồn). Worker cập nhật theo phiên bản, không tạo file trùng. Chỉ bật rộng khi ChatGPT đọc/tìm được định dạng đã thử. | Không hứa connector lập chỉ mục mọi TXT/Markdown/Google Docs, cũng không hứa hiểu video thiếu phụ đề. |
 | Khôi phục quyền Drive | Giữ Google Cloud Project/Client ổn định khi đổi máy. Kiểm thử lại quyền khi đổi OAuth Client cùng project hoặc project mới; ưu tiên Picker/cấp quyền lại theo từng file khi phù hợp. | Không mặc định đổi Client là lỗi 404; không yêu cầu `drive.readonly` rộng một cách vô điều kiện. |
-| Thumbnail | Tạo ảnh đại diện WebP/JPEG và cache trong **volume bền vững**, lazy-load; file gốc vẫn ở Drive, có thể tái tạo thumbnail. | Không nhúng trực tiếp `thumbnailLink` của Drive vào tất cả card. |
+| Thumbnail | **`pypdfium2` render trang đầu PDF tại KT-010**, Pillow `ImageOps.exif_transpose()` xử lý 8 trường hợp EXIF trước resize ảnh Android; cache WebP/JPEG trên volume bền vững, tạo lại được. Không ghi đè file gốc. | Không dùng `pypdf` để render; không nhúng Drive `thumbnailLink` trực tiếp vào card. |
 | Video mới tải | Trạng thái upload và trạng thái Drive preview tách biệt; có thể giữ video cache local có hạn ngạch/TTL khi phép thử cho thấy cần. | Không ấn định chậm 3–15 phút, không mặc định cache mọi video 48 giờ. |
-| PDF tiếng Việt | Giữ `pypdf` làm baseline **tạm thời**; so với PyMuPDF trên tập PDF tiếng Việt có kiểm tra giấy phép AGPL/thương mại trước khi chốt extractor mặc định. | Không mặc định PyMuPDF nhanh hơn 20–30 lần trong mọi trường hợp. |
-| PostgreSQL tiếng Việt | Migration tạo text search config với `unaccent` + `simple`, GIN phù hợp; truy vấn/index phải cùng config. Kiểm tra số hiệu, tên viết tắt, dấu tiếng Việt, `đ` và dùng pg_trgm/chuỗi như fallback. | Không tự gắn `IMMUTABLE` cho hàm không bảo đảm immutable; chưa cam kết tốc độ mili-giây. |
+| PDF tiếng Việt | `KT-102` benchmark **pypdf/pypdfium2/PyMuPDF** trên 20–30 PDF tiếng Việt; đo chữ/dấu/trang/tốc độ/RAM, rà Apache-2.0/BSD-3-Clause của pypdfium2/PDFium và AGPL/thương mại của PyMuPDF. | KT-010 đã chọn pypdfium2 để render thumbnail; **chưa chốt** thư viện đọc chữ chính trước benchmark. |
+| PostgreSQL tiếng Việt | Migration `kt_vi`/unaccent/pg_trgm; **hai expression GIN index riêng** cho Item và DerivedContent, `SearchService` gộp item ID, bỏ bản text stale và giữ provenance. | Không tạo expression index JOIN xuyên bảng; không dồn PDF/transcript dài vào một `Item.search_vector`, không tự gắn `IMMUTABLE` cho hàm thiếu căn cứ. |
 
 Các công việc và mã kiểm thử chi tiết nằm trong `docs/ROADMAP_AND_TESTS.md`; giải pháp kỹ thuật chi tiết nằm trong `docs/ARCHITECTURE_AND_DATA.md`. Không thêm nhà cung cấp cloud/Redis/ASR/AI sâu trong bản đầu.
