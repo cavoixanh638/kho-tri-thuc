@@ -7,6 +7,10 @@
 4. Đọc đúng hạng mục trong `docs/ROADMAP_AND_TESTS.md`, thực hiện theo phụ thuộc và tiêu chí PASS.
 5. Đọc source code và test hiện có trước khi sửa; không giả định file/feature tồn tại.
 
+## Nguyên tắc chọn công nghệ
+- Trước khi đề xuất hay thay framework/library/service, phải tìm và so sánh **2–3 phương án cạnh tranh tốt tại thời điểm quyết định**; phân tích phù hợp, tốc độ làm, chi phí, bảo mật, khả năng thay thế và nguồn chính thức; không tự chọn theo sở thích.
+- Đọc **Mục 14 của `docs/ARCHITECTURE_AND_DATA.md`**. Nếu muốn đổi lựa chọn đã ghi, bổ sung bằng chứng và kiểm thử, tránh tự sửa nhiều tài liệu lệch nhau. Công nghệ chưa chốt không được nói là đã nghiệm thu.
+
 ## Nguyên tắc
 - **Không tự mở rộng sang OCR/ASR, vector DB, chatbot nội bộ, browser automation hoặc microservices** khi chưa được giao.
 - Ưu tiên phần mềm chạy được, lưu được dữ liệu thật, phân nhóm đúng và có thể khôi phục.
