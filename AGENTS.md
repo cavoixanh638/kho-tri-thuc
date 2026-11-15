@@ -1,15 +1,15 @@
 # AGENTS.md — Quy tắc làm việc cho AI lập trình
 
 ## Ngữ cảnh và thứ tự đọc
-1. Đọc `README.md`.
-2. Đọc `docs/MASTER_PLAN.md` để nắm mục tiêu, bốn mốc ưu tiên và giới hạn phạm vi.
-3. Đọc `docs/ARCHITECTURE_AND_DATA.md` cho cấu trúc, sơ đồ dữ liệu, API và lựa chọn kỹ thuật.
-4. Đọc đúng hạng mục trong `docs/ROADMAP_AND_TESTS.md`, thực hiện theo phụ thuộc và tiêu chí PASS.
-5. Đọc source code và test hiện có trước khi sửa; không giả định file/feature tồn tại.
+1. Đọc `README.md` và `docs/README.md` để biết nguồn tài liệu chuẩn.
+2. Đọc `docs/CURRENT_STATE.md` để biết **sự thật hiện tại** và phần chưa test, không dựa vào lịch sử chat.
+3. Đọc `docs/MASTER_PLAN.md` cho mục tiêu, giới hạn phạm vi; `docs/ARCHITECTURE_AND_DATA.md` khi đụng dữ liệu/API/kiến trúc.
+4. **Trước khi tạo/move file**, đọc `docs/REPOSITORY_LAYOUT.md` và không tạo folder rỗng hoặc phân tầng quá mức.
+5. Đọc đúng task trong `docs/ROADMAP_AND_TESTS.md`, sau đó đọc source/test hiện có; không giả định feature đã tồn tại.
 
 ## Nguyên tắc chọn công nghệ
 - Trước khi đề xuất hay thay framework/library/service, phải tìm và so sánh **2–3 phương án cạnh tranh tốt tại thời điểm quyết định**; phân tích phù hợp, tốc độ làm, chi phí, bảo mật, khả năng thay thế và nguồn chính thức; không tự chọn theo sở thích.
-- Đọc **Mục 3 (bảng so sánh các phương án) của `docs/ARCHITECTURE_AND_DATA.md`**. Nếu muốn đổi lựa chọn đã ghi, bổ sung bằng chứng và kiểm thử, tránh tự sửa nhiều tài liệu lệch nhau. Công nghệ chưa chốt không được nói là đã nghiệm thu.
+- Đọc **Mục 1.2 (bảng so sánh phương án) của `docs/ARCHITECTURE_AND_DATA.md`**. Nếu muốn đổi lựa chọn đã ghi, bổ sung bằng chứng và kiểm thử, tránh tự sửa nhiều tài liệu lệch nhau. Công nghệ chưa chốt không được nói là đã nghiệm thu.
 
 ## Nguyên tắc
 - Các cổng nâng cấp **U01–U18 trong `docs/ROADMAP_AND_TESTS.md`** chỉ được yêu cầu đúng thời điểm; không bắt bản đầu triển khai OCR/ASR, pgvector, multi-storage hoặc MCP. **KT-104 dùng hai chỉ mục GIN riêng**: Item (title/description/note) và DerivedContent (text hiện hành), qua `SearchService` hợp nhất item ID; cấu hình `kt_vi`/unaccent đồng nhất, có test dấu/không dấu và `EXPLAIN ANALYZE`. Không làm expression index JOIN xuyên hai bảng, không tự bọc `unaccent()` bằng `IMMUTABLE` nếu chưa chứng minh an toàn.
@@ -26,11 +26,13 @@
 - Worker phải idempotent, có retry/timeout và lỗi rõ ràng; lỗi trích xuất không làm mất file. Nếu làm KnowledgeExportService, phải lưu source/exported version, status, cập nhật cùng file, retry không nhân đôi Google Docs/TXT/Markdown.
 - **Không xây MCP ngay**: trước hết thử ChatGPT Google Drive app **và pilot 5–10 bản văn bản đại diện Item** (Google Docs/TXT/Markdown) có đồng bộ phiên bản. Drive app không tự thấy note/DerivedContent/Project chỉ nằm trong PostgreSQL; không hứa 100% index hoặc nội dung MP4 thiếu transcript. Chỉ khi cần mới làm MCP chỉ đọc, xác thực theo quyền workspace.
 - Tách source và test; tránh commit file media lớn, backup hoặc dữ liệu cá nhân vào repo.
+- **Chủ quyền dữ liệu & bố trí tệp:** Git chứa mã/tài liệu/test nhỏ; Google Drive chứa file gốc; PostgreSQL chứa danh mục; máy chạy ứng dụng chứa cache/job. Dùng `docs/REPOSITORY_LAYOUT.md` làm nguồn chuẩn cho nơi đặt file. Django migrations nằm trong từng Django app, worker chạy từ **cùng codebase**, không tạo `packages/`/`db/migrations/`/`coordination/` sớm.
+- **Phân lớp rõ:** nguồn/ghi chú người dùng, file gốc, văn bản/thumbnail/AI phát sinh, và trạng thái job không được ghi đè lẫn nhau. Học quy tắc này từ QLVB, không copy mã/schema QLVB.
 
 ## Phối hợp nhiều AI/Codex
 - Khi thực sự lập trình một hạng mục, ưu tiên nhánh/PR riêng khi cần review; nêu rõ đường dẫn được phép sửa, không tạo nhiều nhánh/PR chỉ để viết tài liệu.
 - Không force-push, không reset nhánh chung, không merge ngoài phạm vi đã giao.
-- Ghi SHA thực tế, test đã chạy, test chưa chạy, rủi ro, cách rollback trong PR/checkpoint.
+- Ghi SHA thực tế, test đã chạy, test chưa chạy, rủi ro, cách rollback trong PR/checkpoint; **cập nhật thực trạng ở `docs/CURRENT_STATE.md`**, không tự sửa các tiêu chí kế hoạch để biến task thành PASS.
 - Không sửa tài liệu thành những quy định mâu thuẫn: `MASTER_PLAN` quản lý **phạm vi**, `ARCHITECTURE_AND_DATA` quản lý **thiết kế**, `ROADMAP_AND_TESTS` quản lý **nghiệm thu**.
 - Quyết định chưa chốt phải giữ nhãn *CẦN QUYẾT ĐỊNH*, không giả vờ đã thống nhất với người dùng.
 
@@ -38,7 +40,8 @@
 - Format/lint, test đơn vị ảnh hưởng, migration test nếu sửa DB, smoke UI/API nếu đổi chức năng.
 - Không log nội dung file nhạy cảm hoặc khóa truy cập. Kiểm tra input ngoài, file lớn, URL độc hại, quyền.
 - Nhắc rõ điều kiện chưa thể kiểm thử (dịch vụ ngoài, quyền Google/ChatGPT, video bị chặn).
-- Cập nhật tình trạng mục việc tương ứng tại `docs/ROADMAP_AND_TESTS.md` khi được giao thực hiện.
+- Nếu task thay đổi yêu cầu/tiêu chí nghiệm thu thì cập nhật `docs/ROADMAP_AND_TESTS.md`; nếu chỉ thay đổi **trạng thái thực thi** thì ghi vào `docs/CURRENT_STATE.md` (một nguồn chuẩn).
+- Sau khi KT-001 chạy thật mới viết `docs/operations/LOCAL_SETUP.md`; sau KT-008 backup và restore thật mới viết `docs/operations/BACKUP_RESTORE.md`. Không soạn các lệnh giả định thành 'đã kiểm thử'.
 
-## Trạng thái cập nhật thiết kế (15/11/2026)
-Kế hoạch **v4.6 (baseline chốt để giao Codex)** lấy Google Drive làm kho file chính, **PostgreSQL đã chốt** làm danh mục; thử Google Drive ChatGPT app và bản xuất tri thức có version trước MCP; một worker bền vững, không Redis. **KT-102 so sánh 3 thư viện `pypdf`, `pypdfium2`, `PyMuPDF` trên 20–30 PDF tiếng Việt**, rà giấy phép, chỉ chốt extractor chữ sau benchmark. **KT-010 dùng `pypdfium2` làm renderer thumbnail** độc lập việc chọn extractor. Chỉ thiết kế đường nâng cấp OCR/ASR/vector/multi-storage chứ chưa triển khai. **Chưa có ứng dụng, database hay deployment**. Bằng chứng benchmark video nằm ở repo riêng, không phải PASS của phần mềm này.
+## Baseline thiết kế (15/11/2026); tiến độ thật ở CURRENT_STATE
+Kế hoạch **v4.6 (baseline chốt để giao Codex)** lấy Google Drive làm kho file chính, **PostgreSQL đã chốt** làm danh mục; thử Google Drive ChatGPT app và bản xuất tri thức có version trước MCP; một worker bền vững, không Redis. **KT-102 so sánh 3 thư viện `pypdf`, `pypdfium2`, `PyMuPDF` trên 20–30 PDF tiếng Việt**, rà giấy phép, chỉ chốt extractor chữ sau benchmark. **KT-010 dùng `pypdfium2` làm renderer thumbnail** độc lập việc chọn extractor. Chỉ thiết kế đường nâng cấp OCR/ASR/vector/multi-storage chứ chưa triển khai. **Tại thời điểm baseline 15/11/2026 chưa có ứng dụng, database hay deployment; phải đọc CURRENT_STATE để biết các thay đổi mới hơn**. Bằng chứng benchmark video nằm ở repo riêng, không phải PASS của phần mềm này.

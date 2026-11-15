@@ -36,3 +36,11 @@ backups/
 Thumbs.db
 *.log
 *.tmp
+# Additional runtime volumes and database exports
+media/
+cache/
+tmp/
+pgdata/
+*.dump
+*.backup
+*.sql.gz

@@ -1,7 +1,18 @@
 # LỘ TRÌNH VÀ NGHIỆM THU V4.6 — BASELINE TRIỂN KHAI ĐÃ CHỐT
 
 **Ngày:** 15/11/2026 · **Theo:** `MASTER_PLAN.md` v4.6 và `ARCHITECTURE_AND_DATA.md` v4.6. **Đã chốt PostgreSQL** cho local/test/production; không dùng SQLite làm DB chính.  
-**Trạng thái:** chưa có app, chưa có môi trường chạy và chưa có test PASS. Mọi checklist dưới là yêu cầu nghiệm thu tương lai.
+**Trạng thái tại baseline 15/11/2026:** chưa có app, môi trường hay runtime test PASS; **trạng thái cập nhật duy nhất** được theo dõi ở [CURRENT_STATE.md](CURRENT_STATE.md). Checklist ở đây là tiêu chí nghiệm thu, không tự chứng minh PASS.
+
+## 0. Chuẩn bị repository trước KT-001 — hoàn thành ở cấp tài liệu
+
+| Đầu việc | Kết quả kiểm tra | Ranh giới |
+| --- | --- | --- |
+| Quy định nơi đặt code, dữ liệu, tests/evals | [REPOSITORY_LAYOUT.md](REPOSITORY_LAYOUT.md) từ khảo sát read-only QLVB, áp dụng chọn lọc cho Django/Drive | Chỉ quy chuẩn, chưa phải code | 
+| Báo cáo hiện trạng | [CURRENT_STATE.md](CURRENT_STATE.md), có trạng thái NOT_STARTED/NOT_RUN và task kế tiếp | Không giả PASS runtime | 
+| Điều hướng AI và người dùng | [docs/README.md](README.md), `../AGENTS.md`, `../README.md` | Không tạo workboard/orchestrator khi chưa cần |
+| Thao tác vận hành | Chỉ tạo LOCAL_SETUP khi KT-001 đã chạy, BACKUP_RESTORE khi KT-008 đã thử thật | **Không soạn runbook giả định thành kết quả** |
+
+**Cổng vào KT-001:** Codex đọc `docs/CURRENT_STATE.md`, `docs/REPOSITORY_LAYOUT.md` và thiết kế v4.6; chỉ tạo thư mục có mã nguồn thật. Thực trạng/test sau khi chạy phải ghi về CURRENT_STATE, không đánh dấu PASS bằng sửa roadmap.
 
 ## 1. Thứ tự triển khai và phụ thuộc
 
@@ -18,14 +29,14 @@
 
 | ID | Công việc | Điều kiện PASS |
 | --- | --- | --- |
-| KT-001 | Scaffold Django **5.2 LTS + Ninja**, **PostgreSQL** Docker, React/TS/Vite/Mantine, Django worker | Dùng chung Postgres local/test/prod, migration/reverse migration có test; không chuyển sang SQLite |
+| KT-001 | Scaffold Django **5.2 LTS + Ninja**, **PostgreSQL** Docker, React/TS/Vite/Mantine, **một worker cùng codebase Django** | Bố trí đúng `REPOSITORY_LAYOUT.md`, local/test/prod thống nhất Postgres, migration/reverse migration và frontend build test; **sau khi chạy thật** ghi lệnh vào `docs/operations/LOCAL_SETUP.md` và checkpoint vào `CURRENT_STATE.md` |
 | KT-002 | Thiết kế schema UUID: Item/Source/Asset/StorageLocation, User FK, Groups/Projects/Tags, Job, DerivedContent | File ID Drive không làm PK; các bảng phục vụ đúng API |
 | KT-003 | Google OAuth `drive.file`, tạo folder, reconnect khi `invalid_grant` | Giữ OAuth project/client ổn định; upload ảnh/PDF thật và đọc lại được; không lộ token |
 | KT-004 | `DriveStorage` adapter và FakeStorage test | `save/open/stat/verify`; không có B2 code |
 | KT-005 | Upload resumable, status rõ, thử pre-generated ID cho blob | Timeout không tạo hai Drive file; xác nhận file thật |
 | KT-006 | UI Thêm, Thư viện, Chi tiết, Cài đặt; Django Auth 1 user | Android/Windows mở được, link-only rõ |
 | KT-007 | JobRepository với `lease/retry/idempotency` và một worker | Kill/restart giữa download/upload không mất item/trùng file |
-| KT-008 | `pg_dump` + JSON portable export mapping Drive ID, bản copy ngoài Drive | Restore DB/manifest mở lại file gốc và nhóm |
+| KT-008 | `pg_dump` + JSON portable export mapping Drive ID, bản copy ngoài Drive | Restore DB/manifest mở lại file gốc và nhóm; **sau khi thực hiện kiểm chứng** viết `docs/operations/BACKUP_RESTORE.md`, ghi lệnh/đầu ra và hạn chế tại `CURRENT_STATE.md` |
 | KT-009 | Drive metadata và recovery quyền khi di chuyển host/client | Manifest + Drive khôi phục item/file, đổi host giữ Client phải PASS; lập P1 test Client mới cùng Project và Project mới, không mặc định lỗi 404 hoặc xin `drive.readonly` |
 
 | KT-010 | Tạo thumbnail ảnh/video/PDF: **`pypdfium2` render trang đầu PDF**, Pillow **`ImageOps.exif_transpose()` trước resize ảnh Android**; lưu WebP/JPEG trong cache bền vững | PDF lỗi/khóa có placeholder; test đủ **8 EXIF Orientation**, không thay đổi ảnh gốc Drive; thumbnail đúng chiều, lazy load, không dùng trực tiếp Drive `thumbnailLink`, cache bị mất có thể tái tạo |
@@ -111,7 +122,7 @@
 
 ## 8. Trạng thái và phạm vi AI/Codex
 
-- Repo mới chỉ có tài liệu: **chưa có app, database thật, Google OAuth credential, deployment hoặc các PASS về runtime**.
+- Tại **baseline 15/11/2026**, repo mới chỉ có tài liệu: chưa có app, database thật, Google OAuth credential, deployment hoặc runtime PASS. Trạng thái sau baseline phải tra `CURRENT_STATE.md` và GitHub live, không mặc định câu này đúng mãi.
 - Mỗi nhiệm vụ khi hoàn tất phải có commit SHA, test đã chạy, test chưa chạy, rủi ro, rollback.
 - Trước khi chọn/thay công nghệ, so với **2–3 lựa chọn cạnh tranh**, nêu vì sao phù hợp với Kho Tri Thức hiện tại và bảo đảm đường nâng cấp.
 - Đừng biến một bài nghiên cứu tương lai (pgvector, Drive migration) thành blocker của bản đầu.

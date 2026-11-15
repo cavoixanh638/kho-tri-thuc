@@ -1,7 +1,7 @@
 # KIẾN TRÚC, DỮ LIỆU VÀ LỘ TRÌNH NÂNG CẤP — V4.6 (BASELINE CHỐT ĐỂ TRIỂN KHAI)
 
 **Ngày:** 15/11/2026 · **Dựa trên:** `MASTER_PLAN.md` v4.6 · **Đối tượng:** một người dùng lúc đầu, Google Drive là kho file chính; phát triển thêm tính năng AI và có thể nhiều dữ liệu/worker về sau.  
-**Trạng thái:** quyết định thiết kế, **chưa triển khai hoặc benchmark**. Mọi số liệu hiệu năng và điều kiện nâng cấp dưới đây là mục tiêu/trigger để đo, không phải kết quả đo.
+**Trạng thái:** quyết định thiết kế, **chưa triển khai hoặc benchmark** tại baseline 15/11/2026. Trạng thái thực tế sau này xem [CURRENT_STATE.md](CURRENT_STATE.md); cách bố trí tệp và ranh giới Git/Drive/runtime xem [REPOSITORY_LAYOUT.md](REPOSITORY_LAYOUT.md). Mọi số liệu hiệu năng và điều kiện nâng cấp dưới đây là mục tiêu/trigger để đo, không phải kết quả đo.
 
 ## 1. Quyết định về mức độ thiết kế
 

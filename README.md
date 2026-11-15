@@ -1,7 +1,7 @@
 # Kho Tri Thức — Lưu khoa học, mở rộng bền vững
 
 **Kế hoạch hiện hành: V4.6 (15/11/2026) — bản kế hoạch chốt để triển khai; PostgreSQL đã được người dùng chốt.**  
-**Trạng thái:** mới có tài liệu, chưa có mã nguồn ứng dụng, kết nối Google Drive thật hoặc test triển khai.
+**Trạng thái:** đã chuẩn bị xong tài liệu và quy chuẩn tổ chức repository trước KT-001; **chưa có mã nguồn ứng dụng, kết nối Google Drive thật hoặc test runtime**. Tình trạng xác minh mới nhất xem [CURRENT_STATE.md](docs/CURRENT_STATE.md).
 
 Kho Tri Thức là ứng dụng cá nhân trên Android/Windows để gửi link Facebook/TikTok/YouTube/web, video, ảnh, file và ghi chú; lưu file gốc lên **Google Drive**; trích xuất chữ nhẹ và phân loại theo **lĩnh vực/chủ đề/dự án**, xem **theo ngày**, tìm kiếm tiếng Việt có/không dấu. Khi nghiên cứu bằng ChatGPT, thử Google Drive app trước; MCP riêng chỉ nếu cần.
 
@@ -41,13 +41,17 @@ Kho Tri Thức là ứng dụng cá nhân trên Android/Windows để gửi link
 
 ## Bộ tài liệu chuẩn
 
+**Bắt đầu từ [docs/README.md](docs/README.md) để chọn đúng tài liệu theo câu hỏi.**
+
+- [CURRENT_STATE.md](docs/CURRENT_STATE.md) — trạng thái có bằng chứng, test đã/chưa chạy, việc kế tiếp.
+- [REPOSITORY_LAYOUT.md](docs/REPOSITORY_LAYOUT.md) — nơi đặt file, ranh giới Git/Drive/Postgres và cách bố trí Django/React.
 - [MASTER_PLAN.md](docs/MASTER_PLAN.md) — phạm vi, quyết định v4.6, ưu tiên.
 - [ARCHITECTURE_AND_DATA.md](docs/ARCHITECTURE_AND_DATA.md) — so sánh công nghệ, dữ liệu/API, thiết kế kỹ thuật và R2 phản biện.
 - [ROADMAP_AND_TESTS.md](docs/ROADMAP_AND_TESTS.md) — nhiệm vụ KT-xxx, các cổng PASS và kiểm thử U01–U18.
 - [AGENTS.md](AGENTS.md) — quy tắc cho Codex và AI.
 - [README.md](README.md) — tổng quan này.
 
-**Không commit OAuth token, .env, media gốc, PostgreSQL dump hoặc backup vào repository.**
+**Không commit OAuth token, .env, media gốc, PostgreSQL dump hoặc backup vào repository.** Các thư mục `apps/`, `tests/`, `evals/` trong sơ đồ là **đề xuất**, chỉ tạo khi có code/test thật. Không sao chép mã hoặc dữ liệu từ repo QLVB.
 
 [Video downloader benchmark riêng](https://github.com/cavoixanh638/video-download-benchmark) chỉ là tài liệu tham khảo, **không phải bằng chứng Kho Tri Thức đã hoạt động**.
 
