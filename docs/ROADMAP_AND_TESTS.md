@@ -22,12 +22,12 @@
 
 | ID | Việc | Đầu ra | Phụ thuộc |
 |---|---|---|---|
-| KT-001 | Repo scaffold + Docker Compose local | Vite app, FastAPI, Postgres, worker, Caddy dev | Kế hoạch |
-| KT-002 | Thiết kế OpenAPI + DB migration đầu tiên | Schema items/source/assets/storage; contract chuẩn | KT-001 |
-| KT-003 | Backend auth single-user, session | Login/logout, rate limit, CSRF, test | KT-001 |
+| KT-001 | Repo scaffold + Docker Compose local | Vite + Mantine, Django 6 + Ninja, Postgres, worker, Caddy dev | Kế hoạch + R1 tech comparison |
+| KT-002 | Thiết kế Django Ninja OpenAPI + Django migration đầu tiên | Schema items/source/assets/storage, Django admin; contract chuẩn | KT-001 |
+| KT-003 | Django Auth single-user, session | Superuser, login/logout, rate limit, CSRF, test | KT-001 |
 | KT-004 | StorageAdapter B2 proof-of-concept | Upload/download/verify/presigned URL bucket riêng tư | KT-001 |
-| KT-005 | Job queue thử nghiệm | Restart, retries, lỗi, không lặp job | KT-001 |
-| KT-006 | Frontend skeleton + design tokens | Desktop/mobile responsive, 4 khu vực, mock data | KT-001 |
+| KT-005 | Thử Procrastinate/Django vs Chancy/PgQueuer | Restart, retries, lỗi, không lặp job; quyết định kèm bằng chứng | KT-001 |
+| KT-006 | Frontend Mantine skeleton + design tokens | Desktop/mobile responsive, 4 khu vực, mock data | KT-001 |
 
 **G0 PASS:** local stack khởi động, tài khoản thử đăng nhập được, file thử được upload/download/đối chiếu checksum, job restart đúng. **Chưa cần OAuth Drive, embedding, MCP hoặc chatbot**.
 
@@ -41,7 +41,7 @@
 | KT-104 | UI Quick Add: dán link, note, file | Không chờ download, hiện job status | KT-006,101 |
 | KT-105 | Library list + detail + file preview | Mở nguồn, ảnh, PDF, phát video có Range | KT-104,102 |
 | KT-106 | Chống trùng / trash / restore | Sha256, external ID, xóa mềm, hoàn tác | KT-101 |
-| KT-107 | Backup độc lập + restore drill | DB dump + file copy/manifests đã kiểm | KT-102,105 |
+| KT-107 | Backup độc lập + restore drill | DB dump + R2 copy/manifests đã kiểm; Drive là mở rộng | KT-102,105 |
 | KT-108 | E2E alpha + smoke trên điện thoại | Checklist 10 loại dữ liệu và lỗi | KT-103..107 |
 
 **G1 PASS:** lưu link, ghi chú, ảnh, file và video tải được; xem lại; job lỗi không mất record; ít nhất một backup restore thành công. Google Drive backup có thể làm bằng job/CLI độc lập, không ép UI OAuth.
@@ -65,7 +65,7 @@
 | ID | Việc | Đầu ra | Phụ thuộc |
 |---|---|---|---|
 | KT-301 | Tool contract search/fetch/read | JSON có ID, title, URL/locator, văn bản | G2 |
-| KT-302 | MCP Streamable HTTP + OAuth | Chỉ scope read, user mapping, token validation | KT-301 |
+| KT-302 | Official MCP SDK v2 + Django OAuth Toolkit >=3.4 | Chỉ scope read, OAuth metadata/CIMD/DCR, token validation và test ChatGPT thật | KT-301 |
 | KT-303 | ChatGPT integration test | Kết nối workspace thực, công cụ phản hồi đúng | KT-302 |
 | KT-304 | Permission / leakage tests | Không đọc/xóa/sửa ngoài quyền, URL không lộ dữ liệu | KT-302 |
 | KT-305 | Long document paging | Fetch theo section/trang khi quá dài | KT-301 |
@@ -146,7 +146,13 @@
 - Tài liệu phân quyền: `MASTER_PLAN` nêu chức năng, `ARCHITECTURE_AND_DATA` nêu cách làm, file này nêu công việc và điều kiện PASS.
 - Quyết định phát sinh được chốt và lưu thành mục *Decision/Tradeoff* tại tài liệu kiến trúc; chỉ tách ADR riêng khi quy mô thay đổi.
 
-## F. Việc phải quyết định trước từng đợt
+## F. Quy tắc quyết định khi chọn/thay công nghệ
+
+- Bắt buộc so sánh công nghệ dự kiến với **2–3 lựa chọn cùng nhóm** (tài liệu và giá hiện hành) theo 5 tiêu chí tại `ARCHITECTURE_AND_DATA.md#14`.
+- Ghi phương án chọn, lý do loại và phép thử chuyển từ *đề xuất* sang *PASS*; không tự mở rộng kiến trúc chỉ vì công nghệ mới.
+- **Chưa có kết quả benchmark mới trong repo này**: các so sánh đang là quyết định thiết kế có dẫn nguồn.
+
+## G. Việc phải quyết định trước từng đợt
 
 **Trước đợt 0:** hạ tầng local/đích, domain dự kiến, dữ liệu thử không nhạy cảm, quyền repo, có/không B2 test bucket.
 
@@ -158,7 +164,7 @@
 
 **Đợt 4–5:** Google Drive adapter native, ASR/OCR on-demand, embedding, CDN, thêm provider: quyết theo kết quả sử dụng thật, không áp trước.
 
-## G. Điều kiện bàn giao
+## H. Điều kiện bàn giao
 
 - Các file code có hướng dẫn setup; cấu hình mẫu KHÔNG chứa secret; repo clone về chạy local được.
 - Database migration được chạy thử; test fixtures không dùng dữ liệu riêng tư.
