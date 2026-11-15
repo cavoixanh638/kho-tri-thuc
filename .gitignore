@@ -1,0 +1,38 @@
+# Secrets and identity
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials*.json
+token*.json
+secrets/
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+# Node/React
+node_modules/
+dist/
+build/
+coverage/
+.vite/
+# Local databases, downloads and user data
+data/
+storage/
+uploads/
+downloads/
+backups/
+*.sqlite
+*.sqlite3
+# Editors, temporary files, logs
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
