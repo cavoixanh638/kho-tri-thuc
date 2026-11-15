@@ -1,175 +1,103 @@
-# LỘ TRÌNH TRIỂN KHAI VÀ KIỂM THỬ — KHO TRI THỨC
+# LỘ TRÌNH VÀ KIỂM THỬ V4.3 — GOOGLE DRIVE TRƯỚC
 
-**Ngày:** 15/11/2026 · **Dựa trên:** `MASTER_PLAN.md` v4.2 và `ARCHITECTURE_AND_DATA.md`.  
-**Nguyên tắc:** ưu tiên sản phẩm dùng được; không làm trước chức năng P2. Bảng này là backlog, **chưa có mục nào được báo PASS**.
+**Cập nhật:** 15/11/2026 · **Dựa trên:** `MASTER_PLAN.md` và `ARCHITECTURE_AND_DATA.md` v4.3.  
+**Chưa có đầu việc nào đã triển khai/PASS.** Bản trước dựa trên B2/R2/PostgreSQL/Procrastinate và MCP bắt buộc đã được thay thế.
 
-## A. Thứ tự thực hiện và cổng nghiệm thu
+## 1. Ưu tiên theo giá trị sử dụng
 
-| Đợt | Ưu tiên | Kết quả nhìn thấy | Cổng bắt buộc trước khi đi tiếp |
-|---|---|---|---|
-| 0. Khởi tạo và test kết nối | P0 | Repo chuẩn, local compose, mock UI, DB, test B2 | Không ghi secret; chạy local; tạo/read một file test có checksum |
-| 1. Lưu và xem lại | P0 | Đăng nhập, nhận link/ghi chú/file, thư viện cơ bản | E2E lưu–đọc–xóa mềm–khôi phục, job retry, backup/restore |
-| 2. Tổ chức tự động | P0 | Metadata, text nhẹ, AI phân loại, lĩnh vực/dự án/ngày, tìm kiếm/bộ lọc | Bộ thử thật + không ghi đè phân loại thủ công |
-| 3. MCP chỉ đọc | P1 gần | ChatGPT tìm và đọc đúng tài liệu | OAuth/quyền và MCP tools pass; thử trong ChatGPT web thực tế |
-| 4. Tối ưu vận hành | P1 | Android share, Drive backup, bulk, export, dashboard | Restore, hiệu năng, UX thiết bị thật |
-| 5. Xử lý AI nâng cao | P2 tùy chọn | OCR/ASR/vector/research khi người dùng đặt hàng | Phát hành từng phần, không làm chặn các bước trước |
+1. **Kiểm chứng lưu Google Drive:** tạo folder, OAuth, upload, mở file.
+2. **Ứng dụng Thêm + Thư viện:** link, ghi chú, ảnh/file/video, danh mục SQLite; thao tác được trên điện thoại/PC.
+3. **Tự phân nhóm & tìm kiếm:** metadata, trích xuất nhẹ, AI nhẹ, lĩnh vực/dự án/ngày/tag.
+4. **Thử ChatGPT Google Drive app:** đọc, tóm tắt, so sánh file trong thư mục; **chỉ làm MCP nếu thiếu tính năng truy vấn metadata ứng dụng**.
+5. **Hoàn thiện:** Android Share Target, xuất/backup, giao diện quản lý hàng loạt, OCR/ASR on-demand khi có nhu cầu.
 
-**Thứ tự ưu tiên thực tế:** nếu phải lựa chọn, hoàn thành **Nhận nhanh > Lưu an toàn > Xem lại > Phân nhóm > Tìm kiếm > MCP > Tối ưu**. Sao lưu tối thiểu phải làm đồng thời với lưu trữ sản xuất, không dời tới đợt 4.
+**Không chờ:** cài B2/R2, PostgreSQL, Procrastinate, Elasticsearch, MCP OAuth server, Docker multi-service, Kubernetes để có bản đầu.
 
-## B. Backlog giao Codex / AI theo phụ thuộc
+## 2. Đợt A — Drive proof-of-concept và UI skeleton
 
-### Đợt 0 — Chỉ chứng minh hệ thống có thể triển khai
+| Mã | Việc | Tiêu chí đạt |
+| --- | --- | --- |
+| KT-001 | Kết nối tài khoản Google qua `drive.file` OAuth | Tạo `Kho Tri Thuc` trong My Drive, upload 1 ảnh và 1 PDF, tải/mở lại đúng tài khoản |
+| KT-002 | Kiểm tra expiry/reconnect | Biết rõ trạng thái Testing/Production; khi token lỗi báo và kết nối lại; không để credential vào Git |
+| KT-003 | Khởi tạo Django 6/Ninja + SQLite | Login 1 người; migration; tạo item + drive file reference |
+| KT-004 | React/TS/Vite/Mantine 4 màn hình | Thêm/Thư viện/Chi tiết/Cài đặt responsive, phân biệt dữ liệu thật và mock |
+| KT-005 | Smoke backup SQLite local→Drive | Snapshot nhất quán khôi phục được trên máy thử |
 
-| ID | Việc | Đầu ra | Phụ thuộc |
-|---|---|---|---|
-| KT-001 | Repo scaffold + Docker Compose local | Vite + Mantine, Django 6 + Ninja, Postgres, worker, Caddy dev | Kế hoạch + R1 tech comparison |
-| KT-002 | Thiết kế Django Ninja OpenAPI + Django migration đầu tiên | Schema items/source/assets/storage, Django admin; contract chuẩn | KT-001 |
-| KT-003 | Django Auth single-user, session | Superuser, login/logout, rate limit, CSRF, test | KT-001 |
-| KT-004 | StorageAdapter B2 proof-of-concept | Upload/download/verify/presigned URL bucket riêng tư | KT-001 |
-| KT-005 | Thử Procrastinate/Django vs Chancy/PgQueuer | Restart, retries, lỗi, không lặp job; quyết định kèm bằng chứng | KT-001 |
-| KT-006 | Frontend Mantine skeleton + design tokens | Desktop/mobile responsive, 4 khu vực, mock data | KT-001 |
+**Gate A:** Một file thật từ web/app lên **đúng Google Drive**; thư viện thấy item và mở lại file. Không ghi “đã lưu” chỉ vì đã tạo database record.
 
-**G0 PASS:** local stack khởi động, tài khoản thử đăng nhập được, file thử được upload/download/đối chiếu checksum, job restart đúng. **Chưa cần OAuth Drive, embedding, MCP hoặc chatbot**.
+## 3. Đợt B — Bản đầu sử dụng hằng ngày
 
-### Đợt 1 — Bản Alpha có thể lưu dữ liệu thật
+| Mã | Việc | Tiêu chí đạt |
+| --- | --- | --- |
+| KT-101 | Dán URL/ghi chú/upload PDF-ảnh-video | Có original URL, item ID, trạng thái rõ, tự lưu metadata |
+| KT-102 | Google Drive resumable upload | File >5 MB, mạng rớt, retry và xác minh Drive file ID |
+| KT-103 | Django model nhóm + tag + ngày | Một item ở nhiều lĩnh vực/dự án, xem theo ngày, không nhân file |
+| KT-104 | SQLite FTS5/tìm có dấu & không dấu | Tìm tên/mô tả/ghi chú và lọc ngày, lĩnh vực, dự án |
+| KT-105 | yt-dlp worker + temp file + Drive upload | Link nguồn hỗ trợ tải được; nguồn không tải được vẫn lưu link, lỗi không khóa UI |
+| KT-106 | Metadata, pypdf/DOCX/XLSX/Web, phụ đề có sẵn | Text extraction fail không xóa gốc, tìm được chữ đã lấy |
+| KT-107 | AI gợi ý phân nhóm nhẹ khi cần | Có thể sửa; AI retry không ghi đè gán thủ công, hạn mức chi phí |
+| KT-108 | Thùng rác mềm + backup/restore thật | Khôi phục được SQLite với item/group/Drive ID |
+| KT-109 | Android web/PWA smoke test | Dán link, mở thư viện, mở Drive viewer trên điện thoại thật |
 
-| ID | Việc | Đầu ra | Phụ thuộc |
-|---|---|---|---|
-| KT-101 | API nhận note/link/file + idempotency | CRUD theo nghiệp vụ, giữ origin/metadata | KT-002,003 |
-| KT-102 | B2 storage production adapter + verify | Object key ổn định, CORS, expiry, checksum | KT-004 |
-| KT-103 | Download worker (yt-dlp + ffprobe) | Metadata, trạng thái link/file, không tải nhầm | KT-005,101 |
-| KT-104 | UI Quick Add: dán link, note, file | Không chờ download, hiện job status | KT-006,101 |
-| KT-105 | Library list + detail + file preview | Mở nguồn, ảnh, PDF, phát video có Range | KT-104,102 |
-| KT-106 | Chống trùng / trash / restore | Sha256, external ID, xóa mềm, hoàn tác | KT-101 |
-| KT-107 | Backup độc lập + restore drill | DB dump + R2 copy/manifests đã kiểm; Drive là mở rộng | KT-102,105 |
-| KT-108 | E2E alpha + smoke trên điện thoại | Checklist 10 loại dữ liệu và lỗi | KT-103..107 |
+**Gate B:** Người dùng chia sẻ/dán link, upload file, tìm theo lĩnh vực/dự án/ngày; Drive có file gốc và hệ thống phân biệt rõ link-only. Không cần MCP/Google Sheets/Redis.
 
-**G1 PASS:** lưu link, ghi chú, ảnh, file và video tải được; xem lại; job lỗi không mất record; ít nhất một backup restore thành công. Google Drive backup có thể làm bằng job/CLI độc lập, không ép UI OAuth.
+## 4. Đợt C — Kết nối ChatGPT với tài liệu
 
-### Đợt 2 — Bản đầu đầy đủ: tự phân nhóm và tìm kiếm
+| Mã | Việc | Tiêu chí đạt |
+| --- | --- | --- |
+| KT-201 | Thử Google Drive app/Library trong ChatGPT | Tìm file, mở 1 PDF/Doc/Sheet, so sánh 3 file; ghi quyền và hạn chế thật |
+| KT-202 | Đánh giá nhu cầu custom MCP | Có ít nhất một câu hỏi thực tế không được Drive connector giải quyết nhưng metadata trong SQLite giải quyết được |
+| KT-203 (điều kiện) | MCP chỉ đọc: `search`, `fetch` | Chỉ khi KT-202 chứng minh cần; kết nối với ChatGPT và không để lộ dữ liệu |
+| KT-204 (điều kiện) | Auth/Tunnel phù hợp MCP | Chỉ khi có KT-203; test workspace/Platform, không tạo OAuth server vội |
 
-| ID | Việc | Đầu ra | Phụ thuộc |
-|---|---|---|---|
-| KT-201 | Taxonomy & projects model + migration | Một mục nhiều lĩnh vực/dự án/tag | G1 |
-| KT-202 | Giao diện chủ đề, dự án, dòng thời gian | 3 cách xem; quản lý nhóm và tag | KT-201 |
-| KT-203 | Lightweight extraction adapters | PDF text/DOCX/XLSX/Web/subtitles | G1 |
-| KT-204 | Search + faceted filters + unaccent | Tìm tên/nội dung có dấu và không dấu | KT-201,203 |
-| KT-205 | AI classification adapter | Structured output, cost/privacy, human override | KT-201,203 |
-| KT-206 | Bulk edit/đánh dấu quan trọng | Chuyển nhóm và quản lý hàng loạt | KT-202 |
-| KT-207 | End-to-end auto organize tests | Bộ dữ liệu 30–50 mục và chỉ số chất lượng | KT-204,205 |
+**Gate C:** ChatGPT thực sự nghiên cứu được file Drive; nếu plugin đáp ứng đủ, **đợt C hoàn thành mà không có MCP riêng**.
 
-**G2 PASS:** tải nhiều loại nội dung; trích văn bản khi có; AI gợi ý nhóm; tìm theo lĩnh vực/dự án/ngày, không dấu; sửa thủ công không bị AI làm mất.
+## 5. Đợt D — Chỉ thêm khi có nhu cầu thật
 
-### Đợt 3 — MCP chỉ đọc
+- Share Target Android khi PWA hỗ trợ, hoặc Capacitor nếu chia sẻ thiếu tin cậy.
+- Telegram Bot nếu thuận lợi hơn dán link.
+- Tăng dung lượng khi Google Drive 500 GB hết/quota thấp; nếu cần mới so B2/R2 hoặc gói Drive.
+- OCR/ASR cho nội dung không có chữ/phụ đề **khi người dùng yêu cầu**.
+- Bulk edit/backup độc lập hàng tháng nếu dữ liệu trở nên quan trọng.
+- Chuyển SQLite→PostgreSQL chỉ nếu có nhiều concurrent users/tác vụ, benchmark chứng minh SQLite không đủ.
 
-| ID | Việc | Đầu ra | Phụ thuộc |
-|---|---|---|---|
-| KT-301 | Tool contract search/fetch/read | JSON có ID, title, URL/locator, văn bản | G2 |
-| KT-302 | Official MCP SDK v2 + Django OAuth Toolkit >=3.4 | Chỉ scope read, OAuth metadata/CIMD/DCR, token validation và test ChatGPT thật | KT-301 |
-| KT-303 | ChatGPT integration test | Kết nối workspace thực, công cụ phản hồi đúng | KT-302 |
-| KT-304 | Permission / leakage tests | Không đọc/xóa/sửa ngoài quyền, URL không lộ dữ liệu | KT-302 |
-| KT-305 | Long document paging | Fetch theo section/trang khi quá dài | KT-301 |
+## 6. Dữ liệu thử thật và nghiệm thu
 
-**G3 PASS:** ChatGPT tìm được tài liệu, đọc đúng nội dung đủ căn cứ, dẫn đúng nguồn khi có; nếu video thiếu phụ đề/tài liệu scan không có text phải báo rõ.
+**Mẫu nhỏ:** 3 video (mỗi nền tảng FB/TikTok/YouTube nếu có), 3 PDF (có chữ, scan, file lỗi), 3 DOCX/XLSX, 3 link website, 3 ảnh, 5 ghi chú và 5 chủ đề/dự án. Mở rộng lên 30–50 item để kiểm AI.
 
-### Đợt 4 — Tối ưu (không chặn bản đầu)
+| Test | Mô tả | PASS |
+| --- | --- | --- |
+| T01 | OAuth `drive.file` | App tạo được folder và file trong Drive người dùng |
+| T02 | OAuth lỗi/revoked | Có thông báo reconnect, link/metadata không mất |
+| T03 | Upload 10 MB và ngắt giữa chừng | Không báo file đã lưu khi Drive chưa nhận; retry xác minh |
+| T04 | Lưu link không tải được video | Link vẫn có trong thư viện, file status không giả |
+| T05 | Video tải được | MP4 thật trong Drive, mở/tải lại được |
+| T06 | Trùng link/file | Không phát sinh file lặp vô lý; giữ nguồn phù hợp |
+| T07 | Tài liệu có lớp chữ | Trích và tìm được chữ; PDF scan không tạo chữ ảo |
+| T08 | Theo lĩnh vực/dự án/ngày | Cùng item hiện ở các view mà không copy file |
+| T09 | Gõ không dấu | “quy hoạch” và “quy hoach” tìm tương thích |
+| T10 | Đổi nhóm thủ công | AI không ghi đè khi job lặp |
+| T11 | Khởi động lại worker | Tác vụ pending/running có thể retry, không nhân file |
+| T12 | Backup/restore | SQLite snapshot/JSON khôi phục được link Drive ID và nhóm |
+| T13 | Xem trên Android | Mở được app và file trong Drive với đúng tài khoản |
+| T14 | ChatGPT Drive (khi có quyền) | Tìm/đọc/so sánh file nguồn; nêu giới hạn |
+| T15 | MCP (nếu triển khai) | Chỉ đọc, tìm đúng theo tag/project, không có quyền sửa/xóa |
 
-- KT-401 Android Share Target thử trên máy thật; fallback share-to-web; thêm Telegram Bot chỉ nếu cần.
-- KT-402 Google Drive one-way backup via rclone hoặc tương đương, kiểm tra reconnect; OAuth/Picker native chỉ nếu có use case.
-- KT-403 Export toàn bộ metadata + assets manifest; test restore/migration giữa provider.
-- KT-404 Performance 1.000/10.000 mục, tối ưu index, worker/CPU, quan sát chi phí.
-- KT-405 Quản lý job lỗi, retry UI, thống kê storage, lập lịch backup và báo động.
+**Chú ý:** Không lấy số lượng video tải thành công trong benchmark GitHub Actions làm bằng chứng tỉ lệ thành công trên hosting thật. Không cho rằng ChatGPT đã hiểu nội dung video chỉ vì có MP4.
 
-## C. Bộ test nghiệm thu thực tế
+## 7. Những lựa chọn cần quyết định khi thực sự ảnh hưởng
 
-### Dữ liệu thử ban đầu
+- **Ngay trước KT-001:** tài khoản Drive và quyền OAuth; không phải hỏi tiền VPS, B2 hay Cloudflare trước.
+- **Ngay trước KT-105:** môi trường Python chạy thường xuyên (Windows khi mở máy hay VPS 24/7); dung lượng file tạm và mạng.
+- **Ngay trước KT-107:** API AI, mức tiền tối đa và có/không cho gửi thumbnail/tài liệu.
+- **Ngay trước KT-201:** quyền Google Drive app trong ChatGPT/workspace.
+- **Chỉ khi mở MCP:** cách kết nối và xác thực phù hợp.
+- **Khi gần hết Drive:** duy trì Google Drive hay chuyển kho; dữ liệu/ID trong app phải xuất được.
 
-- 10 link video gồm Facebook, TikTok, YouTube (không coi tải được 100% là điều kiện; điều kiện là trạng thái/khôi phục đúng).
-- 10 tài liệu: PDF có chữ, PDF scan, DOCX có bảng, XLSX nhiều sheet, file hỏng/mật khẩu.
-- 10 ảnh (kèm vài ảnh viết tay tiếng Việt).
-- 10 ghi chú, bao gồm dài/nhiều dấu, URL trong ghi chú.
-- 5 website gồm HTML tĩnh và JS.
-- 20 câu tìm kiếm metadata/nội dung có/không dấu, 10 truy vấn lọc kết hợp, 10 câu MCP khi đến đợt 3.
+## 8. Quy tắc giao Codex
 
-### Test nghiệp vụ bắt buộc
-
-| Mã | Tình huống | PASS khi |
-|---|---|---|
-| A01 | Share/dán link 2 lần | Không tạo hai file gốc vô lý; ghi nhận idempotency |
-| A02 | Link không tải được | Vẫn còn item + original URL + trạng thái đúng |
-| A03 | Upload bị ngắt | Không xác nhận thành công nếu B2 chưa có object |
-| A04 | File/ghi chú đã lưu | Mở/tải lại đúng nội dung, checksum khớp |
-| A05 | Trùng checksum nhưng khác nguồn | Nhận diện trùng file; không mất metadata nguồn |
-| A06 | Worker restart giữa download | Không mất job; không tạo nội dung trùng khi retry |
-| A07 | PDF scan không OCR | Có file gốc, status *cần OCR*, không tạo text giả |
-| A08 | XLSX phức tạp | Không treo worker; có giới hạn và thông báo partial |
-| A09 | Website JS/chặn bot | Giữ link/metadata; extraction status fail/partial |
-| A10 | AI sai hoặc thiếu thông tin | Có thể đổi nhóm thủ công; AI retry không ghi đè |
-| A11 | Theo lĩnh vực + dự án + ngày | Cùng item ở nhiều view, không nhân bản file |
-| A12 | Tìm có dấu/không dấu | Trả kết quả tương đương trong test set |
-| A13 | Xóa mềm và khôi phục | File và metadata trở lại, không xóa vật lý sớm |
-| A14 | B2 presigned access hết hạn | Không còn tải được bằng URL đã hết hạn |
-| A15 | Backup restore | Phục hồi DB + file + quan hệ + ghi chú, có log |
-| M01 | ChatGPT search & fetch đúng ID | Text/locator có căn cứ, không trộn kết quả |
-| M02 | MCP thiếu quyền | Từ chối, không rò rỉ metadata/private URL |
-| M03 | MCP gặp video không transcript | Không nói đã nghe/xem nội dung |
-| M04 | MCP nhận prompt injection từ web | Không thực hiện thay đổi hay lộ secret |
-
-### Chất lượng định lượng — mục tiêu để đo, chưa phải số liệu đã đạt
-
-- 1.000 item: tìm metadata p95 dưới ~1 giây trên môi trường chốt, kiểm chứng lại với máy chủ thật.
-- 100% thao tác lưu ghi nhận trạng thái thành công/thất bại rõ; không silent failure.
-- >= 95% trường hợp thử basic metadata/format có kết quả hoặc có thông báo không thể đọc, không tự tạo thông tin.
-- Phân loại AI: đánh giá *accuracy@1, coverage, tỉ lệ người dùng phải sửa, chi phí/100 items* trên bộ dữ liệu thực; chỉ bật auto-assign nếu cải thiện rõ rệt.
-- Restore drill PASS trước dữ liệu quan trọng, sau đó lặp lại theo chu kỳ.
-- MCP không có tool write trong bản đầu và xác minh quyền ở mọi tool.
-
-## D. Ma trận rủi ro và điều kiện dừng
-
-| Rủi ro | Phòng ngừa | Không được làm |
-|---|---|---|
-| Hạ tầng chưa có | Chạy local/mock để phát triển UI và API | Báo production PASS |
-| Không có B2 credentials | FakeStorage trong test, rõ ràng là fake | Nói đã lưu cloud |
-| Không có backup thứ hai | Chuẩn bị provider khác + chạy restore drill | Nhập dữ liệu nhạy cảm thật |
-| OAuth MCP chưa cấu hình | Chạy MCP local test client trước | Mở public no-auth server |
-| Chặn tải YouTube trên cloud | Link-only + tải file hợp lệ từ người dùng | Hứa tải được mọi Shorts |
-| AI API hết quota hoặc nội dung nhạy cảm | Fallback chưa phân loại/manual | Truyền tài liệu riêng tư trái quyền |
-| Tài liệu lớn/nén độc hại | Giới hạn size, timeout, parser sandbox | Đọc vô hạn RAM |
-| Giấy phép thư viện | Duyệt license trước khi đóng gói | Mặc định gắn PyMuPDF AGPL vào sản phẩm private |
-
-## E. Quy trình báo cáo & checkpoint
-
-- Mỗi tác vụ/PR có: mã KT-xxx, phạm vi file sửa, commit SHA, test thực chạy, các test chưa chạy, hạn chế, rollback.
-- Ghi kết quả vào PR hoặc tóm tắt checklist tại tài liệu này khi hoàn thành giai đoạn; không tự đổi `CHƯA LÀM` thành `PASS`.
-- Không merge đồng thời nhiều worker sửa chung schema/API mà chưa thống nhất contract.
-- CI kiểm thử và staging là điều kiện trước production; không kết luận chỉ từ screenshot/green workflow.
-- Tài liệu phân quyền: `MASTER_PLAN` nêu chức năng, `ARCHITECTURE_AND_DATA` nêu cách làm, file này nêu công việc và điều kiện PASS.
-- Quyết định phát sinh được chốt và lưu thành mục *Decision/Tradeoff* tại tài liệu kiến trúc; chỉ tách ADR riêng khi quy mô thay đổi.
-
-## F. Quy tắc quyết định khi chọn/thay công nghệ
-
-- Bắt buộc so sánh công nghệ dự kiến với **2–3 lựa chọn cùng nhóm** (tài liệu và giá hiện hành) theo 5 tiêu chí tại `ARCHITECTURE_AND_DATA.md#14`.
-- Ghi phương án chọn, lý do loại và phép thử chuyển từ *đề xuất* sang *PASS*; không tự mở rộng kiến trúc chỉ vì công nghệ mới.
-- **Chưa có kết quả benchmark mới trong repo này**: các so sánh đang là quyết định thiết kế có dẫn nguồn.
-
-## G. Việc phải quyết định trước từng đợt
-
-**Trước đợt 0:** hạ tầng local/đích, domain dự kiến, dữ liệu thử không nhạy cảm, quyền repo, có/không B2 test bucket.
-
-**Trước đợt 1 production:** lựa chọn đăng nhập, cách lưu secret, backup độc lập, retention thùng rác, dung lượng upload tối đa.
-
-**Trước đợt 2:** nhà cung cấp AI phân loại, ngân sách tháng, chính sách dữ liệu riêng tư, bộ taxonomy thử nghiệm, quy tắc phân loại tự động.
-
-**Trước đợt 3:** ChatGPT workspace có quyền cài custom MCP; OAuth provider và domain/tunnel; quyền người dùng khi MCP gọi; giới hạn trích nội dung.
-
-**Đợt 4–5:** Google Drive adapter native, ASR/OCR on-demand, embedding, CDN, thêm provider: quyết theo kết quả sử dụng thật, không áp trước.
-
-## H. Điều kiện bàn giao
-
-- Các file code có hướng dẫn setup; cấu hình mẫu KHÔNG chứa secret; repo clone về chạy local được.
-- Database migration được chạy thử; test fixtures không dùng dữ liệu riêng tư.
-- Một bản demo giao diện sử dụng API thật (nếu chưa có backend, phải gắn nhãn mock).
-- Bản phát hành có ghi version, nguồn commit SHA, checklist kiểm thử và phương án rollback.
-- Sau G2: phần mềm thực sự dùng được để quản lý tri thức; sau G3: có MCP ChatGPT đọc được theo quyền.
-
-**Chưa thực hiện ở ngày soạn tài liệu:** không có code frontend/backend triển khai, không có database hoặc production deployment. Đây là kế hoạch công việc và acceptance, không phải kết quả kiểm thử đã PASS.
+- Đọc `AGENTS.md` → `MASTER_PLAN.md` → phần liên quan của kiến trúc → **một nhiệm vụ KT-xxx**.
+- Trước khi thay quyết định công nghệ, so với **2–3 phương án** theo nhu cầu và viện dẫn nguồn/kiểm thử hiện hành.
+- Commit SHA, test thực chạy, test chưa chạy, giới hạn và rollback phải có bằng chứng.
+- Không “làm đẹp” checkpoint thành PASS nếu thiếu file thật trên Drive hoặc chưa có restore test.
+- Chưa làm: **toàn bộ code frontend/backend/MCP**, không nhầm tài liệu này với sản phẩm đã hoàn thành.
