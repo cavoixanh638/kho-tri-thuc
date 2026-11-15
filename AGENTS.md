@@ -2,17 +2,17 @@
 
 ## Ngữ cảnh và thứ tự đọc
 1. Đọc `README.md`.
-2. Đọc `docs/MASTER_PLAN.md` để nắm mục tiêu, P0/P1/P2 và giới hạn phạm vi.
+2. Đọc `docs/MASTER_PLAN.md` để nắm mục tiêu, bốn mốc ưu tiên và giới hạn phạm vi.
 3. Đọc `docs/ARCHITECTURE_AND_DATA.md` cho cấu trúc, sơ đồ dữ liệu, API và lựa chọn kỹ thuật.
 4. Đọc đúng hạng mục trong `docs/ROADMAP_AND_TESTS.md`, thực hiện theo phụ thuộc và tiêu chí PASS.
 5. Đọc source code và test hiện có trước khi sửa; không giả định file/feature tồn tại.
 
 ## Nguyên tắc chọn công nghệ
 - Trước khi đề xuất hay thay framework/library/service, phải tìm và so sánh **2–3 phương án cạnh tranh tốt tại thời điểm quyết định**; phân tích phù hợp, tốc độ làm, chi phí, bảo mật, khả năng thay thế và nguồn chính thức; không tự chọn theo sở thích.
-- Đọc **Mục 14 của `docs/ARCHITECTURE_AND_DATA.md`**. Nếu muốn đổi lựa chọn đã ghi, bổ sung bằng chứng và kiểm thử, tránh tự sửa nhiều tài liệu lệch nhau. Công nghệ chưa chốt không được nói là đã nghiệm thu.
+- Đọc **Mục 3 (bảng so sánh các phương án) của `docs/ARCHITECTURE_AND_DATA.md`**. Nếu muốn đổi lựa chọn đã ghi, bổ sung bằng chứng và kiểm thử, tránh tự sửa nhiều tài liệu lệch nhau. Công nghệ chưa chốt không được nói là đã nghiệm thu.
 
 ## Nguyên tắc
-- **Không tự mở rộng sang OCR/ASR, vector DB, chatbot nội bộ, browser automation hoặc microservices** khi chưa được giao.
+- **Không tự mở rộng sang B2/R2, PostgreSQL, Redis/Procrastinate, OCR/ASR, vector DB, chatbot riêng, MCP tùy chỉnh, browser automation hoặc microservices** khi chưa được giao.
 - Ưu tiên phần mềm chạy được, **lưu file gốc thật lên Google Drive**, phân nhóm đúng và có thể khôi phục. Không báo thành công chỉ vì có URL hoặc item SQLite.
 - Không xóa/ghi đè nguồn gốc, commit có sẵn, dữ liệu người dùng hoặc thay đổi của worker khác.
 - Mọi schema thay đổi phải có migration và test; API thay đổi phải cập nhật hợp đồng và test.
@@ -26,7 +26,7 @@
 - Tách source và test; tránh commit file media lớn, backup hoặc dữ liệu cá nhân vào repo.
 
 ## Phối hợp nhiều AI/Codex
-- Một nhánh/PR cho một hạng mục độc lập; nêu rõ đường dẫn được phép sửa.
+- Khi thực sự lập trình một hạng mục, ưu tiên nhánh/PR riêng khi cần review; nêu rõ đường dẫn được phép sửa, không tạo nhiều nhánh/PR chỉ để viết tài liệu.
 - Không force-push, không reset nhánh chung, không merge ngoài phạm vi đã giao.
 - Ghi SHA thực tế, test đã chạy, test chưa chạy, rủi ro, cách rollback trong PR/checkpoint.
 - Không sửa tài liệu thành những quy định mâu thuẫn: `MASTER_PLAN` quản lý **phạm vi**, `ARCHITECTURE_AND_DATA` quản lý **thiết kế**, `ROADMAP_AND_TESTS` quản lý **nghiệm thu**.
