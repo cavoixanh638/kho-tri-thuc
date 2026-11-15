@@ -1,134 +1,116 @@
-# KHO TRI THỨC — KẾ HOẠCH TỔNG THỂ V4.2
+# KHO TRI THỨC — KẾ HOẠCH TỔNG THỂ V4.3 (TINH GỌN, DRIVE-FIRST)
 
-**Ngày:** 15/11/2026 · **Trạng thái:** định hướng sản phẩm đã thống nhất; kiến trúc kỹ thuật đang chốt · **Nguồn chân lý về phạm vi:** tài liệu này.
+**Ngày rà soát:** 15/11/2026 · **Thay thế:** v4.2 · **Trạng thái:** định hướng để xây ứng dụng, chưa triển khai mã nguồn.  
+**Thay đổi cốt lõi:** Chủ sở hữu đã xác nhận **lưu dữ liệu trên Google Drive**, dữ liệu cá nhân tương đối đơn giản, một người dùng, không cần hạ tầng hoặc mô hình bảo mật doanh nghiệp. Những lựa chọn từng đưa B2/R2 làm kho chính **được hủy bỏ**.
 
-> Mục tiêu ngắn hạn: hệ thống cá nhân để thu thập, lưu giữ, tự sắp xếp và tìm lại nội dung; ChatGPT có thể đọc kho qua MCP theo yêu cầu. KHÔNG biến bản đầu thành nền tảng AI xử lý nặng.
+## 1. Mục tiêu không đổi
 
-## 1. Nhu cầu và nguyên tắc
+Một ứng dụng dễ dùng trên Android và máy tính, để:
+1. Nhận link Facebook/TikTok/YouTube/website; nhận file, ảnh, ghi chú.
+2. Lưu **file gốc vào Google Drive của người dùng**, lưu URL gốc và trạng thái thực. Với video, tự tải khi nguồn cho phép và kỹ thuật hỗ trợ; nếu không tải được vẫn giữ link.
+3. Lấy metadata, văn bản PDF có lớp chữ/DOCX/XLSX/HTML, phụ đề có sẵn; không chạy OCR/ASR hàng loạt.
+4. AI nhẹ gợi ý lĩnh vực, chủ đề, dự án, tag và tên từ dữ liệu có sẵn; giữ quyền sửa thủ công.
+5. Xem theo **lĩnh vực / dự án / ngày / loại nội dung**; tìm kiếm tên, mô tả, ghi chú, văn bản trích xuất và lọc.
+6. Khi muốn ChatGPT nghiên cứu: **thử ứng dụng Google Drive có sẵn trong ChatGPT trước**. Chỉ xây MCP tùy chỉnh nếu ChatGPT phải tìm theo tag/dự án nội bộ hoặc Drive plugin không đáp ứng được.
 
-- Dùng được trên Android và máy tính Windows thông qua web/PWA, giao diện gọn, thao tác hằng ngày nhanh.
-- Đầu vào: link Facebook/TikTok/YouTube/website; video và file tải lên; ảnh, ghi chú viết tay; PDF, DOCX, XLSX; ghi chú văn bản.
-- Tự lưu nguồn, file gốc, metadata, thumbnail nếu có; tự tải video **khi kỹ thuật và quyền sử dụng cho phép**. Không hứa tải được mọi link. Link thất bại vẫn được lưu.
-- Phân nhóm **theo lĩnh vực, chủ đề, dự án**, đồng thời **xem theo ngày**; một nội dung thuộc nhiều nhóm/dự án nhưng chỉ lưu một bản nội dung gốc.
-- AI **nhẹ, có giới hạn chi phí** chỉ hỗ trợ tiêu đề, chủ đề, dự án, tag dựa trên metadata, văn bản trích xuất và ảnh đại diện nếu cần; không có căn cứ thì gắn *Chưa phân loại*.
-- Tìm kiếm có dấu/không dấu, tìm trong ghi chú và văn bản trích xuất; bộ lọc kết hợp.
-- Bản gốc không bị AI sửa; phân loại thủ công không bị tác vụ AI ghi đè; có thùng rác và lịch sử thay đổi thiết yếu.
-- Sao lưu độc lập và thử khôi phục trước khi dùng dữ liệu quan trọng; file gốc được tham chiếu bằng ID nội bộ, không khóa vào Drive/B2.
-- Dùng ChatGPT để đọc/nghiên cứu qua MCP **chỉ đọc**; chưa xây chatbot riêng hoặc vector database.
+**Không làm ngay:** chatbot riêng, vector DB, AI nghiên cứu tự động, graph tri thức, OCR/ASR hàng loạt, Kubernetes, CDN, nhiều kho S3, hạ tầng kiểm soát quyền kiểu doanh nghiệp.
 
-## 2. Phạm vi P0 — Bản đầu tiên phải sử dụng được
+## 2. Lưu trữ: Google Drive là kho CHÍNH
 
-| Luồng | Chức năng cần có | Hành vi khi thất bại |
-| --- | --- | --- |
-| Tiếp nhận | Dán link; chia sẻ Android khi được hỗ trợ; tải file/ảnh; gõ ghi chú | Giữ yêu cầu, hiển thị lỗi cụ thể |
-| Lưu trữ | B2 riêng tư, bản gốc, checksum, xem/tải lại; ID ổn định | Phân biệt *đã lưu link* và *đã lưu file* |
-| Video | Chuẩn hóa URL, metadata, yt-dlp; adapter dự phòng có kiểm thử | Giữ link + thumbnail; cho bổ sung file |
-| Trích xuất nhẹ | PDF có chữ, DOCX, XLSX mức cơ bản, web HTML, phụ đề có sẵn; chạy nền | Giữ file, đánh dấu *chưa đọc được nội dung* |
-| Phân nhóm | Lĩnh vực/chủ đề, dự án, tag, AI gợi ý; sửa được | Chưa phân loại, không tự đoán |
-| Thư viện | Danh sách, thẻ, xem theo lĩnh vực/dự án/ngày/loại, xem chi tiết | Trạng thái rõ ràng |
-| Tìm kiếm | Từ khóa metadata + văn bản; không dấu; lọc đa điều kiện | Không bịa kết quả |
-| Quản trị | Chống trùng, sửa tên/nhóm, đánh dấu quan trọng, thùng rác | Không xóa file vật lý ngay |
-| Tin cậy | Đăng nhập, quyền, job bền vững, backup offsite, khôi phục cơ bản | Lỗi có thể retry |
+- Người dùng đã có ưu đãi khoảng **500 GB Drive trong năm đầu** (chưa xác minh ngày hết hạn, cần kiểm tra thực tế).
+- Tạo thư mục chuyên dụng `Kho Tri Thuc/` trong **My Drive**; ví dụ `Video/`, `Tai lieu/`, `Hinh anh/`, `He thong/`. Tổ chức bằng lĩnh vực, dự án và ngày nằm **trong metadata ứng dụng**, không phải nhiều bản sao/thư mục vật lý.
+- Mỗi mục có `item_id`; file có `drive_file_id`. Drive ID không đổi khi người dùng sửa tên hoặc sắp xếp; không lưu đường dẫn dưới dạng định danh.
+- **Google Drive API OAuth**: ưu tiên `drive.file` chỉ truy cập file do ứng dụng tạo/mở hợp lệ; nếu muốn duyệt file đã có thì bổ sung Google Picker theo nhu cầu, không đòi quyền đọc toàn bộ Drive.
+- Upload lớn qua Google Drive resumable upload; file/Drive preview được mở bằng link Google Drive đã xác thực. Chưa tự xây proxy phát video hoặc presigned URL kiểu S3.
+- Có trạng thái `link_saved`, `download_pending`, `file_saved`, `failed` rõ ràng; “đã lưu link” KHÔNG đồng nghĩa “đã lưu video”.
+- Nếu Google OAuth có lỗi hoặc quota hết: giữ bản ghi/link, báo lỗi, cho kết nối lại, không giả vờ upload thành công.
+- Hạn 500 GB có thể hết sau một năm: theo dõi quota, có thể xuất/migrate về sau; B2/R2 là phương án **chỉ khi cần**.
 
-**Lưu ý về PWA:** Android Share Target phải được xác minh trên trình duyệt/thiết bị thực; luồng dán link/tải file trên web là phương án dự phòng bắt buộc.
+## 3. Dữ liệu danh mục không nhất thiết cùng công nghệ với file gốc
 
-## 3. P1 — Kết nối và hoàn thiện ngay sau thư viện
+- File gốc ở Google Drive.
+- **Danh mục ứng dụng** (tiêu đề, nguồn, tag, lĩnh vực, dự án, ngày, tình trạng) ưu tiên **SQLite** — database nhẹ, một file, không có PostgreSQL server, phù hợp ít người truy cập.
+- File SQLite đang chạy phải nằm **trên ổ cục bộ của backend**, không đặt trực tiếp trong thư mục Google Drive đang đồng bộ.
+- Xuất/sao lưu database (SQLite snapshot/JSON/CSV) định kỳ **lên Drive**; giữ ít nhất một bản sao tải xuống PC hoặc nơi độc lập cho dữ liệu không thể tái tạo.
+- Tìm kiếm đơn giản bằng SQLite FTS5 + trường text chuẩn hóa tiếng Việt có/không dấu; thử với dữ liệu thực.
+- Có thùng rác mềm và bảo vệ không tự xóa bản gốc ngay.
 
-- MCP remote chỉ đọc cho ChatGPT: tìm kiếm, đọc kết quả, liệt kê và đọc metadata/file được phép; tìm/đọc không phụ thuộc embedding.
-- Tích hợp và kiểm thử trong ChatGPT web, theo quyền quản trị workspace thực tế; không hứa hỗ trợ cài MCP trực tiếp từ ứng dụng di động.
-- Telegram Bot tùy chọn nếu chia sẻ Android PWA không thuận tiện.
-- Đồng bộ/sao lưu Google Drive 500 GB năm đầu theo cách đơn giản (ví dụ rclone), tích hợp OAuth/Picker đầy đủ **không là chốt chặn** của bản đầu.
-- Phân nhóm hàng loạt, xuất dữ liệu, thống kê bộ nhớ và trạng thái tác vụ, tối ưu trải nghiệm.
+## 4. Mức an toàn vừa đủ
 
-## 4. P2 — Chỉ thêm khi thực sự có nhu cầu
+Người dùng không yêu cầu bảo mật doanh nghiệp; chỉ cần:
+- **Một tài khoản đăng nhập**, HTTPS khi mở internet; không đăng ký công khai.
+- Không đăng công khai file Drive hoặc đặt link “Anyone with link” chỉ để app hoạt động.
+- Không lưu mật khẩu, Google access/refresh token vào GitHub hoặc frontend.
+- Hạn chế đầu vào URL độc hại (SSRF), tệp quá lớn, tải video mất kiểm soát.
+- Sao lưu metadata/file quan trọng và thử khôi phục tối thiểu.
+- MCP tùy chỉnh (nếu làm) chỉ đọc; không công khai endpoint vô danh có quyền đọc Drive.
 
-- OCR chữ viết tay/PDF scan; ASR cho video không có phụ đề; vision chi tiết; tài liệu pháp lý/Excel phân tích cấu trúc nâng cao.
-- Embedding, semantic search, reranking, chatbot tích hợp; hệ thống nghiên cứu/kiểm chứng tự động; đồ thị tri thức.
-- Playwright cho trang JS khó, CDN/Cloudflare, thêm nhà cung cấp cloud và tự động di chuyển kho hàng loạt.
-- Khi ChatGPT cần một file thiếu văn bản, có thể bổ sung **tác vụ trích xuất theo yêu cầu**, tách khỏi pipeline mặc định.
+Không làm hệ RBAC nhiều vai trò, audit doanh nghiệp, dịch vụ quản lý khóa chuyên dụng, phân tích tuân thủ hoặc hệ thống backup đa cloud phức tạp.
 
-## 5. Quy trình vận hành thực tế
+## 5. Những chức năng bản đầu phải có
 
-### A. Link video
+| Nhóm | Phạm vi |
+| --- | --- |
+| Thêm | Dán/chia sẻ URL; nhập ghi chú; tải ảnh, tài liệu, video |
+| Lưu vào Drive | File gốc, metadata liên kết tới file ID, trạng thái upload |
+| Link video | yt-dlp khi được phép/hỗ trợ, lấy metadata/phụ đề có sẵn, fallback chỉ lưu link |
+| Trích xuất nhẹ | PDF có chữ, DOCX, XLSX, bài viết HTML; trích thất bại không xóa file |
+| Phân nhóm | Lĩnh vực/chủ đề, dự án, tag, ngày; AI nhẹ gợi ý, người dùng sửa |
+| Thư viện | Thẻ/danh sách, xem theo nhiều cách, trang chi tiết, mở Drive |
+| Tìm kiếm | Từ khóa, không dấu, lọc ngày/nguồn/dự án/lĩnh vực/tag |
+| Tin cậy | Ghi nhận lỗi, retry cơ bản, xóa mềm, backup SQLite |
 
-Nhận URL -> kiểm tra an toàn/chuẩn hóa -> kiểm tra trùng -> lưu Source -> lấy metadata -> tải khi được phép và có thể -> xác minh media/checksum -> B2 -> phụ đề nguồn nếu có -> văn bản tìm kiếm -> gợi ý nhóm -> thư viện. Nhiều bước **bất đồng bộ**: xác nhận nhận link KHÔNG đồng nghĩa download thành công.
+Phân loại AI có thể tắt; không buộc phải gửi mọi tài liệu cho AI nếu thiếu quyền hoặc quota.
 
-### B. Tài liệu
+## 6. Lộ trình ưu tiên — chỉ bốn mốc
 
-Nhận file -> kiểm tra định dạng/dung lượng -> lưu gốc, checksum -> trích văn bản thô theo khả năng -> lập chỉ mục -> phân loại nhẹ -> thư viện. Với PDF scan/mã hóa, ghi trạng thái thiếu văn bản, không tự nhận là đã trích xuất.
+### Mốc A — Chứng minh Drive và giao diện (đi đầu)
 
-### C. Bài viết web
+- Xác thực Google Drive trên tài khoản thật, tạo folder, upload một ảnh/PDF, mở lại trên điện thoại và PC.
+- Tạo frontend cơ bản, đăng nhập một người dùng, SQLite index.
+- Lưu note/link/file vào Drive, thư viện, xem chi tiết.
+- Ghi rõ dữ liệu ở Drive, không tạo B2/R2.
+- **PASS:** người dùng thực sự lưu và xem lại tài liệu từ chính Drive của mình.
 
-Lưu URL; lấy metadata; trích nội dung chính bằng Trafilatura khi truy cập được; giữ thời gian thu thập và nguồn. Không chạy browser headless trong bản đầu.
+### Mốc B — Tự sắp xếp và tìm kiếm (bản sử dụng hằng ngày)
 
-### D. Ảnh và ghi chú
+- Metadata website/video, yt-dlp thử trên host thật, phụ đề có sẵn.
+- Trích văn bản nhẹ, AI gợi ý nhóm; lĩnh vực/dự án/ngày/tag.
+- Bộ lọc, không dấu, sửa nhóm, phát hiện trùng, trạng thái lỗi.
+- Một worker nền nhẹ, không triển khai Redis/Procrastinate/PostgreSQL khi chưa cần.
+- **PASS:** gửi nội dung không cần tự chọn thư mục; tìm được bằng chủ đề/dự án/ngày.
 
-Lưu nguyên trạng; ghi chú có thể sửa và tìm toàn văn; ảnh/thumbnail có thể được AI nhìn để gợi ý nhóm khi được người dùng cho phép.
+### Mốc C — Dùng ChatGPT để nghiên cứu
 
-### E. MCP
+- **Trước tiên kết nối/thử Google Drive app trong ChatGPT** với thư mục/file thật (phụ thuộc tài khoản/workspace).
+- Nếu chỉ cần ChatGPT đọc, so sánh và nghiên cứu file Drive và đáp ứng tốt: **dừng ở đây, không xây MCP**.
+- Nếu cần ChatGPT truy vấn taxonomy, tag, ghi chú và văn bản trích xuất riêng: xây MCP chỉ đọc, dùng backend hiện có, thử ChatGPT thật.
+- **PASS:** giải quyết được câu hỏi nghiên cứu thực tế; không đánh đồng metadata với nội dung file/video.
 
-Người dùng hỏi trong ChatGPT -> MCP gọi API có quyền -> trả về danh sách kết quả + locator -> đọc văn bản trích xuất hoặc báo không có -> ChatGPT tổng hợp. Với MP4 thiếu transcript, MCP **không được khẳng định đã hiểu nội dung video**.
+### Mốc D — Nâng cấp tùy nhu cầu
 
-## 6. Cách phân nhóm
+Android Share Target khi được máy hỗ trợ, Telegram Bot nếu cần, phân nhóm hàng loạt, OCR/ASR theo yêu cầu, mở rộng lưu trữ sau hết hạn 500 GB.
 
-- **Lĩnh vực:** nhóm lớn, ví dụ Công việc; Quy hoạch/Đầu tư; Công nghệ/AI; Học tập; Kỹ năng; Đời sống.
-- **Chủ đề:** nhóm con tùy chỉnh, có thể đổi tên/sáp nhập.
-- **Dự án:** thực thể riêng, có trạng thái và mô tả, một mục nằm trong nhiều dự án.
-- **Ngày:** ngày lưu, ngày nguồn công bố (có thể trống), ngày cập nhật; **không dùng ngày như thư mục vật lý**.
-- **Tag:** nhãn tự do và nhóm thông minh (Mới lưu, Chưa phân loại, Quan trọng, Đang nghiên cứu, Chưa tải được, Chưa trích xuất).
-- Phân loại AI là **đề xuất có nguồn**, giữ ưu tiên lựa chọn thủ công. Không tạo tự động hàng trăm nhóm gần giống.
+## 7. Bài thử nghiệm thu thiết yếu
 
-## 7. Trích xuất nhẹ — RANH GIỚI QUAN TRỌNG
+1. Gửi 1 link lỗi và 1 link tải được: phân biệt rõ trạng thái.
+2. Lưu 1 ảnh, 1 PDF có chữ, 1 DOCX/XLSX, 1 ghi chú; mở file từ Drive.
+3. Tự phân loại cùng một nội dung vào nhiều chủ đề/dự án, xem theo ngày nhưng không nhân file.
+4. Tìm “quy hoạch” và “quy hoach” trong tài liệu/ghi chú; kết quả phù hợp.
+5. Ngắt mạng khi upload: không thông báo file đã lên Drive nếu chưa xác minh.
+6. Khởi động lại worker khi đang xử lý: tác vụ có thể retry, không tạo trùng.
+7. Xóa mềm và khôi phục, backup/restore SQLite, đối chiếu drive_file_id.
+8. Google OAuth hết hạn/bị thu hồi: báo lỗi và có cách kết nối lại.
+9. Nếu có ChatGPT Drive app: thử đọc, so sánh 3 file trong Drive; nếu có MCP riêng: test quyền chỉ đọc.
 
-- PDF có lớp chữ: dùng pypdf hoặc bộ trích phù hợp đã kiểm giấy phép, lưu tham chiếu trang khi dễ có.
-- DOCX: đoạn văn và bảng ở mức cơ bản.
-- XLSX: tên sheet, giá trị ô văn bản/đầu mục và vùng sử dụng; không khẳng định hiểu công thức.
-- Website: Trafilatura, không cam kết trang chặn bot/JS.
-- Video: phụ đề có sẵn nếu nền tảng cho phép; không tự gọi ASR toàn bộ.
-- Tài liệu lớn: giới hạn kích thước, xử lý theo phần và cung cấp đoạn trích khi hỏi; không nhồi toàn văn vào một trường mô tả.
-- **Không cho trích xuất/AI làm cản trở việc lưu bản gốc.**
+## 8. Những việc cần xác minh trước khi triển khai thật
 
-## 8. Tìm kiếm và trải nghiệm
+- Tài khoản Google Drive nào có 500 GB, thời điểm hết ưu đãi và quota còn lại.
+- OAuth project chuyển ra `In production` khi phù hợp; với app External/Testing, refresh token thường hết hạn 7 ngày, không thiết kế như token vĩnh viễn.
+- Kênh triển khai: local Windows để thử; VPS nhỏ chỉ thuê khi cần app hoạt động 24/7 và tự tải video.
+- Lượng video/thời lượng thực, điều kiện tải hợp pháp và khả năng tải từ IP của host.
+- ChatGPT Google Drive app có khả dụng trên workspace và quyền hiện tại hay không.
 
-- Một thanh tìm kiếm toàn cục; tìm tên, ghi chú, tác giả, metadata, nội dung trích xuất và phụ đề.
-- Bộ lọc chồng: lĩnh vực, chủ đề, dự án, tag, loại nội dung, nền tảng, ngày, trạng thái, quan trọng.
-- Màn hình chính dự kiến: **Thêm / Thư viện / Tìm kiếm / Cài đặt**; giao diện responsive desktop/mobile.
-- Thẻ mục: thumbnail, tiêu đề, nhóm, thời gian, trạng thái; trang chi tiết có nguồn, nội dung gốc, ghi chú, văn bản trích xuất, thông tin xử lý.
-- Các thao tác quan trọng có trạng thái/undo; có xóa mềm và khôi phục.
+**Lựa chọn triển khai và bảng so sánh công nghệ:** xem `ARCHITECTURE_AND_DATA.md`. **Thứ tự nhiệm vụ và nghiệm thu:** xem `ROADMAP_AND_TESTS.md`.
 
-## 9. Lưu trữ, riêng tư và backup
-
-- File chính trên Backblaze B2 riêng tư; PostgreSQL giữ tri thức/metadata; server chỉ cung cấp quyền file tạm thời theo kiểm tra quyền.
-- Có thể dùng Google Drive 500 GB năm đầu làm nơi sao lưu thứ hai; OAuth đầy đủ không bắt buộc.
-- Không coi một file trên B2 là backup độc lập của chính nó; backup database và file không tái tạo phải được kiểm thử khôi phục.
-- Dữ liệu công việc/nội bộ hạn chế **không tự chuyển cho mô hình AI bên ngoài**. Cấu hình privacy mặc định an toàn và cho phép người dùng kiểm soát.
-- Không lấy nội dung bị hạn chế truy cập trái phép hoặc né cơ chế bảo vệ nguồn.
-
-## 10. Thứ tự triển khai đã chốt
-
-1. **Lưu trữ thật và thư viện:** API + DB + B2 + ghi chú/link/file/video nguồn hỗ trợ + xác thực + job + backup.
-2. **Sắp xếp thông minh:** metadata + trích xuất nhẹ + lĩnh vực/dự án/ngày/tag + AI nhẹ + tìm kiếm/bộ lọc.
-3. **MCP đọc cho ChatGPT:** công cụ tìm và đọc, bảo mật, test nguồn và quyền.
-4. **Tối ưu vận hành:** Android share, tùy chọn Telegram, Drive backup, bulk operations, xuất dữ liệu.
-5. **AI chuyên sâu tùy chọn:** chỉ đầu tư theo nhu cầu thật.
-
-## 11. Những điều KHÔNG được giả định đã hoàn thành
-
-- GitHub Actions tải được vài video không chứng minh mọi nguồn đều hoạt động ở máy chủ đích.
-- Văn bản được trích xuất không đồng nghĩa nội dung có độ chính xác tuyệt đối.
-- Có file MP4 không đồng nghĩa ChatGPT qua MCP nghe/xem được nó.
-- Có backup nhưng chưa thử restore không được coi là có thể phục hồi.
-- Giao diện có nút Share không chứng minh Android đã chia sẻ vào được.
-- MCP có endpoint không chứng minh đã kết nối được với workspace ChatGPT thực tế.
-
-## 12. Tài liệu đi kèm và quản trị thay đổi
-
-- `README.md`: hướng dẫn và trạng thái.
-- `AGENTS.md`: quy tắc làm việc cho Codex/AI.
-- `docs/MASTER_PLAN.md`: yêu cầu và phạm vi sản phẩm (file này).
-- `docs/ARCHITECTURE_AND_DATA.md`: lựa chọn kỹ thuật, dữ liệu, giao diện, API và danh sách cần chốt.
-- `docs/ROADMAP_AND_TESTS.md`: việc ưu tiên, điều kiện PASS, checkpoint và thứ tự phát hành.
-
-Công nghệ ở tài liệu kiến trúc được đánh dấu **CHỐT ĐỀ XUẤT / CẦN KIỂM THỬ / CHƯA QUYẾT ĐỊNH**; chưa có code triển khai tại thời điểm lập kế hoạch.
-
-**Tham chiếu bài kiểm thử video hiện có:** https://github.com/cavoixanh638/video-download-benchmark (không phải thư viện triển khai sản xuất).
+**Trạng thái:** tài liệu thiết kế; chưa có app/deployment. Các benchmark video cũ là tham khảo, không phải chứng nhận vận hành của kho này.
