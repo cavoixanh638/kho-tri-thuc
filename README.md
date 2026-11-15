@@ -22,15 +22,15 @@
 
 ## Đề xuất kiến trúc gọn
 
-- UI: **React + TypeScript + Vite**, Tailwind/shadcn, PWA.
-- API: **FastAPI + SQLAlchemy + Alembic**.
+- UI: **React + TypeScript + Vite**, **Mantine**, PWA (đã so sánh shadcn/MUI/Ant Design).
+- API: **Django 6 + Django Ninja + Django ORM/migrations** (đã so sánh FastAPI/DRF/NestJS).
 - Database/search: **PostgreSQL**, không cần vector ban đầu.
-- File: **Backblaze B2 riêng tư**; backup độc lập (có thể tận dụng Google Drive 500 GB khi cấu hình).
+- File: **Backblaze B2 riêng tư**; bản sao dữ liệu quan trọng trên **Cloudflare R2**; Google Drive 500 GB là nguồn backup mở rộng khi cấu hình được.
 - Xử lý nền: PostgreSQL-backed queue (đang cần thử), yt-dlp, trích xuất nhẹ.
-- Kết nối AI: AI phân nhóm tùy chọn; **MCP chỉ đọc**, qua xác thực phù hợp.
+- Kết nối AI: phân nhóm nhẹ theo chính sách riêng tư; **MCP chỉ đọc** bằng official Python SDK v2, ưu tiên thử Django OAuth Toolkit >=3.4.
 - Hạ tầng: Docker Compose + reverse proxy HTTPS.
 
-Đây là **phương án thiết kế**. Những điểm còn mở (máy chủ, tên miền, chi phí, AI provider, quyền dữ liệu nhạy cảm, phương thức backup, OAuth MCP) được liệt kê ở [Kiến trúc — Mục 12](docs/ARCHITECTURE_AND_DATA.md#12-danh-sách-quyết-định-chưa-chốt--chỉ-cần-người-dùng-xác-nhận-khi-có-căn-cứ).
+Xem **[Mục 14 — So sánh 25+ lựa chọn công nghệ và 2–3 phương án thay thế cho mỗi lựa chọn](docs/ARCHITECTURE_AND_DATA.md#14-rà-soát-đối-chiếu-công-nghệ-r1--15112026)** để biết vì sao chọn, khi nào phải đổi và bài thử cần PASS. Đây là **phương án thiết kế**. Những điểm còn mở (máy chủ, tên miền, chi phí, AI provider, quyền dữ liệu nhạy cảm, phương thức backup, OAuth MCP) được liệt kê ở [Kiến trúc — Mục 12](docs/ARCHITECTURE_AND_DATA.md#12-danh-sách-quyết-định-chưa-chốt--chỉ-cần-người-dùng-xác-nhận-khi-có-căn-cứ).
 
 ## Dành cho Codex và người phát triển
 
