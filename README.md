@@ -1,48 +1,44 @@
-# Kho Tri Thức — Quản lý tri thức cá nhân
+# Kho Tri Thức — Lưu khoa học, mở rộng bền vững
 
-**Kế hoạch hiện hành: v4.3 (15/11/2026) — Google Drive là kho dữ liệu chính.**  
-**Trạng thái:** mới lập kế hoạch, chưa có mã nguồn ứng dụng hoặc triển khai.
+**Kế hoạch hiện hành: V4.4 — 15/11/2026**  
+**Trạng thái thực tế:** Mới có tài liệu và roadmap. Chưa xây frontend/backend, chưa kết nối Google Drive thật, chưa chạy test sản xuất.
 
-## Dành cho người dùng
+Kho Tri Thức là ứng dụng cá nhân dùng trên Android/Windows để gửi link Facebook/TikTok/YouTube/web, ảnh, file, ghi chú, tự lưu file gốc trên **Google Drive**, trích xuất văn bản nhẹ, phân loại theo **lĩnh vực/chủ đề/dự án**, xem **theo ngày**, tìm kiếm và lọc. Khi cần nghiên cứu, thử Google Drive app của ChatGPT trước, MCP riêng chỉ nếu cần dữ liệu phân loại từ ứng dụng.
 
-Kho Tri Thức giúp tiếp nhận link Facebook/TikTok/YouTube/web, video, ảnh, file và ghi chú; lưu file gốc lên **Google Drive đang có**; tự lấy metadata, trích xuất văn bản đơn giản và AI gợi ý phân nhóm **theo lĩnh vực / dự án / chủ đề**. Có thể xem **theo ngày**, tìm kiếm không dấu và lọc nội dung.
+## Ưu tiên thực hiện
 
-**ChatGPT:** thử ứng dụng Google Drive có sẵn trong ChatGPT trước để đọc và nghiên cứu tài liệu. Chỉ xây MCP riêng nếu cần ChatGPT tìm theo tag/dự án/ghi chú đang lưu trong ứng dụng.
+1. **Kết nối Drive và lưu đúng file thật**, có trạng thái, ID ổn định và backup.
+2. **Thư viện cá nhân**: xem nhanh, mở gốc, sửa tên, ghi chú, nhóm, xóa mềm.
+3. **Tự phân loại/tìm kiếm**: metadata, PDF/Word/Excel/Web text, phụ đề nguồn, AI nhẹ, bộ lọc.
+4. **Thử ChatGPT đọc Drive**; custom MCP chỉ khi có câu hỏi cần tag/project riêng.
+5. **Bổ sung khi dùng thật có nhu cầu**: OCR/ASR, embeddings, video stream nâng cao, provider thứ hai, nhiều worker/người dùng.
 
-## Quy tắc ưu tiên
+## Kiến trúc cân bằng giữa hiện tại và nâng cấp
 
-1. **Kết nối Drive và lưu file thật** — không cần B2/R2.
-2. **Thêm + Thư viện** — link, ghi chú, ảnh/file/video; xem lại được.
-3. **Tự phân nhóm và tìm kiếm** — metadata, trích chữ nhẹ, chủ đề/dự án/ngày/tag.
-4. **Thử ChatGPT Google Drive** — custom MCP là **tùy chọn**.
-5. **Mở rộng khi cần** — Android Share Target, OCR/ASR theo yêu cầu, nâng dung lượng.
-
-## Kiến trúc đề xuất tinh gọn
-
-| Thành phần | Lựa chọn |
+| Thành phần | Chọn |
 | --- | --- |
-| Kho file gốc | **Google Drive My Drive**, OAuth `drive.file` |
-| Danh mục và tìm kiếm | **SQLite + FTS5**, backup snapshot/JSON lên Drive |
-| Backend | **Django + Django Ninja** |
-| Frontend | **React + TypeScript + Vite + Mantine** (static/PWA) |
-| Tác vụ nền | **1 Python worker + bảng jobs SQLite**, không Redis/Procrastinate |
-| Video | yt-dlp + FFmpeg khi nguồn cho phép; link-only fallback |
-| Trích văn bản | pypdf, python-docx, openpyxl, Trafilatura, phụ đề nguồn |
-| ChatGPT | **Google Drive app trước; MCP riêng chỉ khi thiếu chức năng** |
-| Hosting | Chạy Windows/local trước; 1 VPS nhỏ khi cần 24/7 |
+| File gốc | **Google Drive**, OAuth `drive.file` |
+| Metadata/danh mục/job/search | **PostgreSQL một container**, backup `pg_dump`/JSON manifest lên Drive + bản ngoài Drive |
+| Backend | **Django 5.2 LTS + Django Ninja**, một codebase |
+| Frontend | **React + TypeScript + Vite + Mantine**, PWA |
+| Tác vụ nền | **Một worker Django + job bền vững trong Postgres**, không Redis |
+| Media và trích xuất | yt-dlp/FFmpeg; pypdf/python-docx/openpyxl/Trafilatura, phụ đề có sẵn |
+| AI | Rule-based + provider nhẹ sau benchmark; chưa OCR/ASR toàn bộ |
+| ChatGPT | Google Drive app trước; MCP tùy chọn qua read/search API |
+| Triển khai | Docker Compose một VM khi cần 24/7; phát triển trên Windows qua Docker |
 
-Không có lý do triển khai PostgreSQL, B2, R2, hệ thống OAuth server riêng cho MCP, microservices hoặc vector DB ở bản đầu.
+**Tại sao quay lại PostgreSQL?** Không phải vì dữ liệu cá nhân nhiều, mà vì đổi SQLite/FTS5/queue khi muốn thêm OCR, ASR, embeddings, nhiều worker hoặc các API chuyên sâu sẽ tốn công. Django khuyến nghị PostgreSQL ở production. Chỉ tăng **một container**, không tăng B2/R2, Redis hay microservice.
 
-## Tài liệu chuẩn (chỉ 5 file sống)
+**Đầu tư đúng từ đầu, không lập trình sớm:** UUID nội bộ cho Item/Asset, StorageLocation tách Drive ID, nhiều-nhiều cho nhóm và dự án, DerivedContent có version, job idempotent, SearchService/ReadService, portable manifest. Chỉ cần DriveStorage implement thực tế.
 
-- [MASTER_PLAN.md](docs/MASTER_PLAN.md) — phạm vi sản phẩm v4.3, thứ tự ưu tiên.
-- [ARCHITECTURE_AND_DATA.md](docs/ARCHITECTURE_AND_DATA.md) — **so sánh 2–3 phương án mỗi quyết định**, lý do phù hợp, thiết kế kỹ thuật, hạn chế Drive và SQLite.
-- [ROADMAP_AND_TESTS.md](docs/ROADMAP_AND_TESTS.md) — backlog KT-xxx và tiêu chí nghiệm thu Drive-first.
-- [AGENTS.md](AGENTS.md) — nguyên tắc cho Codex và AI lập trình.
-- [README.md](README.md) — trang giới thiệu này.
+## Tài liệu chính (giữ 5 file sống)
 
-**Không lưu file cá nhân, OAuth token, mật khẩu hoặc database đang chạy trong repository.**
+- [Kế hoạch v4.4](docs/MASTER_PLAN.md) — nhu cầu và các nguyên tắc lâu dài.
+- [Kiến trúc và so sánh](docs/ARCHITECTURE_AND_DATA.md) — vì sao chọn, đối thủ, sơ đồ bảng/API, cách nâng cấp file/DB/AI/MCP.
+- [Roadmap và nghiệm thu](docs/ROADMAP_AND_TESTS.md) — KT-xxx theo ưu tiên, test phục hồi/migration boundary và điều kiện mở rộng.
+- [AGENTS.md](AGENTS.md) — quy tắc cho Codex/AI.
+- [README.md](README.md) — trang này.
 
-Benchmark video tham khảo nằm ở repo khác: [video-download-benchmark](https://github.com/cavoixanh638/video-download-benchmark); kết quả benchmark không đồng nghĩa ứng dụng này đã chạy.
+**Không commit file gốc cá nhân, Google OAuth token, secrets hoặc backup vào GitHub.** Benchmark video riêng: [video-download-benchmark](https://github.com/cavoixanh638/video-download-benchmark).
 
-**Các lựa chọn vẫn cần thử:** Drive OAuth trên tài khoản thật; giới hạn API; Drive preview; video downloader trên máy thật; chất lượng phân nhóm AI; quyền Google Drive app của ChatGPT.
+**Chưa chốt:** tài khoản Drive/expiry 500 GB, hosting 24/7, lựa chọn AI và phí, quyền Google Drive app của workspace ChatGPT. Tất cả phải được kiểm thử thật trước khi tuyên bố PASS.
