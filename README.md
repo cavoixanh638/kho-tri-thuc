@@ -1,43 +1,48 @@
-# Kho Tri Thức
+# Kho Tri Thức — Quản lý tri thức cá nhân
 
-**Kho Tri Thức** là dự án quản lý tri thức cá nhân: lưu link, video, hình ảnh, ghi chú và tài liệu; tự trích xuất văn bản ở mức nhẹ, gợi ý phân loại theo **lĩnh vực / chủ đề / dự án**; xem theo **ngày**; tìm kiếm với bộ lọc; kết nối **ChatGPT qua MCP chỉ đọc** để nghiên cứu khi cần.
+**Kế hoạch hiện hành: v4.3 (15/11/2026) — Google Drive là kho dữ liệu chính.**  
+**Trạng thái:** mới lập kế hoạch, chưa có mã nguồn ứng dụng hoặc triển khai.
 
-**Trạng thái: ĐANG THIẾT KẾ — mới có tài liệu kế hoạch, chưa có ứng dụng triển khai.**  
-**Kế hoạch hiện hành: v4.2 (15/11/2026).**
+## Dành cho người dùng
 
-## Thứ tự ưu tiên
+Kho Tri Thức giúp tiếp nhận link Facebook/TikTok/YouTube/web, video, ảnh, file và ghi chú; lưu file gốc lên **Google Drive đang có**; tự lấy metadata, trích xuất văn bản đơn giản và AI gợi ý phân nhóm **theo lĩnh vực / dự án / chủ đề**. Có thể xem **theo ngày**, tìm kiếm không dấu và lọc nội dung.
 
-1. **Lưu và xem lại:** link, ghi chú, tài liệu, ảnh, video nguồn hỗ trợ, chống trùng, B2, job nền, đăng nhập, backup tối thiểu.
-2. **Tự sắp xếp và tìm kiếm:** metadata, PDF/Word/Excel/Web trích xuất chữ có sẵn, phụ đề video có sẵn, AI gợi ý phân nhóm, xem theo lĩnh vực/dự án/ngày, bộ lọc.
-3. **Kết nối MCP:** ChatGPT tìm và đọc nội dung theo quyền, không xây chatbot riêng.
-4. **Tối ưu vận hành:** Android Share/PWA, Google Drive backup, bulk edit, khôi phục/xuất dữ liệu.
-5. **Chỉ khi cần:** OCR, ASR tự động, embedding/RAG, AI nghiên cứu sâu, Playwright production, CDN nâng cao.
+**ChatGPT:** thử ứng dụng Google Drive có sẵn trong ChatGPT trước để đọc và nghiên cứu tài liệu. Chỉ xây MCP riêng nếu cần ChatGPT tìm theo tag/dự án/ghi chú đang lưu trong ứng dụng.
 
-## Bộ tài liệu chính
+## Quy tắc ưu tiên
 
-- [Kế hoạch tổng thể v4.2](docs/MASTER_PLAN.md) — mục tiêu, phạm vi và quy trình sử dụng.
-- [Kiến trúc và dữ liệu](docs/ARCHITECTURE_AND_DATA.md) — lựa chọn frontend/backend/DB/B2/queue/MCP, schema, API, bảo mật, hạ tầng, **danh sách quyết định chưa chốt**.
-- [Lộ trình và kiểm thử](docs/ROADMAP_AND_TESTS.md) — thứ tự triển khai, backlog KT-xxx, cổng nghiệm thu và test thực tế.
-- [AGENTS.md](AGENTS.md) — quy tắc làm việc dành cho Codex/AI, bảo vệ dữ liệu và phối hợp nhiều nhánh.
+1. **Kết nối Drive và lưu file thật** — không cần B2/R2.
+2. **Thêm + Thư viện** — link, ghi chú, ảnh/file/video; xem lại được.
+3. **Tự phân nhóm và tìm kiếm** — metadata, trích chữ nhẹ, chủ đề/dự án/ngày/tag.
+4. **Thử ChatGPT Google Drive** — custom MCP là **tùy chọn**.
+5. **Mở rộng khi cần** — Android Share Target, OCR/ASR theo yêu cầu, nâng dung lượng.
 
-## Đề xuất kiến trúc gọn
+## Kiến trúc đề xuất tinh gọn
 
-- UI: **React + TypeScript + Vite**, **Mantine**, PWA (đã so sánh shadcn/MUI/Ant Design).
-- API: **Django 6 + Django Ninja + Django ORM/migrations** (đã so sánh FastAPI/DRF/NestJS).
-- Database/search: **PostgreSQL**, không cần vector ban đầu.
-- File: **Backblaze B2 riêng tư**; bản sao dữ liệu quan trọng trên **Cloudflare R2**; Google Drive 500 GB là nguồn backup mở rộng khi cấu hình được.
-- Xử lý nền: PostgreSQL-backed queue (đang cần thử), yt-dlp, trích xuất nhẹ.
-- Kết nối AI: phân nhóm nhẹ theo chính sách riêng tư; **MCP chỉ đọc** bằng official Python SDK v2, ưu tiên thử Django OAuth Toolkit >=3.4.
-- Hạ tầng: Docker Compose + reverse proxy HTTPS.
+| Thành phần | Lựa chọn |
+| --- | --- |
+| Kho file gốc | **Google Drive My Drive**, OAuth `drive.file` |
+| Danh mục và tìm kiếm | **SQLite + FTS5**, backup snapshot/JSON lên Drive |
+| Backend | **Django + Django Ninja** |
+| Frontend | **React + TypeScript + Vite + Mantine** (static/PWA) |
+| Tác vụ nền | **1 Python worker + bảng jobs SQLite**, không Redis/Procrastinate |
+| Video | yt-dlp + FFmpeg khi nguồn cho phép; link-only fallback |
+| Trích văn bản | pypdf, python-docx, openpyxl, Trafilatura, phụ đề nguồn |
+| ChatGPT | **Google Drive app trước; MCP riêng chỉ khi thiếu chức năng** |
+| Hosting | Chạy Windows/local trước; 1 VPS nhỏ khi cần 24/7 |
 
-Xem **[Mục 14 — So sánh 25+ lựa chọn công nghệ và 2–3 phương án thay thế cho mỗi lựa chọn](docs/ARCHITECTURE_AND_DATA.md#14-rà-soát-đối-chiếu-công-nghệ-r1--15112026)** để biết vì sao chọn, khi nào phải đổi và bài thử cần PASS. Đây là **phương án thiết kế**. Những điểm còn mở (máy chủ, tên miền, chi phí, AI provider, quyền dữ liệu nhạy cảm, phương thức backup, OAuth MCP) được liệt kê ở [Kiến trúc — Mục 12](docs/ARCHITECTURE_AND_DATA.md#12-danh-sách-quyết-định-chưa-chốt--chỉ-cần-người-dùng-xác-nhận-khi-có-căn-cứ).
+Không có lý do triển khai PostgreSQL, B2, R2, hệ thống OAuth server riêng cho MCP, microservices hoặc vector DB ở bản đầu.
 
-## Dành cho Codex và người phát triển
+## Tài liệu chuẩn (chỉ 5 file sống)
 
-Đọc theo thứ tự: `AGENTS.md` → `docs/MASTER_PLAN.md` → phần liên quan trong `docs/ARCHITECTURE_AND_DATA.md` → một hạng mục trong `docs/ROADMAP_AND_TESTS.md`.
+- [MASTER_PLAN.md](docs/MASTER_PLAN.md) — phạm vi sản phẩm v4.3, thứ tự ưu tiên.
+- [ARCHITECTURE_AND_DATA.md](docs/ARCHITECTURE_AND_DATA.md) — **so sánh 2–3 phương án mỗi quyết định**, lý do phù hợp, thiết kế kỹ thuật, hạn chế Drive và SQLite.
+- [ROADMAP_AND_TESTS.md](docs/ROADMAP_AND_TESTS.md) — backlog KT-xxx và tiêu chí nghiệm thu Drive-first.
+- [AGENTS.md](AGENTS.md) — nguyên tắc cho Codex và AI lập trình.
+- [README.md](README.md) — trang giới thiệu này.
 
-**Không coi các hạng mục là đã code/test chỉ vì tài liệu mô tả.** Không commit secrets, tài liệu riêng tư hay file media vào repo.
+**Không lưu file cá nhân, OAuth token, mật khẩu hoặc database đang chạy trong repository.**
 
-### Tham khảo kiểm thử video độc lập
+Benchmark video tham khảo nằm ở repo khác: [video-download-benchmark](https://github.com/cavoixanh638/video-download-benchmark); kết quả benchmark không đồng nghĩa ứng dụng này đã chạy.
 
-[Video Download Benchmark](https://github.com/cavoixanh638/video-download-benchmark) có kết quả thử yt-dlp/Cobalt/phụ đề; kết quả đó **không đồng nghĩa** dịch vụ trong repo này đã triển khai.
+**Các lựa chọn vẫn cần thử:** Drive OAuth trên tài khoản thật; giới hạn API; Drive preview; video downloader trên máy thật; chất lượng phân nhóm AI; quyền Google Drive app của ChatGPT.
