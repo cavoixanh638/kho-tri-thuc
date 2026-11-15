@@ -1,6 +1,6 @@
-# KIẾN TRÚC, DỮ LIỆU VÀ LỘ TRÌNH NÂNG CẤP — V4.5
+# KIẾN TRÚC, DỮ LIỆU VÀ LỘ TRÌNH NÂNG CẤP — V4.6 (BASELINE CHỐT ĐỂ TRIỂN KHAI)
 
-**Ngày:** 15/11/2026 · **Dựa trên:** `MASTER_PLAN.md` v4.5 · **Đối tượng:** một người dùng lúc đầu, Google Drive là kho file chính; phát triển thêm tính năng AI và có thể nhiều dữ liệu/worker về sau.  
+**Ngày:** 15/11/2026 · **Dựa trên:** `MASTER_PLAN.md` v4.6 · **Đối tượng:** một người dùng lúc đầu, Google Drive là kho file chính; phát triển thêm tính năng AI và có thể nhiều dữ liệu/worker về sau.  
 **Trạng thái:** quyết định thiết kế, **chưa triển khai hoặc benchmark**. Mọi số liệu hiệu năng và điều kiện nâng cấp dưới đây là mục tiêu/trigger để đo, không phải kết quả đo.
 
 ## 1. Quyết định về mức độ thiết kế
@@ -22,10 +22,10 @@
 | Backend | **Django 5.2 LTS + Django Ninja** | Django 6.1 + Ninja, FastAPI, Django + DRF | LTS hỗ trợ tới 04/2028, auth/admin/migrations sẵn, Ninja có OpenAPI; thuận đường lên Django 6.2 LTS. FastAPI mạnh nhưng thêm bộ phận auth/admin/ORM; DRF nặng hơn cho API nhỏ |
 | Frontend | **React + TypeScript + Vite** | Django + HTMX, Vue 3, SvelteKit | Lọc nhiều điều kiện, upload/preview, PWA responsive; static deploy và API độc lập cho Android native sau. Không cần Next SSR hoặc server Node production |
 | UI | **Mantine** | shadcn/ui, MUI, Ant Design | Nhiều biểu mẫu/multiselect/date/filter sẵn, giúp Codex ra UI nhanh. Không trộn hai UI framework khi chưa có lý do |
-| Search | **PostgreSQL + unaccent/pg_trgm/FTS** sau lớp `SearchService` | Typesense, Meilisearch, OpenSearch | Không vận hành search server; khi cần tìm ngữ nghĩa thêm pgvector hoặc provider search dưới interface, không thay API |
+| Search | **Hai nhóm GIN index riêng cho `Item` và `DerivedContent`** qua `SearchService`, dùng `kt_vi`/unaccent/pg_trgm | Một `Item.search_vector` tổng hợp; Typesense; Meilisearch | Không lập expression index xuyên bảng; tách metadata và văn bản dài để tránh xây lại vector khi sửa note, giữ locator trích xuất và mở đường OCR/ASR |
 | Queue | **PostgreSQL `jobs` + 1 worker** | Procrastinate, Chancy, Celery+Redis | Vẫn gọn khi ít tác vụ; bảng job có lease/retry/idempotency, về sau worker tăng được. Không viết framework queue chung đa năng; nếu vượt khả năng, thay worker adapter |
 | AI phân loại | **Rule-based + `ClassifierPort`**, provider sau benchmark | Gemini Flash-Lite, OpenAI model nhỏ, model local | Không khóa nhãn đã chốt với output AI; thay model/prompt mà không xáo dữ liệu |
-| Parsing | **pypdf (baseline tạm), python-docx, openpyxl, Trafilatura, phụ đề nguồn** | PyMuPDF, Docling, LibreOffice/Crawl4AI | Chốt parser PDF sau benchmark tiếng Việt và rà giấy phép; không tự chuyển vì tuyên bố tốc độ 20–30× chưa được đo |
+| Parsing/thumbnail PDF | **`pypdfium2` render thumbnail PDF, `pypdf` baseline text extraction**; python-docx, openpyxl, Trafilatura | PyMuPDF, Docling, LibreOffice/Crawl4AI | `pypdf` không render PDF; KT-102 so 3 thư viện pypdf/pypdfium2/PyMuPDF trên tiếng Việt và giấy phép trước khi chọn extractor chữ chính |
 | Video | **yt-dlp + ffprobe/FFmpeg** | Cobalt, gallery-dl, Streamlink | Đã có benchmark tương đối, xử lý nhiều nguồn, fallback link-only; giao downloader qua interface để không phụ thuộc một extractor |
 | Auth app | **Django Auth một account + HTTPS** | Google login/OIDC, Auth0, Keycloak | Không cần đa role, dịch vụ identity; chỉ giữ token Drive phía backend, chuẩn bị `owner_id` nếu về sau nhiều user |
 | ChatGPT | **Thử Google Drive app + bản xuất tri thức từ PostgreSQL** | MCP custom, gửi file bằng tay, GPT Actions | Connector không thấy PostgreSQL; pilot per-item text/Google Docs/TXT/Markdown đồng bộ theo phiên bản. Nếu không đọc được ổn định thì dùng MCP read-only, không giả định 100% |
@@ -181,7 +181,7 @@ Receive -> Item + Source + Job
 ## 7. SearchService và đường lên AI nghiên cứu
 
 - API v1 dùng `SearchService.search(filters, query, cursor)` và `ReadKnowledgeService.fetch(item_id, parts)`.
-- Version 1 tìm metadata, tag, dự án, ghi chú, DerivedContent bằng PostgreSQL GIN/FTS, unaccent và pg_trgm; index có thể tái tạo, test tiếng Việt không dấu.
+- Version 1 có **hai nhóm GIN index riêng** cho metadata `Item` (title/description/note) và text `DerivedContent` hiện hành. `SearchService` hợp nhất kết quả theo `item_id`, chấm điểm/ranking, lọc Project/Topic/Tag theo bảng quan hệ và giữ provenance/locator. Không tạo expression index JOIN xuyên bảng.
 - Migration cần tạo **cấu hình text search `kt_vi` dựa trên `simple`, dùng từ điển lọc `unaccent`** cho các token tiếng Việt. Dùng cùng config cho `SearchVector` và `SearchQuery`, chỉ mục GIN phải khớp với biểu thức/cấu hình. **Không bọc tùy tiện hàm STABLE bằng `IMMUTABLE`**; không nhầm `SearchVectorField` với generated column tự cập nhật. Dùng pg_trgm hoặc phép tìm chuỗi cho số hiệu văn bản/tên viết tắt; đo `EXPLAIN ANALYZE`, bộ truy vấn có dấu/không dấu kể cả `đ/Đ`.
 - Khi tăng dữ liệu lớn, có thể thêm Typesense/Meilisearch như backend tìm kiếm nhưng **không làm nguồn gốc dữ liệu**.
 - Khi cần semantic/RAG: thêm `EmbeddingModel`, `ContentChunk`, `ChunkEmbedding` riêng; sinh từ DerivedContent có provenance; dùng pgvector hoặc provider khác, đánh giá trước khi chuyển.
@@ -217,7 +217,7 @@ Receive -> Item + Source + Job
 
 ## 10. Kịch bản nâng cấp và chi phí thay đổi
 
-| Kịch bản | Giữ nguyên | Phần bổ sung | Mức độ nếu theo v4.4 |
+| Kịch bản | Giữ nguyên | Phần bổ sung | Mức độ nếu theo v4.6 |
 | --- | --- | --- | --- |
 | Drive 500GB hết hạn, cần B2/R2 | Item/Asset/Groups/Search/API | StorageAdapter + move/verify | **Trung bình**, tránh sửa dữ liệu nghiệp vụ |
 | Drive file bị xóa/đổi tên thủ công | Item/group/notes | Reconcile, Drive changes feed | **Thấp–trung bình** |
@@ -289,14 +289,16 @@ Các mức là **ước lượng kiến trúc**, không có bảo đảm phần 
 ### 13.3. Thumbnail và video: tách trải nghiệm khỏi giới hạn Drive Viewer
 
 - Drive API `thumbnailLink` **ngắn hạn và không thiết kế dùng trực tiếp trong web app vì CORS/auth**. Worker sinh ảnh WebP/JPEG từ ảnh/video/PDF khi có thể; thumbnail nội bộ được phục vụ bởi Django/web server và lưu ở **volume cache bền vững**, key theo asset_id + content hash.
+- **KT-010 PDF:** dùng `pypdfium2` render **trang đầu** ra Pillow rồi lưu WebP/JPEG; `pypdf` không render. Kiểm thử PDF lỗi/khóa, giới hạn trang/chiều ảnh/RAM; xác minh wheel và notices của binary PDFium trên Windows/Linux trước khi đóng gói.
+- **KT-010 ảnh điện thoại:** dùng `PIL.ImageOps.exif_transpose()` **trước khi resize/crop** để xử lý EXIF Orientation (xoay/lật gương), thử cả **8 orientation**. Chỉ xử lý bản thumbnail; giữ nguyên ảnh gốc trên Drive. Với HEIC chưa có decoder, sử dụng placeholder/lỗi rõ, không làm sai ảnh. Thumbnail xuất không giữ metadata EXIF riêng tư không cần thiết.
 - Lười tải/lazy-load ảnh ở danh sách, placeholder khi chưa có thumbnail; có chính sách regenerate sau khi cache bị mất. Không phải lưu thêm thumbnail gốc trên B2/R2.
 - Google Drive có thể đang xử lý video sau upload. Phân biệt `file_saved` và `preview_ready`/unknown; không hứa chắc độ trễ cụ thể. **Cache video cục bộ ngắn hạn** (có TTL và giới hạn tổng dung lượng/LRU) chỉ bật nếu thử playback và ổ đĩa thật cho thấy đáng giá. Cache không phải bản sao vĩnh viễn, phải bảo vệ endpoint và giới hạn Range/size.
 
 ### 13.4. Chọn parser PDF dựa trên benchmark và nghĩa vụ giấy phép
 
-- `pypdf` là baseline, `PyMuPDF` là ứng viên so sánh trên **20–30 PDF tiếng Việt thực** (quyết định/quy hoạch/pháp luật, bảng biểu, dấu Unicode, file scan).
-- Đo **chất lượng trích chữ, đúng trang/locator, tốc độ cùng máy, RAM, render thumbnail**; đối chiếu pypdf + công cụ ảnh PDF phù hợp nếu cần.
-- Kiểm tra giấy phép: **PyMuPDF AGPL hoặc thương mại**; không chọn chỉ vì `pip install` dễ hoặc tuyên bố nhanh hơn 20–30 lần. Chốt extractor trong KT-102 sau thử và ghi bằng chứng.
+- **Tách thumbnail và đọc chữ:** `pypdfium2` được chọn cho thumbnail PDF ở `KT-010`; ở `KT-102` so sánh **ba thư viện `pypdf`, `pypdfium2`, `PyMuPDF` trên 20–30 PDF tiếng Việt thực** (quyết định/quy hoạch/pháp luật, bảng biểu, dấu Unicode, file scan).
+- Đo **chất lượng trích chữ Unicode/dấu, thứ tự đọc, đúng trang/locator, thời gian cùng máy, RAM và khả năng render thumbnail**. Với `pypdfium2` cần dùng đúng API trích Unicode (ví dụ `get_text_bounded()` tùy trường hợp), không mặc định mọi API trả text đủ ký tự.
+- Kiểm tra giấy phép: **`pypdfium2` Apache-2.0/BSD-3-Clause** cùng binary/dependencies cần notice phù hợp, **PyMuPDF AGPL hoặc thương mại**. Không chọn extractor chỉ vì `pip install` dễ hoặc tuyên bố nhanh hơn 20–30 lần. Chốt extractor trong KT-102 sau phép thử, không tự coi thumbnail renderer là thư viện đọc text tốt nhất.
 
 ### 13.5. Tìm kiếm tiếng Việt PostgreSQL: tránh sai migration/index
 
@@ -313,6 +315,9 @@ ALTER TEXT SEARCH CONFIGURATION kt_vi
 
 - Rà các token type `asciiword/asciihword/hword_asciipart` và các trường hợp số hiệu văn bản, rồi bổ sung mapping đúng; không chỉ dùng ba loại token trên và tuyên bố bao phủ tiếng Việt.
 - `SearchVector(..., config='kt_vi')` và `SearchQuery(..., config='kt_vi')` phải đồng nhất; GIN expression index hoặc tsvector được duy trì phải khớp truy vấn; `SearchVectorField` tự nó không đồng nghĩa generated column.
+- **Thiết kế đã chọn cho KT-104:** dùng **hai expression GIN index riêng** trên các cột thuộc cùng bảng: (1) `Item.title/description/note` và (2) `DerivedContent.text`. Không thể tạo expression index JOIN xuyên `Item` và `DerivedContent`; cũng không mặc định dồn vô hạn PDF/transcript vào một `Item.search_vector`.
+- Expression GIN index được PostgreSQL cập nhật khi hàng nguồn thay đổi. `SearchService` dùng hai truy vấn index, lấy các `item_id` phù hợp (ví dụ `UNION`/subquery), xếp hạng gộp và **lọc chỉ phiên bản `DerivedContent` hiện hành**; giữ snippet/locator. Sửa Item không cần lập lại vector từ toàn PDF. Nếu văn bản cực dài vượt giới hạn `tsvector`, phải giới hạn/chia bản ghi theo trang/đoạn khi cần, không làm chunk/RAG sớm.
+- Test sửa title/note, thêm phiên bản trích xuất mới, đổi active/stale, xóa mềm, lọc nhóm và hiển thị nguồn trúng; `EXPLAIN (ANALYZE, BUFFERS)` chứng minh index được dùng. Chỉ cân nhắc `SearchVectorField`/bảng search hợp nhất sau khi benchmark cho thấy hai chỉ mục không đủ; nếu dùng vector lưu vật lý phải có cơ chế cập nhật, vì field không tự đồng bộ.
 - Không tạo wrapper `IMMUTABLE` thiếu chứng cứ cho `unaccent()` vốn có những phụ thuộc cấu hình. Sử dụng từ điển filter trong text search config khi phù hợp; nếu cần normalization khác, thiết kế index và rebuild với kiểm thử.
 - Test có dấu/không dấu, `đ/Đ`, tên người, tên KCN, luật/số hiệu văn bản, typo/trigram; dùng `EXPLAIN (ANALYZE, BUFFERS)` để xác nhận index được dùng. Không ghi KPI mili-giây như kết quả đã đạt.
 
@@ -332,3 +337,13 @@ ALTER TEXT SEARCH CONFIGURATION kt_vi
 - PostgreSQL unaccent/dictionaries: https://www.postgresql.org/docs/current/unaccent.html  
 - Django full-text search: https://docs.djangoproject.com/en/5.2/ref/contrib/postgres/search/  
 - PyMuPDF licensing: https://pymupdf.io/licensing
+
+### 13.7. Quyết định chốt bổ sung cho Codex (v4.6)
+
+| Task | Quyết định thực thi | Điều kiện nghiệm thu |
+| --- | --- | --- |
+| **KT-010** | `pypdfium2` render thumbnail trang đầu PDF; Pillow `ImageOps.exif_transpose` trước resize ảnh điện thoại | PDF lỗi/khóa không làm sập worker; đủ 8 hướng EXIF, ảnh gốc không đổi; cache WebP/JPEG bền vững, tạo lại được |
+| **KT-102** | Benchmark **pypdf / pypdfium2 / PyMuPDF** để chọn extractor chữ tiếng Việt (độc lập renderer thumbnail) | 20–30 PDF thật, đo chữ/dấu/trang/tốc độ/RAM, kiểm giấy phép và fallback; không bịa kết quả |
+| **KT-104** | Hai nhóm GIN index `Item` và `DerivedContent`, tìm bằng `SearchService` hợp nhất item ID | Tìm có/không dấu, đ/Đ, số hiệu, bản text mới/stale và `EXPLAIN ANALYZE` đều đúng |
+
+**V4.6 là baseline tài liệu để triển khai**, không phải ứng dụng đã PASS. Giữ Google Drive chính, PostgreSQL đã chốt, một backend/worker, không thêm dịch vụ chỉ vì 3 điều chỉnh này.
