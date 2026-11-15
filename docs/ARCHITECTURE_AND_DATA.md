@@ -311,3 +311,92 @@ Hàng đợi phân luồng: `download`, `metadata`, `extract`, `classify`, `back
 - OpenAI MCP / Plugins: https://developers.openai.com/api/docs/mcp
 - OpenAI MCP authentication: https://developers.openai.com/plugins/build/auth
 - MCP official Python SDK v2: https://github.com/modelcontextprotocol/python-sdk
+
+---
+
+## 14. RÀ SOÁT ĐỐI CHIẾU CÔNG NGHỆ R1 — 15/11/2026
+
+**Nguyên tắc quyết định:** Mỗi nhóm dưới đây có **ít nhất 2–3 lựa chọn cạnh tranh** được cân nhắc. So sánh dựa trên *đúng nhu cầu sản phẩm (30%), tốc độ phát triển/dễ bảo trì bằng Codex (25%), chi phí (20%), bảo mật/độ ổn định (15%), mở rộng/di chuyển (10%)*. Đây là **trọng số định hướng**, không phải điểm benchmark tự tạo. Chỉ xem lựa chọn là mặc định triển khai; những vấn đề cần kiểm chứng vẫn phải qua gate tương ứng trong ROADMAP_AND_TESTS.
+
+### 14.1. Frontend và Android
+
+| Thành phần | Chọn cho Kho Tri Thức | 2–3 lựa chọn khác đã xét | Đánh giá & lý do |
+| --- | --- | --- | --- |
+| Framework frontend | **React + TypeScript + Vite** | Vue 3 + Vite; SvelteKit; Next.js | React có thư viện UI/agent hỗ trợ rộng. Vite xây SPA/PWA tĩnh, không phải vận hành SSR Node. Next.js chỉ vượt trội nếu cần SEO/SSR; Vue và Svelte đều tốt nhưng không có lợi ích quyết định với một app quản lý tư nhân |
+| Bộ UI | **Mantine v9 + CSS Modules** | shadcn/ui + Tailwind; MUI; Ant Design | Mantine có nhiều component đã hoàn thiện, form, filter, multiselect, modal, date range, tiết kiệm công ghép UI. shadcn hợp thiết kế tùy biến đặc biệt nhưng AI phải duy trì nhiều component copy-in; MUI/Ant có hệ thiết kế riêng, một số data grid nâng cao có phí |
+| Router | **React Router** | TanStack Router; Wouter; Next.js App Router | React Router đã đủ cho 4–6 trang và các filter URL. TanStack Router có type safety tốt hơn với ứng dụng nhiều route; Wouter nhẹ nhưng ít tính năng; App Router kéo theo Next stack |
+| Server-state/API client | **TanStack Query** | SWR; RTK Query; Apollo Client | REST, cache, retry, invalidation; RTK Query nếu dùng Redux, Apollo nếu GraphQL. Không cần Redux để lưu mọi state |
+| Forms | **Mantine Form**, Zod khi dữ liệu phức tạp | React Hook Form + Zod; Formik; Final Form | Đồng bộ UI kit; React Hook Form mạnh cho biểu mẫu nhiều trường, nhưng không có lợi ích rõ ràng ở v1 |
+| Điện thoại | **PWA cài trên Android + Share Target nếu đạt test** | Capacitor (bọc web); Flutter native; React Native | Một app dùng Android/Windows, triển khai nhanh. Share Target cần cài PWA và URL từ Android thường xuất hiện trong field text; phải thử với FB/TikTok/YouTube. Nếu không ổn, dùng Capacitor làm vỏ chứ không viết lại |
+| Table/list | **Mantine + TanStack Table khi cần** | Ant Design Table; MUI Data Grid; AG Grid | Bản đầu là thư viện card/lưới, không cần grid phức tạp. Khi làm bulk sorting/filter table mới thêm headless table; tránh dùng bản Enterprise phải mua giấy phép |
+
+### 14.2. Backend, CSDL, tìm kiếm và tác vụ
+
+| Thành phần | Chọn cho Kho Tri Thức | 2–3 lựa chọn khác đã xét | Đánh giá & lý do |
+| --- | --- | --- | --- |
+| Backend | **Django 6 + Django Ninja** | FastAPI; Django REST Framework; NestJS | Django dựng sẵn auth/admin/ORM/migrations; Ninja tạo API có schema, thuận lợi khi dùng chung Python media parser. FastAPI async/API-first tốt nhưng phải ghép nhiều chức năng lõi; DRF đa năng nhưng boilerplate hơn; NestJS buộc chuyển backend TS |
+| ORM + migration | **Django ORM + migrations** | SQLAlchemy + Alembic; SQLModel + Alembic; Tortoise + Aerich | Không vận hành 2 hệ ORM/migration trong cùng một dự án Django; có admin hỗ trợ quản lý ban đầu |
+| Database | **PostgreSQL tự quản lý** | SQLite + FTS5; Supabase Postgres managed; MariaDB | Tương thích transaction, search, nhiều worker và queue PostgreSQL. SQLite nhẹ cho demo nhưng concurrency/queue không thuận lợi; Supabase free giới hạn 500 MB DB và pause sau 1 tuần không hoạt động; managed paid thường cao hơn VPS nhỏ |
+| Search | **PostgreSQL FTS + unaccent + pg_trgm** | Typesense; Meilisearch; OpenSearch | Không thêm search service và đồng bộ index. **Không đánh đồng Postgres FTS mặc định với tìm kiếm tiếng Việt tối ưu**; Typesense có locale vi, là fallback nếu kết quả thử từ ghép và gõ không dấu không đạt; OpenSearch nặng hơn |
+| Queue | **Procrastinate tích hợp Django — CẦN THỬ** | Chancy (Postgres); PgQueuer (Postgres); Dramatiq + Redis | Procrastinate có Django migrations/admin và worker riêng, không đòi Redis; nhưng dự án đang tìm maintainer. Test multi-worker, crash/retry, duplicate, dead jobs trước khi chốt thực tế; không tự code queue khi có thư viện phù hợp |
+| API contract | **REST + Django Ninja OpenAPI** | DRF + drf-spectacular; FastAPI OpenAPI; Strawberry GraphQL | REST đủ cho app và MCP read tools; GraphQL làm tăng mô hình schema/quyền/truy vấn chưa cần thiết |
+
+### 14.3. File, nội dung và AI
+
+| Thành phần | Chọn cho Kho Tri Thức | 2–3 lựa chọn khác đã xét | Đánh giá & lý do |
+| --- | --- | --- | --- |
+| Kho file chính | **Backblaze B2 private, S3-compatible adapter** | Cloudflare R2; Wasabi; Supabase Storage | B2 rẻ theo GB, giá công bố từ $6.95/TB-tháng, 10 GB đầu miễn phí, free egress tới 3× dung lượng trung bình. R2 không tính egress nhưng giá tiêu chuẩn $0.015/GB-tháng; chọn R2 làm kho chính nếu tần suất xem cao/egress B2 vượt hạn mức. Không thay nếu chưa đo |
+| Sao lưu ngoài nhà cung cấp chính | **Cloudflare R2 cho bản sao quan trọng + pg_dump/restic** | Google Drive 500 GB qua rclone; AWS S3; IDrive e2 | R2 tách nhà cung cấp khỏi B2, có 10 GB free; Drive 500 GB rất đáng tận dụng cho bản sao khối lượng lớn nhưng OAuth cần giám sát. Không giữ tất cả file không thể tái tạo chỉ trên một provider. Backup đạt PASS chỉ sau kiểm thử restore |
+| Downloader | **yt-dlp stable + ffprobe/FFmpeg** | Cobalt; gallery-dl; Streamlink | yt-dlp bao phủ nhiều nền tảng, có metadata và phụ đề, đã thử trong benchmark riêng. Cobalt dự phòng có điều kiện, gallery-dl cho album/ảnh, Streamlink cho live; không có giải pháp bảo đảm Shorts từ cloud IP |
+| PDF có chữ | **pypdf**; pdfplumber cho trang/bảng khó | pdfplumber; PyMuPDF; pypdfium2 | pypdf dễ tích hợp và giấy phép BSD; pdfplumber hỗ trợ bố cục/bảng nhưng tốn hơn; PyMuPDF mạnh và nhanh nhưng cần kiểm tra nghĩa vụ AGPL hoặc giấy phép thương mại |
+| DOCX | **python-docx** | Mammoth; Docling; LibreOffice headless | Lấy paragraph, table đủ cho phân loại/tìm kiếm; không cần cài bộ Office chạy nền. Mammoth phù hợp chuyển HTML, Docling dành cấu trúc sâu |
+| XLSX | **openpyxl** | python-calamine; pandas; LibreOffice headless | Giữ sheet/toạ độ ô và công thức/giá trị khi cần; đọc theo streaming với file lớn. pandas thiên phân tích và làm mất ngữ cảnh tọa độ nếu dùng trực tiếp |
+| Bài viết web | **Trafilatura** | readability-lxml; newspaper4k; Crawl4AI | CPU nhẹ, loại boilerplate và thu metadata. Benchmark công bố 2026 cho kết quả cao nhưng là phép đo của tác giả, vẫn phải thử trên trang web Việt. Không cài browser/Playwright production ngay |
+| AI phân nhóm | **Rule-based trước; Gemini 2.5 Flash-Lite trả phí khi được phép** | OpenAI GPT-6 Luna; Gemini 3.1 Flash-Lite; mô hình mở nhỏ chạy local | Phân loại chi phí thấp, có schema và taxonomy. Gemini Flash-Lite được công bố giá tham chiếu $0.10 input/$0.40 output /1M token cho 2.5 (paid); free-tier có chính sách sử dụng dữ liệu khác, **không gửi tài liệu công việc cá nhân nhạy cảm**. Phải đo chất lượng tiếng Việt bằng mẫu 30–50 item trước khi tự gắn nhóm |
+
+### 14.4. MCP, xác thực, hạ tầng và kiểm thử
+
+| Thành phần | Chọn cho Kho Tri Thức | 2–3 lựa chọn khác đã xét | Đánh giá & lý do |
+| --- | --- | --- | --- |
+| MCP protocol/runtime | **Official Python MCP SDK v2 với `MCPServer` + Streamable HTTP** | FastMCP framework độc lập; fastapi-mcp; tự viết protocol | SDK chính thức theo spec MCP mới, không phụ thuộc FastAPI. **Không copy code official SDK v1 gọi `FastMCP`**; đọc tài liệu v2 tại thời điểm code |
+| Xác thực ứng dụng | **Django Auth + session cookie + CSRF** | Supabase Auth; Auth0; Keycloak | Một người sử dụng, built-in đủ mạnh và tránh phí/dịch vụ mới; không public registration |
+| OAuth cho MCP | **Django OAuth Toolkit >=3.4 — kiểm thử trước khi công bố** | Auth0; ZITADEL; Keycloak | DOT 3.4 hỗ trợ MCP authorization-server role, PKCE, protected resource metadata, CIMD/DCR. Chung Django user nên dễ vận hành; nếu ChatGPT interoperability/refresh không đạt, thử IdP managed thay thế. Không thay bằng static key public |
+| HTTPS / reverse proxy | **Caddy** | Nginx; Traefik; Nginx Proxy Manager | Một domain và vài container, Caddy tự cấp/gia hạn TLS và file cấu hình ngắn; Traefik hợp nhiều dịch vụ auto discovery |
+| Server/region | **Một VPS Linux Docker; ưu tiên Oracle A1 nếu cấp được, fallback VPS Singapore** | DigitalOcean Singapore; Hetzner Singapore; Render/Railway | Oracle Always Free 2 OCPU/12 GB tương đương nhưng có rủi ro không có capacity. DO tham chiếu 2GB $12/tháng, 4GB $24/tháng; Hetzner SG thay đổi giá 06/2026, không so bằng giá châu Âu. **Chọn nhà cung cấp thực sau khi biết tài khoản, ngân sách và thử độ trễ** |
+| Deployment | **Docker Compose (Django ASGI + worker + Postgres + Caddy + frontend static)** | Railway; Render; Kubernetes | Chi phí tổng thấp và di chuyển dễ với 1 VM; Railway/Render giảm vận hành nhưng tính phí compute/worker/DB; Kubernetes dư cho một người |
+| CI/E2E | **pytest-django + Vitest + React Testing Library + Playwright CI + GitHub Actions** | Jest + Cypress; Selenium; TestCafe | Trải nghiệm React và Django có test đơn vị đến E2E. Playwright ở CI không phải đưa Chromium vào worker xử lý website |
+| Giám sát | **Structured logs, healthchecks, backup/job alarms; thêm Uptime Kuma khi cần** | Sentry; Prometheus/Grafana; Datadog | Ưu tiên phát hiện mất file, lỗi tác vụ và backup; không tạo stack monitoring nhiều dịch vụ trước khi có tải thực tế |
+
+### 14.5. Kết luận quyết định và cổng kiểm chứng
+
+**Thay đổi chủ yếu so với lựa chọn ban đầu:**
+1. **Mantine thay shadcn/ui** cho UI kit chính; React/TS/Vite giữ nguyên.
+2. **Django 6 + Django Ninja + Django ORM** thay FastAPI/SQLAlchemy/Alembic: có auth/admin/migrations sẵn, phù hợp hệ thống quản lý dữ liệu cá nhân.
+3. **Django OAuth Toolkit >=3.4** là ứng viên đầu cho MCP OAuth sau khi thư viện hoạt động; cần test thật với ChatGPT.
+4. **Official MCP SDK v2 (`MCPServer`)** thay mọi ví dụ lỗi thời của SDK v1.
+5. B2 là kho chính; backup tối thiểu ở R2 độc lập, Google Drive 500 GB là nơi backup mở rộng khi cấu hình được.
+6. Queue Procrastinate chưa coi là PASS: chỉ khóa sau các bài thử restart/retry/multi-worker.
+7. Nơi đặt VM và AI provider chưa phải hợp đồng: chỉ chọn sau khi đo ngân sách/tài nguyên/chất lượng và quyền riêng tư.
+
+**Thử trước khi khóa production:**
+- 30–50 item thật: so tốc độ thao tác và phân nhóm Mantine UI, đo chất lượng AI/không dấu.
+- B2↔R2: upload, verify SHA256, backup và restore.
+- Procrastinate: crash giữa task, retry an toàn, dedup, restart worker, lỗi network.
+- Android: cài PWA; chia sẻ link từ Facebook/TikTok/YouTube, lấy URL từ text/title khi cần.
+- MCP: OAuth metadata/CIMD/DCR, token audience/scope/expiry, ChatGPT web thực tế.
+- VPS: CPU/RAM trong tải lớn, độ trễ tới Việt Nam, egress, backup riêng.
+
+### 14.6. Tài liệu gốc dùng khi đối chiếu
+
+- React/Vite/Mantine: https://vite.dev/ · https://mantine.dev/
+- Django/Django Ninja/DOT: https://docs.djangoproject.com/en/6.0/ · https://django-ninja.dev/ · https://django-oauth-toolkit.readthedocs.io/en/latest/
+- PostgreSQL/Typesense: https://www.postgresql.org/docs/current/pgtrgm.html · https://typesense.org/docs/guide/locale.html
+- Procrastinate/Chancy: https://procrastinate.readthedocs.io/en/stable/howto/django.html · https://pypi.org/project/chancy/
+- B2/R2/Supabase: https://www.backblaze.com/cloud-storage/pricing · https://developers.cloudflare.com/r2/pricing/ · https://supabase.com/pricing
+- yt-dlp/pypdf/Trafilatura: https://github.com/yt-dlp/yt-dlp · https://pypdf.readthedocs.io/ · https://trafilatura.readthedocs.io/en/latest/evaluation.html
+- Gemini/OpenAI API: https://ai.google.dev/gemini-api/docs/pricing · https://developers.openai.com/api/docs/pricing
+- MCP v2/OpenAI auth: https://github.com/modelcontextprotocol/python-sdk · https://developers.openai.com/plugins/build/auth
+- Oracle/DO/Hetzner: https://docs.oracle.com/en-us/iaas/Content/FreeTier/freetier_topic-Always_Free_Resources.htm · https://www.digitalocean.com/pricing/droplets · https://docs.hetzner.com/general/infrastructure-and-availability/price-adjustment/
+- Caddy/Android share: https://caddyserver.com/docs/automatic-https · https://developer.chrome.com/docs/capabilities/web-apis/web-share-target
+
+**Đây là bản đánh giá công nghệ, chưa có test triển khai và không thay đổi phạm vi sản phẩm v4.2.** Khi phát hành phải kiểm lại giá, license, versions và kết quả test thực.
