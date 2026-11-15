@@ -1,116 +1,102 @@
-# KHO TRI THỨC — KẾ HOẠCH TỔNG THỂ V4.3 (TINH GỌN, DRIVE-FIRST)
+# KHO TRI THỨC — KẾ HOẠCH TỔNG THỂ V4.4
+## Nhỏ khi vận hành, sẵn đường nâng cấp dài hạn
 
-**Ngày rà soát:** 15/11/2026 · **Thay thế:** v4.2 · **Trạng thái:** định hướng để xây ứng dụng, chưa triển khai mã nguồn.  
-**Thay đổi cốt lõi:** Chủ sở hữu đã xác nhận **lưu dữ liệu trên Google Drive**, dữ liệu cá nhân tương đối đơn giản, một người dùng, không cần hạ tầng hoặc mô hình bảo mật doanh nghiệp. Những lựa chọn từng đưa B2/R2 làm kho chính **được hủy bỏ**.
+**Ngày:** 15/11/2026 · **Thay thế v4.3** · **Trạng thái:** thiết kế, chưa có mã nguồn ứng dụng.  
+**Nguồn quyết định:** người dùng muốn **Google Drive là kho file chính**, sử dụng cá nhân, tự sắp xếp theo lĩnh vực/dự án/xem theo ngày, có thể kết nối ChatGPT và mở rộng AI trong tương lai. Tránh cả overengineering lẫn làm quá sơ sài dẫn đến viết lại hệ thống.
 
-## 1. Mục tiêu không đổi
+## 1. Mục tiêu của bản đầu
 
-Một ứng dụng dễ dùng trên Android và máy tính, để:
-1. Nhận link Facebook/TikTok/YouTube/website; nhận file, ảnh, ghi chú.
-2. Lưu **file gốc vào Google Drive của người dùng**, lưu URL gốc và trạng thái thực. Với video, tự tải khi nguồn cho phép và kỹ thuật hỗ trợ; nếu không tải được vẫn giữ link.
-3. Lấy metadata, văn bản PDF có lớp chữ/DOCX/XLSX/HTML, phụ đề có sẵn; không chạy OCR/ASR hàng loạt.
-4. AI nhẹ gợi ý lĩnh vực, chủ đề, dự án, tag và tên từ dữ liệu có sẵn; giữ quyền sửa thủ công.
-5. Xem theo **lĩnh vực / dự án / ngày / loại nội dung**; tìm kiếm tên, mô tả, ghi chú, văn bản trích xuất và lọc.
-6. Khi muốn ChatGPT nghiên cứu: **thử ứng dụng Google Drive có sẵn trong ChatGPT trước**. Chỉ xây MCP tùy chỉnh nếu ChatGPT phải tìm theo tag/dự án nội bộ hoặc Drive plugin không đáp ứng được.
+- Tiếp nhận URL FB/TikTok/YouTube/web, video, ảnh, tài liệu PDF/DOCX/XLSX và ghi chú bằng Android/Windows.
+- Lưu file gốc trên Google Drive My Drive do chủ sở hữu kết nối, video chỉ tải khi nền tảng cho phép và công cụ hoạt động; link thất bại vẫn được giữ.
+- Thu thập metadata và văn bản dễ lấy (PDF có chữ, DOCX, XLSX, HTML, phụ đề có sẵn); chạy nền, không làm nghẽn lưu file.
+- Gợi ý lĩnh vực, chủ đề, dự án, nhãn bằng AI nhẹ, có thể sửa; xem theo ngày mà không nhân bản file.
+- Tìm kiếm từ khóa và lọc; quản lý đánh dấu quan trọng, xóa mềm, khôi phục.
+- Đọc/nghiên cứu file qua **ChatGPT Google Drive app trước**. MCP riêng là tính năng có điều kiện nếu cần tìm bằng phân loại/ghi chú riêng của Kho Tri Thức.
 
-**Không làm ngay:** chatbot riêng, vector DB, AI nghiên cứu tự động, graph tri thức, OCR/ASR hàng loạt, Kubernetes, CDN, nhiều kho S3, hạ tầng kiểm soát quyền kiểu doanh nghiệp.
+**Không triển khai trong bản đầu:** OAuth server riêng cho MCP, ASR/OCR hàng loạt, embeddings, chatbot nội bộ, graph, CDN, kho S3 thứ hai, microservices, Kubernetes, multi-tenant UI hoặc hệ thống bảo mật doanh nghiệp.
 
-## 2. Lưu trữ: Google Drive là kho CHÍNH
+## 2. Những quyết định PHẢI thiết kế đúng từ đầu
 
-- Người dùng đã có ưu đãi khoảng **500 GB Drive trong năm đầu** (chưa xác minh ngày hết hạn, cần kiểm tra thực tế).
-- Tạo thư mục chuyên dụng `Kho Tri Thuc/` trong **My Drive**; ví dụ `Video/`, `Tai lieu/`, `Hinh anh/`, `He thong/`. Tổ chức bằng lĩnh vực, dự án và ngày nằm **trong metadata ứng dụng**, không phải nhiều bản sao/thư mục vật lý.
-- Mỗi mục có `item_id`; file có `drive_file_id`. Drive ID không đổi khi người dùng sửa tên hoặc sắp xếp; không lưu đường dẫn dưới dạng định danh.
-- **Google Drive API OAuth**: ưu tiên `drive.file` chỉ truy cập file do ứng dụng tạo/mở hợp lệ; nếu muốn duyệt file đã có thì bổ sung Google Picker theo nhu cầu, không đòi quyền đọc toàn bộ Drive.
-- Upload lớn qua Google Drive resumable upload; file/Drive preview được mở bằng link Google Drive đã xác thực. Chưa tự xây proxy phát video hoặc presigned URL kiểu S3.
-- Có trạng thái `link_saved`, `download_pending`, `file_saved`, `failed` rõ ràng; “đã lưu link” KHÔNG đồng nghĩa “đã lưu video”.
-- Nếu Google OAuth có lỗi hoặc quota hết: giữ bản ghi/link, báo lỗi, cho kết nối lại, không giả vờ upload thành công.
-- Hạn 500 GB có thể hết sau một năm: theo dõi quota, có thể xuất/migrate về sau; B2/R2 là phương án **chỉ khi cần**.
+1. **Hai loại định danh:** mỗi mục có `item_id` UUID, mỗi file có `asset_id` UUID; Google Drive `drive_file_id` chỉ là **mã vị trí lưu**, không được làm khóa nghiệp vụ. Tách `Asset` và `StorageLocation` (bản đầu chỉ một location Drive).
+2. **Tách các tầng dữ liệu:** bản gốc và nguồn; dữ liệu trích xuất/AI có thể tái tạo; thông tin người dùng sửa/chốt **không được AI tự ghi đè**.
+3. **Nhóm là quan hệ many-to-many** cho lĩnh vực/chủ đề/dự án/tag; ngày là thuộc tính lọc, không phải đường dẫn thư mục.
+4. **Backend có API ổn định `/api/v1/`**, các nghiệp vụ lưu/truy xuất/tìm kiếm nằm trong service để sau này phục vụ PWA, Android native và MCP mà không viết lại.
+5. **Storage driver nhỏ ngay từ đầu:** `DriveStorage` hiện thực giao diện `save/open/verify/delete/locate`. Chưa cần hiện thực B2/R2 hoặc migration engine.
+6. **Job trạng thái bền vững, idempotent:** lỗi Google API/worker restart không được làm mất item hoặc tạo nhiều bản sao do retry.
+7. **Trích xuất được version hóa:** lưu tên parser/phiên bản, hash file đầu vào, thời điểm, nội dung/locator và trạng thái; sau này thay parser, OCR, ASR không làm mất bản gốc và chỉnh sửa thủ công.
+8. **Tìm kiếm qua `SearchService`:** PostgreSQL FTS/trigram ban đầu; có thể bổ sung Typesense/pgvector sau mà không đổi API/UX.
+9. **Portable export:** xuất danh mục/nhóm/ghi chú/quan hệ và mapping `item_id ↔ asset_id ↔ drive_file_id` thành JSON có `schema_version`, kèm file manifest và một bản DB backup. Người dùng có đường khôi phục khi đổi máy/chuyển lưu trữ.
+10. **Lựa chọn công nghệ không khóa nâng cấp:** một Django monolith phân module, frontend React tĩnh; khi cần ASR/AI nặng tách worker thành tiến trình/máy khác, không thiết kế microservice sớm.
 
-## 3. Dữ liệu danh mục không nhất thiết cùng công nghệ với file gốc
+## 3. Lựa chọn công nghệ cân bằng
 
-- File gốc ở Google Drive.
-- **Danh mục ứng dụng** (tiêu đề, nguồn, tag, lĩnh vực, dự án, ngày, tình trạng) ưu tiên **SQLite** — database nhẹ, một file, không có PostgreSQL server, phù hợp ít người truy cập.
-- File SQLite đang chạy phải nằm **trên ổ cục bộ của backend**, không đặt trực tiếp trong thư mục Google Drive đang đồng bộ.
-- Xuất/sao lưu database (SQLite snapshot/JSON/CSV) định kỳ **lên Drive**; giữ ít nhất một bản sao tải xuống PC hoặc nơi độc lập cho dữ liệu không thể tái tạo.
-- Tìm kiếm đơn giản bằng SQLite FTS5 + trường text chuẩn hóa tiếng Việt có/không dấu; thử với dữ liệu thực.
-- Có thùng rác mềm và bảo vệ không tự xóa bản gốc ngay.
+| Thành phần | Lựa chọn cho bản chạy thực tế | Vì sao |
+| --- | --- | --- |
+| File gốc | **Google Drive API + OAuth `drive.file`** | Tận dụng ~500 GB hiện có; file xem được trong Drive và ChatGPT khi được cấp quyền |
+| Danh mục/tìm kiếm/job | **PostgreSQL** trong một Docker Compose nhỏ | Chỉ thêm một dịch vụ nhưng tránh đổi SQLite/FTS5/queue khi nâng cấp; Django khuyến nghị PostgreSQL cho production |
+| Backend | **Django 5.2 LTS + Django Ninja** | Auth/admin/migration và API theo kiểu dữ liệu; LTS được hỗ trợ tới 04/2028, có đường lên 6.2 LTS |
+| Frontend | **React + TypeScript + Vite + Mantine** | Trải nghiệm bộ lọc và thư viện trên PC/Android; build tĩnh, không SSR |
+| Tác vụ | **Một worker Python + bảng job PostgreSQL** | Vận hành đơn giản, job bền vững; có thể tăng worker/chuyển queue khi tải tăng |
+| Search | **PostgreSQL keyword/FTS + unaccent/pg_trgm** | Không cần service search; sau có thể thêm vector mà giữ API |
+| AI nhẹ | **Rule-based + API provider adapter tùy chọn** | Đủ để gợi ý nhóm; chưa chọn nhà cung cấp trước benchmark |
+| ChatGPT | **Google Drive app**, MCP tùy nhu cầu | Không xây cầu nối mới khi ứng dụng Drive sẵn có đáp ứng |
 
-## 4. Mức an toàn vừa đủ
+**SQLite vẫn hợp cho prototype/demo rất nhỏ**, nhưng KHÔNG đưa dữ liệu dùng thật vào SQLite rồi dự định chuyển PostgreSQL “dễ dàng” mà chưa có bài thử migration. Với ưu tiên không muốn làm lại, đề xuất dùng cùng PostgreSQL từ lúc bắt đầu code và bản chạy thật. Không thuê managed database riêng; chạy Postgres trong cùng máy chủ và sao lưu đúng cách.
 
-Người dùng không yêu cầu bảo mật doanh nghiệp; chỉ cần:
-- **Một tài khoản đăng nhập**, HTTPS khi mở internet; không đăng ký công khai.
-- Không đăng công khai file Drive hoặc đặt link “Anyone with link” chỉ để app hoạt động.
-- Không lưu mật khẩu, Google access/refresh token vào GitHub hoặc frontend.
-- Hạn chế đầu vào URL độc hại (SSRF), tệp quá lớn, tải video mất kiểm soát.
-- Sao lưu metadata/file quan trọng và thử khôi phục tối thiểu.
-- MCP tùy chỉnh (nếu làm) chỉ đọc; không công khai endpoint vô danh có quyền đọc Drive.
+## 4. Google Drive là kho chính, nhưng không được trở thành khóa
 
-Không làm hệ RBAC nhiều vai trò, audit doanh nghiệp, dịch vụ quản lý khóa chuyên dụng, phân tích tuân thủ hoặc hệ thống backup đa cloud phức tạp.
+- Thư mục vật lý theo **loại file** (video/ảnh/tài liệu/hệ thống) hoặc đơn giản hơn; nhóm/dự án/ngày quản lý bằng database.
+- Mỗi file do app tạo có `item_id`/`asset_id` trong metadata Drive (chỉ là dấu vết tìm lại), đồng thời ghi trong manifest có thể mang sang Google API client mới; metadata ngắn chứ không nhét toàn bộ nhóm/tag vào Drive.
+- Sử dụng resumable upload, xét pre-generated Drive IDs cho file nhị phân để chống duplicate khi timeout; phân biệt nhận URL, lưu file và kiểm tra file thật.
+- Lưu trạng thái `modifiedTime/revision/size/checksum` nếu có; khi người dùng đổi tên/xóa/sửa file trực tiếp trên Drive, có cơ chế **kiểm tra lại / đối chiếu định kỳ** (sau có thể dùng Drive Changes API).
+- Khi nhập Google Docs/Sheets/Slides native: coi là một dạng nguồn riêng; export ra định dạng phổ biến **khi cần** để bảo đảm portability; không hứa Google API xuất mọi file cực lớn bằng cùng một cách.
+- OAuth `drive.file` chỉ quản lý file ứng dụng tạo/mở hợp lệ; nếu nhập file đã có từ Drive sẽ cần Google Picker hoặc cơ chế cấp quyền tương ứng.
+- Khi ưu đãi 500 GB sắp hết: xuất manifest, chọn mua thêm Drive hoặc viết provider mới, di chuyển **từng file** và xác minh checksum; `item_id`, dự án, tìm kiếm và MCP không đổi.
 
-## 5. Những chức năng bản đầu phải có
+## 5. Các đường nâng cấp cần bảo đảm (KHÔNG triển khai tất cả ngay)
 
-| Nhóm | Phạm vi |
-| --- | --- |
-| Thêm | Dán/chia sẻ URL; nhập ghi chú; tải ảnh, tài liệu, video |
-| Lưu vào Drive | File gốc, metadata liên kết tới file ID, trạng thái upload |
-| Link video | yt-dlp khi được phép/hỗ trợ, lấy metadata/phụ đề có sẵn, fallback chỉ lưu link |
-| Trích xuất nhẹ | PDF có chữ, DOCX, XLSX, bài viết HTML; trích thất bại không xóa file |
-| Phân nhóm | Lĩnh vực/chủ đề, dự án, tag, ngày; AI nhẹ gợi ý, người dùng sửa |
-| Thư viện | Thẻ/danh sách, xem theo nhiều cách, trang chi tiết, mở Drive |
-| Tìm kiếm | Từ khóa, không dấu, lọc ngày/nguồn/dự án/lĩnh vực/tag |
-| Tin cậy | Ghi nhận lỗi, retry cơ bản, xóa mềm, backup SQLite |
+| Khi cần nâng cấp | Có thể làm mà không phải sửa phần nào | Tính năng chỉ bổ sung lúc đó |
+| --- | --- | --- |
+| Drive hết dung lượng | Giữ item, nhóm, tìm kiếm, ghi chú, API | Thêm B2/R2 storage driver, migration & verify |
+| Nhiều tài liệu hơn / thêm người dùng | Giữ database schema, REST API, UI | Index tối ưu, thêm worker, phân quyền user |
+| OCR PDF scan, ảnh viết tay | Giữ file gốc + Asset, lịch sử sửa | OCR extractor tạo `DerivedContent` phiên bản mới |
+| ASR video, tóm tắt video | Giữ nguồn/video/ID | ASR processor, transcript có timestamp, derivative data |
+| AI phân loại thay model | Giữ nhóm đã chốt, file và ghi chú | AIExecution/reprocessing có version & approval |
+| Tìm kiếm ngữ nghĩa | Giữ API `SearchService.search` | `EmbeddingModel` + `ChunkEmbedding`, pgvector hoặc search service |
+| ChatGPT cần tag/project nội bộ | Giữ API read/search + ID | MCP chỉ đọc/OAuth hoặc tunnel phù hợp |
+| Android ứng dụng native | Giữ REST API | Capacitor hoặc native app, không viết lại backend |
+| Nhiều worker chạy song song | Giữ job và trạng thái nghiệp vụ | Postgres locking, job library chuyên dụng nếu cần |
+| Đổi hosting/mất máy chủ | Giữ Drive originals và bản export danh mục | Restore DB/manifest, triển khai app trên máy mới |
 
-Phân loại AI có thể tắt; không buộc phải gửi mọi tài liệu cho AI nếu thiếu quyền hoặc quota.
+## 6. Sao lưu và độ an toàn vừa đủ
 
-## 6. Lộ trình ưu tiên — chỉ bốn mốc
+- Không cần RBAC enterprise; chỉ một tài khoản đăng nhập, HTTPS nếu chạy công khai và giữ Google OAuth token kín.
+- Database và dữ liệu người dùng **không thể tái tạo** cần backup đều đặn. Drive gốc + DB backup trên Drive phục hồi khi VPS hỏng nhưng **không thay thế bản sao ở nơi khác** khi mất tài khoản Google.
+- Tối thiểu: `pg_dump` + JSON manifest lên thư mục hệ thống trên Drive, bản sao ngoài Drive về Windows theo lịch đơn giản; định kỳ thử restore.
+- Giữ file gốc và chú giải thủ công; mọi xóa đều xóa mềm trước.
+- Chống SSRF cơ bản, giới hạn file/url và retry; không cần hệ thống quản lý khóa enterprise.
 
-### Mốc A — Chứng minh Drive và giao diện (đi đầu)
+## 7. Thứ tự triển khai đã chốt
 
-- Xác thực Google Drive trên tài khoản thật, tạo folder, upload một ảnh/PDF, mở lại trên điện thoại và PC.
-- Tạo frontend cơ bản, đăng nhập một người dùng, SQLite index.
-- Lưu note/link/file vào Drive, thư viện, xem chi tiết.
-- Ghi rõ dữ liệu ở Drive, không tạo B2/R2.
-- **PASS:** người dùng thực sự lưu và xem lại tài liệu từ chính Drive của mình.
+**Mốc A — Nền tảng đúng và lưu Drive được (P0):** Django LTS, PostgreSQL, API, ID ổn định, storage driver Drive/OAuth, upload–open–verify, đơn giản một worker, màn hình Thêm/Thư viện, backup đầu tiên.
 
-### Mốc B — Tự sắp xếp và tìm kiếm (bản sử dụng hằng ngày)
+**Mốc B — Dùng được hàng ngày (P0):** metadata video/web, trích chữ và phụ đề nguồn, AI gợi ý nhóm, lĩnh vực/dự án/ngày/tag, tìm kiếm và bộ lọc, Android dán/chia sẻ link khi nền tảng hỗ trợ.
 
-- Metadata website/video, yt-dlp thử trên host thật, phụ đề có sẵn.
-- Trích văn bản nhẹ, AI gợi ý nhóm; lĩnh vực/dự án/ngày/tag.
-- Bộ lọc, không dấu, sửa nhóm, phát hiện trùng, trạng thái lỗi.
-- Một worker nền nhẹ, không triển khai Redis/Procrastinate/PostgreSQL khi chưa cần.
-- **PASS:** gửi nội dung không cần tự chọn thư mục; tìm được bằng chủ đề/dự án/ngày.
+**Mốc C — Khai thác ChatGPT (P1):** thử Google Drive app trước; MCP chỉ đọc nếu thật sự cần truy vấn tag/dự án/ghi chú riêng hoặc connector chưa đáp ứng.
 
-### Mốc C — Dùng ChatGPT để nghiên cứu
+**Mốc D — Mở rộng (theo nhu cầu):** OCR/ASR theo yêu cầu, đổi AI, search ngữ nghĩa, storage driver thứ hai, nhiều worker/người dùng, ứng dụng Android native.
 
-- **Trước tiên kết nối/thử Google Drive app trong ChatGPT** với thư mục/file thật (phụ thuộc tài khoản/workspace).
-- Nếu chỉ cần ChatGPT đọc, so sánh và nghiên cứu file Drive và đáp ứng tốt: **dừng ở đây, không xây MCP**.
-- Nếu cần ChatGPT truy vấn taxonomy, tag, ghi chú và văn bản trích xuất riêng: xây MCP chỉ đọc, dùng backend hiện có, thử ChatGPT thật.
-- **PASS:** giải quyết được câu hỏi nghiên cứu thực tế; không đánh đồng metadata với nội dung file/video.
+Trước khi thông báo PASS từng mốc, phải có kiểm thử file Drive thật, restart worker, tìm kiếm tiếng Việt, bản sao và khôi phục, không chỉ green CI.
 
-### Mốc D — Nâng cấp tùy nhu cầu
+## 8. Phạm vi chưa chốt
 
-Android Share Target khi được máy hỗ trợ, Telegram Bot nếu cần, phân nhóm hàng loạt, OCR/ASR theo yêu cầu, mở rộng lưu trữ sau hết hạn 500 GB.
+- Máy chủ Windows luôn mở hay VPS chạy 24/7; tên miền chưa có.
+- Ngân sách/vấn đề gửi nội dung lên AI bên ngoài; lựa chọn AI cần benchmark.
+- Số lượng video và file lớn, tốc độ mạng khi tải lên Drive.
+- Ngày hết hạn 500 GB Google Drive, quota thực tế; tài khoản Google sẽ được chủ sở hữu kết nối.
+- ChatGPT có quyền sử dụng app Google Drive theo tài khoản/workspace không.
+- Sau khi có dữ liệu thật, mới xác định điểm ngưỡng mở rộng ở `ROADMAP_AND_TESTS.md`.
 
-## 7. Bài thử nghiệm thu thiết yếu
+**Quy ước tài liệu:** `MASTER_PLAN.md` quản lý mục tiêu/phạm vi, `ARCHITECTURE_AND_DATA.md` giải thích kỹ thuật và so sánh phương án, `ROADMAP_AND_TESTS.md` là backlog và nghiệm thu, `AGENTS.md` là quy tắc Codex. Không bổ sung 17 file tài liệu thiết kế.
 
-1. Gửi 1 link lỗi và 1 link tải được: phân biệt rõ trạng thái.
-2. Lưu 1 ảnh, 1 PDF có chữ, 1 DOCX/XLSX, 1 ghi chú; mở file từ Drive.
-3. Tự phân loại cùng một nội dung vào nhiều chủ đề/dự án, xem theo ngày nhưng không nhân file.
-4. Tìm “quy hoạch” và “quy hoach” trong tài liệu/ghi chú; kết quả phù hợp.
-5. Ngắt mạng khi upload: không thông báo file đã lên Drive nếu chưa xác minh.
-6. Khởi động lại worker khi đang xử lý: tác vụ có thể retry, không tạo trùng.
-7. Xóa mềm và khôi phục, backup/restore SQLite, đối chiếu drive_file_id.
-8. Google OAuth hết hạn/bị thu hồi: báo lỗi và có cách kết nối lại.
-9. Nếu có ChatGPT Drive app: thử đọc, so sánh 3 file trong Drive; nếu có MCP riêng: test quyền chỉ đọc.
-
-## 8. Những việc cần xác minh trước khi triển khai thật
-
-- Tài khoản Google Drive nào có 500 GB, thời điểm hết ưu đãi và quota còn lại.
-- OAuth project chuyển ra `In production` khi phù hợp; với app External/Testing, refresh token thường hết hạn 7 ngày, không thiết kế như token vĩnh viễn.
-- Kênh triển khai: local Windows để thử; VPS nhỏ chỉ thuê khi cần app hoạt động 24/7 và tự tải video.
-- Lượng video/thời lượng thực, điều kiện tải hợp pháp và khả năng tải từ IP của host.
-- ChatGPT Google Drive app có khả dụng trên workspace và quyền hiện tại hay không.
-
-**Lựa chọn triển khai và bảng so sánh công nghệ:** xem `ARCHITECTURE_AND_DATA.md`. **Thứ tự nhiệm vụ và nghiệm thu:** xem `ROADMAP_AND_TESTS.md`.
-
-**Trạng thái:** tài liệu thiết kế; chưa có app/deployment. Các benchmark video cũ là tham khảo, không phải chứng nhận vận hành của kho này.
+**Trạng thái khi cập nhật:** Chỉ có tài liệu; chưa tạo frontend/backend, chưa thử Google Drive API với tài khoản của người dùng, chưa có production.
