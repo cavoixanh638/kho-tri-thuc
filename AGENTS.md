@@ -15,7 +15,7 @@
 - Các cổng nâng cấp **U01–U13 trong `docs/ROADMAP_AND_TESTS.md`** chỉ được yêu cầu đúng thời điểm; không bắt bản đầu triển khai OCR/ASR, pgvector, multi-storage hoặc MCP.
 - Domain models/logic không được phụ thuộc trực tiếp Drive ID, SQL tìm kiếm rải ở view, output AI thay thế chỉnh sửa người dùng. Giữ `StoragePort`, `SearchService`, `ReadKnowledgeService`, `DerivedContent` có version và `Job` idempotent.
 - **Không tự mở rộng sang B2/R2, Redis/Procrastinate, OCR/ASR, vector DB, chatbot riêng, MCP tùy chỉnh, browser automation hoặc microservices** khi chưa được giao.
-- Ưu tiên phần mềm chạy được, **lưu file gốc thật lên Google Drive**, phân nhóm đúng và có thể khôi phục. **PostgreSQL là CSDL danh mục** (một container; chưa cần DB managed). Không báo thành công chỉ vì có URL hoặc item SQLite.
+- Ưu tiên phần mềm chạy được, **lưu file gốc thật lên Google Drive**, phân nhóm đúng và có thể khôi phục. **PostgreSQL là CSDL danh mục** (một container; chưa cần DB managed). Không báo thành công chỉ vì có URL hoặc bản ghi trong PostgreSQL.
 - Không xóa/ghi đè nguồn gốc, commit có sẵn, dữ liệu người dùng hoặc thay đổi của worker khác.
 - Mọi schema thay đổi phải có migration và test; API thay đổi phải cập nhật hợp đồng và test.
 - Không tạo dữ liệu giả trên môi trường thật, không thông báo PASS nếu chưa có bằng chứng test.
