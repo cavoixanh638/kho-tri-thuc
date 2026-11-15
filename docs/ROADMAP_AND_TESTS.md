@@ -1,103 +1,110 @@
-# LỘ TRÌNH VÀ KIỂM THỬ V4.3 — GOOGLE DRIVE TRƯỚC
+# LỘ TRÌNH VÀ NGHIỆM THU V4.4 — LÀM NHẸ, NÂNG CẤP ĐƯỢC
 
-**Cập nhật:** 15/11/2026 · **Dựa trên:** `MASTER_PLAN.md` và `ARCHITECTURE_AND_DATA.md` v4.3.  
-**Chưa có đầu việc nào đã triển khai/PASS.** Bản trước dựa trên B2/R2/PostgreSQL/Procrastinate và MCP bắt buộc đã được thay thế.
+**Ngày:** 15/11/2026 · **Theo:** `MASTER_PLAN.md` v4.4 và `ARCHITECTURE_AND_DATA.md` v4.4.  
+**Trạng thái:** chưa có app, chưa có môi trường chạy và chưa có test PASS. Mọi checklist dưới là yêu cầu nghiệm thu tương lai.
 
-## 1. Ưu tiên theo giá trị sử dụng
+## 1. Thứ tự triển khai và phụ thuộc
 
-1. **Kiểm chứng lưu Google Drive:** tạo folder, OAuth, upload, mở file.
-2. **Ứng dụng Thêm + Thư viện:** link, ghi chú, ảnh/file/video, danh mục SQLite; thao tác được trên điện thoại/PC.
-3. **Tự phân nhóm & tìm kiếm:** metadata, trích xuất nhẹ, AI nhẹ, lĩnh vực/dự án/ngày/tag.
-4. **Thử ChatGPT Google Drive app:** đọc, tóm tắt, so sánh file trong thư mục; **chỉ làm MCP nếu thiếu tính năng truy vấn metadata ứng dụng**.
-5. **Hoàn thiện:** Android Share Target, xuất/backup, giao diện quản lý hàng loạt, OCR/ASR on-demand khi có nhu cầu.
+| Mốc | Mục tiêu người dùng | Kết quả bắt buộc | Không cần làm |
+| --- | --- | --- | --- |
+| **A — Nền tảng & Google Drive** | Gửi file, link, ghi chú rồi xem lại được | Google OAuth, Drive, PostgreSQL, Item UUID, Asset/StorageLocation, API, 1 worker và backup | B2/R2, MCP, OCR/ASR |
+| **B — Thư viện thông minh** | Tự phân nhóm và tìm theo lĩnh vực/dự án/ngày | Metadata, trích chữ nhẹ, phụ đề nguồn, AI nhẹ, search, Android PWA cơ bản | Vector/RAG, đa người dùng |
+| **C — ChatGPT** | Yêu cầu ChatGPT nghiên cứu file Drive | Kiểm tra Google Drive app; chỉ tạo MCP nếu truy vấn tag/dự án nội bộ thực sự cần | OAuth MCP khi plugin Drive đã đủ |
+| **D — Nâng cấp có điều kiện** | Mở rộng chức năng mà không viết lại lõi | OCR/ASR, pgvector, tăng worker, storage thứ hai, native Android theo nhu cầu | Không triển khai theo lịch cứng |
 
-**Không chờ:** cài B2/R2, PostgreSQL, Procrastinate, Elasticsearch, MCP OAuth server, Docker multi-service, Kubernetes để có bản đầu.
+**Quy tắc:** Chỉ nghiệm thu mốc A/B trên dữ liệu thật và backup restore. Không ép test embedding hoặc chatbot trước mốc A.
 
-## 2. Đợt A — Drive proof-of-concept và UI skeleton
+## 2. Mốc A — Nền tảng vững nhưng vẫn nhanh
 
-| Mã | Việc | Tiêu chí đạt |
+| ID | Công việc | Điều kiện PASS |
 | --- | --- | --- |
-| KT-001 | Kết nối tài khoản Google qua `drive.file` OAuth | Tạo `Kho Tri Thuc` trong My Drive, upload 1 ảnh và 1 PDF, tải/mở lại đúng tài khoản |
-| KT-002 | Kiểm tra expiry/reconnect | Biết rõ trạng thái Testing/Production; khi token lỗi báo và kết nối lại; không để credential vào Git |
-| KT-003 | Khởi tạo Django 6/Ninja + SQLite | Login 1 người; migration; tạo item + drive file reference |
-| KT-004 | React/TS/Vite/Mantine 4 màn hình | Thêm/Thư viện/Chi tiết/Cài đặt responsive, phân biệt dữ liệu thật và mock |
-| KT-005 | Smoke backup SQLite local→Drive | Snapshot nhất quán khôi phục được trên máy thử |
+| KT-001 | Scaffold Django **5.2 LTS + Ninja**, Postgres Docker, React/TS/Vite/Mantine, Django worker | Chạy local Windows/Docker, migration/reverse migration có test |
+| KT-002 | Thiết kế schema UUID: Item/Source/Asset/StorageLocation, User FK, Groups/Projects/Tags, Job, DerivedContent | File ID Drive không làm PK; các bảng phục vụ đúng API |
+| KT-003 | Google OAuth `drive.file`, tạo thư mục ứng dụng, reconnect khi `invalid_grant` | Tài khoản đúng, upload được 1 ảnh + 1 PDF thật, không lộ token |
+| KT-004 | `DriveStorage` adapter và FakeStorage test | `save/open/stat/verify`; không có B2 code |
+| KT-005 | Upload resumable, status rõ, thử pre-generated ID cho blob | Timeout không tạo hai Drive file; xác nhận file thật |
+| KT-006 | UI Thêm, Thư viện, Chi tiết, Cài đặt; Django Auth 1 user | Android/Windows mở được, link-only rõ |
+| KT-007 | JobRepository với `lease/retry/idempotency` và một worker | Kill/restart giữa download/upload không mất item/trùng file |
+| KT-008 | `pg_dump` + JSON portable export mapping Drive ID, bản copy ngoài Drive | Restore DB/manifest mở lại file gốc và nhóm |
+| KT-009 | Drive metadata `asset_id/item_id` ngắn, recovery test | Nếu DB bị mất, manifest + Drive file cho phép khôi phục liên kết |
 
-**Gate A:** Một file thật từ web/app lên **đúng Google Drive**; thư viện thấy item và mở lại file. Không ghi “đã lưu” chỉ vì đã tạo database record.
+**Gate A:** File lên đúng Drive; user mở được; job/bản sao không nhân trùng; backup/restore đã được chạy thật. PostgreSQL một container chứ không là managed DB phức tạp.
 
-## 3. Đợt B — Bản đầu sử dụng hằng ngày
+## 3. Mốc B — Tự động tổ chức, tìm kiếm
 
-| Mã | Việc | Tiêu chí đạt |
+| ID | Công việc | Điều kiện PASS |
 | --- | --- | --- |
-| KT-101 | Dán URL/ghi chú/upload PDF-ảnh-video | Có original URL, item ID, trạng thái rõ, tự lưu metadata |
-| KT-102 | Google Drive resumable upload | File >5 MB, mạng rớt, retry và xác minh Drive file ID |
-| KT-103 | Django model nhóm + tag + ngày | Một item ở nhiều lĩnh vực/dự án, xem theo ngày, không nhân file |
-| KT-104 | SQLite FTS5/tìm có dấu & không dấu | Tìm tên/mô tả/ghi chú và lọc ngày, lĩnh vực, dự án |
-| KT-105 | yt-dlp worker + temp file + Drive upload | Link nguồn hỗ trợ tải được; nguồn không tải được vẫn lưu link, lỗi không khóa UI |
-| KT-106 | Metadata, pypdf/DOCX/XLSX/Web, phụ đề có sẵn | Text extraction fail không xóa gốc, tìm được chữ đã lấy |
-| KT-107 | AI gợi ý phân nhóm nhẹ khi cần | Có thể sửa; AI retry không ghi đè gán thủ công, hạn mức chi phí |
-| KT-108 | Thùng rác mềm + backup/restore thật | Khôi phục được SQLite với item/group/Drive ID |
-| KT-109 | Android web/PWA smoke test | Dán link, mở thư viện, mở Drive viewer trên điện thoại thật |
+| KT-101 | Link/video ingest và yt-dlp + ffprobe, lưu nguồn | Tải thành công khi có thể; video lỗi vẫn còn link và trạng thái |
+| KT-102 | Parser PDF có chữ, DOCX, XLSX, HTML, phụ đề nguồn | DerivedContent có processor version/input hash, không sửa file gốc |
+| KT-103 | Taxonomy lĩnh vực/chủ đề, Project, Tag nhiều-nhiều, AI suggestion | Một item ở nhiều view; người dùng đổi nhóm không bị AI ghi đè |
+| KT-104 | `SearchService` PostgreSQL fulltext + unaccent/pg_trgm | Tìm có dấu/không dấu, lọc ngày/source/projects; API độc lập SQL |
+| KT-105 | PWA Android Share Target smoke (nếu hỗ trợ) và fallback dán link | Share từ FB/TikTok/YouTube thử thực tế, không hứa kết quả chưa thử |
+| KT-106 | Reconcile Drive rename/delete/modified file | Không hiển thị file mất quyền là “đã lưu”; DerivedContent stale khi thay nội dung |
+| KT-107 | Đánh giá AI nhẹ trên 30–50 mục thực; cost cap và cho phép tắt AI | Có precision/coverage và tỷ lệ sửa nhóm; không dùng giả định |
+| KT-108 | Thử tải nhiều loại file, trạng thái lỗi, bộ lọc và thay đổi có dấu | Cụm test nghiệp vụ B PASS |
 
-**Gate B:** Người dùng chia sẻ/dán link, upload file, tìm theo lĩnh vực/dự án/ngày; Drive có file gốc và hệ thống phân biệt rõ link-only. Không cần MCP/Google Sheets/Redis.
+**Gate B:** Dán link không cần chọn thư mục; được gợi ý nhóm và sửa, tìm lại bằng lĩnh vực/dự án/ngày, nội dung Drive có thể mở.
 
-## 4. Đợt C — Kết nối ChatGPT với tài liệu
+## 4. Mốc C — Tích hợp ChatGPT (KHÔNG xây mặc định)
 
-| Mã | Việc | Tiêu chí đạt |
+| ID | Công việc | Tiêu chí |
 | --- | --- | --- |
-| KT-201 | Thử Google Drive app/Library trong ChatGPT | Tìm file, mở 1 PDF/Doc/Sheet, so sánh 3 file; ghi quyền và hạn chế thật |
-| KT-202 | Đánh giá nhu cầu custom MCP | Có ít nhất một câu hỏi thực tế không được Drive connector giải quyết nhưng metadata trong SQLite giải quyết được |
-| KT-203 (điều kiện) | MCP chỉ đọc: `search`, `fetch` | Chỉ khi KT-202 chứng minh cần; kết nối với ChatGPT và không để lộ dữ liệu |
-| KT-204 (điều kiện) | Auth/Tunnel phù hợp MCP | Chỉ khi có KT-203; test workspace/Platform, không tạo OAuth server vội |
+| KT-201 | Thử Google Drive app trong ChatGPT với file PDF, Doc/Sheet, video có hoặc không transcript | ChatGPT tìm/đọc/so sánh đúng file khi connector hỗ trợ; ghi limitation |
+| KT-202 | Dùng 5–10 câu hỏi cần tags, projects, note riêng của hệ thống | Nếu Drive app không đáp ứng và metadata nội bộ giải quyết được, chấp nhận làm MCP |
+| KT-203 (có điều kiện) | Tạo MCP read-only dùng `SearchService/ReadKnowledgeService` | Trả ID/URL/locator, kiểm quyền và không cung cấp write tool |
+| KT-204 (có điều kiện) | Auth/tunnel theo quyền workspace/ChatGPT | Test kết nối, hết hạn token, không lộ file hay credential |
 
-**Gate C:** ChatGPT thực sự nghiên cứu được file Drive; nếu plugin đáp ứng đủ, **đợt C hoàn thành mà không có MCP riêng**.
+**Gate C:** Hỏi ChatGPT nghiên cứu tài liệu Drive thành công; MCP là tùy chọn thật, không phải cổng bắt buộc.
 
-## 5. Đợt D — Chỉ thêm khi có nhu cầu thật
+## 5. Nghiệm thu KHẢ NĂNG NÂNG CẤP — phải chuẩn bị ngay nhưng không build tính năng sau
 
-- Share Target Android khi PWA hỗ trợ, hoặc Capacitor nếu chia sẻ thiếu tin cậy.
-- Telegram Bot nếu thuận lợi hơn dán link.
-- Tăng dung lượng khi Google Drive 500 GB hết/quota thấp; nếu cần mới so B2/R2 hoặc gói Drive.
-- OCR/ASR cho nội dung không có chữ/phụ đề **khi người dùng yêu cầu**.
-- Bulk edit/backup độc lập hàng tháng nếu dữ liệu trở nên quan trọng.
-- Chuyển SQLite→PostgreSQL chỉ nếu có nhiều concurrent users/tác vụ, benchmark chứng minh SQLite không đủ.
-
-## 6. Dữ liệu thử thật và nghiệm thu
-
-**Mẫu nhỏ:** 3 video (mỗi nền tảng FB/TikTok/YouTube nếu có), 3 PDF (có chữ, scan, file lỗi), 3 DOCX/XLSX, 3 link website, 3 ảnh, 5 ghi chú và 5 chủ đề/dự án. Mở rộng lên 30–50 item để kiểm AI.
-
-| Test | Mô tả | PASS |
+| Test | Thời điểm | Kết quả mong đợi |
 | --- | --- | --- |
-| T01 | OAuth `drive.file` | App tạo được folder và file trong Drive người dùng |
-| T02 | OAuth lỗi/revoked | Có thông báo reconnect, link/metadata không mất |
-| T03 | Upload 10 MB và ngắt giữa chừng | Không báo file đã lưu khi Drive chưa nhận; retry xác minh |
-| T04 | Lưu link không tải được video | Link vẫn có trong thư viện, file status không giả |
-| T05 | Video tải được | MP4 thật trong Drive, mở/tải lại được |
-| T06 | Trùng link/file | Không phát sinh file lặp vô lý; giữ nguồn phù hợp |
-| T07 | Tài liệu có lớp chữ | Trích và tìm được chữ; PDF scan không tạo chữ ảo |
-| T08 | Theo lĩnh vực/dự án/ngày | Cùng item hiện ở các view mà không copy file |
-| T09 | Gõ không dấu | “quy hoạch” và “quy hoach” tìm tương thích |
-| T10 | Đổi nhóm thủ công | AI không ghi đè khi job lặp |
-| T11 | Khởi động lại worker | Tác vụ pending/running có thể retry, không nhân file |
-| T12 | Backup/restore | SQLite snapshot/JSON khôi phục được link Drive ID và nhóm |
-| T13 | Xem trên Android | Mở được app và file trong Drive với đúng tài khoản |
-| T14 | ChatGPT Drive (khi có quyền) | Tìm/đọc/so sánh file nguồn; nêu giới hạn |
-| T15 | MCP (nếu triển khai) | Chỉ đọc, tìm đúng theo tag/project, không có quyền sửa/xóa |
+| U01 — StoragePort | Gate A | Thay FakeStorage/DriveStorage trong test không sửa Item/Group/REST contract |
+| U02 — Restore mất Postgres | Gate A | Từ `pg_dump` hoặc export+manifest khôi phục các Item/Drive mapping, không mất ghi chú/nhóm |
+| U03 — File trùng & upload timeout | Gate A | Retry idempotent, không thêm asset/location trùng |
+| U04 — Đổi tên/xóa file trên Drive | Gate B | Phát hiện mất/đổi; Item vẫn còn và báo trạng thái đúng |
+| U05 — Trích lại parser | Gate B | Version mới từ cùng Asset không xóa ghi chú người dùng/cũ |
+| U06 — AI phân nhóm lại | Gate B | Gán/đặt tên thủ công vẫn được giữ |
+| U07 — Search backend | Gate B | Tất cả UI/API gọi `SearchService`, không SQL tìm kiếm rải trong view |
+| U08 — Nhiều worker | Trước khi tăng từ 1 lên 2 worker | Cùng job không xử lý 2 lần không kiểm soát; lease, retry/pass |
+| U09 — Drive→B2/R2 thử | Khi bắt đầu làm provider mới | Copy/verify mới, update StorageLocation; Item ID/Group/API giữ nguyên |
+| U10 — Thêm OCR/ASR | Khi được giao tính năng | Tạo DerivedContent mới với provenance/locator; không migrate Item schema lớn |
+| U11 — pgvector hai thế hệ | Khi được giao semantic search | Model/version/dimension tách; rollback được khi đổi model |
+| U12 — ChatGPT MCP | Khi thật sự cần | Search/read của ứng dụng được tái sử dụng; auth chuẩn, read-only |
+| U13 — Google-native exports | Khi bắt đầu import Google Docs/Sheets | Phân biệt MIME blob/native, export phù hợp; handle file lớn/giới hạn |
 
-**Chú ý:** Không lấy số lượng video tải thành công trong benchmark GitHub Actions làm bằng chứng tỉ lệ thành công trên hosting thật. Không cho rằng ChatGPT đã hiểu nội dung video chỉ vì có MP4.
+**Không ngụy tạo U09–U13 đã PASS ngay từ đầu.** Chỉ thiết kế ID và cổng interface để sau có đường thực hiện.
 
-## 7. Những lựa chọn cần quyết định khi thực sự ảnh hưởng
+## 6. Điểm kích hoạt nâng cấp dựa trên tình trạng thực tế
 
-- **Ngay trước KT-001:** tài khoản Drive và quyền OAuth; không phải hỏi tiền VPS, B2 hay Cloudflare trước.
-- **Ngay trước KT-105:** môi trường Python chạy thường xuyên (Windows khi mở máy hay VPS 24/7); dung lượng file tạm và mạng.
-- **Ngay trước KT-107:** API AI, mức tiền tối đa và có/không cho gửi thumbnail/tài liệu.
-- **Ngay trước KT-201:** quyền Google Drive app trong ChatGPT/workspace.
-- **Chỉ khi mở MCP:** cách kết nối và xác thực phù hợp.
-- **Khi gần hết Drive:** duy trì Google Drive hay chuyển kho; dữ liệu/ID trong app phải xuất được.
+| Tín hiệu | Việc nên xem xét | Không nên tự động làm |
+| --- | --- | --- |
+| Drive gần đầy hoặc ưu đãi sắp hết (mốc cảnh báo gợi ý: 80% dung lượng hoặc 90 ngày trước hạn) | Chọn nâng Drive hay thêm StorageProvider; ước tính nhu cầu video | Chuyển kho hàng loạt khi chưa verify |
+| Tìm kiếm chậm/không tìm ra từ khóa trên bộ thử | Benchmark Postgres/index rồi Typesense hoặc ngữ nghĩa | Cài Elasticsearch sẵn |
+| Người dùng thường xuyên yêu cầu tra nội dung scan/video thiếu phụ đề | Làm OCR/ASR theo yêu cầu trước, cache kết quả | Chạy OCR/ASR tất cả media |
+| AI thường xuyên đề xuất sai nhóm | Tối ưu taxonomy/prompt/model với bộ đánh giá | Đổi mô hình tự động thiếu benchmark |
+| Hàng đợi thường xuyên ùn hoặc cần >1 worker | Tăng concurrency, thử Procrastinate/Chancy khi cần | Dựng Redis/Celery ngay |
+| ChatGPT Drive không tìm đúng metadata/dự án | MCP read-only từ service hiện có | Xây chatbot riêng |
+| Thêm người dùng hoặc phân quyền | Mở account/workspace per-user + Drive connection | Áp RBAC enterprise trước |
+| Muốn phát video rất nhiều lượt | Đo thực tế Drive playback/quota, cân nhắc derivative/streaming khác | Xây CDN khi chỉ mình xem |
 
-## 8. Quy tắc giao Codex
+**Ngưỡng 80%/90 ngày chỉ là cảnh báo dự phòng, không phải yêu cầu tài chính hoặc số liệu sử dụng đã quan sát.**
 
-- Đọc `AGENTS.md` → `MASTER_PLAN.md` → phần liên quan của kiến trúc → **một nhiệm vụ KT-xxx**.
-- Trước khi thay quyết định công nghệ, so với **2–3 phương án** theo nhu cầu và viện dẫn nguồn/kiểm thử hiện hành.
-- Commit SHA, test thực chạy, test chưa chạy, giới hạn và rollback phải có bằng chứng.
-- Không “làm đẹp” checkpoint thành PASS nếu thiếu file thật trên Drive hoặc chưa có restore test.
-- Chưa làm: **toàn bộ code frontend/backend/MCP**, không nhầm tài liệu này với sản phẩm đã hoàn thành.
+## 7. Phạm vi bảo mật đủ dùng và những điều không được cắt
+
+- Single-user Django Auth, HTTPS khi public, CSRF/session, ẩn Drive token trong backend.
+- Chặn URL private/localhost/metadata network và giới hạn upload/tải file để tránh SSRF/DoS.
+- Không cho worker copy/xóa Drive file ngoài thư mục/đúng phạm vi.
+- Không để API/MCP cho phép đọc toàn bộ Drive nặc danh.
+- Backup Postgres/manifest độc lập; không đẩy media cá nhân lên GitHub.
+- Không mở multi-user/RBAC/audit enterprise, cấu hình monitoring đắt tiền.
+
+## 8. Trạng thái và phạm vi AI/Codex
+
+- Repo mới chỉ có tài liệu: **chưa có app, database thật, Google OAuth credential, deployment hoặc các PASS về runtime**.
+- Mỗi nhiệm vụ khi hoàn tất phải có commit SHA, test đã chạy, test chưa chạy, rủi ro, rollback.
+- Trước khi chọn/thay công nghệ, so với **2–3 lựa chọn cạnh tranh**, nêu vì sao phù hợp với Kho Tri Thức hiện tại và bảo đảm đường nâng cấp.
+- Đừng biến một bài nghiên cứu tương lai (pgvector, Drive migration) thành blocker của bản đầu.
+
+**Thứ tự ưu tiên:** Drive lưu được → thư viện dùng được → tự phân nhóm/tìm kiếm → ChatGPT nghiên cứu → nâng cấp theo nhu cầu.
