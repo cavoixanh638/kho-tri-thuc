@@ -1,7 +1,7 @@
-# KHO TRI THỨC — KẾ HOẠCH TỔNG THỂ V4.4
+# KHO TRI THỨC — KẾ HOẠCH TỔNG THỂ V4.5
 ## Nhỏ khi vận hành, sẵn đường nâng cấp dài hạn
 
-**Ngày:** 15/11/2026 · **Thay thế v4.3** · **Trạng thái:** thiết kế, chưa có mã nguồn ứng dụng.  
+**Ngày:** 15/11/2026 · **Thay thế v4.4** · **Trạng thái:** thiết kế, chưa có mã nguồn ứng dụng.  
 **Nguồn quyết định:** người dùng muốn **Google Drive là kho file chính**, sử dụng cá nhân, tự sắp xếp theo lĩnh vực/dự án/xem theo ngày, có thể kết nối ChatGPT và mở rộng AI trong tương lai. Tránh cả overengineering lẫn làm quá sơ sài dẫn đến viết lại hệ thống.
 
 ## 1. Mục tiêu của bản đầu
@@ -11,7 +11,7 @@
 - Thu thập metadata và văn bản dễ lấy (PDF có chữ, DOCX, XLSX, HTML, phụ đề có sẵn); chạy nền, không làm nghẽn lưu file.
 - Gợi ý lĩnh vực, chủ đề, dự án, nhãn bằng AI nhẹ, có thể sửa; xem theo ngày mà không nhân bản file.
 - Tìm kiếm từ khóa và lọc; quản lý đánh dấu quan trọng, xóa mềm, khôi phục.
-- Đọc/nghiên cứu file qua **ChatGPT Google Drive app trước**. MCP riêng là tính năng có điều kiện nếu cần tìm bằng phân loại/ghi chú riêng của Kho Tri Thức.
+- Đọc/nghiên cứu file qua **ChatGPT Google Drive app trước**, nhưng phải nhớ dữ liệu ghi chú, dự án, phụ đề và văn bản trích xuất đang nằm trong PostgreSQL thì ChatGPT **không tự thấy**. Thử xuất văn bản đại diện lên Drive (Google Docs/TXT/Markdown, định dạng nào thực sự đọc được) rồi mới quyết định có cần MCP riêng.
 
 **Không triển khai trong bản đầu:** OAuth server riêng cho MCP, ASR/OCR hàng loạt, embeddings, chatbot nội bộ, graph, CDN, kho S3 thứ hai, microservices, Kubernetes, multi-tenant UI hoặc hệ thống bảo mật doanh nghiệp.
 
@@ -24,16 +24,18 @@
 5. **Storage driver nhỏ ngay từ đầu:** `DriveStorage` hiện thực giao diện `save/open/verify/delete/locate`. Chưa cần hiện thực B2/R2 hoặc migration engine.
 6. **Job trạng thái bền vững, idempotent:** lỗi Google API/worker restart không được làm mất item hoặc tạo nhiều bản sao do retry.
 7. **Trích xuất được version hóa:** lưu tên parser/phiên bản, hash file đầu vào, thời điểm, nội dung/locator và trạng thái; sau này thay parser, OCR, ASR không làm mất bản gốc và chỉnh sửa thủ công.
-8. **Tìm kiếm qua `SearchService`:** PostgreSQL FTS/trigram ban đầu; có thể bổ sung Typesense/pgvector sau mà không đổi API/UX.
+8. **Tìm kiếm qua `SearchService`:** PostgreSQL FTS/trigram ban đầu; ngay khi lập trình phải thử cấu hình từ điển tiếng Việt có `unaccent`, chỉ mục GIN và fallback cho số hiệu/tên viết tắt; có thể bổ sung Typesense/pgvector sau mà không đổi API/UX.
 9. **Portable export:** xuất danh mục/nhóm/ghi chú/quan hệ và mapping `item_id ↔ asset_id ↔ drive_file_id` thành JSON có `schema_version`, kèm file manifest và một bản DB backup. Người dùng có đường khôi phục khi đổi máy/chuyển lưu trữ.
 10. **Lựa chọn công nghệ không khóa nâng cấp:** một Django monolith phân module, frontend React tĩnh; khi cần ASR/AI nặng tách worker thành tiến trình/máy khác, không thiết kế microservice sớm.
+11. **Trải nghiệm đa phương tiện đúng từ đầu:** thumbnail sinh/cached riêng cho thư viện (không dùng trực tiếp URL thumbnail Drive hết hạn); phát video từ Drive khi sẵn sàng, cache file cục bộ ngắn hạn **chỉ nếu test chứng minh cần**.
+12. **Kênh đọc cho ChatGPT có kiểm chứng:** nếu xuất văn bản từ PostgreSQL ra Drive, phải xuất theo phiên bản, cập nhật cùng file và đo độ trễ; không cam kết ChatGPT lập chỉ mục hoặc đọc 100% nội dung.
 
 ## 3. Lựa chọn công nghệ cân bằng
 
 | Thành phần | Lựa chọn cho bản chạy thực tế | Vì sao |
 | --- | --- | --- |
 | File gốc | **Google Drive API + OAuth `drive.file`** | Tận dụng ~500 GB hiện có; file xem được trong Drive và ChatGPT khi được cấp quyền |
-| Danh mục/tìm kiếm/job | **PostgreSQL** trong một Docker Compose nhỏ | Chỉ thêm một dịch vụ nhưng tránh đổi SQLite/FTS5/queue khi nâng cấp; Django khuyến nghị PostgreSQL cho production |
+| Danh mục/tìm kiếm/job | **PostgreSQL — ĐÃ CHỐT** trong một Docker Compose nhỏ | Người dùng đã quyết định dùng PostgreSQL; giữ đồng nhất ORM, full-text search, job và khả năng nâng cấp; không dùng SQLite làm database triển khai chính |
 | Backend | **Django 5.2 LTS + Django Ninja** | Auth/admin/migration và API theo kiểu dữ liệu; LTS được hỗ trợ tới 04/2028, có đường lên 6.2 LTS |
 | Frontend | **React + TypeScript + Vite + Mantine** | Trải nghiệm bộ lọc và thư viện trên PC/Android; build tĩnh, không SSR |
 | Tác vụ | **Một worker Python + bảng job PostgreSQL** | Vận hành đơn giản, job bền vững; có thể tăng worker/chuyển queue khi tải tăng |
@@ -41,7 +43,7 @@
 | AI nhẹ | **Rule-based + API provider adapter tùy chọn** | Đủ để gợi ý nhóm; chưa chọn nhà cung cấp trước benchmark |
 | ChatGPT | **Google Drive app**, MCP tùy nhu cầu | Không xây cầu nối mới khi ứng dụng Drive sẵn có đáp ứng |
 
-**SQLite vẫn hợp cho prototype/demo rất nhỏ**, nhưng KHÔNG đưa dữ liệu dùng thật vào SQLite rồi dự định chuyển PostgreSQL “dễ dàng” mà chưa có bài thử migration. Với ưu tiên không muốn làm lại, đề xuất dùng cùng PostgreSQL từ lúc bắt đầu code và bản chạy thật. Không thuê managed database riêng; chạy Postgres trong cùng máy chủ và sao lưu đúng cách.
+**SQLite vẫn hợp cho prototype rất nhỏ**, nhưng **quyết định của dự án đã chốt PostgreSQL cho cả local development và bản chạy thật**. Không tạo hai hệ database song song, không đưa dữ liệu thật vào SQLite rồi chuyển sau khi đã có FTS/job. Không thuê managed database riêng; chạy Postgres trong cùng máy chủ và sao lưu đúng cách.
 
 ## 4. Google Drive là kho chính, nhưng không được trở thành khóa
 
@@ -78,11 +80,11 @@
 
 ## 7. Thứ tự triển khai đã chốt
 
-**Mốc A — Nền tảng đúng và lưu Drive được (P0):** Django LTS, PostgreSQL, API, ID ổn định, storage driver Drive/OAuth, upload–open–verify, đơn giản một worker, màn hình Thêm/Thư viện, backup đầu tiên.
+**Mốc A — Nền tảng đúng và lưu Drive được (P0):** Django LTS, PostgreSQL, API, ID ổn định, storage driver Drive/OAuth, upload–open–verify, một worker, màn hình Thêm/Thư viện với thumbnail riêng, backup đầu tiên và thử quy trình khôi phục OAuth/Client.
 
-**Mốc B — Dùng được hàng ngày (P0):** metadata video/web, trích chữ và phụ đề nguồn, AI gợi ý nhóm, lĩnh vực/dự án/ngày/tag, tìm kiếm và bộ lọc, Android dán/chia sẻ link khi nền tảng hỗ trợ.
+**Mốc B — Dùng được hàng ngày (P0):** metadata video/web, trích chữ và phụ đề nguồn, **benchmark PDF tiếng Việt (pypdf/PyMuPDF và giấy phép)**, AI gợi ý nhóm, lĩnh vực/dự án/ngày/tag, tìm kiếm tiếng Việt có dấu/không dấu có kiểm thử, Android dán/chia sẻ link khi nền tảng hỗ trợ.
 
-**Mốc C — Khai thác ChatGPT (P1):** thử Google Drive app trước; MCP chỉ đọc nếu thật sự cần truy vấn tag/dự án/ghi chú riêng hoặc connector chưa đáp ứng.
+**Mốc C — Khai thác ChatGPT (P1):** thử Google Drive app với file gốc **và** bản xuất tri thức từ PostgreSQL; nếu định dạng không đọc được, metadata nhóm không đủ hoặc cần truy vấn tag/dự án chính xác, triển khai MCP chỉ đọc. Không ngầm tuyên bố ChatGPT hiểu file MP4 chỉ vì lưu trên Drive.
 
 **Mốc D — Mở rộng (theo nhu cầu):** OCR/ASR theo yêu cầu, đổi AI, search ngữ nghĩa, storage driver thứ hai, nhiều worker/người dùng, ứng dụng Android native.
 
@@ -100,3 +102,17 @@ Trước khi thông báo PASS từng mốc, phải có kiểm thử file Drive t
 **Quy ước tài liệu:** `MASTER_PLAN.md` quản lý mục tiêu/phạm vi, `ARCHITECTURE_AND_DATA.md` giải thích kỹ thuật và so sánh phương án, `ROADMAP_AND_TESTS.md` là backlog và nghiệm thu, `AGENTS.md` là quy tắc Codex. Không bổ sung 17 file tài liệu thiết kế.
 
 **Trạng thái khi cập nhật:** Chỉ có tài liệu; chưa tạo frontend/backend, chưa thử Google Drive API với tài khoản của người dùng, chưa có production.
+
+
+## 9. Bổ sung sau phản biện kỹ thuật — các quyết định có điều kiện
+
+| Điểm | Quyết định áp dụng | Điều chưa được khẳng định |
+| --- | --- | --- |
+| ChatGPT và PostgreSQL | Thiết kế `KnowledgeExportService`: thử xuất **mỗi Item một tài liệu văn bản đại diện** lên Drive (tiêu đề, chủ đề, dự án, ghi chú, văn bản/phụ đề có sẵn, nguồn). Worker cập nhật theo phiên bản, không tạo file trùng. Chỉ bật rộng khi ChatGPT đọc/tìm được định dạng đã thử. | Không hứa connector lập chỉ mục mọi TXT/Markdown/Google Docs, cũng không hứa hiểu video thiếu phụ đề. |
+| Khôi phục quyền Drive | Giữ Google Cloud Project/Client ổn định khi đổi máy. Kiểm thử lại quyền khi đổi OAuth Client cùng project hoặc project mới; ưu tiên Picker/cấp quyền lại theo từng file khi phù hợp. | Không mặc định đổi Client là lỗi 404; không yêu cầu `drive.readonly` rộng một cách vô điều kiện. |
+| Thumbnail | Tạo ảnh đại diện WebP/JPEG và cache trong **volume bền vững**, lazy-load; file gốc vẫn ở Drive, có thể tái tạo thumbnail. | Không nhúng trực tiếp `thumbnailLink` của Drive vào tất cả card. |
+| Video mới tải | Trạng thái upload và trạng thái Drive preview tách biệt; có thể giữ video cache local có hạn ngạch/TTL khi phép thử cho thấy cần. | Không ấn định chậm 3–15 phút, không mặc định cache mọi video 48 giờ. |
+| PDF tiếng Việt | Giữ `pypdf` làm baseline **tạm thời**; so với PyMuPDF trên tập PDF tiếng Việt có kiểm tra giấy phép AGPL/thương mại trước khi chốt extractor mặc định. | Không mặc định PyMuPDF nhanh hơn 20–30 lần trong mọi trường hợp. |
+| PostgreSQL tiếng Việt | Migration tạo text search config với `unaccent` + `simple`, GIN phù hợp; truy vấn/index phải cùng config. Kiểm tra số hiệu, tên viết tắt, dấu tiếng Việt, `đ` và dùng pg_trgm/chuỗi như fallback. | Không tự gắn `IMMUTABLE` cho hàm không bảo đảm immutable; chưa cam kết tốc độ mili-giây. |
+
+Các công việc và mã kiểm thử chi tiết nằm trong `docs/ROADMAP_AND_TESTS.md`; giải pháp kỹ thuật chi tiết nằm trong `docs/ARCHITECTURE_AND_DATA.md`. Không thêm nhà cung cấp cloud/Redis/ASR/AI sâu trong bản đầu.
