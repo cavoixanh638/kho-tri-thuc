@@ -1,6 +1,6 @@
-# KIẾN TRÚC, DỮ LIỆU VÀ LỘ TRÌNH NÂNG CẤP — V4.4
+# KIẾN TRÚC, DỮ LIỆU VÀ LỘ TRÌNH NÂNG CẤP — V4.5
 
-**Ngày:** 15/11/2026 · **Dựa trên:** `MASTER_PLAN.md` v4.4 · **Đối tượng:** một người dùng lúc đầu, Google Drive là kho file chính; phát triển thêm tính năng AI và có thể nhiều dữ liệu/worker về sau.  
+**Ngày:** 15/11/2026 · **Dựa trên:** `MASTER_PLAN.md` v4.5 · **Đối tượng:** một người dùng lúc đầu, Google Drive là kho file chính; phát triển thêm tính năng AI và có thể nhiều dữ liệu/worker về sau.  
 **Trạng thái:** quyết định thiết kế, **chưa triển khai hoặc benchmark**. Mọi số liệu hiệu năng và điều kiện nâng cấp dưới đây là mục tiêu/trigger để đo, không phải kết quả đo.
 
 ## 1. Quyết định về mức độ thiết kế
@@ -18,17 +18,17 @@
 | --- | --- | --- | --- |
 | Kho file | **Google Drive/My Drive** | Backblaze B2, Cloudflare R2, Dropbox | Người dùng đã có 500 GB và quen thao tác Drive; lưu file gốc trực tiếp, ChatGPT có app Drive. Thêm nhà cung cấp sau qua adapter, không ép mua B2/R2 |
 | Drive integration | **Drive API v3 + OAuth `drive.file`** | rclone, Apps Script, service account | Ghi chính xác file ID/metadata, resumable upload, đọc/xác minh khi có lỗi; Apps Script không chạy yt-dlp, rclone dùng tốt cho backup, service account không sở hữu quota My Drive cá nhân |
-| CSDL chính | **PostgreSQL local container** | SQLite + FTS5, Supabase Postgres, Google Sheets | Chỉ thêm một container nhưng tránh chuyển SQLite/FTS5/jobs sau khi có dữ liệu; Django chính thức khuyến nghị PostgreSQL cho production; có pgvector/GIN/trigram nếu mở rộng. Không trả phí managed DB riêng |
+| CSDL chính | **PostgreSQL local container — ĐÃ CHỐT** | SQLite + FTS5, Supabase Postgres, Google Sheets | Người dùng chọn PostgreSQL. Dùng cùng một CSDL cho local/prod, search và worker, tránh migration SQLite→PostgreSQL; không cần managed DB riêng |
 | Backend | **Django 5.2 LTS + Django Ninja** | Django 6.1 + Ninja, FastAPI, Django + DRF | LTS hỗ trợ tới 04/2028, auth/admin/migrations sẵn, Ninja có OpenAPI; thuận đường lên Django 6.2 LTS. FastAPI mạnh nhưng thêm bộ phận auth/admin/ORM; DRF nặng hơn cho API nhỏ |
 | Frontend | **React + TypeScript + Vite** | Django + HTMX, Vue 3, SvelteKit | Lọc nhiều điều kiện, upload/preview, PWA responsive; static deploy và API độc lập cho Android native sau. Không cần Next SSR hoặc server Node production |
 | UI | **Mantine** | shadcn/ui, MUI, Ant Design | Nhiều biểu mẫu/multiselect/date/filter sẵn, giúp Codex ra UI nhanh. Không trộn hai UI framework khi chưa có lý do |
 | Search | **PostgreSQL + unaccent/pg_trgm/FTS** sau lớp `SearchService` | Typesense, Meilisearch, OpenSearch | Không vận hành search server; khi cần tìm ngữ nghĩa thêm pgvector hoặc provider search dưới interface, không thay API |
 | Queue | **PostgreSQL `jobs` + 1 worker** | Procrastinate, Chancy, Celery+Redis | Vẫn gọn khi ít tác vụ; bảng job có lease/retry/idempotency, về sau worker tăng được. Không viết framework queue chung đa năng; nếu vượt khả năng, thay worker adapter |
 | AI phân loại | **Rule-based + `ClassifierPort`**, provider sau benchmark | Gemini Flash-Lite, OpenAI model nhỏ, model local | Không khóa nhãn đã chốt với output AI; thay model/prompt mà không xáo dữ liệu |
-| Parsing | **pypdf, python-docx, openpyxl, Trafilatura, phụ đề nguồn** | PyMuPDF, Docling, LibreOffice/Crawl4AI | Nhẹ, không OCR/ASR nền; kết quả version hóa để sau chạy lại bằng công cụ tốt hơn |
+| Parsing | **pypdf (baseline tạm), python-docx, openpyxl, Trafilatura, phụ đề nguồn** | PyMuPDF, Docling, LibreOffice/Crawl4AI | Chốt parser PDF sau benchmark tiếng Việt và rà giấy phép; không tự chuyển vì tuyên bố tốc độ 20–30× chưa được đo |
 | Video | **yt-dlp + ffprobe/FFmpeg** | Cobalt, gallery-dl, Streamlink | Đã có benchmark tương đối, xử lý nhiều nguồn, fallback link-only; giao downloader qua interface để không phụ thuộc một extractor |
 | Auth app | **Django Auth một account + HTTPS** | Google login/OIDC, Auth0, Keycloak | Không cần đa role, dịch vụ identity; chỉ giữ token Drive phía backend, chuẩn bị `owner_id` nếu về sau nhiều user |
-| ChatGPT | **Google Drive app trước** | MCP custom, gửi file bằng tay, GPT Actions | Thử khả năng sẵn có. MCP riêng chỉ thêm khi cần tags/projects/ghi chú của database; có read API làm sẵn từ đầu |
+| ChatGPT | **Thử Google Drive app + bản xuất tri thức từ PostgreSQL** | MCP custom, gửi file bằng tay, GPT Actions | Connector không thấy PostgreSQL; pilot per-item text/Google Docs/TXT/Markdown đồng bộ theo phiên bản. Nếu không đọc được ổn định thì dùng MCP read-only, không giả định 100% |
 | Triển khai | **Docker Compose một máy**: Django/API, Postgres, worker, HTTPS/static | systemd+venv, Railway/Render, Kubernetes | Có thể clone/chạy ở Windows qua Docker và chuyển VPS ít sửa; số dịch vụ tối thiểu. Không cần k8s |
 | Backup | **pg_dump + export JSON/manifest + bản sao ngoài Drive** | snapshot máy chủ, R2/S3, Google Takeout | Phục hồi được metadata lẫn mapping Drive file; mất một máy chủ vẫn restore được. Không cần multi-cloud đồng bộ mọi media v1 |
 
@@ -38,7 +38,7 @@
 
 SQLite là lựa chọn hợp lý cho một prototype không cần server. Nhưng khi đã có **tác vụ tải/upload chạy nền, người dùng sửa phân nhóm, tìm kiếm trong extracted content, cần khả năng AI vector/MCP và kế hoạch sử dụng lâu dài**, việc đổi database sau đó có thể khiến phải chuyển FTS5, schema, job SQL, indexes và các test. Django cũng ghi rõ SQLite production có giới hạn migration/concurrency, và khuyến nghị PostgreSQL. Một container PostgreSQL dùng chung Docker Compose là **đầu tư kỹ thuật nhỏ nhưng giảm đáng kể chi phí đổi sau**.
 
-**Không đồng nghĩa** phải cài Redis, Elasticsearch, pgvector hoặc Kubernetes. Có thể dùng SQLite *chỉ cho POC* nếu chưa có Docker, nhưng **không có hai schema/backend chạy song song lâu dài**. Ngay trước khi nhập dữ liệu thật, thống nhất Postgres.
+**Không đồng nghĩa** phải cài Redis, Elasticsearch, pgvector hoặc Kubernetes. **Quyết định PostgreSQL đã được người dùng chốt cho cả local dev lẫn production.** Không triển khai SQLite làm DB thay thế, không có hai schema/backend song song.
 
 ## 2. Sơ đồ hệ thống
 
@@ -56,8 +56,9 @@ Django 5.2 LTS + Ninja
     +-- StoragePort -> DriveStorage (OAuth drive.file)
     +-- ExtractionService -> DerivedContent (versioned)
     +-- ClassificationPort -> rules / AI provider
+    +-- KnowledgeExportService -> Drive knowledge index (P1, pilot)
       |
-PostgreSQL (metadata, relations, statuses, extracted text)
+PostgreSQL (metadata, relations, statuses, extracted text, versioned exports)
       |
 One background worker (same Django source)
    yt-dlp / ffprobe -> temp file -> Drive upload -> verify
@@ -93,6 +94,7 @@ Bảng nghiệp vụ **được phép tạo từ đầu**; chỉ làm CRUD khi c
 | `Job` | id, kind, item_id nullable, idempotency_key, state, attempt, lease_until, retry_at, error_code, input_ref | Không mất tác vụ; mở rộng worker sau |
 | `DriveAccount` | user_id, google_sub, root_folder_id, oauth_state, connected_at | **Token lưu riêng và được bảo vệ**, không nằm trong record xuất công khai |
 | `ExportRecord` (mức gọn) | id, file_ref, schema_version, sha256, created_at | Theo dõi bản portable export/restore |
+| `KnowledgeExport` (**chỉ tạo khi pilot ChatGPT được triển khai**) | item_id, exported_drive_file_id, source_version, exported_version, content_hash, status, last_synced_at, error_code | Một file văn bản đại diện cho một item, update cùng file; phát hiện stale và retry idempotent |
 
 **Chưa tạo:** EmbeddingModel, ChunkEmbedding, Claim/Evidence, KnowledgeGraph, nhiều quyền người dùng, chat history, AI execution logs lớn. Khi thêm chúng chỉ FK vào Item/Asset/DerivedContent hiện có.
 
@@ -126,12 +128,12 @@ Bản đầu chỉ viết **DriveStorage**, còn FakeStorage in-memory phục v�
 
 ### 4.2. Drive OAuth và upload
 
-- Scope `drive.file` đủ cho file do app tạo/file được user mở có chủ đích; muốn import file Drive có sẵn ngoài phạm vi này phải có Picker/thủ tục cấp quyền.
+- Scope `drive.file` đủ cho file do app tạo/file được user mở có chủ đích; muốn import file Drive có sẵn ngoài phạm vi này phải có Picker/thủ tục cấp quyền. **Nếu đổi OAuth Client/Google Cloud Project phải test lại quyền**: cùng Client/cùng Project/Project mới có thể hành xử khác nhau, không mặc định luôn 404.
 - OAuth External + Testing thường làm refresh token hết hạn sau 7 ngày; lúc triển khai thật cần kiểm tra publishing state và nút kết nối lại khi `invalid_grant`, không hứa refresh token tồn tại mãi.
 - Với file >5MB và kết nối không ổn định, dùng **resumable upload**. Google Drive có thể cấp pre-generated file ID cho upload blob để retry sau timeout không nhân file; **không áp dụng cách đó tùy tiện cho Google Docs/Sheets native**.
 - Sau mỗi upload, xác nhận file tồn tại, trả Drive file ID và checksum nếu có. Ghi thành công vào DB sau xác minh, không gộp trạng thái `link_saved` với `file_uploaded`.
 - Chống hạn mức/429 với backoff; nếu quota tài khoản hết, job chờ hoặc báo, file tạm được giữ có thời hạn để retry.
-- Không xây media proxy/phát video nâng cao trước; ưu tiên mở bằng Drive viewer đã đăng nhập, có fallback tải xuống khi preview không đạt.
+- Không xây media proxy/phát video nâng cao trước; ưu tiên mở bằng Drive viewer đã đăng nhập, có fallback tải xuống khi preview không đạt. **Trạng thái đã upload thành công không đồng nghĩa video đã sẵn sàng phát trên Drive**. Nếu cần xem ngay, thử cache cục bộ có giới hạn dung lượng/thời hạn, không giữ mọi video mặc định.
 
 ### 4.3. Người dùng sửa file ngay trên Drive thì sao?
 
@@ -180,9 +182,10 @@ Receive -> Item + Source + Job
 
 - API v1 dùng `SearchService.search(filters, query, cursor)` và `ReadKnowledgeService.fetch(item_id, parts)`.
 - Version 1 tìm metadata, tag, dự án, ghi chú, DerivedContent bằng PostgreSQL GIN/FTS, unaccent và pg_trgm; index có thể tái tạo, test tiếng Việt không dấu.
+- Migration cần tạo **cấu hình text search `kt_vi` dựa trên `simple`, dùng từ điển lọc `unaccent`** cho các token tiếng Việt. Dùng cùng config cho `SearchVector` và `SearchQuery`, chỉ mục GIN phải khớp với biểu thức/cấu hình. **Không bọc tùy tiện hàm STABLE bằng `IMMUTABLE`**; không nhầm `SearchVectorField` với generated column tự cập nhật. Dùng pg_trgm hoặc phép tìm chuỗi cho số hiệu văn bản/tên viết tắt; đo `EXPLAIN ANALYZE`, bộ truy vấn có dấu/không dấu kể cả `đ/Đ`.
 - Khi tăng dữ liệu lớn, có thể thêm Typesense/Meilisearch như backend tìm kiếm nhưng **không làm nguồn gốc dữ liệu**.
 - Khi cần semantic/RAG: thêm `EmbeddingModel`, `ContentChunk`, `ChunkEmbedding` riêng; sinh từ DerivedContent có provenance; dùng pgvector hoặc provider khác, đánh giá trước khi chuyển.
-- ChatGPT Drive app có thể tìm và làm việc với file Drive nếu workspace hỗ trợ; app này không tự biết tag/project trong PostgreSQL. Nếu cần những facet đó, xây MCP sử dụng chính `SearchService`/`ReadKnowledgeService` (không lặp nghiệp vụ).
+- ChatGPT Drive app có thể tìm và làm việc với file Drive nếu workspace hỗ trợ; **không thấy note/DerivedContent/projects chỉ nằm trong PostgreSQL và không hiểu MP4 thiếu transcript**. Thử một tài liệu văn bản đại diện/Item trên Drive rồi mới quyết định có dùng `KnowledgeExportService` hay không. Không cam kết định dạng Markdown/TXT/Google Docs đều được lập chỉ mục. Nếu cần truy vấn tag/project chính xác hoặc pilot không đạt, xây MCP sử dụng chính `SearchService`/`ReadKnowledgeService`.
 - Câu trả lời trích nguồn dựa trên `item_id, drive_file_id, page/sheet/timestamp` có thật; file thiếu text phải báo rõ.
 
 ## 8. API và frontend: không phải làm lại khi có Android native/MCP
@@ -196,14 +199,14 @@ Receive -> Item + Source + Job
 - `GET /integrations/drive/status`, `GET /integrations/drive/connect`, OAuth callback.
 
 - Không gọi Drive API trực tiếp từ React với token toàn quyền; React chỉ dùng backend API.
-- React + Mantine: Thêm, Thư viện, Chi tiết, Tìm kiếm (có thể cùng Thư viện), Cài đặt.
+- React + Mantine: Thêm, Thư viện, Chi tiết, Tìm kiếm (có thể cùng Thư viện), Cài đặt. **Thumbnail phải qua endpoint/cache nội bộ**, không dùng URL `thumbnailLink` ngắn hạn của Drive trực tiếp cho 30–50 cards.
 - Mỗi card/chi tiết hiển thị **trạng thái nhận link / lưu file / trích văn bản / phân nhóm** riêng, không chỉ một nút “Hoàn tất”.
 - Android PWA Share Target thử trên thiết bị thật; fallback dán link là bắt buộc. Nếu về sau cần native push/share thì dùng API sẵn.
 - Không làm UI admin đa role, streaming player riêng, thiết kế bảng nhiều trăm cột.
 
 ## 9. Triển khai, bảo mật và sao lưu theo mức vừa đủ
 
-- Docker Compose trên 1 máy: `web (Django)`, `worker (same image)`, `postgres` và `caddy/HTTPS` khi có domain, frontend bundle tĩnh.
+- Docker Compose trên 1 máy: `web (Django)`, `worker (same image)`, `postgres` và `caddy/HTTPS` khi có domain, frontend bundle tĩnh. Thêm volume nhỏ cho **cache thumbnail bền vững qua deploy**; đây là cache có thể tạo lại, không phải kho file gốc. Cache video là tùy chọn có quota/TTL sau phép thử.
 - Dùng Django Auth một tài khoản, mật khẩu/session/HTTPS, token Drive phía backend; không cần Auth0/Keycloak/RBAC.
 - Chuẩn bị `owner_id` ngay trong model để sau có thể cho nhiều người kết nối Drive khác nhau mà không gắn nhầm file.
 - Tiền xử lý URL để chống SSRF và không cho worker tự do tải địa chỉ nội bộ; giới hạn tệp, tổng dung lượng temp và timeout.
@@ -260,3 +263,72 @@ Các mức là **ước lượng kiến trúc**, không có bảo đảm phần 
 - Django Ninja/Mantine/Vite: https://django-ninja.dev/ · https://mantine.dev/ · https://vite.dev/
 
 **Cần thử thật**: Drive OAuth/connections, metadata recovery, upload timeout, sync edits, Django/Postgres restore, tiếng Việt không dấu, video/cloud IP, React PWA trên Samsung/Windows, ChatGPT Drive app theo workspace. Chưa có test nào đã được thực hiện trong repo này.
+
+
+## 13. Điều chỉnh sau phản biện kỹ thuật (R2) — không mở rộng hệ thống vô ích
+
+### 13.1. Đồng bộ văn bản tri thức cho ChatGPT: pilot trước, sản xuất sau
+
+**Khoảng trống thật:** Google Drive app không tự thấy `Item.note`, `DerivedContent.text`, Project/Topic/Tag trong PostgreSQL. Một MP4 trên Drive cũng không có nghĩa ChatGPT đã nghe/xem được nó.
+
+**Đề xuất tối thiểu:** `KnowledgeExportService` xuất **một file đại diện cho mỗi Item** lên thư mục `Kho Tri Thuc/ChatGPT_Index` theo phiên bản. Chỉ nội dung có thật: ID/tiêu đề, nguồn + link file, lĩnh vực/chủ đề/dự án, ghi chú, văn bản web, phụ đề/transcript khi có, thời điểm cập nhật. Giới hạn kích thước; văn bản rất dài được chia/trích rõ ràng, không khẳng định đã xuất đủ khi bị cắt. **Đừng tự tạo thêm một bản tổng hợp cho mọi dự án nếu chưa có yêu cầu**.
+
+- **Pilot 5–10 Items**: tạo lần lượt Markdown, TXT và Google Docs; kiểm tra trên chính Google Drive app của ChatGPT được phép dùng. Ưu tiên định dạng có kết quả thực tế tốt nhất, không mặc định mọi file được lập chỉ mục/đọc.
+- Khi bật: mỗi Item có `source_version/content_hash`, `exported_version`, `exported_drive_file_id`, `sync_status`, `last_synced_at`. Tạo file một lần; các lần thay đổi *update cùng file*, dùng job idempotent, debounce sửa liên tiếp; chỉ báo synced sau Drive xác nhận.
+- Khi bản xuất cũ hơn PostgreSQL, hiện trạng thái **chưa đồng bộ** trong Settings/job; không ngầm xem Drive là nguồn chân lý. Nếu xóa mềm, xử lý trạng thái bản xuất theo quy tắc nhất quán để ChatGPT không tiếp tục đọc nhầm bản đang bị xóa.
+- Không gửi thông tin nhạy cảm/secret lên index; dữ liệu người dùng đã cho phép xuất. Video không có phụ đề phải ghi **chưa có transcript**, không tự diễn giải nội dung.
+- Nếu plugin Drive không hỗ trợ nội dung/metadata cần thiết: **bỏ qua xuất hàng loạt và chuyển sang MCP read-only** khi người dùng yêu cầu, dùng SearchService/ReadKnowledgeService đã có.
+
+### 13.2. Drive OAuth khi đổi máy hoặc Client ID
+
+- **Di chuyển host nhưng giữ Google Cloud Project và OAuth Client hiện hành**: cấu hình redirect URI/secret/refresh token theo quy trình, kiểm thử upload/đọc; không tạo project mới chỉ để đổi máy.
+- Kiểm thử riêng **(a) giữ nguyên Client, (b) Client mới cùng Project, (c) Project mới**, đối chiếu trên file thực và truy vấn `files.get`; phân biệt `403`, `404`, `invalid_grant` và file đã bị xóa. Không khẳng định mọi đổi Client đều gây lỗi.
+- Portable manifest + `appProperties/properties` không tự cấp quyền ứng dụng mới. Khi quyền không đủ, cân nhắc Google Picker/cho chọn lại file phù hợp. **Không tự nâng scope lên `drive.readonly`**: đây là scope restricted, chỉ cân nhắc sau đánh giá yêu cầu và quy trình xác minh.
+- Ghi hướng dẫn phục hồi đơn giản cho một tài khoản; chỉ triển khai công cụ cấp quyền lại hàng loạt nếu có tình huống thật.
+
+### 13.3. Thumbnail và video: tách trải nghiệm khỏi giới hạn Drive Viewer
+
+- Drive API `thumbnailLink` **ngắn hạn và không thiết kế dùng trực tiếp trong web app vì CORS/auth**. Worker sinh ảnh WebP/JPEG từ ảnh/video/PDF khi có thể; thumbnail nội bộ được phục vụ bởi Django/web server và lưu ở **volume cache bền vững**, key theo asset_id + content hash.
+- Lười tải/lazy-load ảnh ở danh sách, placeholder khi chưa có thumbnail; có chính sách regenerate sau khi cache bị mất. Không phải lưu thêm thumbnail gốc trên B2/R2.
+- Google Drive có thể đang xử lý video sau upload. Phân biệt `file_saved` và `preview_ready`/unknown; không hứa chắc độ trễ cụ thể. **Cache video cục bộ ngắn hạn** (có TTL và giới hạn tổng dung lượng/LRU) chỉ bật nếu thử playback và ổ đĩa thật cho thấy đáng giá. Cache không phải bản sao vĩnh viễn, phải bảo vệ endpoint và giới hạn Range/size.
+
+### 13.4. Chọn parser PDF dựa trên benchmark và nghĩa vụ giấy phép
+
+- `pypdf` là baseline, `PyMuPDF` là ứng viên so sánh trên **20–30 PDF tiếng Việt thực** (quyết định/quy hoạch/pháp luật, bảng biểu, dấu Unicode, file scan).
+- Đo **chất lượng trích chữ, đúng trang/locator, tốc độ cùng máy, RAM, render thumbnail**; đối chiếu pypdf + công cụ ảnh PDF phù hợp nếu cần.
+- Kiểm tra giấy phép: **PyMuPDF AGPL hoặc thương mại**; không chọn chỉ vì `pip install` dễ hoặc tuyên bố nhanh hơn 20–30 lần. Chốt extractor trong KT-102 sau thử và ghi bằng chứng.
+
+### 13.5. Tìm kiếm tiếng Việt PostgreSQL: tránh sai migration/index
+
+- Tạo extension `unaccent` và `pg_trgm`, cấu hình `kt_vi` sao chép `pg_catalog.simple`; thiết lập mapping với từ điển lọc `unaccent` trước `simple` cho các token cần thiết. Mẫu tham khảo (phải thử trên Postgres được pin phiên bản):
+
+```sql
+CREATE EXTENSION IF NOT EXISTS unaccent;
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+CREATE TEXT SEARCH CONFIGURATION kt_vi (COPY = pg_catalog.simple);
+ALTER TEXT SEARCH CONFIGURATION kt_vi
+  ALTER MAPPING FOR hword, hword_part, word
+  WITH unaccent, simple;
+```
+
+- Rà các token type `asciiword/asciihword/hword_asciipart` và các trường hợp số hiệu văn bản, rồi bổ sung mapping đúng; không chỉ dùng ba loại token trên và tuyên bố bao phủ tiếng Việt.
+- `SearchVector(..., config='kt_vi')` và `SearchQuery(..., config='kt_vi')` phải đồng nhất; GIN expression index hoặc tsvector được duy trì phải khớp truy vấn; `SearchVectorField` tự nó không đồng nghĩa generated column.
+- Không tạo wrapper `IMMUTABLE` thiếu chứng cứ cho `unaccent()` vốn có những phụ thuộc cấu hình. Sử dụng từ điển filter trong text search config khi phù hợp; nếu cần normalization khác, thiết kế index và rebuild với kiểm thử.
+- Test có dấu/không dấu, `đ/Đ`, tên người, tên KCN, luật/số hiệu văn bản, typo/trigram; dùng `EXPLAIN (ANALYZE, BUFFERS)` để xác nhận index được dùng. Không ghi KPI mili-giây như kết quả đã đạt.
+
+### 13.6. Ranh giới P0/P1 để tránh overengineering
+
+**P0:** PostgreSQL đã chốt; Google Drive; ID nội bộ; frontend thư viện có thumbnail/cache; worker + video status; trích chữ nhẹ; search config/FTS test; auth đơn giản và backup.  
+**P1 sớm:** thử ChatGPT Drive và bộ xuất văn bản theo phiên bản trên 5–10 item, thử OAuth recovery khác Project/Client.  
+**P1 có điều kiện:** video cache tạm, per-item export số lượng lớn, MCP read-only nếu pilot Drive không đáp ứng.  
+**Chưa làm:** OCR/ASR toàn kho, multi-cloud storage, vector DB, OAuth server MCP doanh nghiệp hoặc hệ thống realtime lớn.
+
+**Nguồn chính thức:**  
+- Drive file thumbnail/expiry/CORS: https://developers.google.com/workspace/drive/api/reference/rest/v3/files  
+- Drive scopes: https://developers.google.com/workspace/drive/api/guides/api-specific-auth  
+- Drive metadata/properties: https://developers.google.com/workspace/drive/api/guides/properties  
+- Drive resumable upload/pre-generated IDs: https://developers.google.com/workspace/drive/api/guides/manage-uploads  
+- Google Drive app ChatGPT: https://help.openai.com/en/articles/10929079-google-drive-app-and-setup-in-chatgpt  
+- PostgreSQL unaccent/dictionaries: https://www.postgresql.org/docs/current/unaccent.html  
+- Django full-text search: https://docs.djangoproject.com/en/5.2/ref/contrib/postgres/search/  
+- PyMuPDF licensing: https://pymupdf.io/licensing
