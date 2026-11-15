@@ -1,6 +1,6 @@
-# LỘ TRÌNH VÀ NGHIỆM THU V4.5 — POSTGRESQL ĐÃ CHỐT, DRIVE-FIRST
+# LỘ TRÌNH VÀ NGHIỆM THU V4.6 — BASELINE TRIỂN KHAI ĐÃ CHỐT
 
-**Ngày:** 15/11/2026 · **Theo:** `MASTER_PLAN.md` v4.5 và `ARCHITECTURE_AND_DATA.md` v4.5. **Đã chốt PostgreSQL** cho local/test/production; không dùng SQLite làm DB chính.  
+**Ngày:** 15/11/2026 · **Theo:** `MASTER_PLAN.md` v4.6 và `ARCHITECTURE_AND_DATA.md` v4.6. **Đã chốt PostgreSQL** cho local/test/production; không dùng SQLite làm DB chính.  
 **Trạng thái:** chưa có app, chưa có môi trường chạy và chưa có test PASS. Mọi checklist dưới là yêu cầu nghiệm thu tương lai.
 
 ## 1. Thứ tự triển khai và phụ thuộc
@@ -28,7 +28,7 @@
 | KT-008 | `pg_dump` + JSON portable export mapping Drive ID, bản copy ngoài Drive | Restore DB/manifest mở lại file gốc và nhóm |
 | KT-009 | Drive metadata và recovery quyền khi di chuyển host/client | Manifest + Drive khôi phục item/file, đổi host giữ Client phải PASS; lập P1 test Client mới cùng Project và Project mới, không mặc định lỗi 404 hoặc xin `drive.readonly` |
 
-| KT-010 | Sinh thumbnail riêng cho ảnh/video/PDF, cache bền vững | WebP/JPEG qua endpoint nội bộ trên volume, lazy-load/placeholder; mất cache tạo lại được; không dùng trực tiếp Drive `thumbnailLink` cho card |
+| KT-010 | Tạo thumbnail ảnh/video/PDF: **`pypdfium2` render trang đầu PDF**, Pillow **`ImageOps.exif_transpose()` trước resize ảnh Android**; lưu WebP/JPEG trong cache bền vững | PDF lỗi/khóa có placeholder; test đủ **8 EXIF Orientation**, không thay đổi ảnh gốc Drive; thumbnail đúng chiều, lazy load, không dùng trực tiếp Drive `thumbnailLink`, cache bị mất có thể tái tạo |
 
 **Gate A:** File lên đúng Drive; user mở được, thumbnails chạy ổn, job không nhân bản; backup/restore thực tế đã PASS. PostgreSQL chạy một container, không cần managed DB.
 
@@ -37,9 +37,9 @@
 | ID | Công việc | Điều kiện PASS |
 | --- | --- | --- |
 | KT-101 | Link/video ingest và yt-dlp + ffprobe, lưu nguồn | Tải thành công khi có thể; video lỗi vẫn còn link và trạng thái |
-| KT-102 | Trích PDF/DOCX/XLSX/HTML/phụ đề; benchmark PDF tiếng Việt 20–30 file `pypdf` vs PyMuPDF | Đo dấu tiếng Việt, cấu trúc trang, hiệu năng/RAM, thumbnail; xét PyMuPDF AGPL/thương mại trước khi quyết thư viện chính; DerivedContent có version/hash |
+| KT-102 | Trích PDF/DOCX/XLSX/HTML/phụ đề; **benchmark 3 thư viện `pypdf` / `pypdfium2` / `PyMuPDF` trên 20–30 PDF tiếng Việt** | Đo dấu Unicode/độ chính xác, thứ tự đọc, trang/locator, RAM, thời gian, license và fallback; chốt extractor chữ dựa evidence. **KT-010 dùng `pypdfium2` thumbnail không phụ thuộc kết quả benchmark**; DerivedContent có version/hash |
 | KT-103 | Taxonomy lĩnh vực/chủ đề, Project, Tag nhiều-nhiều, AI suggestion | Một item ở nhiều view; người dùng đổi nhóm không bị AI ghi đè |
-| KT-104 | PostgreSQL SearchService: cấu hình `kt_vi` + unaccent/simple, pg_trgm, GIN | Migration tạo extension/config; vector/query cùng config, index khớp; test dấu/không dấu, `đ/Đ`, số hiệu/tên KCN; `EXPLAIN ANALYZE`; không lạm dụng wrapper IMMUTABLE |
+| KT-104 | PostgreSQL `SearchService`: `kt_vi` + unaccent/simple/pg_trgm; **hai expression GIN index riêng trên `Item` và `DerivedContent`** | Migration đúng token config; `SearchVector`/`SearchQuery` khớp GIN từng bảng; tìm từ hai nguồn và hợp nhất `item_id`, lọc DerivedContent hiện hành/stale, lấy snippet/locator. Test sửa note/title, cập nhật text, dấu/không dấu, `đ/Đ`, số hiệu văn bản, `EXPLAIN ANALYZE`. Không dùng JOIN expression index hoặc một vector tổng hợp quá lớn |
 | KT-105 | PWA Android Share Target smoke (nếu hỗ trợ) và fallback dán link | Share từ FB/TikTok/YouTube thử thực tế, không hứa kết quả chưa thử |
 | KT-106 | Reconcile Drive rename/delete/modified file | Không hiển thị file mất quyền là “đã lưu”; DerivedContent stale khi thay nội dung |
 | KT-107 | Đánh giá AI nhẹ trên 30–50 mục thực; cost cap và cho phép tắt AI | Có precision/coverage và tỷ lệ sửa nhóm; không dùng giả định |
@@ -79,9 +79,9 @@
 | U13 — Google-native exports | Khi bắt đầu import Google Docs/Sheets | Phân biệt MIME blob/native, export phù hợp; handle file lớn/giới hạn |
 | U14 — Consistency export ChatGPT | KT-202E | Một Item/một file, sửa note/project/subtitle cập nhật bản xuất đúng version, lỗi thì báo stale, retry không trùng |
 | U15 — Quyền OAuth mới | KT-009 + trước khi đổi Client thực | Giữ Client khi chuyển host, test Client khác cùng Project và Project khác; 403/404/invalid_grant có cách phục hồi |
-| U16 — Thumbnail/video cache | KT-010, KT-109 nếu cần | Card không dùng Drive thumbnail URL, cache bền vững/regenerate; video cache có quota/TTL nếu bật |
-| U17 — PostgreSQL tiếng Việt | KT-104 | Migration tạo config `kt_vi`, GIN index thực sự hoạt động, test dấu/không dấu/số hiệu và kế hoạch query |
-| U18 — Parser PDF | KT-102 | Benchmark tiếng Việt và giấy phép; có bằng chứng chọn pypdf/PyMuPDF, fallback khi lỗi |
+| U16 — Thumbnail/PDF/EXIF | KT-010 (KT-109 nếu bật cache video) | `pypdfium2` render đúng trang đầu PDF, PDF hỏng/khóa xử lý được; 8 EXIF Orientation (xoay/lật) đúng, ảnh gốc giữ nguyên; lazy-load, cache regenerate, không lấy `thumbnailLink` Drive trực tiếp |
+| U17 — PostgreSQL FTS đa nguồn | KT-104 | `kt_vi` và **hai nhóm GIN index Item/DerivedContent** được dùng, kết quả gộp theo ID đúng khi note sửa, text mới/stale và soft delete; có/không dấu, số hiệu, `EXPLAIN ANALYZE`; không tính vector xuyên JOIN mỗi lần gõ |
+| U18 — PDF extractor evidence | KT-102 | So **3 thư viện** trên 20–30 PDF tiếng Việt, giấy phép pypdfium2/PDFium và PyMuPDF đã kiểm, quyết định extractor chữ và fallback có đo; không nhầm renderer thumbnail với text parser |
 
 **Không ngụy tạo U09–U13 đã PASS ngay từ đầu.** Chỉ thiết kế ID và cổng interface để sau có đường thực hiện.
 
@@ -115,6 +115,6 @@
 - Mỗi nhiệm vụ khi hoàn tất phải có commit SHA, test đã chạy, test chưa chạy, rủi ro, rollback.
 - Trước khi chọn/thay công nghệ, so với **2–3 lựa chọn cạnh tranh**, nêu vì sao phù hợp với Kho Tri Thức hiện tại và bảo đảm đường nâng cấp.
 - Đừng biến một bài nghiên cứu tương lai (pgvector, Drive migration) thành blocker của bản đầu.
-- **PostgreSQL là lựa chọn đã chốt**. Bản đầu không chạy SQLite thay thế; không tự chuyển parser sang PyMuPDF khi chưa có benchmark/license review; KT-202E chỉ là pilot, không cam kết toàn bộ Drive được ChatGPT lập chỉ mục.
+- **PostgreSQL là lựa chọn đã chốt**. Bản đầu không chạy SQLite thay thế; `KT-010` dùng `pypdfium2` render PDF và xử lý EXIF, `KT-102` chỉ quyết parser chữ sau benchmark 3 lựa chọn; `KT-104` dùng **hai GIN index riêng** qua `SearchService`. KT-202E chỉ là pilot, không cam kết toàn bộ Drive được ChatGPT lập chỉ mục.
 
 **Thứ tự ưu tiên:** Drive lưu được → thư viện dùng được → tự phân nhóm/tìm kiếm → ChatGPT nghiên cứu → nâng cấp theo nhu cầu.
