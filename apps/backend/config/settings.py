@@ -78,3 +78,5 @@ LOGGING = {
         "django.server": {"handlers": ["server_console"], "level": "INFO", "propagate": False},
     },
 }
+
+UPLOAD_STAGING_ROOT = os.getenv("UPLOAD_STAGING_ROOT", "/var/lib/kho-tri-thuc/staging")

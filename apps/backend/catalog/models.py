@@ -25,6 +25,9 @@ class Item(models.Model):
     deleted_at = models.DateTimeField(null=True, blank=True)
     user_edit_version = models.PositiveIntegerField(default=0)
     classification_status = models.CharField(max_length=24, default="pending")
+    source_fetch = models.CharField(max_length=16, default="pending")
+    asset_storage = models.CharField(max_length=16, default="pending")
+    content_extract = models.CharField(max_length=16, default="pending")
 
     class Meta:
         indexes = [

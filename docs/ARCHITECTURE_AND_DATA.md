@@ -197,6 +197,7 @@ Capture(URL/text) -> transaction: CaptureEvent + Item/Source + Job -> ACK immedi
 
 **Versioned REST** `/api/v1/`. Nhóm tối thiểu: 
 - **`POST /captures`** nhận URL/text, idempotency key, ACK gồm `capture_id/item_id/server_received_at` sau commit; `GET /captures` và `GET /items/{id}/captures` cho lịch sử. `POST /ingest/links`/`POST /items/notes` chỉ là adapter mỏng nếu giữ API cũ, không có hai quy trình nhận cạnh tranh; `POST /uploads` cho file,
+- `GET /session` trả trạng thái đăng nhập và CSRF token, `POST /session` đăng nhập và trả token mới, `DELETE /session` đăng xuất. Hai lệnh ghi dùng cookie session cùng `X-CSRFToken`. Phạm vi thư viện và lịch sử luôn theo tài khoản đăng nhập.
 - `GET /items`, `GET /items/{id}`, `PATCH /items/{id}`,
 - `GET /search`, `GET /items/{id}/content`,
 - `GET /groups`, `POST /groups`, `GET /items/{id}/related`, `GET /items/{id}/organization` (auto-assigned/suggested/unclassified, nguồn quyết định),

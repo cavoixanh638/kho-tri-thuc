@@ -7,6 +7,6 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-RUN useradd --system --user-group --no-create-home app
+RUN useradd --system --user-group --no-create-home app && install -d -m 0700 -o app -g app /var/lib/kho-tri-thuc/staging
 COPY . .
 USER app
