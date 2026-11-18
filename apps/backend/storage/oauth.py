@@ -3,10 +3,13 @@ import time
 
 from cryptography.fernet import Fernet, InvalidToken
 from django.conf import settings
+from django.db import transaction
 from django.utils import timezone
 from google_auth_oauthlib.flow import Flow
 from oauthlib.oauth2 import OAuth2Error
 from requests import RequestException
+
+from jobs.models import Job
 
 from .drive import (
     DRIVE_SCOPE,
@@ -99,21 +102,38 @@ def finish_connection(request, state, code):
     if account.google_user_id != google_user_id:
         raise DriveError("drive_account_mismatch")
     if not account.root_folder_id:
-        candidate = client.reserve_file_id()
+        candidate = client.find_root() or client.reserve_file_id()
         DriveAccount.objects.filter(pk=account.pk, root_folder_id="").update(
             root_folder_id=candidate
         )
         account.refresh_from_db(fields=["root_folder_id"])
 
     client.ensure_root(account.root_folder_id)
-    DriveAccount.objects.filter(pk=account.pk).update(
-        display_name=drive_user.get("displayName", "")[:255],
-        refresh_token_ciphertext=cipher.encrypt(
-            credentials.refresh_token.encode()
-        ).decode(),
-        state=DriveAccount.State.CONNECTED,
-        connected_at=timezone.now(),
-    )
+    with transaction.atomic():
+        DriveAccount.objects.filter(pk=account.pk).update(
+            display_name=drive_user.get("displayName", "")[:255],
+            refresh_token_ciphertext=cipher.encrypt(
+                credentials.refresh_token.encode()
+            ).decode(),
+            state=DriveAccount.State.CONNECTED,
+            connected_at=timezone.now(),
+        )
+        Job.objects.filter(
+            item__owner=request.user,
+            kind="upload_asset",
+            state=Job.State.FAILED,
+            error_code__in=[
+                "drive_not_connected",
+                "drive_not_configured",
+                "drive_reauthorize",
+            ],
+        ).update(
+            state=Job.State.RETRY,
+            attempt=0,
+            retry_at=timezone.now(),
+            completed_at=None,
+            error_code="",
+        )
 
 
 def client_for_owner(owner_id):

@@ -3,7 +3,9 @@ from uuid import UUID
 
 from django.conf import settings
 
+from catalog.models import Item
 from jobs.handlers import JobFailure
+from processing.thumbnail_integration import thumbnail_from_staging
 
 from .drive import DriveError
 from .models import Asset, StorageLocation
@@ -49,11 +51,19 @@ def upload_asset(job):
             with file:
                 location = storage_for_owner(asset.item.owner_id).save(asset, file)
         except DriveError as exc:
+            Item.objects.filter(pk=asset.item_id).exclude(
+                asset_storage="verified"
+            ).update(asset_storage="pending" if exc.retryable else "failed")
             raise JobFailure(exc.code, retryable=exc.retryable) from exc
         except OSError as exc:
             raise JobFailure("upload_stage_unavailable") from exc
         if location.status != StorageLocation.Status.VERIFIED:
             raise JobFailure("upload_not_verified")
+
+    Item.objects.filter(pk=asset.item_id).update(
+        asset_storage="verified", source_fetch="not_applicable"
+    )
+    thumbnail_from_staging(asset, path)
 
     try:
         path.unlink(missing_ok=True)

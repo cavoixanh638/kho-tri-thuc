@@ -5,3 +5,4 @@ psycopg[binary]==3.3.9
 cryptography==50.0.2
 google-api-python-client==2.202.0
 google-auth-oauthlib==1.5.0
+-r processing/requirements-thumbnail.txt
