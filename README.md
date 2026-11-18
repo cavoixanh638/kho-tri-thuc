@@ -1,7 +1,7 @@
 # Kho Tri Thức — Lưu khoa học, mở rộng bền vững
 
 **Kế hoạch hiện hành: V4.7 (18/11/2026) — tiếp nhận tức thì, tự tổ chức và bảo toàn lịch sử; PostgreSQL đã chốt.**
-**Trạng thái:** đã chuẩn bị xong tài liệu và quy chuẩn tổ chức repository trước KT-001; **chưa có mã nguồn ứng dụng, kết nối Google Drive thật hoặc test runtime**. Tình trạng xác minh mới nhất xem [CURRENT_STATE.md](docs/CURRENT_STATE.md).
+**Trạng thái triển khai và kết quả kiểm thử:** [CURRENT_STATE.md](docs/CURRENT_STATE.md).
 
 Kho Tri Thức là ứng dụng Android/Windows: **gửi một lần** URL video/web hoặc ghi chú chữ → **lưu ngay nội dung và thời điểm nhận** → thu thập nội dung khả dụng → **tự xếp vào nhóm hiện có khi đủ tin cậy và tìm các mục liên quan**. File gốc lưu Google Drive, danh mục/lịch sử trong PostgreSQL. Gửi lại link tạo lượt tiếp nhận mới nhưng không nhân đôi file; HTTP retry cùng request key không tạo lượt mới. Quy trình chuẩn: [CAPTURE_AND_ORGANIZE.md](docs/CAPTURE_AND_ORGANIZE.md).
 
@@ -56,4 +56,4 @@ Kho Tri Thức là ứng dụng Android/Windows: **gửi một lần** URL video
 
 [Video downloader benchmark riêng](https://github.com/cavoixanh638/video-download-benchmark) chỉ là tài liệu tham khảo, **không phải bằng chứng Kho Tri Thức đã hoạt động**.
 
-**Còn phải kiểm chứng:** account/quota/hạn 500 GB Drive, host 24/7, AI provider và phí, Android Share Target, kết nối Drive app trong ChatGPT, chất lượng 3 PDF extractor, thumbnail/EXIF thực tế và kết quả hai chỉ mục GIN tiếng Việt. **Chưa có test runtime PASS.**
+**Còn phải kiểm chứng:** account/quota/hạn 500 GB Drive, host 24/7, AI provider và phí, Android Share Target, kết nối Drive app trong ChatGPT, chất lượng 3 PDF extractor, thumbnail/EXIF thực tế và kết quả hai chỉ mục GIN tiếng Việt. Kết quả kiểm thử đã ghi nhận nằm trong [CURRENT_STATE.md](docs/CURRENT_STATE.md).
