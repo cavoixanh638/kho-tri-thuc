@@ -52,7 +52,7 @@ Kho Tri Thức là ứng dụng Android/Windows: **gửi một lần** URL video
 - [AGENTS.md](AGENTS.md) — quy tắc cho Codex và AI.
 - [README.md](README.md) — tổng quan này.
 
-**Không commit OAuth token, .env, media gốc, PostgreSQL dump hoặc backup vào repository.** Mã ứng dụng, kiểm thử và đánh giá hiện có nằm trong `apps/`, `tests/`, `evals/`; xem hiện trạng để phân biệt tính năng đã kiểm chứng và các cổng còn mở. Không sao chép mã hoặc dữ liệu từ repo QLVB.
+**Không commit OAuth token, .env, media gốc, PostgreSQL dump hoặc backup vào repository.** Mã ứng dụng và kiểm thử nằm trong `apps/`, bộ đánh giá nằm trong `evals/`; xem hiện trạng để phân biệt tính năng đã kiểm chứng và các cổng còn mở. Không sao chép mã hoặc dữ liệu từ repo QLVB.
 
 [Video downloader benchmark riêng](https://github.com/cavoixanh638/video-download-benchmark) chỉ là tài liệu tham khảo, **không phải bằng chứng Kho Tri Thức đã hoạt động**.
 
