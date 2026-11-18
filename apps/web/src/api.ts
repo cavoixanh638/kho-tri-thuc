@@ -29,6 +29,7 @@ export type Item = {
 };
 export type Page<T> = { results: T[]; next_offset: number | null };
 export type DriveStatus = { state: string; display_name: string };
+export type UploadReceipt = { item_id: string; asset_id: string; state: string };
 
 export class ApiError extends Error {
   constructor(readonly status: number) {
@@ -43,11 +44,13 @@ type RequestOptions = {
   csrf?: string;
   idempotencyKey?: string;
   signal?: AbortSignal;
+  timeoutMs?: number;
 };
 
 export async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const headers = new Headers({ Accept: 'application/json' });
-  if (options.body) headers.set('Content-Type', 'application/json');
+  const multipart = options.body instanceof FormData;
+  if (options.body && !multipart) headers.set('Content-Type', 'application/json');
   if (options.csrf) headers.set('X-CSRFToken', options.csrf);
   if (options.idempotencyKey) headers.set('Idempotency-Key', options.idempotencyKey);
 
@@ -56,12 +59,12 @@ export async function request<T>(path: string, options: RequestOptions = {}): Pr
   const external = options.signal;
   if (external?.aborted) cancel();
   external?.addEventListener('abort', cancel, { once: true });
-  const timer = window.setTimeout(cancel, 15_000);
+  const timer = window.setTimeout(cancel, options.timeoutMs ?? 15_000);
   try {
     const response = await fetch(`/api/v1${path}`, {
       method: options.method,
       headers,
-      body: options.body && JSON.stringify(options.body),
+      body: options.body instanceof FormData ? options.body : options.body && JSON.stringify(options.body),
       credentials: 'same-origin',
       cache: 'no-store',
       signal: controller.signal,
