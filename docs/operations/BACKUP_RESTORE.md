@@ -38,6 +38,6 @@ $env:KT_BACKUP_TEST='1'
 python -m unittest discover -s tools/backup -v
 ```
 
-Test dùng adapter Drive với client giả để kiểm tra mở đường dẫn của ID được khôi phục. Flag `--compose` đặt trước động từ CLI và dùng bộ công cụ trong service `db` của repo. Đường Compose, upload bản sao và mở file qua tài khoản Drive thật còn **NOT_RUN**.
+Test dùng adapter Drive với client giả để kiểm tra mở đường dẫn của ID được khôi phục. Flag `--compose` đặt trước động từ CLI và dùng bộ công cụ trong service `db` của repo. Đường Compose create/verify/restore đã PASS trong CI [#44339513395](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44339513395). Upload bản sao và mở file qua tài khoản Drive thật còn **NOT_RUN**.
 
 Khi chuyển host cùng lúc có upload đang chờ, giữ cả volume staging hoặc hoàn tất các lượt upload trước khi chuyển. Gói dump lưu bản ghi công việc; byte chưa xác minh vẫn thuộc staging của host nguồn.
