@@ -8,6 +8,7 @@ from google.auth.exceptions import RefreshError, TransportError
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from googleapiclient.http import MediaIoBaseUpload
 
 DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.file"
 TOKEN_URI = "https://oauth2.googleapis.com/token"
@@ -144,3 +145,15 @@ class DriveClient:
             or root.get("appProperties", {}).get("kt_root") != "1"
         ):
             raise DriveError("drive_root_unavailable")
+
+    def upload_blob(self, stream, mime, metadata, *, resumable):
+        media = MediaIoBaseUpload(
+            stream, mimetype=mime, chunksize=8 * 1024 * 1024, resumable=resumable
+        )
+        request = self.api.files().create(body=metadata, media_body=media, fields="id")
+        if not resumable:
+            return self.execute(request)
+        response = None
+        while response is None:
+            _, response = self.call(request.next_chunk)
+        return response
