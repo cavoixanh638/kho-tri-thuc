@@ -1,6 +1,7 @@
 import { Button, Textarea, TextInput } from '@mantine/core';
 import { useRef, useState, type SubmitEvent } from 'react';
 import { externalHttpUrl, request, type Capture, type Item, type Page } from './api';
+import { ItemOrganization, RelatedItems } from './ItemOrganization';
 import { CaptureList, Empty, ErrorNotice, itemTitle, kindLabels, Loading, PageControls, PageTitle, ServerTime, useResource } from './views';
 
 const fetchStates: Record<string, string> = {
@@ -133,6 +134,7 @@ function ItemContent({ initial, csrf }: { initial: Item; csrf: string }) {
           </div>}
         </section>
         <ItemHistory id={item.item_id} />
+        <RelatedItems id={item.item_id} />
       </div>
       <div className="panel-stack">
         <section className="panel" aria-labelledby="item-status">
@@ -154,6 +156,7 @@ function ItemContent({ initial, csrf }: { initial: Item; csrf: string }) {
               </>}
           </div>
         </section>
+        <ItemOrganization id={item.item_id} csrf={csrf} deleted={item.deleted} />
         {confirmation && <div className="notice" role="status">{confirmation}</div>}
         {error && <ErrorNotice>{error}</ErrorNotice>}
       </div>
