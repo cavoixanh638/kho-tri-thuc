@@ -248,8 +248,8 @@ def _sync_assignments(item, model, group_type, matches, source_version) -> bool:
     }
     for group_id in sorted(matches):
         key = {field_name: group_id}
-        assignment, created = assignments.get_or_create(
-            **key, defaults={"origin": Assignment.Origin.AUTO, **values}
+        assignment, created = model.objects.get_or_create(
+            item=item, **key, defaults={"origin": Assignment.Origin.AUTO, **values}
         )
         if not created and assignment.origin == Assignment.Origin.AUTO:
             automatic.filter(pk=assignment.pk).exclude(**values).update(**values)
