@@ -25,6 +25,7 @@ class Job(models.Model):
     attempt = models.PositiveIntegerField(default=0)
     retry_at = models.DateTimeField(default=timezone.now)
     lease_until = models.DateTimeField(null=True, blank=True)
+    lease_token = models.UUIDField(blank=True, editable=False, null=True)
     error_code = models.CharField(max_length=64, blank=True)
     input_ref = models.JSONField(default=dict, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
