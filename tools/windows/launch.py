@@ -225,6 +225,42 @@ def setup():
     print("Setup completed. The initial login is in the private runtime directory.")
 
 
+def configure_drive(client_file):
+    if client_file is None or client_file.stat().st_size > 64 * 1024:
+        raise ValueError("Choose the downloaded Google Web OAuth client JSON.")
+    payload = json.loads(client_file.read_text(encoding="utf-8"))
+    web = payload.get("web", {})
+    config = load_config()
+    redirect = config["environment"]["GOOGLE_DRIVE_REDIRECT_URI"]
+    if redirect not in web.get("redirect_uris", []):
+        raise ValueError(
+            "Register the application's exact redirect URI in this OAuth client."
+        )
+    client_id = web.get("client_id")
+    client_secret = web.get("client_secret")
+    if not (
+        isinstance(client_id, str)
+        and client_id.endswith(".apps.googleusercontent.com")
+        and isinstance(client_secret, str)
+        and 0 < len(client_secret) <= 4096
+    ):
+        raise ValueError(
+            "The JSON must contain a Google Web OAuth client ID and client secret."
+        )
+    config["environment"].update(
+        {
+            "GOOGLE_DRIVE_CLIENT_ID": client_id,
+            "GOOGLE_DRIVE_CLIENT_SECRET": client_secret,
+        }
+    )
+    pending = CONFIG.with_suffix(".pending")
+    pending.write_text(json.dumps(config, indent=2), encoding="utf-8")
+    pending.replace(CONFIG)
+    print(
+        "Google Drive client configured locally. Restart the API and worker, then connect in Settings."
+    )
+
+
 def start():
     config = load_config()
     start_database(config)
@@ -298,6 +334,12 @@ def status():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("action", choices=["setup", "start", "status"])
+    parser.add_argument(
+        "action", choices=["setup", "start", "status", "configure-drive"]
+    )
+    parser.add_argument("--client-file", type=Path)
     args = parser.parse_args()
-    {"setup": setup, "start": start, "status": status}[args.action]()
+    if args.action == "configure-drive":
+        configure_drive(args.client_file)
+    else:
+        {"setup": setup, "start": start, "status": status}[args.action]()

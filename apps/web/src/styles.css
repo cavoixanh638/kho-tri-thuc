@@ -200,3 +200,4 @@ time { font-variant-numeric: tabular-nums; }
 .content-part summary { cursor: pointer; font-weight: 600; }
 .asset-thumbnail { display: block; width: 88px; height: 66px; object-fit: cover; border-radius: 5px; flex-shrink: 0; }
 .assets > .asset-thumbnail { width: min(100%, 420px); height: auto; max-height: 320px; object-fit: contain; margin-bottom: 16px; }
+.filters { overflow-x: auto; }

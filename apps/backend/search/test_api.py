@@ -53,3 +53,17 @@ class SearchApiTests(TestCase):
             {row["item_id"] for row in first["results"] + second["results"]},
             {str(item.pk) for item in active},
         )
+
+    def test_search_finds_the_end_of_a_supported_long_note(self):
+        owner = get_user_model().objects.create(username="long-note-owner")
+        item = Item.objects.create(
+            owner=owner,
+            kind=Item.Kind.TEXT,
+            note=("nội dung " * 7000) + "từkhóacuốicùng",
+        )
+        self.client.force_login(owner)
+        response = self.client.get("/api/v1/search", {"q": "từkhóacuốicùng"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            [entry["item_id"] for entry in response.json()["results"]], [str(item.pk)]
+        )

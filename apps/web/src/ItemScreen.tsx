@@ -88,6 +88,22 @@ function ItemContent({ initial, csrf }: { initial: Item; csrf: string }) {
     }
   }
 
+  async function retryProcessing() {
+    if (inFlight.current) return;
+    inFlight.current = true;
+    setBusy(true);
+    setError(undefined);
+    try {
+      const result = await request<{ queued: number }>(`/items/${encodeURIComponent(item.item_id)}/retry`, { method: 'POST', csrf });
+      setConfirmation(result.queued ? 'Đã đưa vào hàng đợi để thử lại.' : 'Mục đang xử lý hoặc chưa có tác vụ cần thử lại.');
+    } catch {
+      setError('Chưa yêu cầu xử lý lại được. Hãy thử lại.');
+    } finally {
+      inFlight.current = false;
+      setBusy(false);
+    }
+  }
+
   function saveNotes(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     void update(draft);
@@ -153,6 +169,7 @@ function ItemContent({ initial, csrf }: { initial: Item; csrf: string }) {
             <div><dt>Phân loại</dt><dd>{stateText(item.classification_status, organizationStates)}</dd></div>
           </dl>
           <div className="item-actions">
+            {!item.deleted && (item.source_fetch === 'failed' || item.source_fetch === 'partial' || item.asset_storage === 'failed') && <Button variant="default" disabled={busy} onClick={() => void retryProcessing()}>Thử xử lý lại</Button>}
             {item.deleted ? <Button variant="default" disabled={busy} onClick={() => void update({ deleted: false })}>Khôi phục</Button>
               : <>
                 <Button variant="default" disabled={busy} onClick={() => void update({ favorite: !item.favorite })}>{item.favorite ? 'Bỏ yêu thích' : 'Thêm yêu thích'}</Button>

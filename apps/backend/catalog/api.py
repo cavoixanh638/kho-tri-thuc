@@ -122,12 +122,17 @@ def list_items(
     offset: int = 0,
     deleted: bool = False,
     favorite: bool = False,
+    unclassified: bool = False,
 ):
     if not 1 <= limit <= 100 or not 0 <= offset <= 1_000_000:
         return Status(422, {"code": "invalid_page"})
     items = catalog(request.user).filter(deleted_at__isnull=not deleted)
     if favorite:
         items = items.filter(favorite=True)
+    if unclassified:
+        items = items.filter(
+            itemtopic__isnull=True, itemproject__isnull=True, itemtag__isnull=True
+        )
     page = list(items.order_by("-saved_at", "id")[offset : offset + limit + 1])
     return {
         "results": [summarize(item) for item in page[:limit]],
