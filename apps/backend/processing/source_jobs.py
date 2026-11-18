@@ -185,7 +185,13 @@ def _persist(job, source, capture_id, result):
     source.metadata = metadata
     source.save(update_fields=["metadata"])
 
-    _item_states(item, result, current.exists(), _video_page(source.original_url))
+    _item_states(
+        item,
+        result,
+        current.exists(),
+        _video_page(source.original_url)
+        or _video_page(result.provenance.response_url or ""),
+    )
     item.save(
         update_fields=[
             "title",

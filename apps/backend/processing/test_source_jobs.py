@@ -59,13 +59,14 @@ class SourceJobTests(TransactionTestCase):
         error=None,
         http_status=200,
         attempted_at=None,
+        response_url=URL,
     ):
         return SourceResult(
             status,
             SourceProvenance(
                 URL,
                 attempted_at or timezone.now(),
-                response_url=URL,
+                response_url=response_url,
                 http_status=http_status,
                 content_type="text/html",
                 body_sha256="body-fixture",
@@ -150,8 +151,6 @@ class SourceJobTests(TransactionTestCase):
         self.assertEqual(Job.objects.filter(kind="organize").count(), 2)
 
     def test_video_page_evidence_is_partial_and_does_not_rewrite_user_edits(self):
-        self.source.original_url = "https://www.youtube.com/watch?v=abcdefghijk"
-        self.source.save(update_fields=["original_url"])
         self.item.title = "Tiêu đề đã sửa"
         self.item.description = ""
         self.item.user_edit_version = 2
@@ -162,6 +161,7 @@ class SourceJobTests(TransactionTestCase):
             return_value=self.result(
                 metadata=SourceMetadata("External title", "External description"),
                 text="Trang video, không phải phụ đề",
+                response_url="https://www.youtube.com/watch?v=abcdefghijk",
             ),
         ):
             self.assertTrue(self.worker.run_once())
