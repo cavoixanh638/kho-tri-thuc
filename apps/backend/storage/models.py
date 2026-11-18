@@ -1,5 +1,6 @@
 from uuid import uuid4
 
+from django.conf import settings
 from django.db import models
 from django.db.models import Q
 
@@ -52,3 +53,22 @@ class StorageLocation(models.Model):
                 name="location_verified_requires_file_ck",
             ),
         ]
+
+
+class DriveAccount(models.Model):
+    class State(models.TextChoices):
+        PENDING = "pending", "Pending"
+        CONNECTED = "connected", "Connected"
+        REAUTHORIZE = "reauthorize", "Reauthorize"
+
+    owner = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="drive_account"
+    )
+    google_user_id = models.CharField(max_length=255)
+    display_name = models.CharField(max_length=255, blank=True)
+    root_folder_id = models.CharField(max_length=255, blank=True)
+    refresh_token_ciphertext = models.TextField(blank=True)
+    state = models.CharField(
+        max_length=16, choices=State.choices, default=State.PENDING
+    )
+    connected_at = models.DateTimeField(null=True, blank=True)

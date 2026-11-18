@@ -201,7 +201,7 @@ Capture(URL/text) -> transaction: CaptureEvent + Item/Source + Job -> ACK immedi
 - `GET /search`, `GET /items/{id}/content`,
 - `GET /groups`, `POST /groups`, `GET /items/{id}/related`, `GET /items/{id}/organization` (auto-assigned/suggested/unclassified, nguồn quyết định),
 - `GET /jobs/{id}`, `GET /assets/{id}/open`,
-- `GET /integrations/drive/status`, `GET /integrations/drive/connect`, OAuth callback.
+- `GET /integrations/drive/status`, `POST /integrations/drive/connect` trả URL OAuth áp dụng PKCE, `GET /integrations/drive/callback` xử lý một lần theo session.
 
 - Không gọi Drive API trực tiếp từ React với token toàn quyền; React chỉ dùng backend API.
 - React + Mantine: Thêm, Thư viện, Chi tiết, Tìm kiếm (có thể cùng Thư viện), Cài đặt. **Thumbnail phải qua endpoint/cache nội bộ**, không dùng URL `thumbnailLink` ngắn hạn của Drive trực tiếp cho 30–50 cards.

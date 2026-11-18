@@ -12,13 +12,13 @@
 | Chuẩn bị bố trí repo và AI routing | **DOCS_PREPARED** | Có `REPOSITORY_LAYOUT.md`, `docs/README.md`, `CURRENT_STATE.md` và liên kết từ README/AGENTS/roadmap trong commit chuẩn bị repository này |
 | Ứng dụng React/Django | **PASS (scaffold KT-001)** | API kiểm tra kết nối và bản build React qua smoke test; worker cùng image Django khởi động và kết nối được PostgreSQL |
 | PostgreSQL/Docker Compose | **PASS (Ubuntu CI)** | PostgreSQL 18, volume riêng, migration Django và rollback/reapply migration `sessions` đã chạy |
-| Kết nối Google Drive | **NOT_STARTED** | Chưa có OAuth Client/refresh token được cấu hình cho ứng dụng, chưa upload hay verify |
+| Kết nối Google Drive | **MOCK_VERIFIED (KT-003–005)** | OAuth `drive.file`, mã hóa refresh token, upload resumable và retry cùng Drive ID qua test. Cần tài khoản/OAuth thực để kiểm chứng upload và đọc lại |
 | Download video, trích chữ, thumbnail, FTS | **NOT_STARTED** | KT-010/102/104 mới là yêu cầu; chưa có kết quả benchmark/index/runtime thực tế |
 | **Nhận URL/text, giữ giờ, tự nhóm và Item liên quan** | **SCHEMA_VERIFIED (KT-002)** | Migrations và ràng buộc DB đã qua test. API tiếp nhận KT-011 và tổ chức KT-103/110 theo [hợp đồng nghiệp vụ](CAPTURE_AND_ORGANIZE.md) |
 | ChatGPT Drive pilot / xuất tri thức / MCP | **NOT_STARTED** | Chưa có thử nghiệm trực tiếp với tài khoản/workspace |
 | Backup/restore dữ liệu | **NOT_STARTED** | Chưa có PostgreSQL dump, manifest thực tế hoặc thử restore |
 | Triển khai Windows/Linux/Android | **NOT_STARTED** | Chưa xác minh máy chạy, URL, HTTPS hay PWA Share Target |
-| Test/CI runtime | **PASS (KT-001, KT-002)** | [GitHub Actions #44320811635](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44320811635) và smoke trên Windows với PostgreSQL tạm |
+| Test/CI runtime | **PASS (KT-001, KT-002, KT-003–005 mô phỏng)** | [GitHub Actions #44320811635](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44320811635) và smoke trên Windows với PostgreSQL tạm |
 
 **Không được gọi các dòng NOT_STARTED/NOT_RUN là PASS.** Tạo kế hoạch không có nghĩa đã có môi trường hoặc dữ liệu dùng thật.
 
@@ -36,7 +36,8 @@
 | Chuẩn bị repository trước KT-001 | **DOCS_PREPARED** | Commit GitHub chứa tài liệu định tuyến/cấu trúc/hiện trạng và readback kiểm tra nội dung; không phải test ứng dụng |
 | KT-001 — Scaffold | **PASS (kiểm thử)** | [PR #1](https://github.com/cavoixanh638/kho-tri-thuc/pull/1), [Actions](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44320811635), [hướng dẫn chạy](operations/LOCAL_SETUP.md) |
 | KT-002 — Schema | **PASS (kiểm thử)** | [PR #2](https://github.com/cavoixanh638/kho-tri-thuc/pull/2), [Actions](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44324868660) |
-| KT-003–KT-011 — Gate A | **NOT_STARTED** | CaptureEvent/receipt và giờ server, note chữ nguyên văn, retry/gửi lại, Drive/Job/backup/restore phải chạy/test thật |
+| KT-003–005 — Drive OAuth/lưu file | **MOCK_VERIFIED** | [PR #3](https://github.com/cavoixanh638/kho-tri-thuc/pull/3), [Actions](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44327959927), chưa thử Drive thật |
+| KT-006–KT-011 — Gate A | **IN_PROGRESS** | CaptureEvent/receipt và giờ server, note chữ nguyên văn, retry/gửi lại, Drive/Job/backup/restore phải chạy/test thật |
 | KT-101–KT-110 — Gate B | **NOT_STARTED** | Metadata/video/parser, auto-group thực, RelatedItem, FTS/Android và bài đánh giá phải chạy thật |
 | KT-201–KT-204 — Gate C | **NOT_STARTED** | Pilot ChatGPT được kiểm chứng theo workspace thực tế |
 | Gate D — nâng cấp | **NOT_STARTED / CONDITIONAL** | Chỉ khởi động khi có trigger từ thực tế và người dùng giao |
@@ -56,7 +57,29 @@
 - Ràng buộc đã thử gồm giờ lưu đầu tiên, nội dung/giờ Event bất biến, khóa request theo người dùng và kênh, cặp mục liên quan duy nhất, đúng trạng thái file đã xác minh và khóa Job. Luồng API tiếp nhận và Drive thực nằm ở các task kế tiếp.
 - Rollback triển khai cần sao lưu trước khi đảo schema nếu đã có dữ liệu; ca CI dùng database dùng một lần.
 
-**Việc tiếp theo** là `KT-003` (OAuth Google Drive theo scope `drive.file`), sau đó `KT-004/005` (adapter và upload).
+### KT-003–005 đã kiểm thử bằng Drive mô phỏng
+
+- [PR #3](https://github.com/cavoixanh638/kho-tri-thuc/pull/3), nhánh `codex/kt-003-005-drive`, commit mã nguồn `c51d39f3d3719a03760944145e9cf22b15c30cc6`. [GitHub Actions #44327959927](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44327959927) PASS.
+- 19 test PostgreSQL 18.4 trên Windows, `makemigrations --check`, Ruff format/lint và CI trên Ubuntu 24.04. Đã thử PKCE, CSRF, `invalid_grant`, mã hóa token, kiểm checksum và tình huống upload đã ghi nhưng phản hồi mất. Chưa có OAuth consent/upload/đọc lại trên tài khoản Google thật.
+- Sau khi có dữ liệu thật, sao lưu trước khi rollback migration DriveAccount. Cấu hình bí mật của runtime nằm ngoài GitHub source.
+
+### Luồng triển khai song song
+
+Chín đầu việc dùng mốc `c51d39f`. Chat điều phối nối router, cấu hình, worker và chạy kiểm thử tích hợp. Mỗi luồng ghi checkpoint riêng và tự kiểm phần mình.
+
+| Hạng mục | Nhánh làm việc | Phạm vi |
+| --- | --- | --- |
+| KT-006 UI | `codex/kt-006-ui` | Giao diện tiếp nhận, lịch sử, thư viện và cài đặt |
+| KT-006 API | `codex/kt-006-library-api` | Session, CSRF, thư viện, chi tiết và phân quyền |
+| KT-007 | `codex/kt-007-worker` | Claim, lease, retry, xử lý lại sau restart |
+| KT-011 | `codex/kt-011-capture` | Transaction tiếp nhận, idempotency, lịch sử |
+| KT-008 | `codex/kt-008-backup` | Dump, manifest và khôi phục |
+| KT-010 | `codex/kt-010-thumbnails` | Thumbnail PDF/ảnh, 8 hướng EXIF |
+| KT-101 | `codex/kt-101-source-fetch` | Truy xuất nguồn an toàn, metadata và văn bản |
+| KT-104 | `codex/kt-104-search` | Chỉ mục và tìm kiếm tiếng Việt |
+| KT-103/110 | `codex/kt-103-110-organization` | Tự gán nhóm và lưu mục liên quan |
+
+**Việc tiếp theo:** nghiệm thu luồng tiếp nhận/lịch sử và worker trước, nối sao lưu, thumbnail và truy xuất nguồn sau. Chạy CI trên bản tích hợp, rồi kiểm Drive thật theo hạng mục còn thiếu.
 
 **Chưa xác minh:** cấu hình Docker trên Windows; máy chủ 24/7; dự trữ/quota thật của Drive; OAuth; định dạng file ChatGPT app có thể đọc; quyền/media của từng nền tảng; thư viện PDF nào trích tiếng Việt tốt nhất. Không hỏi lại các quyết định đã chốt; chỉ nêu blocker khi bắt đầu tác vụ phụ thuộc thông tin đó.
 
