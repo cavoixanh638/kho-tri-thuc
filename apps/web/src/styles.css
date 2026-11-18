@@ -156,3 +156,33 @@ time { font-variant-numeric: tabular-nums; }
   .login-panel { margin-block-start: 12px; }
   .mantine-Input-input, .mantine-PasswordInput-innerInput { font-size: 16px; }
 }
+
+.search-input-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 8px;
+}
+
+.search-filters {
+  margin: 4px 0 0;
+  padding: 12px 0 0;
+  border: 0;
+  border-top: 1px solid var(--rule);
+  min-width: 0;
+}
+
+.search-filters legend { padding-inline-end: 8px; }
+.search-filter-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.search-filter-grid > * { min-width: 0; }
+.search-results { margin-block-start: var(--gap); }
+.search-list { list-style: none; margin: 12px 0 0; padding: 0; }
+.search-result { padding: 15px 0; border-block-start: 1px solid var(--rule); }
+.search-result h3 { overflow-wrap: anywhere; }
+.search-evidence { margin-block-start: 8px; }
+.search-evidence p { margin: 3px 0 0; overflow-wrap: anywhere; white-space: pre-wrap; }
+
+@media (max-width: 600px) {
+  .search-filter-grid { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .search-input-row button { min-height: 40px; }
+}
