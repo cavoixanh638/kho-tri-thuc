@@ -1,7 +1,7 @@
-# KIẾN TRÚC, DỮ LIỆU VÀ LỘ TRÌNH NÂNG CẤP — V4.6 (BASELINE CHỐT ĐỂ TRIỂN KHAI)
+# KIẾN TRÚC, DỮ LIỆU VÀ LỘ TRÌNH NÂNG CẤP — V4.7 (CAPTURE VÀ TỰ TỔ CHỨC)
 
-**Ngày:** 15/11/2026 · **Dựa trên:** `MASTER_PLAN.md` v4.6 · **Đối tượng:** một người dùng lúc đầu, Google Drive là kho file chính; phát triển thêm tính năng AI và có thể nhiều dữ liệu/worker về sau.  
-**Trạng thái:** quyết định thiết kế, **chưa triển khai hoặc benchmark** tại baseline 15/11/2026. Trạng thái thực tế sau này xem [CURRENT_STATE.md](CURRENT_STATE.md); cách bố trí tệp và ranh giới Git/Drive/runtime xem [REPOSITORY_LAYOUT.md](REPOSITORY_LAYOUT.md). Mọi số liệu hiệu năng và điều kiện nâng cấp dưới đây là mục tiêu/trigger để đo, không phải kết quả đo.
+**Ngày:** 18/11/2026 · **Dựa trên:** `MASTER_PLAN.md` v4.7 · **Đối tượng:** một người dùng lúc đầu, Google Drive là kho file chính; phát triển thêm tính năng AI và có thể nhiều dữ liệu/worker về sau.  
+**Trạng thái:** quyết định thiết kế, **chưa triển khai hoặc benchmark** tại baseline 18/11/2026. Trạng thái thực tế sau này xem [CURRENT_STATE.md](CURRENT_STATE.md); cách bố trí tệp và ranh giới Git/Drive/runtime xem [REPOSITORY_LAYOUT.md](REPOSITORY_LAYOUT.md). Mọi số liệu hiệu năng và điều kiện nâng cấp dưới đây là mục tiêu/trigger để đo, không phải kết quả đo.
 
 ## 1. Quyết định về mức độ thiết kế
 
@@ -50,12 +50,14 @@ HTTPS / static + /api/v1/
       |
 Django 5.2 LTS + Ninja
     +-- Auth / Items / Groups / Projects
+    +-- CaptureService -> CaptureEvent -> Item/Source + JobRepository
     +-- IngestionService -> JobRepository
     +-- LibraryService -> Item, Source, Asset
     +-- SearchService -> Postgres full-text/trigram
     +-- StoragePort -> DriveStorage (OAuth drive.file)
     +-- ExtractionService -> DerivedContent (versioned)
     +-- ClassificationPort -> rules / AI provider
+    +-- OrganizationService -> existing Topic/Project/Tag and RelatedItem
     +-- KnowledgeExportService -> Drive knowledge index (P1, pilot)
       |
 PostgreSQL (metadata, relations, statuses, extracted text, versioned exports)
@@ -82,14 +84,16 @@ Bảng nghiệp vụ **được phép tạo từ đầu**; chỉ làm CRUD khi c
 | Model | Trường quan trọng | Cơ sở quyết định lâu dài |
 | --- | --- | --- |
 | `User` | id/email/login | Đăng nhập một người, FK/owner_id có thể dùng khi mở multiuser |
-| `Item` | `id UUID`, owner_id, kind, title, description, note, saved_at, published_at nullable, favorite, deleted_at, user_edit_version | Tri thức độc lập vị trí lưu |
-| `Source` | id, item_id, original_url, canonical_url, platform, platform_id nullable, captured_at, source_metadata | Một item có thể có nhiều nguồn, giữ provenance |
+| `Item` | `id UUID`, owner_id, kind, title, description, note, saved_at, published_at nullable, favorite, deleted_at, user_edit_version, classification_status | Tri thức độc lập vị trí lưu; saved_at = thời điểm tiếp nhận **đầu tiên** của Item |
+| `Source` | id, item_id, original_url, canonical_url, platform, platform_id nullable, captured_at, published_at nullable, source_metadata | Nguồn gốc có thể gắn nhiều URL vào Item; ngày đăng nguồn khác ngày gửi |
+| `CaptureEvent` (P0) | id UUID, item_id, owner_id, source_channel, raw_kind, raw_text/original_url, server_received_at, client_sent_at nullable, idempotency_key, status | **Một lần gửi thực sự là một Event**; giờ server/raw input bất biến; gửi lại URL tạo Event mới, retry cùng key trả Event cũ |
 | `Asset` | `id UUID`, item_id, role, mime, size, sha256, original_filename, content_version | File gốc/thumbnail/derivative được phân biệt |
 | `StorageLocation` | id, asset_id, `provider='google_drive'`, provider_file_id, status, verified_at, provider_revision | Chỉ có 1 location lúc đầu; thêm location không sửa Item |
 | `Topic` | id, parent_id nullable, name, archived | Lĩnh vực root/chủ đề con |
 | `Project` | id, name, description, archived | Khác chủ đề, là công việc/dự án |
 | `Tag` | id, name | Nhãn tự do |
-| `ItemTopic / ItemProject / ItemTag` | item_id, reference_id, origin, user_pinned | Many-to-many; AI không ghi đè các gán thủ công |
+| `ItemTopic / ItemProject / ItemTag` | item_id, reference_id, origin, user_pinned, confidence nullable, method_version nullable, source_version nullable | Tự gán nhóm **thực sự**, có nguồn/cơ sở; AI không ghi đè nhóm thủ công |
+| `RelatedItem` | item_a_id, item_b_id, relation_type, confidence nullable, method_version, source_version, reason, status | Cặp hai Item khác nhau, thứ tự canonical và unique; **liên quan không tự đồng nhất/gộp dữ liệu** |
 | `DerivedContent` | id, asset_id/item_id, type, text/ref, source_locator, processor, processor_version, input_hash, status, created_at | Text PDF/web/subtitles hiện tại; OCR/ASR phiên bản sau |
 | `Job` | id, kind, item_id nullable, idempotency_key, state, attempt, lease_until, retry_at, error_code, input_ref | Không mất tác vụ; mở rộng worker sau |
 | `DriveAccount` | user_id, google_sub, root_folder_id, oauth_state, connected_at | **Token lưu riêng và được bảo vệ**, không nằm trong record xuất công khai |
@@ -102,8 +106,8 @@ Bảng nghiệp vụ **được phép tạo từ đầu**; chỉ làm CRUD khi c
 
 - `item_id` và `asset_id` là UUID; **không dùng Drive ID, URL, tên file làm primary key**.
 - `drive_file_id` là thuộc tính của `StorageLocation`, không hiện diện khắp code nghiệp vụ.
-- Ngày hệ thống UTC, hiển thị Asia/Bangkok; `published_at` thiếu thì NULL, không suy đoán.
-- Dữ liệu người dùng sửa là **curated**, không đồng nhất với AI suggestion; lần xử lý lại không thay ngầm.
+- Ngày hệ thống UTC/timezone-aware, hiển thị Asia/Bangkok (UTC+7); `published_at` thiếu thì NULL, không suy đoán. **`CaptureEvent.server_received_at` bất biến; `Item.saved_at` lấy từ Event đầu tiên, không sửa bởi gửi lại, AI/worker/restore**.
+- Dữ liệu người dùng sửa là **curated**, không đồng nhất với AI suggestion; lần xử lý lại không thay ngầm. **Ghi chú thuần chữ là Item riêng, giữ nguyên văn; nội dung gần giống thì tạo RelatedItem, không auto-merge**.
 - Dữ liệu trích xuất giữ `input_hash` + `processor_version`. Khi file trên Drive đổi nội dung thì đánh dấu stale hoặc tạo bản mới, không khẳng định văn bản cũ còn đúng.
 - Nguồn bị xóa/mất quyền vẫn giữ metadata và trạng thái `missing/inaccessible`, không xóa Item không hỏi.
 
@@ -148,18 +152,19 @@ Bản đầu chỉ viết **DriveStorage**, còn FakeStorage in-memory phục v�
 ## 5. Tách các pipeline xử lý để nâng cấp OCR/ASR/AI
 
 ```text
-Receive -> Item + Source + Job
-     -> Download/Upload -> Asset + StorageLocation (original)
-     -> Extract -> DerivedContent [text, subtitle, locator, version]
-     -> Classify -> suggestions (can reject/override)
-     -> Search index (rebuildable)
+Capture(URL/text) -> transaction: CaptureEvent + Item/Source + Job -> ACK immediately
+     -> Link: metadata -> optional Download/Upload/Verify Asset on Drive
+     -> Text-only: preserve note verbatim; no Drive asset needed
+     -> Extract available PDF/web/subtitles -> DerivedContent [text, locator, version]
+     -> Search candidate groups/items -> auto-assign when confident OR suggest/unclassified
+     -> RelatedItem with provenance -> Search index (rebuildable)
 ```
 
 - Mỗi bước idempotent theo `item_id/asset_id + processor_version + input_hash`.
 - Trích xuất nặng sau này chỉ là processor mới; không sửa bảng Item hoặc xóa văn bản cũ.
 - Video transcript có `timestamp`, PDF có `page`, Excel có `sheet/cell` khi công cụ hỗ trợ; không bịa locator.
 - Khi có embedding, tạo **bảng riêng** có `model_id/version/dimension`, không nhét vector vào Item/DerivedContent; có thể lưu nhiều thế hệ vector và switch model sau khi nghiệm thu.
-- AI gợi ý nhóm không được tự sửa nhãn do người dùng chốt. Có setting cho phép/tắt AI bên ngoài và hạn mức chi phí.
+- **OrganizationService tự gán nhóm đang có** nếu đủ tin cậy (không chỉ gợi ý), hoặc đề xuất/đưa vào Chưa phân loại; AI không được sửa nhãn do người dùng chốt. Project cần bằng chứng cụ thể, không suy từ từ khóa chung. Có thể tắt AI ngoài và giới hạn phí. Chi tiết: [CAPTURE_AND_ORGANIZE.md](CAPTURE_AND_ORGANIZE.md).
 
 ## 6. Worker và khả năng tăng tải
 
@@ -180,7 +185,7 @@ Receive -> Item + Source + Job
 
 ## 7. SearchService và đường lên AI nghiên cứu
 
-- API v1 dùng `SearchService.search(filters, query, cursor)` và `ReadKnowledgeService.fetch(item_id, parts)`.
+- API v1 dùng `SearchService.search(filters, query, cursor)` và `ReadKnowledgeService.fetch(item_id, parts)`. `OrganizationService` dùng ứng viên từ SearchService để tự gán nhóm, tìm và ghi `RelatedItem` có provenance; dữ liệu metadata riêng không đủ kết luận đã hiểu toàn video.
 - Version 1 có **hai nhóm GIN index riêng** cho metadata `Item` (title/description/note) và text `DerivedContent` hiện hành. `SearchService` hợp nhất kết quả theo `item_id`, chấm điểm/ranking, lọc Project/Topic/Tag theo bảng quan hệ và giữ provenance/locator. Không tạo expression index JOIN xuyên bảng.
 - Migration cần tạo **cấu hình text search `kt_vi` dựa trên `simple`, dùng từ điển lọc `unaccent`** cho các token tiếng Việt. Dùng cùng config cho `SearchVector` và `SearchQuery`, chỉ mục GIN phải khớp với biểu thức/cấu hình. **Không bọc tùy tiện hàm STABLE bằng `IMMUTABLE`**; không nhầm `SearchVectorField` với generated column tự cập nhật. Dùng pg_trgm hoặc phép tìm chuỗi cho số hiệu văn bản/tên viết tắt; đo `EXPLAIN ANALYZE`, bộ truy vấn có dấu/không dấu kể cả `đ/Đ`.
 - Khi tăng dữ liệu lớn, có thể thêm Typesense/Meilisearch như backend tìm kiếm nhưng **không làm nguồn gốc dữ liệu**.
@@ -191,16 +196,16 @@ Receive -> Item + Source + Job
 ## 8. API và frontend: không phải làm lại khi có Android native/MCP
 
 **Versioned REST** `/api/v1/`. Nhóm tối thiểu: 
-- `POST /ingest/links`, `POST /items/notes`, `POST /uploads`,
+- **`POST /captures`** nhận URL/text, idempotency key, ACK gồm `capture_id/item_id/server_received_at` sau commit; `GET /captures` và `GET /items/{id}/captures` cho lịch sử. `POST /ingest/links`/`POST /items/notes` chỉ là adapter mỏng nếu giữ API cũ, không có hai quy trình nhận cạnh tranh; `POST /uploads` cho file,
 - `GET /items`, `GET /items/{id}`, `PATCH /items/{id}`,
 - `GET /search`, `GET /items/{id}/content`,
-- `GET /groups`, `POST /groups`,
+- `GET /groups`, `POST /groups`, `GET /items/{id}/related`, `GET /items/{id}/organization` (auto-assigned/suggested/unclassified, nguồn quyết định),
 - `GET /jobs/{id}`, `GET /assets/{id}/open`,
 - `GET /integrations/drive/status`, `GET /integrations/drive/connect`, OAuth callback.
 
 - Không gọi Drive API trực tiếp từ React với token toàn quyền; React chỉ dùng backend API.
 - React + Mantine: Thêm, Thư viện, Chi tiết, Tìm kiếm (có thể cùng Thư viện), Cài đặt. **Thumbnail phải qua endpoint/cache nội bộ**, không dùng URL `thumbnailLink` ngắn hạn của Drive trực tiếp cho 30–50 cards.
-- Mỗi card/chi tiết hiển thị **trạng thái nhận link / lưu file / trích văn bản / phân nhóm** riêng, không chỉ một nút “Hoàn tất”.
+- Mỗi card/chi tiết hiển thị **trạng thái nhận link / lưu file / trích văn bản / tự phân nhóm** riêng, không chỉ một nút “Hoàn tất”. Có **Lịch sử tiếp nhận theo Event** (mỗi lượt gửi một dòng) và **Thư viện theo Item** (một card/nội dung), lọc theo ngày gửi. Chi tiết Item có nhóm đã gán, đề xuất và mục liên quan.
 - Android PWA Share Target thử trên thiết bị thật; fallback dán link là bắt buộc. Nếu về sau cần native push/share thì dùng API sẵn.
 - Không làm UI admin đa role, streaming player riêng, thiết kế bảng nhiều trăm cột.
 
@@ -347,3 +352,22 @@ ALTER TEXT SEARCH CONFIGURATION kt_vi
 | **KT-104** | Hai nhóm GIN index `Item` và `DerivedContent`, tìm bằng `SearchService` hợp nhất item ID | Tìm có/không dấu, đ/Đ, số hiệu, bản text mới/stale và `EXPLAIN ANALYZE` đều đúng |
 
 **V4.6 là baseline tài liệu để triển khai**, không phải ứng dụng đã PASS. Giữ Google Drive chính, PostgreSQL đã chốt, một backend/worker, không thêm dịch vụ chỉ vì 3 điều chỉnh này.
+
+## 14. Quyết định v4.7 về kỹ thuật tiếp nhận và tự tổ chức
+
+**Nguồn chuẩn nghiệp vụ và 17 ca N01–N17:** [CAPTURE_AND_ORGANIZE.md](CAPTURE_AND_ORGANIZE.md). Phần này bổ sung hệ quả schema/migration, không lập hợp đồng nghiệp vụ khác.
+
+### 14.1. Migration và tính nhất quán
+
+1. Tạo `CaptureEvent`: UUID PK, FK owner/item, kênh, raw input URL/text, giờ server UTC timezone-aware bất biến, giờ client tham khảo, idempotency key unique theo requester/kênh khi key có giá trị. Giao dịch **Event + tìm/tạo Item + Job**; ACK sau commit. Test các request song song.
+2. `Item.saved_at` lấy từ Event đầu tiên; Event nhiều-một với Item. Trùng URL sau một ngày tạo Event **mới**, nhưng HTTP retry cùng request key trả về Event **cũ**. Chỉ gộp Item khi có danh tính nguồn được chứng minh (provider canonical ID/hash), không vì cùng chủ đề.
+3. Ghi chú thuần chữ lưu nguyên văn ở `Item.note`; hai ghi chú cùng chủ đề vẫn là hai Item. Gửi URL kèm chú thích thì bảo lưu chú thích **từng CaptureEvent**; không overwrite ghi chú curated; tìm được nội dung chú thích qua SearchService dù hai GIN index trên Item/DerivedContent không trực tiếp bao phủ Event.note.
+4. `RelatedItem` là cặp Item khác nhau chuẩn hóa thứ tự để chống trùng hai chiều, có reason/confidence/method/source version và status. Assignment lưu origin/user_pinned/confidence/method/source version; thay model/source không được xóa nhãn thủ công.
+5. `CaptureEvent` index B-tree theo (owner, server_received_at DESC, id), unique partial (owner, channel, idempotency_key) khi key khác NULL. Giữ hai nhóm GIN FTS v4.6 trên Item và DerivedContent, không thêm chỉ mục search server riêng.
+6. Backup/portable manifest và restore phải giữ CaptureEvent/RelatedItem/assignment, giờ server và raw input, không chỉ Item/Asset. Event lưu được dù worker, Drive hoặc AI lỗi.
+
+### 14.2. Phân chia trách nhiệm
+
+`CaptureService` giữ transaction/ACK; `IngestionService` lấy nội dung nguồn sau commit; `OrganizationService` tìm nhóm đã có và tự gán/RelatedItem; `SearchService` trả ứng viên từ Postgres, `ClassificationPort` đánh giá rule/AI khi có quyền. **Không dùng một trạng thái DONE** cho tất cả các bước: source_fetch, asset_storage, content_extract, organization độc lập.
+
+**Không phát triển sớm:** Redis, semantic/pgvector, Meilisearch, OCR/ASR hàng loạt, phần mềm Android native hoặc MCP chỉ vì nghiệp vụ mới. Gate A là lưu ngay, Gate B mới yêu cầu tự nhóm có chứng cứ. Không cam kết chất lượng AI trước benchmark.
