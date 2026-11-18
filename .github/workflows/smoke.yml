@@ -48,6 +48,11 @@ jobs:
           curl --fail --silent --show-error http://127.0.0.1:5173/api/v1/health | jq -e '.status == "ready"'
           curl --fail --silent --show-error http://127.0.0.1:5173/ | grep -F '<title>Kho Tri Thức</title>'
 
+      - name: Capture and upload smoke through frontend proxy
+        run: |
+          docker compose exec -T -e DJANGO_SUPERUSER_PASSWORD=kt-smoke-fixture-only api python manage.py createsuperuser --noinput --username kt-smoke --email kt-smoke@example.invalid
+          python3 tools/smoke/capture.py
+
       - name: Collect logs on failure
         if: failure()
         run: docker compose logs --no-color
