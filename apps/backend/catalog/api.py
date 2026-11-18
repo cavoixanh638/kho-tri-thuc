@@ -9,6 +9,7 @@ from ninja import Router, Schema, Status
 from ninja.security import django_auth
 from pydantic import Field
 
+from jobs.repository import JobRepository
 from storage.drive import DriveError
 from storage.models import Asset, StorageLocation
 from storage.service import DRIVE_PROVIDER, storage_for_owner
@@ -171,6 +172,13 @@ def edit_item(request, item_id: UUID, patch: ItemPatch):
             for key, value in changed.items():
                 setattr(item, key, value)
             item.save(update_fields=[*changed, "updated_at"])
+            if changed.keys() & {"title", "description", "note", "deleted_at"}:
+                JobRepository.enqueue(
+                    kind="organize",
+                    idempotency_key=f"item:{item.pk}:edit:{item.user_edit_version}:deleted:{item.deleted_at}",
+                    item=item,
+                    input_ref={"item_id": str(item.pk)},
+                )
     return summarize(catalog(request.user).get(pk=item_id))
 
 

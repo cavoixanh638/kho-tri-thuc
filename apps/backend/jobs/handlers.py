@@ -12,7 +12,23 @@ def upload_original(job: Job) -> None:
     upload_asset(job)
 
 
-HANDLERS: dict[str, Callable[[Job], None]] = {"upload_asset": upload_original}
+def retrieve_source(job: Job) -> None:
+    from processing.source_jobs import fetch_source_job
+
+    fetch_source_job(job)
+
+
+def organize(job: Job) -> None:
+    from catalog.organization_job import organize_item
+
+    organize_item(job)
+
+
+HANDLERS: dict[str, Callable[[Job], None]] = {
+    "upload_asset": upload_original,
+    "fetch_source": retrieve_source,
+    "organize": organize,
+}
 
 
 class JobFailure(Exception):

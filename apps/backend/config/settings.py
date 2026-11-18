@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     "ingestion",
     "storage",
     "processing",
+    "search",
     "jobs",
 ]
 
