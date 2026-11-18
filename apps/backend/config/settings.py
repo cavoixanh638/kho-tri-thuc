@@ -56,3 +56,25 @@ TEMPLATES = [
         "APP_DIRS": True,
     }
 ]
+
+GOOGLE_DRIVE_CLIENT_ID = os.getenv("GOOGLE_DRIVE_CLIENT_ID", "")
+GOOGLE_DRIVE_CLIENT_SECRET = os.getenv("GOOGLE_DRIVE_CLIENT_SECRET", "")
+GOOGLE_DRIVE_REDIRECT_URI = os.getenv("GOOGLE_DRIVE_REDIRECT_URI", "")
+GOOGLE_DRIVE_TOKEN_KEY = os.getenv("GOOGLE_DRIVE_TOKEN_KEY", "")
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "filters": {
+        "oauth_callback": {"()": "config.access_log.SkipOAuthCallbackQuery"},
+    },
+    "handlers": {
+        "server_console": {
+            "class": "logging.StreamHandler",
+            "filters": ["oauth_callback"],
+        },
+    },
+    "loggers": {
+        "django.server": {"handlers": ["server_console"], "level": "INFO", "propagate": False},
+    },
+}
