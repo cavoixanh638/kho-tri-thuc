@@ -37,6 +37,8 @@ Web OAuth client thật đã được tạo, callback đã đăng ký, scope `dr
 
 Đăng nhập/cấp quyền Google đã hoàn tất. [Live smoke](drive-live-results.json) đã kiểm upload/verify/đọc lại byte chính xác và retry cùng file với TXT tiếng Việt, PNG, PDF qua adapter thật. Mẫu đã chuyển vào Thùng rác Drive, các bản ghi catalog thử nằm trong transaction rollback. UI/worker với file người dùng, đổi client/project, upload lớn, Android thiết bị thật và HTTPS còn cần kiểm chứng. Bản hiện tại phục vụ loopback trên Windows.
 
+OAuth đang ở trạng thái External/Testing. Refresh token có hạn 7 ngày khi dùng scope Drive, theo [Google OAuth](https://developers.google.com/identity/protocols/oauth2#expiration). Khi hết hạn, mở Cài đặt và Kết nối lại. Chuyển sang Production là bước riêng còn mở trước khi vận hành lâu dài.
+
 Chạy lại bài kiểm tra từ checkout với cấu hình riêng đã cài. Báo cáo chỉ có hash, số byte và kết quả, không có ID tài khoản/file hoặc token.
 
 ```powershell
