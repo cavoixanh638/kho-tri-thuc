@@ -1,0 +1,35 @@
+{
+  "checked_at": "2026-11-18T16:37:33.491370+00:00",
+  "scope": "drive.file",
+  "samples": [
+    {
+      "sample": "unicode.txt",
+      "bytes": 85,
+      "sha256": "68b62b8998f93ce29c8aff982e75c7049f852ba2f5176cf8044392bbc1ed5065",
+      "verified": true,
+      "exact_readback": true,
+      "retry_same_file": true,
+      "cleanup": "trashed"
+    },
+    {
+      "sample": "sample.png",
+      "bytes": 83,
+      "sha256": "877708dd449443dc4ba754b8b5fc2adc8f58d9c82ccda5a79f6bb0fb998e56f1",
+      "verified": true,
+      "exact_readback": true,
+      "retry_same_file": true,
+      "cleanup": "trashed"
+    },
+    {
+      "sample": "sample.pdf",
+      "bytes": 429,
+      "sha256": "260e2f55fdddd8a17c66699f0852fed9d9299cfe5b47d5d12c1b6cfb8f824f0c",
+      "verified": true,
+      "exact_readback": true,
+      "retry_same_file": true,
+      "cleanup": "trashed"
+    }
+  ],
+  "status": "PASS",
+  "catalog_rows_persisted": false
+}

@@ -156,5 +156,48 @@ time { font-variant-numeric: tabular-nums; }
   .login-panel { margin-block-start: 12px; }
   .mantine-Input-input, .mantine-PasswordInput-innerInput { font-size: 16px; }
 }
+
+.search-input-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 8px;
+}
+
+.search-filters {
+  margin: 4px 0 0;
+  padding: 12px 0 0;
+  border: 0;
+  border-top: 1px solid var(--rule);
+  min-width: 0;
+}
+
+.search-filters legend { padding-inline-end: 8px; }
+.search-filter-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.search-filter-grid > * { min-width: 0; }
+.search-results { margin-block-start: var(--gap); }
+.search-list { list-style: none; margin: 12px 0 0; padding: 0; }
+.search-result { padding: 15px 0; border-block-start: 1px solid var(--rule); }
+.search-result h3 { overflow-wrap: anywhere; }
+.search-evidence { margin-block-start: 8px; }
+.search-evidence p { margin: 3px 0 0; overflow-wrap: anywhere; white-space: pre-wrap; }
+
+@media (max-width: 600px) {
+  .search-filter-grid { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .search-input-row button { min-height: 40px; }
+}
+
+.group-list { display: flex; flex-wrap: wrap; gap: 8px 12px; margin: 8px 0 0; padding: 0; list-style: none; }
+.group-list li { min-width: 0; overflow-wrap: anywhere; }
+.group-block { min-width: 0; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+.group-block:last-child { border-bottom: 0; }
+.group-block .list-meta { margin-block-start: 2px; }
+.assigned-groups li { display: grid; }
+.group-edit-caption { margin: 0; color: var(--muted); }
+.group-catalog .group-list li { padding: 3px 8px; border: 1px solid var(--border); border-radius: 6px; }
+.related-items .search-result p { margin: 4px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.content-part { padding: 12px 0; border-top: 1px solid #d7ddd8; }
+.content-part summary { cursor: pointer; font-weight: 600; }
 .asset-thumbnail { display: block; width: 88px; height: 66px; object-fit: cover; border-radius: 5px; flex-shrink: 0; }
 .assets > .asset-thumbnail { width: min(100%, 420px); height: auto; max-height: 320px; object-fit: contain; margin-bottom: 16px; }
+.filters { overflow-x: auto; }

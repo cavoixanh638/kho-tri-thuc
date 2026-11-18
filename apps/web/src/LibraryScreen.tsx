@@ -4,12 +4,13 @@ import { useState } from 'react';
 import type { Item, Page } from './api';
 import { Empty, ErrorNotice, itemHref, itemTitle, kindLabels, Loading, PageControls, PageTitle, ServerTime, useResource } from './views';
 
-type Filter = 'all' | 'favorite' | 'deleted';
+type Filter = 'all' | 'unclassified' | 'favorite' | 'deleted';
 
 export function LibraryScreen() {
   const [filter, setFilter] = useState<Filter>('all');
   const [offset, setOffset] = useState(0);
   const query = new URLSearchParams({ limit: '50', offset: String(offset), deleted: String(filter === 'deleted') });
+  if (filter === 'unclassified') query.set('unclassified', 'true');
   if (filter === 'favorite') query.set('favorite', 'true');
   const library = useResource<Page<Item>>(`/items?${query}`);
 
@@ -20,7 +21,7 @@ export function LibraryScreen() {
         <SegmentedControl value={filter} aria-label="Lọc thư viện" onChange={(value) => {
           setOffset(0);
           setFilter(value as Filter);
-        }} data={[{ label: 'Tất cả', value: 'all' }, { label: 'Yêu thích', value: 'favorite' }, { label: 'Thùng rác', value: 'deleted' }]} />
+        }} data={[{ label: 'Tất cả', value: 'all' }, { label: 'Chưa phân loại', value: 'unclassified' }, { label: 'Yêu thích', value: 'favorite' }, { label: 'Thùng rác', value: 'deleted' }]} />
       </div>
       {library.error ? <ErrorNotice retry={library.retry}>Chưa tải được thư viện.</ErrorNotice>
         : !library.data ? <Loading />

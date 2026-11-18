@@ -5,6 +5,7 @@ from django.conf import settings
 
 from catalog.models import Item
 from jobs.handlers import JobFailure
+from processing.document_job import extract_from_staging
 from processing.thumbnail_integration import thumbnail_from_staging
 
 from .drive import DriveError
@@ -60,6 +61,8 @@ def upload_asset(job):
         if location.status != StorageLocation.Status.VERIFIED:
             raise JobFailure("upload_not_verified")
 
+    if path.is_file():
+        extract_from_staging(asset, path)
     Item.objects.filter(pk=asset.item_id).update(
         asset_storage="verified", source_fetch="not_applicable"
     )

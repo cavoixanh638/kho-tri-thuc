@@ -1,7 +1,7 @@
 # HIỆN TRẠNG THỰC TẾ — KHO TRI THỨC
 
 **Ngày checkpoint:** 18/11/2026 (Asia/Ho_Chi_Minh).
-**Nguồn kiểm chứng:** baseline tài liệu trên `main` (`a223ed0`), thay đổi KT-001 trên nhánh `codex/kt-001-scaffold` và khảo sát read-only [QLVB_System_new](https://github.com/cavoixanh638/QLVB_System_new).
+**Nguồn kiểm chứng:** `main` tại `e9784557780243246e476e071191fc89f7e795c5`, bản tích hợp `codex/kt-gate-b-library` tại `c9896e5b11b11bc7a4ebc845d9b8c6aabaae6060`, GitHub Actions và runtime Windows thực tế. Khảo sát [QLVB_System_new](https://github.com/cavoixanh638/QLVB_System_new) chỉ là tham khảo thiết kế.
 **Mục đích:** nơi duy nhất ghi **đã hoàn thành điều gì thật**. Roadmap là kế hoạch/điều kiện PASS, không là chứng cứ chạy thật.
 
 ## 1. Tình trạng tổng quát
@@ -12,14 +12,14 @@
 | Chuẩn bị bố trí repo và AI routing | **DOCS_PREPARED** | Có `REPOSITORY_LAYOUT.md`, `docs/README.md`, `CURRENT_STATE.md` và liên kết từ README/AGENTS/roadmap trong commit chuẩn bị repository này |
 | Ứng dụng React/Django | **PASS (tiếp nhận và thư viện)** | Có đăng nhập, gửi URL/chữ, biên nhận, lịch sử, xem/chỉnh sửa và khôi phục Item. API upload nhận file vào staging bền vững |
 | PostgreSQL/Docker Compose | **PASS (Ubuntu CI)** | PostgreSQL 18, volume riêng, migration Django và rollback/reapply migration `sessions` đã chạy |
-| Kết nối Google Drive | **MOCK_VERIFIED (KT-003–005)** | OAuth `drive.file`, mã hóa refresh token, upload resumable và retry cùng Drive ID qua test. Cần tài khoản/OAuth thực để kiểm chứng upload và đọc lại |
+| Kết nối Google Drive | **LIVE_STORAGE_PASS** | OAuth thật trên Windows; adapter upload/verify/đọc lại chính xác TXT tiếng Việt, PNG và PDF, retry cùng file ID. Mẫu chuyển vào Thùng rác, bản ghi thử rollback. Luồng UI/worker với file người dùng và đổi client/project còn NOT_RUN |
 | Thumbnail PDF/ảnh/video | **PASS (tích hợp KT-010)** | Renderer/caching, 8 EXIF Orientation, API riêng tư và upload hook qua test; xem mốc vận hành bên dưới |
-| Video, trích chữ và FTS | **IN_PROGRESS** | Các nhánh KT-101/102/104 đang được tích hợp |
+| Video, trích chữ và FTS | **PARTIAL / TESTED** | Đã nối fetch web an toàn, parser nhẹ và hai GIN/search tiếng Việt. Chưa có tải video, benchmark PDF 3 thư viện hoặc dữ liệu thực để nghiệm thu chất lượng |
 | **Nhận URL/text và giữ giờ** | **PASS (bản tích hợp)** | Session/CSRF, ACK sau transaction, retry/gửi lại, lịch sử và giao diện qua proxy đã được kiểm thử |
 | ChatGPT Drive pilot / xuất tri thức / MCP | **NOT_STARTED** | Chưa có thử nghiệm trực tiếp với tài khoản/workspace |
 | Backup/restore dữ liệu | **PASS (dữ liệu thử)** | Dump/manifest cùng snapshot và khôi phục vào database mới đã chạy trên Windows và Docker Compose. Drive thật/bản sao thật vẫn cần xác minh |
-| Triển khai Windows/Linux/Android | **NOT_STARTED** | Chưa xác minh máy chạy, URL, HTTPS hay PWA Share Target |
-| Test/CI runtime | **PASS (KT-001, KT-002, KT-003–005 mô phỏng)** | [GitHub Actions #44320811635](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44320811635) và smoke trên Windows với PostgreSQL tạm |
+| Triển khai Windows/Linux/Android | **WINDOWS_PASS / ANDROID_NOT_RUN** | Native Windows phục vụ loopback cổng 8009, PostgreSQL 18 riêng, start/stop/restart đã chạy. CI Linux Compose PASS. Android/HTTPS còn NOT_RUN |
+| Test/CI runtime | **PASS (136 test)** | [GitHub Actions #44344447208](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44344447208), migrations, build, smoke API/UI và backup/restore |
 
 **Không được gọi các dòng NOT_STARTED/NOT_RUN là PASS.** Tạo kế hoạch không có nghĩa đã có môi trường hoặc dữ liệu dùng thật.
 
@@ -40,7 +40,7 @@
 | KT-003–005 — Drive OAuth/lưu file | **MOCK_VERIFIED** | [PR #3](https://github.com/cavoixanh638/kho-tri-thuc/pull/3), [Actions](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44327959927), chưa thử Drive thật |
 | KT-006/007/011 — UI, worker, tiếp nhận | **PASS (bản tích hợp)** | [PR #5](https://github.com/cavoixanh638/kho-tri-thuc/pull/5), [CI](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44333379367) |
 | KT-008–010 — Vận hành/thumbnail | **PASS (CI và mô phỏng)** | PR #16, CI #44339513395. OAuth/Drive thật còn NOT_RUN |
-| KT-101–KT-110 — Gate B | **NOT_STARTED** | Metadata/video/parser, auto-group thực, RelatedItem, FTS/Android và bài đánh giá phải chạy thật |
+| KT-101–KT-110 — Gate B | **IN_PROGRESS / PARTIAL** | [PR #17](https://github.com/cavoixanh638/kho-tri-thuc/pull/17) đã tích hợp web/parser/search/nhóm/RelatedItem/PWA. Video, benchmark PDF, đánh giá thực và Android chưa nghiệm thu |
 | KT-201–KT-204 — Gate C | **NOT_STARTED** | Pilot ChatGPT được kiểm chứng theo workspace thực tế |
 | Gate D — nâng cấp | **NOT_STARTED / CONDITIONAL** | Chỉ khởi động khi có trigger từ thực tế và người dùng giao |
 
@@ -94,9 +94,22 @@ Chín đầu việc dùng mốc `c51d39f`. Chat điều phối nối router, c�
 - Dữ liệu gốc, timestamp và ID được giữ qua restore. Reconcile phân biệt file đã trash và thiếu quyền, làm stale nội dung dẫn xuất khi file đổi. Thumbnail có cache volume riêng, hiển thị lazy-load và helper khôi phục cache có kiểm SHA-256.
 - Bản chạy Windows được người dùng chọn. Docker Desktop chưa có trên máy, đang chuẩn bị launcher native sử dụng Python/Node/PostgreSQL 18 đã có. OAuth client/consent, mở file Drive thật, đổi host/client/project và Android vật lý còn NOT_RUN.
 
-**Việc tiếp theo:** tích hợp Gate B và bản chạy Windows, rồi xác minh Drive thật với cấu hình OAuth của người dùng.
+### Bản tích hợp thư viện và native Windows
 
-**Chưa xác minh:** cấu hình Docker trên Windows; máy chủ 24/7; dự trữ/quota thật của Drive; OAuth; định dạng file ChatGPT app có thể đọc; quyền/media của từng nền tảng; thư viện PDF nào trích tiếng Việt tốt nhất. Không hỏi lại các quyết định đã chốt; chỉ nêu blocker khi bắt đầu tác vụ phụ thuộc thông tin đó.
+- [PR #17](https://github.com/cavoixanh638/kho-tri-thuc/pull/17), SHA mã `c9896e5b11b11bc7a4ebc845d9b8c6aabaae6060`. [CI #44344447208](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44344447208) PASS với 136 test trên PostgreSQL 18, build frontend, migration/rollback, smoke qua proxy và backup/verify/restore vào database mới.
+- Có hai GIN Item/DerivedContent, tìm dấu/không dấu, ghi chú tối đa 100.000 ký tự, lọc nhóm/chưa phân loại, CRUD nhóm và quan hệ manual/pinned. Worker tổ chức lại sau chỉnh sửa; API nội dung dẫn xuất có provenance, phân trang và giới hạn preview. Retry không tạo CaptureEvent mới.
+- Fetch web kiểm URL/redirect/IP và giới hạn tải; PDF/DOCX/XLSX/text được trích trong tiến trình có timeout. PDF hiện dùng pypdf làm baseline tạm, chưa chốt KT-102. Không có tải video bằng yt-dlp hoặc transcript video thực.
+- Đánh giá tổ chức chỉ có 40 fixture tổng hợp. Ngưỡng lexical bảo thủ đã điều chỉnh bằng tập này; chưa đo trên 30–50 Item thực do con người gán nhãn. Không suy rộng kết quả tổng hợp thành chất lượng dữ liệu cá nhân.
+- PWA có manifest/icon và GET share target. Chromium fixture smoke trước đó đã kiểm các kích thước 390/768/1440; Android thiết bị thật và HTTPS còn NOT_RUN.
+- Người dùng chọn máy Windows này. Bản native tại `%LOCALAPPDATA%\KhoTriThuc`, mã checkout từ GitHub; Python 3.13, Node 24, PostgreSQL 18.4 riêng ở loopback 54329, Waitress và worker ở loopback 8009. Build/migrate/check/start/stop/restart thành công, [runbook](operations/WINDOWS_SETUP.md). Runtime chưa có dữ liệu nội dung của người dùng.
+- Google Cloud đã tạo app OAuth và Web client theo xác nhận của người dùng, callback loopback chính xác, scope `drive.file`, một test user. JSON đã nạp vào runtime, người dùng đăng nhập ứng dụng và xác nhận consent Google. UI Cài đặt hiển thị Đã kết nối. Không đưa email/credential/JSON lên Git.
+- Cloud vẫn ở External/Testing nên refresh token Drive có hạn 7 ngày theo chính sách Google. Đã có luồng Kết nối lại; chuyển Production còn mở trước vận hành lâu dài, chưa tự công bố ứng dụng.
+- Live Drive smoke từ runtime Windows PASS trên ba mẫu TXT UTF-8 tiếng Việt (85 byte), PNG (83 byte), PDF (429 byte). Dùng DriveStorage thật, refresh token mới, upload resumable, SHA-256/size/MIME, tải lại đúng byte và gọi save lần nữa giữ file ID. Mẫu đã chuyển vào Thùng rác, transaction catalog rollback. [Kết quả khử thông tin riêng](operations/drive-live-results.json), runner `tools/drive_smoke.py`. Đây là test adapter thực, chưa thay thế nghiệm thu UI/multipart/worker bằng file người dùng hoặc tải lớn/video.
+- Mã/tài liệu/test lưu trên GitHub. Database, OAuth secret, staging và cache runtime nằm ngoài folder đồng bộ Drive. Rollback mã bằng PR revert; sao lưu database trước khi đảo migration trên môi trường có dữ liệu thật.
+
+**Việc tiếp theo:** dùng một file thực do người dùng chọn để nghiệm thu UI/multipart/worker và mở trên Drive. Tiếp tục benchmark PDF, nghiệm thu chất lượng nhóm, video, Android và pilot ChatGPT theo từng cổng còn mở.
+
+**Chưa xác minh:** UI/worker với file người dùng, Drive đổi client-project, upload lớn, quota thật; Docker Windows; host 24/7/HTTPS; Android; video; benchmark PDF 3 thư viện; chất lượng nhóm trên tập thực; ChatGPT pilot 5–10 Item. Không hỏi lại các quyết định đã chốt; chỉ nêu blocker khi bắt đầu tác vụ phụ thuộc thông tin đó.
 
 ## 5. Quy tắc cập nhật trạng thái
 

@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     "ingestion",
     "storage",
     "processing",
+    "search",
     "jobs",
 ]
 
@@ -81,3 +82,4 @@ LOGGING = {
 
 UPLOAD_STAGING_ROOT = os.getenv("UPLOAD_STAGING_ROOT", "/var/lib/kho-tri-thuc/staging")
 THUMBNAIL_CACHE_DIR = os.getenv("THUMBNAIL_CACHE_DIR", "/var/lib/kho-tri-thuc/thumbnails")
+WEB_DIST = os.getenv("WEB_DIST", "")

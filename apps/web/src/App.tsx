@@ -5,6 +5,7 @@ import { CaptureScreen } from './CaptureScreen';
 import { HistoryScreen } from './HistoryScreen';
 import { ItemScreen } from './ItemScreen';
 import { LibraryScreen } from './LibraryScreen';
+import { SearchScreen } from './SearchScreen';
 import { SettingsScreen } from './SettingsScreen';
 import { ErrorNotice, Loading, PageTitle } from './views';
 
@@ -12,6 +13,7 @@ const links = [
   { path: '#/gui', label: 'Gửi vào kho' },
   { path: '#/lich-su', label: 'Lịch sử' },
   { path: '#/thu-vien', label: 'Thư viện' },
+  { path: '#/tim-kiem', label: 'Tìm kiếm' },
   { path: '#/cai-dat', label: 'Cài đặt' },
 ];
 
@@ -25,7 +27,7 @@ function Header({ path, username, onLogout, signingOut }: {
   onLogout?: () => void;
   signingOut: boolean;
 }) {
-  const active = path.startsWith('#/muc/') ? '#/thu-vien' : path;
+  const active = path.startsWith('#/muc/') ? '#/thu-vien' : path.split('?', 1)[0];
   return <header className="site-header">
     <div className="shell header-inner">
       <Brand />
@@ -177,8 +179,9 @@ export function App() {
       {session && authenticated && (itemId ? <ItemScreen id={itemId} csrf={session.csrf_token} key={itemId} />
         : path === '#/lich-su' ? <HistoryScreen />
           : path === '#/thu-vien' ? <LibraryScreen />
-            : path === '#/cai-dat' ? <SettingsScreen csrf={session.csrf_token} driveResult={driveResult} username={session.username} />
-              : <CaptureScreen csrf={session.csrf_token} />)}
+            : path.split('?', 1)[0] === '#/tim-kiem' ? <SearchScreen path={path} key={path} />
+              : path === '#/cai-dat' ? <SettingsScreen csrf={session.csrf_token} driveResult={driveResult} username={session.username} />
+                : <CaptureScreen csrf={session.csrf_token} />)}
     </main>
   </>;
 }

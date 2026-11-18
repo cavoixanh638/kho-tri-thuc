@@ -1,7 +1,9 @@
+import { ExtractedContent } from './ExtractedContent';
 import { AssetPreview } from './AssetPreview';
 import { Button, Textarea, TextInput } from '@mantine/core';
 import { useRef, useState, type SubmitEvent } from 'react';
 import { externalHttpUrl, request, type Capture, type Item, type Page } from './api';
+import { ItemOrganization, RelatedItems } from './ItemOrganization';
 import { CaptureList, Empty, ErrorNotice, itemTitle, kindLabels, Loading, PageControls, PageTitle, ServerTime, useResource } from './views';
 
 const fetchStates: Record<string, string> = {
@@ -86,6 +88,22 @@ function ItemContent({ initial, csrf }: { initial: Item; csrf: string }) {
     }
   }
 
+  async function retryProcessing() {
+    if (inFlight.current) return;
+    inFlight.current = true;
+    setBusy(true);
+    setError(undefined);
+    try {
+      const result = await request<{ queued: number }>(`/items/${encodeURIComponent(item.item_id)}/retry`, { method: 'POST', csrf });
+      setConfirmation(result.queued ? 'Đã đưa vào hàng đợi để thử lại.' : 'Mục đang xử lý hoặc chưa có tác vụ cần thử lại.');
+    } catch {
+      setError('Chưa yêu cầu xử lý lại được. Hãy thử lại.');
+    } finally {
+      inFlight.current = false;
+      setBusy(false);
+    }
+  }
+
   function saveNotes(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     void update(draft);
@@ -134,7 +152,9 @@ function ItemContent({ initial, csrf }: { initial: Item; csrf: string }) {
             {assetError && <ErrorNotice>{assetError}</ErrorNotice>}
           </div>}
         </section>
+        {!item.deleted && <ExtractedContent id={item.item_id} />}
         <ItemHistory id={item.item_id} />
+        <RelatedItems id={item.item_id} />
       </div>
       <div className="panel-stack">
         <section className="panel" aria-labelledby="item-status">
@@ -149,6 +169,7 @@ function ItemContent({ initial, csrf }: { initial: Item; csrf: string }) {
             <div><dt>Phân loại</dt><dd>{stateText(item.classification_status, organizationStates)}</dd></div>
           </dl>
           <div className="item-actions">
+            {!item.deleted && (item.source_fetch === 'failed' || item.source_fetch === 'partial' || item.asset_storage === 'failed') && <Button variant="default" disabled={busy} onClick={() => void retryProcessing()}>Thử xử lý lại</Button>}
             {item.deleted ? <Button variant="default" disabled={busy} onClick={() => void update({ deleted: false })}>Khôi phục</Button>
               : <>
                 <Button variant="default" disabled={busy} onClick={() => void update({ favorite: !item.favorite })}>{item.favorite ? 'Bỏ yêu thích' : 'Thêm yêu thích'}</Button>
@@ -156,6 +177,7 @@ function ItemContent({ initial, csrf }: { initial: Item; csrf: string }) {
               </>}
           </div>
         </section>
+        <ItemOrganization id={item.item_id} csrf={csrf} deleted={item.deleted} />
         {confirmation && <div className="notice" role="status">{confirmation}</div>}
         {error && <ErrorNotice>{error}</ErrorNotice>}
       </div>

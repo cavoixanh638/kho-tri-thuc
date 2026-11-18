@@ -9,6 +9,7 @@ from ninja import Router, Schema, Status
 from ninja.security import django_auth
 from pydantic import Field
 
+from jobs.repository import JobRepository
 from storage.drive import DriveError
 from storage.models import Asset, StorageLocation
 from storage.service import DRIVE_PROVIDER, storage_for_owner
@@ -121,12 +122,17 @@ def list_items(
     offset: int = 0,
     deleted: bool = False,
     favorite: bool = False,
+    unclassified: bool = False,
 ):
     if not 1 <= limit <= 100 or not 0 <= offset <= 1_000_000:
         return Status(422, {"code": "invalid_page"})
     items = catalog(request.user).filter(deleted_at__isnull=not deleted)
     if favorite:
         items = items.filter(favorite=True)
+    if unclassified:
+        items = items.filter(
+            itemtopic__isnull=True, itemproject__isnull=True, itemtag__isnull=True
+        )
     page = list(items.order_by("-saved_at", "id")[offset : offset + limit + 1])
     return {
         "results": [summarize(item) for item in page[:limit]],
@@ -171,6 +177,13 @@ def edit_item(request, item_id: UUID, patch: ItemPatch):
             for key, value in changed.items():
                 setattr(item, key, value)
             item.save(update_fields=[*changed, "updated_at"])
+            if changed.keys() & {"title", "description", "note", "deleted_at"}:
+                JobRepository.enqueue(
+                    kind="organize",
+                    idempotency_key=f"item:{item.pk}:edit:{item.user_edit_version}:deleted:{item.deleted_at}",
+                    item=item,
+                    input_ref={"item_id": str(item.pk)},
+                )
     return summarize(catalog(request.user).get(pk=item_id))
 
 
