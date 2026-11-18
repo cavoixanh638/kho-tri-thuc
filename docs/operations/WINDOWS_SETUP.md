@@ -33,7 +33,9 @@ python tools/windows/launch.py configure-drive --client-file "C:\path\to\client.
 
 Mở Cài đặt của ứng dụng và bấm Kết nối Google Drive. Chủ tài khoản thực hiện đăng nhập/cấp quyền. Công cụ chỉ giữ cấu hình bí mật trên máy. Khi có kết nối, các upload lỗi vì chưa cấu hình được đưa lại vào hàng đợi.
 
-OAuth client thật, upload/đọc lại Drive, Android thiết bị thật và truy cập từ điện thoại qua HTTPS còn cần kiểm chứng. Bản hiện tại phục vụ loopback trên Windows.
+Web OAuth client thật đã được tạo, callback đã đăng ký, scope `drive.file` và tài khoản thử nghiệm đã lưu trong Google Cloud. JSON đã được nạp bằng `configure-drive`; ứng dụng đã build, migrate và khởi động lại thành công. Client secret chỉ nằm trong cấu hình riêng trên Windows.
+
+Đăng nhập/cấp quyền Google, upload/đọc lại Drive, Android thiết bị thật và truy cập từ điện thoại qua HTTPS còn cần kiểm chứng. Bản hiện tại phục vụ loopback trên Windows.
 
 ## Quyết định runtime
 
