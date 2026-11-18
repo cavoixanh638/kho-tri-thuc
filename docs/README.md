@@ -5,8 +5,9 @@ Trang điều hướng này chỉ **trỏ tới nguồn chuẩn**; không viết
 | Cần biết | Đọc tài liệu |
 | --- | --- |
 | Mục tiêu, phạm vi MVP, lựa chọn đã chốt | [MASTER_PLAN.md](MASTER_PLAN.md) |
+| **Tiếp nhận URL/ghi chú, lịch sử bất biến, tự phân nhóm và mục liên quan** | **[CAPTURE_AND_ORGANIZE.md](CAPTURE_AND_ORGANIZE.md)** |
 | Mô hình dữ liệu, Drive/PostgreSQL/API/search, cách mở rộng | [ARCHITECTURE_AND_DATA.md](ARCHITECTURE_AND_DATA.md) |
-| KT-xxx, phụ thuộc, điều kiện PASS và U01–U18 | [ROADMAP_AND_TESTS.md](ROADMAP_AND_TESTS.md) |
+| KT-xxx, phụ thuộc, điều kiện PASS và U01–U23 | [ROADMAP_AND_TESTS.md](ROADMAP_AND_TESTS.md) |
 | **Trạng thái hiện tại, test thực sự chạy, blocker, việc kế tiếp** | [CURRENT_STATE.md](CURRENT_STATE.md) |
 | **Quy tắc đặt file và ranh giới Git/Drive/PostgreSQL/cache** | [REPOSITORY_LAYOUT.md](REPOSITORY_LAYOUT.md) |
 | Quy tắc và thứ tự đọc cho Codex/AI | [../AGENTS.md](../AGENTS.md) |
@@ -16,7 +17,7 @@ Trang điều hướng này chỉ **trỏ tới nguồn chuẩn**; không viết
 
 1. Đọc `../README.md` và `../AGENTS.md`.
 2. Đọc `CURRENT_STATE.md` để không lẫn kế hoạch với kết quả chạy thật.
-3. Đọc `MASTER_PLAN.md` và phần liên quan của `ARCHITECTURE_AND_DATA.md`.
+3. Đọc `MASTER_PLAN.md`, **`CAPTURE_AND_ORGANIZE.md`** khi làm tiếp nhận/phân nhóm/tương tự, rồi phần liên quan của `ARCHITECTURE_AND_DATA.md`.
 4. Trước khi tạo/move file, đọc `REPOSITORY_LAYOUT.md`.
 5. Nhận đúng task và kiểm tiêu chí tại `ROADMAP_AND_TESTS.md`; đối chiếu code/test hiện có, rồi báo kết quả vào `CURRENT_STATE.md`.
 
