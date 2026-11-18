@@ -1,7 +1,7 @@
 # QUY CHUẨN CẤU TRÚC REPOSITORY — KHO TRI THỨC
 
 **Trạng thái:** Đã thống nhất làm quy tắc bố trí tệp cho giai đoạn triển khai; hiện các thư mục ứng dụng trong sơ đồ bên dưới **chưa được tạo**.
-**Phạm vi:** V4.6; một Django monolith, React PWA, PostgreSQL, Google Drive là kho file chính.
+**Phạm vi:** V4.7; một Django monolith, React PWA, PostgreSQL, Google Drive là kho file chính.
 **Nguồn tham khảo đã đọc:** [QLVB Repository Layout](https://github.com/cavoixanh638/QLVB_System_new/blob/main/docs/REPOSITORY_LAYOUT.md), [QLVB System](https://github.com/cavoixanh638/QLVB_System_new/blob/main/docs/SYSTEM.md), [QLVB docs routing](https://github.com/cavoixanh638/QLVB_System_new/blob/main/docs/README.md). Áp dụng nguyên tắc có chọn lọc, **không di chuyển/copy mã QLVB**.
 
 ## 1. Một sự thật, một nơi có thẩm quyền
@@ -10,6 +10,7 @@
 | --- | --- |
 | Dự án để làm gì, giới hạn của bản đầu? | [MASTER_PLAN.md](MASTER_PLAN.md) |
 | Quyết định kỹ thuật, dữ liệu, API, cách nâng cấp? | [ARCHITECTURE_AND_DATA.md](ARCHITECTURE_AND_DATA.md) |
+| **Gửi thông tin, giờ bất biến, tự nhóm và mục liên quan** | [CAPTURE_AND_ORGANIZE.md](CAPTURE_AND_ORGANIZE.md) |
 | Công việc, phụ thuộc và tiêu chí nghiệm thu? | [ROADMAP_AND_TESTS.md](ROADMAP_AND_TESTS.md) |
 | **Đã làm gì thật, đang vướng gì, test đã/chưa chạy?** | [CURRENT_STATE.md](CURRENT_STATE.md) |
 | Thêm một file mới vào đâu? | **REPOSITORY_LAYOUT.md (tài liệu này)** |
@@ -30,9 +31,9 @@ kho-tri-thuc/
 │   ├── web/                     # React, TypeScript, Vite, Mantine, PWA
 │   └── backend/                 # một Django project + các Django app
 │       ├── config/              # settings, urls, ASGI/WSGI
-│       ├── catalog/             # Item, Project, Topic, Tag, Source, Asset
+│       ├── catalog/             # Item, Project, Topic, Tag, RelatedItem
 │       ├── storage/             # StoragePort, DriveStorage, StorageLocation
-│       ├── ingestion/           # tiếp nhận link, upload, metadata
+│       ├── ingestion/           # CaptureEvent, URL/ghi chú, metadata, upload
 │       ├── processing/          # trích chữ, thumbnail, dữ liệu phát sinh
 │       ├── search/              # SearchService, PostgreSQL FTS
 │       └── jobs/                # job DB, retry, Django worker command
@@ -105,17 +106,17 @@ Kho Tri Thuc/
 
 Nhận từ [SYSTEM.md QLVB](https://github.com/cavoixanh638/QLVB_System_new/blob/main/docs/SYSTEM.md) **nguyên tắc phân bốn lớp**, không copy schema QLVB:
 
-1. **Source record** — Item, Source, metadata và chỉnh sửa của người dùng.
+1. **Source record** — CaptureEvent (mỗi lượt gửi và giờ server bất biến), Item, Source, metadata và chỉnh sửa của người dùng.
 2. **Source artifact** — Asset/file gốc được liên kết qua StorageLocation trên Drive.
-3. **Derived artifact** — DerivedContent, transcript, thumbnail, AI suggestion, chỉ mục; có processor/version/input hash và tạo lại được.
+3. **Derived artifact** — DerivedContent, transcript, thumbnail, AI suggestion, RelatedItem có provenance/version, chỉ mục; không ghi đè curated.
 4. **Operational state** — Job, stage, attempt, error, lease và mốc upload/verify/preview.
 
-Không suy diễn `link đã được lưu` = `video đã download` = `Drive đã verify` = `video sẵn sàng preview` = `nội dung đã được trích`. Giao diện/API phải diễn đạt đúng trạng thái. Các quy tắc chi tiết do [ARCHITECTURE_AND_DATA.md](ARCHITECTURE_AND_DATA.md) quản lý.
+Không suy diễn `CaptureEvent đã nhận` = `video đã download` = `Drive đã verify` = `video sẵn sàng preview` = `nội dung đã được trích` = `tự phân nhóm đúng`. Giao diện/API phải diễn đạt đúng từng trạng thái; xem [CAPTURE_AND_ORGANIZE.md](CAPTURE_AND_ORGANIZE.md).
 
 ## 6. Kiểm thử, đánh giá và chứng cứ
 
-- **tests:** khẳng định đúng/sai, như idempotent job, không mất UUID, không ghi đè bản gốc, phân loại/đổi nhóm, restore mapping, API và EXIF thumbnail.
-- **evals:** đo tốt/xấu trên bộ dữ liệu có provenance, như PDF tiếng Việt 3 thư viện ở KT-102, FTS tiếng Việt KT-104, AI classification KT-107.
+- **tests:** khẳng định đúng/sai: Event bất biến, URL gửi lại vs retry, note chữ nguyên văn, tự gán nhóm, RelatedItem unique, job idempotent, không mất UUID/file gốc, restore mapping, API và EXIF thumbnail.
+- **evals:** đo chất lượng: benchmark PDF KT-102, FTS/candidate recall tiếng Việt KT-104, precision/coverage và false auto-assignment/RelatedItem precision KT-107.
 - Không commit tài liệu cá nhân làm benchmark. Ưu tiên fixture tổng hợp hoặc được phép dùng; nếu cần PDF thật để đo, lưu ở Drive/không gian QA riêng, trong Git chỉ có mô tả, ID an toàn, hash, tiêu chí và kết quả.
 - PASS phải ghi **SHA đã thử**, môi trường, lệnh/test, kết quả, phần chưa chạy và giới hạn kết luận tại [CURRENT_STATE.md](CURRENT_STATE.md) hoặc PR. Không lấy kết quả từ QLVB làm bằng chứng cho Kho Tri Thức.
 
@@ -129,7 +130,7 @@ Không suy diễn `link đã được lưu` = `video đã download` = `Drive đ�
 ## 8. Khi nào cập nhật tài liệu nào?
 
 - Ý tưởng/tuyên bố chưa kiểm chứng: đưa vào task/điểm cần đo; không nâng thành 'đã chạy'.
-- Thay đổi phạm vi: `MASTER_PLAN.md`; thay đổi thiết kế: `ARCHITECTURE_AND_DATA.md`.
+- Thay đổi phạm vi: `MASTER_PLAN.md`; **hành vi nhận và tự tổ chức: `CAPTURE_AND_ORGANIZE.md`**; thay đổi schema/kiến trúc: `ARCHITECTURE_AND_DATA.md`.
 - Quy tắc đặt file: chính tài liệu này; thay đổi tiêu chí nghiệm thu: `ROADMAP_AND_TESTS.md`.
 - **Tiến độ thực tế, commit, PASS/FAIL/NOT_RUN, blocker và next action: chỉ cập nhật `CURRENT_STATE.md`.**
 - Khi KT-001 chạy được thật: viết `docs/operations/LOCAL_SETUP.md` với lệnh đã kiểm tra.
