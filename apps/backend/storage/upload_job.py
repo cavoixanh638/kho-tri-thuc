@@ -4,6 +4,7 @@ from uuid import UUID
 from django.conf import settings
 
 from jobs.handlers import JobFailure
+from processing.document_job import extract_from_staging
 
 from .drive import DriveError
 from .models import Asset, StorageLocation
@@ -54,6 +55,9 @@ def upload_asset(job):
             raise JobFailure("upload_stage_unavailable") from exc
         if location.status != StorageLocation.Status.VERIFIED:
             raise JobFailure("upload_not_verified")
+
+    if path.is_file():
+        extract_from_staging(asset, path)
 
     try:
         path.unlink(missing_ok=True)

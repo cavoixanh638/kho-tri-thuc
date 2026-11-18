@@ -1,0 +1,20 @@
+{
+  "status": "PROVISIONAL_MODEL_AUTHORED_FIXTURES",
+  "unexpected_assignments": {},
+  "items": 40,
+  "assignment_precision": 1.0,
+  "assignment_expected_coverage": 1.0,
+  "false_project_assignments": 0,
+  "unclassified_items": 6,
+  "candidate_recall_for_declared_pairs": 1.0,
+  "related_precision": 1.0,
+  "related_expected_coverage": 1.0,
+  "expected_related_pairs": 20,
+  "predicted_related_pairs": 20,
+  "thresholds": {
+    "min_shared_tokens": 6,
+    "min_similarity": 1.0
+  },
+  "human_signoff": "NOT_RUN",
+  "real_corpus_eval": "NOT_RUN"
+}

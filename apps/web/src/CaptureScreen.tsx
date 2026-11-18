@@ -1,5 +1,6 @@
+import { readSharedCapture } from './sharedCapture';
 import { Button, FileInput, SegmentedControl, Textarea, TextInput } from '@mantine/core';
-import { useRef, useState, type SubmitEvent } from 'react';
+import { useEffect, useRef, useState, type SubmitEvent } from 'react';
 import { ApiError, request, type Capture, type Page, type Receipt, type UploadReceipt } from './api';
 import { CaptureList, Empty, ErrorNotice, itemHref, Loading, PageTitle, ServerTime, useResource } from './views';
 
@@ -13,13 +14,21 @@ function requestKey() {
 }
 
 export function CaptureScreen({ csrf }: { csrf: string }) {
-  const [kind, setKind] = useState<Kind>('link');
-  const [url, setUrl] = useState('');
-  const [note, setNote] = useState('');
-  const [annotation, setAnnotation] = useState('');
+  const [shared] = useState(readSharedCapture);
+  const [kind, setKind] = useState<Kind>(shared.kind);
+  const [url, setUrl] = useState(shared.url);
+  const [note, setNote] = useState(shared.note);
+  const [annotation, setAnnotation] = useState(shared.annotation);
   const [file, setFile] = useState<File | null>(null);
   const [receipt, setReceipt] = useState<Receipt>();
   const [uploadReceipt, setUploadReceipt] = useState<UploadReceipt>();
+  useEffect(() => {
+    if (shared.shared) {
+      const page = new URL(window.location.href);
+      for (const key of ['shared_title', 'shared_text', 'shared_url']) page.searchParams.delete(key);
+      window.history.replaceState(null, '', page.href);
+    }
+  }, [shared.shared]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string>();
   const inFlight = useRef(false);
@@ -96,7 +105,7 @@ export function CaptureScreen({ csrf }: { csrf: string }) {
       return;
     }
 
-    const body = { kind, source_channel: 'web', ...(kind === 'link' ? { url: link, text } : { text }) };
+    const body = { kind, source_channel: shared.shared ? 'share' : 'web', ...(kind === 'link' ? { url: link, text } : { text }) };
     const signature = JSON.stringify(body);
     if (!attempt.current || attempt.current.body !== signature) {
       attempt.current = { body: signature, key: requestKey() };

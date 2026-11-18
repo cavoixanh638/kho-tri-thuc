@@ -1,0 +1,364 @@
+{
+  "status": "provisional_synthetic",
+  "annotation": "Model-authored fixtures. Human review and real-world KT-107 sign-off pending.",
+  "items": [
+    {
+      "id": "item-1",
+      "label": "Chuyển đổi số",
+      "text": "Chuyển đổi số trong trường học cần dữ liệu học sinh và hạ tầng mạng.",
+      "expected": [
+        "Chuyển đổi số"
+      ],
+      "related_peer": "repeat-1"
+    },
+    {
+      "id": "repeat-1",
+      "label": "Chuyển đổi số",
+      "text": "Chuyển đổi số trong trường học cần dữ liệu học sinh và hạ tầng mạng.",
+      "expected": [
+        "Chuyển đổi số"
+      ],
+      "related_peer": "item-1"
+    },
+    {
+      "id": "item-2",
+      "label": "Chuyển đổi số",
+      "text": "Hệ thống dữ liệu dùng chung hỗ trợ chuyển đổi số tại trường học.",
+      "expected": [
+        "Chuyển đổi số"
+      ],
+      "related_peer": "repeat-2"
+    },
+    {
+      "id": "repeat-2",
+      "label": "Chuyển đổi số",
+      "text": "Hệ thống dữ liệu dùng chung hỗ trợ chuyển đổi số tại trường học.",
+      "expected": [
+        "Chuyển đổi số"
+      ],
+      "related_peer": "item-2"
+    },
+    {
+      "id": "item-3",
+      "label": "Quy hoạch đô thị",
+      "text": "Quy hoạch đô thị cần công khai bản đồ sử dụng đất và giao thông.",
+      "expected": [
+        "Quy hoạch đô thị"
+      ],
+      "related_peer": "repeat-3"
+    },
+    {
+      "id": "repeat-3",
+      "label": "Quy hoạch đô thị",
+      "text": "Quy hoạch đô thị cần công khai bản đồ sử dụng đất và giao thông.",
+      "expected": [
+        "Quy hoạch đô thị"
+      ],
+      "related_peer": "item-3"
+    },
+    {
+      "id": "item-4",
+      "label": "Quy hoạch đô thị",
+      "text": "Quy hoạch đô thị ưu tiên kết nối giao thông công cộng và không gian xanh.",
+      "expected": [
+        "Quy hoạch đô thị"
+      ],
+      "related_peer": "repeat-4"
+    },
+    {
+      "id": "repeat-4",
+      "label": "Quy hoạch đô thị",
+      "text": "Quy hoạch đô thị ưu tiên kết nối giao thông công cộng và không gian xanh.",
+      "expected": [
+        "Quy hoạch đô thị"
+      ],
+      "related_peer": "item-4"
+    },
+    {
+      "id": "item-5",
+      "label": "Bảo vệ môi trường",
+      "text": "Bảo vệ môi trường khu công nghiệp cần quan trắc nước thải định kỳ.",
+      "expected": [
+        "Bảo vệ môi trường"
+      ],
+      "related_peer": "repeat-5"
+    },
+    {
+      "id": "repeat-5",
+      "label": "Bảo vệ môi trường",
+      "text": "Bảo vệ môi trường khu công nghiệp cần quan trắc nước thải định kỳ.",
+      "expected": [
+        "Bảo vệ môi trường"
+      ],
+      "related_peer": "item-5"
+    },
+    {
+      "id": "item-6",
+      "label": "Bảo vệ môi trường",
+      "text": "Thu gom rác tại nguồn là giải pháp bảo vệ môi trường khu dân cư.",
+      "expected": [
+        "Bảo vệ môi trường"
+      ],
+      "related_peer": "repeat-6"
+    },
+    {
+      "id": "repeat-6",
+      "label": "Bảo vệ môi trường",
+      "text": "Thu gom rác tại nguồn là giải pháp bảo vệ môi trường khu dân cư.",
+      "expected": [
+        "Bảo vệ môi trường"
+      ],
+      "related_peer": "item-6"
+    },
+    {
+      "id": "item-7",
+      "label": "Năng lượng tái tạo",
+      "text": "Điện mặt trời mái nhà là nguồn năng lượng tái tạo có tiềm năng.",
+      "expected": [
+        "Năng lượng tái tạo"
+      ],
+      "related_peer": "repeat-7"
+    },
+    {
+      "id": "repeat-7",
+      "label": "Năng lượng tái tạo",
+      "text": "Điện mặt trời mái nhà là nguồn năng lượng tái tạo có tiềm năng.",
+      "expected": [
+        "Năng lượng tái tạo"
+      ],
+      "related_peer": "item-7"
+    },
+    {
+      "id": "item-8",
+      "label": "Năng lượng tái tạo",
+      "text": "Hệ thống lưu trữ hỗ trợ tích hợp năng lượng tái tạo vào lưới điện.",
+      "expected": [
+        "Năng lượng tái tạo"
+      ],
+      "related_peer": "repeat-8"
+    },
+    {
+      "id": "repeat-8",
+      "label": "Năng lượng tái tạo",
+      "text": "Hệ thống lưu trữ hỗ trợ tích hợp năng lượng tái tạo vào lưới điện.",
+      "expected": [
+        "Năng lượng tái tạo"
+      ],
+      "related_peer": "item-8"
+    },
+    {
+      "id": "item-9",
+      "label": "An toàn lao động",
+      "text": "An toàn lao động tại nhà máy yêu cầu kiểm định thiết bị nâng hạ.",
+      "expected": [
+        "An toàn lao động"
+      ],
+      "related_peer": "repeat-9"
+    },
+    {
+      "id": "repeat-9",
+      "label": "An toàn lao động",
+      "text": "An toàn lao động tại nhà máy yêu cầu kiểm định thiết bị nâng hạ.",
+      "expected": [
+        "An toàn lao động"
+      ],
+      "related_peer": "item-9"
+    },
+    {
+      "id": "item-10",
+      "label": "An toàn lao động",
+      "text": "Huấn luyện an toàn lao động cần gắn với tình huống thực tế tại xưởng.",
+      "expected": [
+        "An toàn lao động"
+      ],
+      "related_peer": "repeat-10"
+    },
+    {
+      "id": "repeat-10",
+      "label": "An toàn lao động",
+      "text": "Huấn luyện an toàn lao động cần gắn với tình huống thực tế tại xưởng.",
+      "expected": [
+        "An toàn lao động"
+      ],
+      "related_peer": "item-10"
+    },
+    {
+      "id": "item-11",
+      "label": "Chuyển đổi số",
+      "text": "Dự án: Thư viện cộng đồng\nỨng dụng chuyển đổi số cho quản lý sách.",
+      "expected": [
+        "Chuyển đổi số",
+        "project:Thư viện cộng đồng"
+      ],
+      "related_peer": "repeat-11"
+    },
+    {
+      "id": "repeat-11",
+      "label": "Chuyển đổi số",
+      "text": "Dự án: Thư viện cộng đồng\nỨng dụng chuyển đổi số cho quản lý sách.",
+      "expected": [
+        "Chuyển đổi số",
+        "project:Thư viện cộng đồng"
+      ],
+      "related_peer": "item-11"
+    },
+    {
+      "id": "item-12",
+      "label": "Quy hoạch đô thị",
+      "text": "Dự án: Đường xanh\nQuy hoạch đô thị dành hành lang cho xe đạp.",
+      "expected": [
+        "Quy hoạch đô thị",
+        "project:Đường xanh"
+      ],
+      "related_peer": "repeat-12"
+    },
+    {
+      "id": "repeat-12",
+      "label": "Quy hoạch đô thị",
+      "text": "Dự án: Đường xanh\nQuy hoạch đô thị dành hành lang cho xe đạp.",
+      "expected": [
+        "Quy hoạch đô thị",
+        "project:Đường xanh"
+      ],
+      "related_peer": "item-12"
+    },
+    {
+      "id": "item-13",
+      "label": "Bảo vệ môi trường",
+      "text": "Dự án: Sông sạch\nBảo vệ môi trường nước qua hệ thống quan trắc.",
+      "expected": [
+        "Bảo vệ môi trường",
+        "project:Sông sạch"
+      ],
+      "related_peer": "repeat-13"
+    },
+    {
+      "id": "repeat-13",
+      "label": "Bảo vệ môi trường",
+      "text": "Dự án: Sông sạch\nBảo vệ môi trường nước qua hệ thống quan trắc.",
+      "expected": [
+        "Bảo vệ môi trường",
+        "project:Sông sạch"
+      ],
+      "related_peer": "item-13"
+    },
+    {
+      "id": "item-14",
+      "label": "Năng lượng tái tạo",
+      "text": "Dự án: Mái nhà xanh\nNăng lượng tái tạo cho khu trường học.",
+      "expected": [
+        "Năng lượng tái tạo",
+        "project:Mái nhà xanh"
+      ],
+      "related_peer": "repeat-14"
+    },
+    {
+      "id": "repeat-14",
+      "label": "Năng lượng tái tạo",
+      "text": "Dự án: Mái nhà xanh\nNăng lượng tái tạo cho khu trường học.",
+      "expected": [
+        "Năng lượng tái tạo",
+        "project:Mái nhà xanh"
+      ],
+      "related_peer": "item-14"
+    },
+    {
+      "id": "item-15",
+      "label": "An toàn lao động",
+      "text": "Dự án: Nhà máy an toàn\nAn toàn lao động với quy trình cấp phép làm việc.",
+      "expected": [
+        "An toàn lao động",
+        "project:Nhà máy an toàn"
+      ],
+      "related_peer": "repeat-15"
+    },
+    {
+      "id": "repeat-15",
+      "label": "An toàn lao động",
+      "text": "Dự án: Nhà máy an toàn\nAn toàn lao động với quy trình cấp phép làm việc.",
+      "expected": [
+        "An toàn lao động",
+        "project:Nhà máy an toàn"
+      ],
+      "related_peer": "item-15"
+    },
+    {
+      "id": "item-16",
+      "label": "Chủ đề một từ",
+      "text": "Chủ đề: Giáo dục\nBài học về sự kiên nhẫn.",
+      "expected": [
+        "Giáo dục"
+      ],
+      "related_peer": "repeat-16"
+    },
+    {
+      "id": "repeat-16",
+      "label": "Chủ đề một từ",
+      "text": "Chủ đề: Giáo dục\nBài học về sự kiên nhẫn.",
+      "expected": [
+        "Giáo dục"
+      ],
+      "related_peer": "item-16"
+    },
+    {
+      "id": "item-17",
+      "label": "Chủ đề một từ",
+      "text": "Giáo dục giúp xây dựng kỹ năng học tập.",
+      "expected": [
+        "Giáo dục"
+      ],
+      "related_peer": "repeat-17"
+    },
+    {
+      "id": "repeat-17",
+      "label": "Chủ đề một từ",
+      "text": "Giáo dục giúp xây dựng kỹ năng học tập.",
+      "expected": [
+        "Giáo dục"
+      ],
+      "related_peer": "item-17"
+    },
+    {
+      "id": "item-18",
+      "label": "Dự án chỉ nhắc tên",
+      "text": "Bài viết nhắc Thư viện cộng đồng cùng các nguồn tài nguyên mở.",
+      "expected": [],
+      "related_peer": "repeat-18"
+    },
+    {
+      "id": "repeat-18",
+      "label": "Dự án chỉ nhắc tên",
+      "text": "Bài viết nhắc Thư viện cộng đồng cùng các nguồn tài nguyên mở.",
+      "expected": [],
+      "related_peer": "item-18"
+    },
+    {
+      "id": "item-19",
+      "label": "Ghi chú riêng",
+      "text": "Hẹn xem lại tài liệu thứ hai vào tuần tới.",
+      "expected": [],
+      "related_peer": "repeat-19"
+    },
+    {
+      "id": "repeat-19",
+      "label": "Ghi chú riêng",
+      "text": "Hẹn xem lại tài liệu thứ hai vào tuần tới.",
+      "expected": [],
+      "related_peer": "item-19"
+    },
+    {
+      "id": "item-20",
+      "label": "Liên quan từ khác",
+      "text": "Trẻ cần chỗ vui chơi ngoài trời.",
+      "expected": [],
+      "related_peer": "repeat-20"
+    },
+    {
+      "id": "repeat-20",
+      "label": "Liên quan từ khác",
+      "text": "Trẻ cần chỗ vui chơi ngoài trời.",
+      "expected": [],
+      "related_peer": "item-20"
+    }
+  ]
+}
