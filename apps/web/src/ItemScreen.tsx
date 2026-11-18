@@ -1,3 +1,4 @@
+import { ExtractedContent } from './ExtractedContent';
 import { Button, Textarea, TextInput } from '@mantine/core';
 import { useRef, useState, type SubmitEvent } from 'react';
 import { externalHttpUrl, request, type Capture, type Item, type Page } from './api';
@@ -133,6 +134,7 @@ function ItemContent({ initial, csrf }: { initial: Item; csrf: string }) {
             {assetError && <ErrorNotice>{assetError}</ErrorNotice>}
           </div>}
         </section>
+        {!item.deleted && <ExtractedContent id={item.item_id} />}
         <ItemHistory id={item.item_id} />
         <RelatedItems id={item.item_id} />
       </div>
