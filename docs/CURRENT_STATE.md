@@ -84,7 +84,7 @@ Chín đầu việc dùng mốc `c51d39f`. Chat điều phối nối router, c�
 
 - [PR #5](https://github.com/cavoixanh638/kho-tri-thuc/pull/5), commit mã `f8ceec9915b239a7423041d9014c3b02ea805b50`. 52 tests PostgreSQL 18.4 trên Windows, migration check và Ruff đều PASS.
 - [GitHub Actions #44333379367](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44333379367) PASS qua Docker Compose. Biên nhận sau commit, ghi chú tiếng Việt nguyên văn, retry cùng key, hai lần gửi URL cùng Item, và upload multipart thử nghiệm qua Vite proxy. Drive thật chưa kết nối; receipt upload chỉ xác nhận đã tiếp nhận vào staging.
-- Worker PostgreSQL đã thử lease, SKIP LOCKED và restart. Tệp chỉ được xác nhận sau khi Drive adapter kiểm chứng. CI chạy dữ liệu thử; sau khi có dữ liệu thật cần sao lưu trước khi rollback migration. Màn hình upload tệp, sao lưu và thumbnail đang tích hợp tiếp.
+- Worker PostgreSQL đã thử lease, SKIP LOCKED và restart. Tệp chỉ được xác nhận sau khi Drive adapter kiểm chứng. CI chạy dữ liệu thử; sau khi có dữ liệu thật cần sao lưu trước khi rollback migration. Màn hình upload tệp đã kiểm Chromium với API mô phỏng ở `0678592`. Sao lưu và thumbnail đang tích hợp.
 
 **Việc tiếp theo:** kết hợp KT-008/009/010 cho Gate A và nối KT-101/103/104/110 cho Gate B. Kiểm Drive thật khi có cấu hình OAuth và môi trường phù hợp.
 
