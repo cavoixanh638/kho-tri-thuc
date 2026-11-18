@@ -11,3 +11,8 @@ export type GroupField = (typeof groupKinds)[number]['field'];
 export type GroupFilter = (typeof groupKinds)[number]['filter'];
 
 export type Groups = Record<GroupField, Group[]>;
+
+export function groupSearchHref(filter: GroupFilter, id: number) {
+  const params = new URLSearchParams({ q: '', [filter]: String(id) });
+  return `#/tim-kiem?${params}`;
+}

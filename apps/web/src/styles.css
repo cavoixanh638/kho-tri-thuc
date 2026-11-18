@@ -186,3 +186,13 @@ time { font-variant-numeric: tabular-nums; }
   .search-filter-grid { grid-template-columns: minmax(0, 1fr); gap: 8px; }
   .search-input-row button { min-height: 40px; }
 }
+
+.group-list { display: flex; flex-wrap: wrap; gap: 8px 12px; margin: 8px 0 0; padding: 0; list-style: none; }
+.group-list li { min-width: 0; overflow-wrap: anywhere; }
+.group-block { min-width: 0; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+.group-block:last-child { border-bottom: 0; }
+.group-block .list-meta { margin-block-start: 2px; }
+.assigned-groups li { display: grid; }
+.group-edit-caption { margin: 0; color: var(--muted); }
+.group-catalog .group-list li { padding: 3px 8px; border: 1px solid var(--border); border-radius: 6px; }
+.related-items .search-result p { margin: 4px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
