@@ -6,6 +6,7 @@ import os
 import re
 import stat
 import tempfile
+import time
 from contextlib import closing
 from dataclasses import dataclass
 from pathlib import Path
@@ -25,6 +26,7 @@ _CACHE_VERSION = "v1"
 _OUTPUTS = {"webp": (".webp", "WEBP"), "jpeg": (".jpg", "JPEG")}
 _MAX_IMAGE_PIXELS = 64_000_000
 _PDFIUM_LOCK = Lock()
+_CACHE_WRITE_LOCK = Lock()
 
 
 @dataclass(frozen=True)
@@ -55,7 +57,7 @@ class ThumbnailService:
             raise ValueError("max_edge must be an integer from 1 to 2048")
         if output_format not in _OUTPUTS:
             raise ValueError("output_format must be webp or jpeg")
-        self.cache_root = Path(cache_root).absolute()
+        self.cache_root = Path(cache_root).resolve()
         self.max_edge = max_edge
         self.output_format = output_format
         self.ffmpeg = ffmpeg
@@ -95,7 +97,7 @@ class ThumbnailService:
             return ThumbnailResult(None, None, "unsupported_media")
 
         source = Path(source_path).resolve()
-        if source == target.resolve():
+        if source == target:
             raise ValueError("source_path is a thumbnail cache entry")
         try:
             with source.open("rb") as stream:
@@ -140,29 +142,47 @@ class ThumbnailService:
         return None
 
     def _write_cache(self, target: Path, image: Image.Image) -> None:
-        target.parent.mkdir(parents=True, exist_ok=True)
         _, format_name = _OUTPUTS[self.output_format]
         image.thumbnail((self.max_edge, self.max_edge), Image.Resampling.LANCZOS)
         image.info.clear()
+        if self.output_format == "jpeg" and image.mode == "RGBA":
+            with (
+                Image.new("RGB", image.size, "white") as background,
+                image.getchannel("A") as alpha,
+            ):
+                background.paste(image, mask=alpha)
+                _write_thumbnail(target, background, format_name)
+        else:
+            _write_thumbnail(target, image, format_name)
+
+
+def _write_thumbnail(target: Path, image: Image.Image, format_name: str) -> None:
+    with _CACHE_WRITE_LOCK:
+        target.parent.mkdir(parents=True, exist_ok=True)
         temp_path = None
         try:
             with tempfile.NamedTemporaryFile(
                 dir=target.parent, prefix=".thumbnail-", delete=False
             ) as temporary:
                 temp_path = Path(temporary.name)
-                if self.output_format == "jpeg" and image.mode == "RGBA":
-                    with (
-                        Image.new("RGB", image.size, "white") as background,
-                        image.getchannel("A") as alpha,
-                    ):
-                        background.paste(image, mask=alpha)
-                        background.save(temporary, format=format_name, quality=85)
-                else:
-                    image.save(temporary, format=format_name, quality=85)
-            os.replace(temp_path, target)
+                image.save(temporary, format=format_name, quality=85)
+            _publish(temp_path, target)
         finally:
             if temp_path is not None:
                 temp_path.unlink(missing_ok=True)
+
+
+def _publish(temporary: Path, target: Path) -> None:
+    # Windows can deny a replace while another process briefly holds the target.
+    for delay in (0.01, 0.02, 0.04, 0.08):
+        try:
+            os.replace(temporary, target)
+            return
+        except PermissionError as error:
+            if getattr(error, "winerror", None) not in (5, 32):
+                raise
+            time.sleep(delay)
+    os.replace(temporary, target)
 
 
 def _read_image(stream: BinaryIO) -> Image.Image:
