@@ -2,13 +2,17 @@ import signal
 from threading import Event
 
 from django.core.management.base import BaseCommand, CommandError
-from django.db import DatabaseError, connection
+from django.db import DatabaseError, close_old_connections, connection
 
 from config.health import check_database
+from jobs.handlers import HANDLERS
+from jobs.worker import Worker
+
+POLL_SECONDS = 1
 
 
 class Command(BaseCommand):
-    help = "Start the scaffold worker and wait for shutdown."
+    help = "Run the PostgreSQL job worker."
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -34,8 +38,25 @@ class Command(BaseCommand):
         def stop(_signal_number, _frame):
             stopped.set()
 
-        for shutdown_signal in (signal.SIGINT, signal.SIGTERM):
-            signal.signal(shutdown_signal, stop)
+        shutdown_signals = (signal.SIGINT, signal.SIGTERM)
+        previous = {
+            shutdown_signal: signal.signal(shutdown_signal, stop)
+            for shutdown_signal in shutdown_signals
+        }
 
-        self.stdout.write("Worker started (scaffold).")
-        stopped.wait()
+        worker = Worker(HANDLERS)
+        self.stdout.write("Worker started.")
+        try:
+            while not stopped.is_set():
+                close_old_connections()
+                try:
+                    worked = worker.run_once()
+                except DatabaseError:
+                    self.stderr.write("Worker database operation failed. Retrying.")
+                    worked = False
+                if not worked:
+                    stopped.wait(POLL_SECONDS)
+        finally:
+            connection.close()
+            for shutdown_signal, handler in previous.items():
+                signal.signal(shutdown_signal, handler)
