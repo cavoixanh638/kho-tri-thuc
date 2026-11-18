@@ -77,8 +77,9 @@ h3 { font-size: 14px; }
 .panel-stack { min-width: 0; display: grid; gap: var(--gap); }
 
 .form-stack { display: grid; gap: 16px; margin-block-start: 20px; }
-.form-stack .mantine-SegmentedControl-root, .filters .mantine-SegmentedControl-root { justify-self: start; max-width: 100%; }
+.form-stack .mantine-SegmentedControl-root, .filters .mantine-SegmentedControl-root { justify-self: start; max-width: 100%; --sc-shadow: none; }
 .form-stack textarea { overflow-wrap: anywhere; }
+.form-stack .mantine-InputWrapper-description { color: var(--muted); }
 .form-actions, .item-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .form-actions { align-items: center; }
 .form-actions button, .item-actions button { max-width: 100%; }
@@ -128,10 +129,20 @@ time { font-variant-numeric: tabular-nums; }
 .login-panel { max-width: 400px; margin-inline: auto; margin-block-start: 35px; }
 .login-panel .form-stack { margin-block-start: 0; }
 
+@media (min-width: 761px) and (max-width: 915px) {
+  .compact .capture-main { display: contents; }
+  .compact .capture-entry { grid-template-areas: 'kind time' 'preview preview'; row-gap: 2px; }
+  .compact .capture-kind { grid-area: kind; }
+  .compact .capture-preview { grid-area: preview; }
+  .compact .capture-entry time { grid-area: time; }
+}
+
 @media (max-width: 760px) {
   .header-inner { gap: 12px; }
   .desktop-nav, .account { display: none; }
   .mobile-nav { display: block; }
+  .mobile-nav button { min-height: 40px; }
+  .form-actions button { min-height: 44px; }
   .split-view, .detail-view { grid-template-columns: minmax(0, 1fr); }
 }
 
