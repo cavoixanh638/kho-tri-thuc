@@ -79,7 +79,7 @@ class OAuthIntegrationTests(TestCase):
             "permissionId": "same-user",
             "displayName": "Drive test",
         }
-        client.find_root.return_value = None
+        client.find_root.return_value = "root-id"
         client.reserve_file_id.return_value = "root-id"
         flow = Mock()
         flow.credentials = SimpleNamespace(
@@ -107,7 +107,7 @@ class OAuthIntegrationTests(TestCase):
             ),
             b"refresh-fixture",
         )
-        client.reserve_file_id.assert_called_once()
+        client.reserve_file_id.assert_not_called()
         self.assertEqual(client.ensure_root.call_count, 2)
         status = self.client.get(f"{BASE}/status")
         self.assertEqual(
