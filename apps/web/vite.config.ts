@@ -7,7 +7,8 @@ export default defineConfig({
     proxy: {
       '/api': {
         target: process.env.API_PROXY_TARGET ?? 'http://127.0.0.1:8000',
-        changeOrigin: true,
+        // Django must compare the CSRF Origin against the same Host the browser used.
+        changeOrigin: false,
       },
     },
   },
