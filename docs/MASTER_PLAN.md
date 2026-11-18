@@ -1,7 +1,7 @@
-# KHO TRI THỨC — KẾ HOẠCH TỔNG THỂ V4.6 (BẢN KẾ HOẠCH CHỐT)
+# KHO TRI THỨC — KẾ HOẠCH TỔNG THỂ V4.7 (TIẾP NHẬN VÀ TỰ TỔ CHỨC)
 ## Nhỏ khi vận hành, sẵn đường nâng cấp dài hạn
 
-**Ngày:** 15/11/2026 · **Thay thế v4.5** · **Trạng thái:** thiết kế, chưa có mã nguồn ứng dụng.  
+**Ngày:** 18/11/2026 · **Thay thế v4.6** · **Trạng thái:** thiết kế, chưa có mã nguồn ứng dụng.  
 **Nguồn quyết định:** người dùng muốn **Google Drive là kho file chính**, sử dụng cá nhân, tự sắp xếp theo lĩnh vực/dự án/xem theo ngày, có thể kết nối ChatGPT và mở rộng AI trong tương lai. Tránh cả overengineering lẫn làm quá sơ sài dẫn đến viết lại hệ thống.
 
 ## 1. Mục tiêu của bản đầu
@@ -9,7 +9,8 @@
 - Tiếp nhận URL FB/TikTok/YouTube/web, video, ảnh, tài liệu PDF/DOCX/XLSX và ghi chú bằng Android/Windows.
 - Lưu file gốc trên Google Drive My Drive do chủ sở hữu kết nối, video chỉ tải khi nền tảng cho phép và công cụ hoạt động; link thất bại vẫn được giữ.
 - Thu thập metadata và văn bản dễ lấy (PDF có chữ, DOCX, XLSX, HTML, phụ đề có sẵn); chạy nền, không làm nghẽn lưu file.
-- Gợi ý lĩnh vực, chủ đề, dự án, nhãn bằng AI nhẹ, có thể sửa; xem theo ngày mà không nhân bản file.
+- **Mỗi lần gửi phải được lưu ngay** (URL hoặc ghi chú thuần chữ) kèm thời gian server nhận; quá trình tải/AI/Drive tiếp tục ở nền. Ghi chú chữ lưu nguyên văn, không bắt buộc lên Drive.
+- **Tự phân loại thực sự vào nhóm đã tồn tại** khi đủ bằng chứng, không chỉ hiển thị gợi ý. Đồng thời tìm **các mục có nội dung liên quan** và lưu lý do; khi thiếu dữ kiện để Chưa phân loại/Đề xuất, không ghi đè nhóm đã chốt.
 - Tìm kiếm từ khóa và lọc; quản lý đánh dấu quan trọng, xóa mềm, khôi phục.
 - Đọc/nghiên cứu file qua **ChatGPT Google Drive app trước**, nhưng phải nhớ dữ liệu ghi chú, dự án, phụ đề và văn bản trích xuất đang nằm trong PostgreSQL thì ChatGPT **không tự thấy**. Thử xuất văn bản đại diện lên Drive (Google Docs/TXT/Markdown, định dạng nào thực sự đọc được) rồi mới quyết định có cần MCP riêng.
 
@@ -19,7 +20,9 @@
 
 1. **Hai loại định danh:** mỗi mục có `item_id` UUID, mỗi file có `asset_id` UUID; Google Drive `drive_file_id` chỉ là **mã vị trí lưu**, không được làm khóa nghiệp vụ. Tách `Asset` và `StorageLocation` (bản đầu chỉ một location Drive).
 2. **Tách các tầng dữ liệu:** bản gốc và nguồn; dữ liệu trích xuất/AI có thể tái tạo; thông tin người dùng sửa/chốt **không được AI tự ghi đè**.
-3. **Nhóm là quan hệ many-to-many** cho lĩnh vực/chủ đề/dự án/tag; ngày là thuộc tính lọc, không phải đường dẫn thư mục.
+3. **Nhóm là quan hệ many-to-many** cho lĩnh vực/chủ đề/dự án/tag; ngày là thuộc tính lọc, không phải đường dẫn thư mục. Hệ thống **tự gán nhóm đang có** nếu đủ tin cậy, không tạo hàng loạt nhóm mới.
+3a. **Lịch sử nhận thông tin bất biến:** `CaptureEvent` tách khỏi Item, giữ nguyên giờ server nhận và đầu vào gốc **cho từng lần gửi**. Gửi lại cùng link là Event mới (khi đã nhận được request mới), tái sử dụng Item khi nhận diện nguồn chắc chắn; retry cùng idempotency key là **cùng Event**.
+3b. **Liên quan không có nghĩa là trùng:** `RelatedItem` ghi cặp nội dung tương tự có provenance; hai ghi chú tự viết gần nghĩa vẫn được giữ thành **hai Item riêng**. Người dùng chỉnh sửa nội dung/nhóm có quyền ưu tiên.
 4. **Backend có API ổn định `/api/v1/`**, các nghiệp vụ lưu/truy xuất/tìm kiếm nằm trong service để sau này phục vụ PWA, Android native và MCP mà không viết lại.
 5. **Storage driver nhỏ ngay từ đầu:** `DriveStorage` hiện thực giao diện `save/open/verify/delete/locate`. Chưa cần hiện thực B2/R2 hoặc migration engine.
 6. **Job trạng thái bền vững, idempotent:** lỗi Google API/worker restart không được làm mất item hoặc tạo nhiều bản sao do retry.
@@ -80,9 +83,9 @@
 
 ## 7. Thứ tự triển khai đã chốt
 
-**Mốc A — Nền tảng đúng và lưu Drive được (P0):** Django LTS, PostgreSQL, API, ID ổn định, storage driver Drive/OAuth, upload–open–verify, một worker, màn hình Thêm/Thư viện với thumbnail riêng, backup đầu tiên và thử quy trình khôi phục OAuth/Client.
+**Mốc A — Nhận ngay và lưu chắc chắn (P0):** Django/PostgreSQL; `CaptureEvent` + Item/Source/Job transaction, API trả ACK ngay cho URL/ghi chú; lịch sử giờ nhận, gửi lại link khác với retry, không cần Drive asset cho ghi chú thuần chữ; Drive/OAuth, thumbnail, backup và thử khôi phục.
 
-**Mốc B — Dùng được hàng ngày (P0):** metadata video/web, trích chữ và phụ đề nguồn, **benchmark 3 thư viện `pypdf`/`pypdfium2`/`PyMuPDF` để chọn extractor chữ**, AI gợi ý nhóm, lĩnh vực/dự án/ngày/tag, tìm kiếm hai GIN index (`Item` + `DerivedContent`) có dấu/không dấu có kiểm thử; Android dán/chia sẻ link khi nền tảng hỗ trợ.
+**Mốc B — Thư viện tự tổ chức (P0):** metadata video/web, trích chữ/phụ đề nguồn, benchmark ba parser PDF; **SearchService tìm nhóm/mục hiện có, OrganizationService tự gán nhóm khi đủ tin cậy và tạo RelatedItem**, tôn trọng nhãn người dùng, đánh giá AI/tìm kiếm tiếng Việt, lọc theo lịch sử `CaptureEvent`, Android Share Target thử thật.
 
 **Mốc C — Khai thác ChatGPT (P1):** thử Google Drive app với file gốc **và** bản xuất tri thức từ PostgreSQL; nếu định dạng không đọc được, metadata nhóm không đủ hoặc cần truy vấn tag/dự án chính xác, triển khai MCP chỉ đọc. Không ngầm tuyên bố ChatGPT hiểu file MP4 chỉ vì lưu trên Drive.
 
@@ -103,6 +106,16 @@ Trước khi thông báo PASS từng mốc, phải có kiểm thử file Drive t
 
 **Trạng thái khi cập nhật:** V4.6 là **baseline giao Codex** cho phát triển, không khẳng định đây là kết quả triển khai. Chỉ có tài liệu; chưa tạo frontend/backend, chưa thử Google Drive API với tài khoản của người dùng, chưa có production.
 
+
+## 8a. Hợp đồng sử dụng đã chốt ngày 18/11/2026
+
+**Nguồn chuẩn chi tiết:** [CAPTURE_AND_ORGANIZE.md](CAPTURE_AND_ORGANIZE.md). Các tình huống N01–N17 là tiêu chí nghiệp vụ cần kiểm thử, không phải chức năng đã chạy.
+
+- **Gửi một lần, nhận ngay:** khi backend/DB sẵn sàng, tạo `CaptureEvent` với `server_received_at`, giữ bản gốc; sau commit trả receipt mà không đợi tải video hoặc AI.
+- **Lịch sử ≠ Thư viện:** lịch sử mỗi lần gửi (kể cả gửi lại cùng link) theo thời điểm server; Thư viện mỗi nội dung một Item để tránh nhân đôi file. Ngày đăng của nguồn và ngày hoàn tất worker nằm ở các trường riêng.
+- **Text-only và nguồn lỗi:** ghi chú thuần chữ lưu nguyên văn; link không tải được vẫn tồn tại và báo chính xác phần thiếu. Không giả đã có video/phụ đề.
+- **Tự phân loại là hành động:** tìm các nhóm hiện có, gán quan hệ thật nếu đủ tin cậy; chưa chắc thì suggested/unclassified, không auto sửa curated. Tìm và ghi RelatedItem, **không tự hợp nhất các mục gần nghĩa**.
+- **Giữ lựa chọn công nghệ:** PostgreSQL, Drive file gốc, một worker và hai nhóm GIN index đã chốt; AI ngoài có thể tắt, không thêm Redis/semantic/vector DB chỉ vì yêu cầu này.
 
 ## 9. Bổ sung sau phản biện kỹ thuật — các quyết định có điều kiện
 
