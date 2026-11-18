@@ -1,9 +1,9 @@
 # Kho Tri Thức — Lưu khoa học, mở rộng bền vững
 
-**Kế hoạch hiện hành: V4.6 (15/11/2026) — bản kế hoạch chốt để triển khai; PostgreSQL đã được người dùng chốt.**  
+**Kế hoạch hiện hành: V4.7 (18/11/2026) — tiếp nhận tức thì, tự tổ chức và bảo toàn lịch sử; PostgreSQL đã chốt.**
 **Trạng thái:** đã chuẩn bị xong tài liệu và quy chuẩn tổ chức repository trước KT-001; **chưa có mã nguồn ứng dụng, kết nối Google Drive thật hoặc test runtime**. Tình trạng xác minh mới nhất xem [CURRENT_STATE.md](docs/CURRENT_STATE.md).
 
-Kho Tri Thức là ứng dụng cá nhân trên Android/Windows để gửi link Facebook/TikTok/YouTube/web, video, ảnh, file và ghi chú; lưu file gốc lên **Google Drive**; trích xuất chữ nhẹ và phân loại theo **lĩnh vực/chủ đề/dự án**, xem **theo ngày**, tìm kiếm tiếng Việt có/không dấu. Khi nghiên cứu bằng ChatGPT, thử Google Drive app trước; MCP riêng chỉ nếu cần.
+Kho Tri Thức là ứng dụng Android/Windows: **gửi một lần** URL video/web hoặc ghi chú chữ → **lưu ngay nội dung và thời điểm nhận** → thu thập nội dung khả dụng → **tự xếp vào nhóm hiện có khi đủ tin cậy và tìm các mục liên quan**. File gốc lưu Google Drive, danh mục/lịch sử trong PostgreSQL. Gửi lại link tạo lượt tiếp nhận mới nhưng không nhân đôi file; HTTP retry cùng request key không tạo lượt mới. Quy trình chuẩn: [CAPTURE_AND_ORGANIZE.md](docs/CAPTURE_AND_ORGANIZE.md).
 
 ## Công nghệ đã lựa chọn
 
@@ -24,18 +24,18 @@ Kho Tri Thức là ứng dụng cá nhân trên Android/Windows để gửi link
 
 ## Những điểm phải thực hiện đúng
 
-- **Giữ ID nội bộ:** `Item.id` và `Asset.id` là UUID; `drive_file_id` chỉ ở `StorageLocation`. Không đổi tên file gốc thành ID chỉ để định danh.
+- **Giữ ID/lịch sử và giờ:** CaptureEvent/Item/Asset có UUID, Drive ID chỉ ở StorageLocation; `CaptureEvent.server_received_at` bất biến, `Item.saved_at` là giờ nhận đầu. Ngày xuất bản và xử lý riêng, ghi chú chỉ chữ lưu nguyên văn và không cần Drive asset.
 - **Thumbnail:** `pypdfium2` render trang đầu PDF; ảnh Android dùng Pillow `ImageOps.exif_transpose()` **trước resize** để xử lý hướng EXIF (test 8 trường hợp), không sửa ảnh gốc. Cache WebP/JPEG trong volume bền vững, lazy-load và regenerate; không dùng trực tiếp Drive `thumbnailLink` ngắn hạn.
 - **Video:** upload xong không đồng nghĩa Drive preview đã sẵn sàng; thử khả năng phát thật trước, cache video tạm có TTL/quota chỉ khi cần.
 - **OAuth:** dùng quyền `drive.file`, giữ Cloud Project/Client ổn định khi di chuyển máy; có kịch bản thử khôi phục/cấp quyền lại nếu đổi Client/Project; không tự động xin `drive.readonly` rộng.
 - **ChatGPT:** dữ liệu note/project/transcript chỉ nằm trong PostgreSQL sẽ **không tự xuất hiện** trên Drive. Pilot 5–10 Item thành Google Docs/TXT/Markdown, mỗi Item một file đại diện có version/status đồng bộ; không cam kết ChatGPT đọc 100% hoặc hiểu MP4 không có transcript.
-- **Tìm kiếm:** migration `kt_vi` sử dụng dictionary `unaccent`; **hai chỉ mục GIN độc lập trên Item metadata và DerivedContent text**, SearchService lấy/hợp nhất item ID, bỏ bản text stale và giữ locator; không tạo index JOIN xuyên bảng, không tùy tiện đánh dấu `unaccent()` là `IMMUTABLE`.
+- **Tìm kiếm và tự nhóm:** PostgreSQL hai GIN index Item/DerivedContent với `kt_vi`/unaccent/pg_trgm; `SearchService` tìm ứng viên, `OrganizationService` tự gán nhóm hiện có khi đủ chứng cứ, lưu `RelatedItem` có lý do; khi không chắc dùng Chưa phân loại/Đề xuất, không sửa curated.
 - **Bảo toàn:** bản gốc không bị AI sửa, backup/manifest và thử restore trước khi nhập dữ liệu quan trọng.
 
 ## Lộ trình
 
-1. **Lưu và xem lại được:** Drive, PostgreSQL, UUID, API, worker, backup, Thêm/Thư viện/Chi tiết, thumbnail.
-2. **Tự sắp xếp/tìm kiếm:** metadata, trích chữ nhẹ, **benchmark 3 công cụ PDF và giấy phép**, nhóm/dự án/tag/ngày, AI nhẹ, tìm kiếm qua hai chỉ mục GIN.
+1. **Nhận và xem lại được:** `CaptureEvent` và receipt giờ server ngay cho URL/chữ, PostgreSQL/Drive, Job, backup, Lịch sử/Thư viện/Chi tiết, thumbnail.
+2. **Tự sắp xếp/tìm kiếm:** metadata, trích chữ nhẹ, benchmark PDF; **tự gán nhóm sẵn có và nối các Item liên quan**, AI/FTS tiếng Việt kiểm tra trên bộ đánh giá.
 3. **ChatGPT:** thử Google Drive app và bản xuất tri thức có version; MCP chỉ đọc nếu phát sinh nhu cầu.
 4. **Nâng cấp tùy thực tế:** Android share tốt hơn, OCR/ASR theo yêu cầu, vector search, nhà lưu trữ thứ hai.
 
@@ -45,7 +45,8 @@ Kho Tri Thức là ứng dụng cá nhân trên Android/Windows để gửi link
 
 - [CURRENT_STATE.md](docs/CURRENT_STATE.md) — trạng thái có bằng chứng, test đã/chưa chạy, việc kế tiếp.
 - [REPOSITORY_LAYOUT.md](docs/REPOSITORY_LAYOUT.md) — nơi đặt file, ranh giới Git/Drive/Postgres và cách bố trí Django/React.
-- [MASTER_PLAN.md](docs/MASTER_PLAN.md) — phạm vi, quyết định v4.6, ưu tiên.
+- [CAPTURE_AND_ORGANIZE.md](docs/CAPTURE_AND_ORGANIZE.md) — quy trình nhận URL/chữ, mốc thời gian, duplicate, tự nhóm và related items.
+- [MASTER_PLAN.md](docs/MASTER_PLAN.md) — phạm vi, quyết định v4.7, ưu tiên.
 - [ARCHITECTURE_AND_DATA.md](docs/ARCHITECTURE_AND_DATA.md) — so sánh công nghệ, dữ liệu/API, thiết kế kỹ thuật và R2 phản biện.
 - [ROADMAP_AND_TESTS.md](docs/ROADMAP_AND_TESTS.md) — nhiệm vụ KT-xxx, các cổng PASS và kiểm thử U01–U18.
 - [AGENTS.md](AGENTS.md) — quy tắc cho Codex và AI.
