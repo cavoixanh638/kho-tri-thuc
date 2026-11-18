@@ -4,6 +4,7 @@ from django.db import DatabaseError
 from ninja import NinjaAPI, Schema, Status
 
 from catalog.api import router as library_router
+from ingestion.api import router as capture_router
 from storage.api import router as drive_router
 
 from .health import check_database
@@ -11,6 +12,7 @@ from .health import check_database
 api = NinjaAPI(title="Kho Tri Thức", version="1.0.0")
 api.add_router("/integrations/drive", drive_router)
 api.add_router("", library_router)
+api.add_router("", capture_router)
 
 
 class HealthResponse(Schema):
