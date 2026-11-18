@@ -14,11 +14,11 @@
 | PostgreSQL/Docker Compose | **PASS (Ubuntu CI)** | PostgreSQL 18, volume riêng, migration Django và rollback/reapply migration `sessions` đã chạy |
 | Kết nối Google Drive | **NOT_STARTED** | Chưa có OAuth Client/refresh token được cấu hình cho ứng dụng, chưa upload hay verify |
 | Download video, trích chữ, thumbnail, FTS | **NOT_STARTED** | KT-010/102/104 mới là yêu cầu; chưa có kết quả benchmark/index/runtime thực tế |
-| **Nhận URL/text, giữ giờ, tự nhóm và Item liên quan** | **DOCS_ONLY / NOT_STARTED** | Hợp đồng tại [CAPTURE_AND_ORGANIZE.md](CAPTURE_AND_ORGANIZE.md); KT-011/KT-110, N01–N17 và U19–U23 mới là **tiêu chí nghiệm thu**, không phải API/worker đã chạy |
+| **Nhận URL/text, giữ giờ, tự nhóm và Item liên quan** | **SCHEMA_VERIFIED (KT-002)** | Migrations và ràng buộc DB đã qua test. API tiếp nhận KT-011 và tổ chức KT-103/110 theo [hợp đồng nghiệp vụ](CAPTURE_AND_ORGANIZE.md) |
 | ChatGPT Drive pilot / xuất tri thức / MCP | **NOT_STARTED** | Chưa có thử nghiệm trực tiếp với tài khoản/workspace |
 | Backup/restore dữ liệu | **NOT_STARTED** | Chưa có PostgreSQL dump, manifest thực tế hoặc thử restore |
 | Triển khai Windows/Linux/Android | **NOT_STARTED** | Chưa xác minh máy chạy, URL, HTTPS hay PWA Share Target |
-| Test/CI runtime | **PASS (KT-001)** | [GitHub Actions #44320811635](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44320811635) và smoke trên Windows với PostgreSQL tạm |
+| Test/CI runtime | **PASS (KT-001, KT-002)** | [GitHub Actions #44320811635](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44320811635) và smoke trên Windows với PostgreSQL tạm |
 
 **Không được gọi các dòng NOT_STARTED/NOT_RUN là PASS.** Tạo kế hoạch không có nghĩa đã có môi trường hoặc dữ liệu dùng thật.
 
@@ -35,7 +35,8 @@
 | --- | --- | --- |
 | Chuẩn bị repository trước KT-001 | **DOCS_PREPARED** | Commit GitHub chứa tài liệu định tuyến/cấu trúc/hiện trạng và readback kiểm tra nội dung; không phải test ứng dụng |
 | KT-001 — Scaffold | **PASS (kiểm thử)** | [PR #1](https://github.com/cavoixanh638/kho-tri-thuc/pull/1), [Actions](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44320811635), [hướng dẫn chạy](operations/LOCAL_SETUP.md) |
-| KT-002–KT-011 — Gate A | **NOT_STARTED** | CaptureEvent/receipt và giờ server, note chữ nguyên văn, retry/gửi lại, Drive/Job/backup/restore phải chạy/test thật |
+| KT-002 — Schema | **PASS (kiểm thử)** | [PR #2](https://github.com/cavoixanh638/kho-tri-thuc/pull/2), [Actions](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44324868660) |
+| KT-003–KT-011 — Gate A | **NOT_STARTED** | CaptureEvent/receipt và giờ server, note chữ nguyên văn, retry/gửi lại, Drive/Job/backup/restore phải chạy/test thật |
 | KT-101–KT-110 — Gate B | **NOT_STARTED** | Metadata/video/parser, auto-group thực, RelatedItem, FTS/Android và bài đánh giá phải chạy thật |
 | KT-201–KT-204 — Gate C | **NOT_STARTED** | Pilot ChatGPT được kiểm chứng theo workspace thực tế |
 | Gate D — nâng cấp | **NOT_STARTED / CONDITIONAL** | Chỉ khởi động khi có trigger từ thực tế và người dùng giao |
@@ -48,7 +49,14 @@
 - **Windows:** chạy ứng dụng trên loopback với PostgreSQL 18.4 và Node.js 24.15.0 trong thư mục tạm. `pip check`, migration xuôi/ngược, 2 test, worker, Vite build, trang HTML, bundle JS và API qua proxy đều qua.
 - **Chưa chạy:** Docker Desktop trên Windows, Android/PWA và tích hợp bên ngoài. Kiểm thử KT-001 dùng DB thử riêng. Rollback thay đổi bằng PR revert nếu đã merge.
 
-**Việc tiếp theo** là `KT-002` theo [ROADMAP_AND_TESTS.md](ROADMAP_AND_TESTS.md), bắt đầu với schema và các bất biến của `CaptureEvent`, `Item` và quan hệ dữ liệu. `KT-011` sẽ nối schema vào luồng tiếp nhận.
+### KT-002 đã kiểm chứng
+
+- Nhánh `codex/kt-002-schema`, [PR #2](https://github.com/cavoixanh638/kho-tri-thuc/pull/2), commit mã nguồn `8c79923cae354e9d0b6d289cf81ca864fad19557`.
+- [GitHub Actions #44324868660](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44324868660) PASS trên Ubuntu 24.04/PostgreSQL 18. Trên Windows/PostgreSQL 18.4, chạy migrations xuôi, rollback toàn bộ schema ứng dụng bằng `migrate catalog zero`, áp lại, `makemigrations --check` và 10 test đều qua.
+- Ràng buộc đã thử gồm giờ lưu đầu tiên, nội dung/giờ Event bất biến, khóa request theo người dùng và kênh, cặp mục liên quan duy nhất, đúng trạng thái file đã xác minh và khóa Job. Luồng API tiếp nhận và Drive thực nằm ở các task kế tiếp.
+- Rollback triển khai cần sao lưu trước khi đảo schema nếu đã có dữ liệu; ca CI dùng database dùng một lần.
+
+**Việc tiếp theo** là `KT-003` (OAuth Google Drive theo scope `drive.file`), sau đó `KT-004/005` (adapter và upload).
 
 **Chưa xác minh:** cấu hình Docker trên Windows; máy chủ 24/7; dự trữ/quota thật của Drive; OAuth; định dạng file ChatGPT app có thể đọc; quyền/media của từng nền tảng; thư viện PDF nào trích tiếng Việt tốt nhất. Không hỏi lại các quyết định đã chốt; chỉ nêu blocker khi bắt đầu tác vụ phụ thuộc thông tin đó.
 
