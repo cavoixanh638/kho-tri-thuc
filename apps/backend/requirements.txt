@@ -9,3 +9,5 @@ pypdf==7.1.1
 python-docx==1.2.0
 openpyxl==3.1.5
 -r processing/requirements-thumbnail.txt
+waitress==3.0.2
+whitenoise==6.12.0

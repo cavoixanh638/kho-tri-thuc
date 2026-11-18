@@ -1,6 +1,7 @@
 """Verify the normal session and capture routes through the frontend proxy."""
 
 import json
+import time
 from http.cookiejar import CookieJar
 from urllib.request import HTTPCookieProcessor, Request, build_opener
 from uuid import uuid4
@@ -102,6 +103,40 @@ def main():
     file_detail = json_request("GET", f"/items/{receipt['item_id']}")
     assert file_detail["assets"][0]["asset_id"] == receipt["asset_id"]
     assert file_detail["assets"][0]["status"] != "verified"
+    group = json_request(
+        "POST",
+        "/groups",
+        {"kind": "topic", "name": "Hạ tầng số"},
+        csrf=csrf,
+        status=201,
+    )
+    related_note = {
+        "kind": "text",
+        "text": "Hạ tầng số giúp kết nối trường học với dữ liệu dùng chung.",
+    }
+    one = json_request(
+        "POST", "/captures", related_note, csrf=csrf, key=str(uuid4()), status=201
+    )
+    two = json_request(
+        "POST", "/captures", related_note, csrf=csrf, key=str(uuid4()), status=201
+    )
+    assert one["item_id"] != two["item_id"]
+    for _ in range(150):
+        organization = json_request("GET", f"/items/{two['item_id']}/organization")
+        related = json_request("GET", f"/items/{two['item_id']}/related")
+        if organization["topics"] and related["results"]:
+            break
+        time.sleep(0.2)
+    assert any(topic["id"] == group["id"] for topic in organization["topics"])
+    assert any(hit["item_id"] == one["item_id"] for hit in related["results"])
+    search = json_request("GET", "/search?q=ha%20tang%20so")
+    assert {one["item_id"], two["item_id"]}.issubset(
+        {hit["item_id"] for hit in search["results"]}
+    )
+    browse = json_request("GET", f"/search?topic_id={group['id']}")
+    assert {one["item_id"], two["item_id"]}.issubset(
+        {hit["item_id"] for hit in browse["results"]}
+    )
     assert not json_request("DELETE", "/session", csrf=csrf)["authenticated"]
     print("Capture smoke PASS through frontend proxy")
 
