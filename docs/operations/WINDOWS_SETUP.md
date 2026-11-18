@@ -35,7 +35,18 @@ Mở Cài đặt của ứng dụng và bấm Kết nối Google Drive. Chủ t�
 
 Web OAuth client thật đã được tạo, callback đã đăng ký, scope `drive.file` và tài khoản thử nghiệm đã lưu trong Google Cloud. JSON đã được nạp bằng `configure-drive`; ứng dụng đã build, migrate và khởi động lại thành công. Client secret chỉ nằm trong cấu hình riêng trên Windows.
 
-Đăng nhập/cấp quyền Google, upload/đọc lại Drive, Android thiết bị thật và truy cập từ điện thoại qua HTTPS còn cần kiểm chứng. Bản hiện tại phục vụ loopback trên Windows.
+Đăng nhập/cấp quyền Google đã hoàn tất. [Live smoke](drive-live-results.json) đã kiểm upload/verify/đọc lại byte chính xác và retry cùng file với TXT tiếng Việt, PNG, PDF qua adapter thật. Mẫu đã chuyển vào Thùng rác Drive, các bản ghi catalog thử nằm trong transaction rollback. UI/worker với file người dùng, đổi client/project, upload lớn, Android thiết bị thật và HTTPS còn cần kiểm chứng. Bản hiện tại phục vụ loopback trên Windows.
+
+Chạy lại bài kiểm tra từ checkout với cấu hình riêng đã cài. Báo cáo chỉ có hash, số byte và kết quả, không có ID tài khoản/file hoặc token.
+
+```powershell
+$ktRuntime = Join-Path $env:LOCALAPPDATA 'KhoTriThuc'
+$ktConfig = Get-Content -LiteralPath "$ktRuntime\runtime\config.json" -Raw | ConvertFrom-Json
+$ktConfig.environment.psobject.Properties | ForEach-Object {
+    [Environment]::SetEnvironmentVariable($_.Name, [string]$_.Value, 'Process')
+}
+& "$ktRuntime\venv\Scripts\python.exe" tools/drive_smoke.py --owner admin --output "$env:TEMP\kt-drive-smoke.json"
+```
 
 ## Quyết định runtime
 

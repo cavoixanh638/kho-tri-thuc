@@ -12,7 +12,7 @@
 | Chuẩn bị bố trí repo và AI routing | **DOCS_PREPARED** | Có `REPOSITORY_LAYOUT.md`, `docs/README.md`, `CURRENT_STATE.md` và liên kết từ README/AGENTS/roadmap trong commit chuẩn bị repository này |
 | Ứng dụng React/Django | **PASS (tiếp nhận và thư viện)** | Có đăng nhập, gửi URL/chữ, biên nhận, lịch sử, xem/chỉnh sửa và khôi phục Item. API upload nhận file vào staging bền vững |
 | PostgreSQL/Docker Compose | **PASS (Ubuntu CI)** | PostgreSQL 18, volume riêng, migration Django và rollback/reapply migration `sessions` đã chạy |
-| Kết nối Google Drive | **CONFIGURED / GRANT_PENDING** | Web OAuth client thật, callback, `drive.file` và test user đã lưu. JSON đã nạp vào runtime Windows. Consent, upload và đọc lại thật còn NOT_RUN; adapter đã kiểm thử mô phỏng |
+| Kết nối Google Drive | **LIVE_STORAGE_PASS** | OAuth thật trên Windows; adapter upload/verify/đọc lại chính xác TXT tiếng Việt, PNG và PDF, retry cùng file ID. Mẫu chuyển vào Thùng rác, bản ghi thử rollback. Luồng UI/worker với file người dùng và đổi client/project còn NOT_RUN |
 | Thumbnail PDF/ảnh/video | **PASS (tích hợp KT-010)** | Renderer/caching, 8 EXIF Orientation, API riêng tư và upload hook qua test; xem mốc vận hành bên dưới |
 | Video, trích chữ và FTS | **PARTIAL / TESTED** | Đã nối fetch web an toàn, parser nhẹ và hai GIN/search tiếng Việt. Chưa có tải video, benchmark PDF 3 thư viện hoặc dữ liệu thực để nghiệm thu chất lượng |
 | **Nhận URL/text và giữ giờ** | **PASS (bản tích hợp)** | Session/CSRF, ACK sau transaction, retry/gửi lại, lịch sử và giao diện qua proxy đã được kiểm thử |
@@ -102,12 +102,13 @@ Chín đầu việc dùng mốc `c51d39f`. Chat điều phối nối router, c�
 - Đánh giá tổ chức chỉ có 40 fixture tổng hợp. Ngưỡng lexical bảo thủ đã điều chỉnh bằng tập này; chưa đo trên 30–50 Item thực do con người gán nhãn. Không suy rộng kết quả tổng hợp thành chất lượng dữ liệu cá nhân.
 - PWA có manifest/icon và GET share target. Chromium fixture smoke trước đó đã kiểm các kích thước 390/768/1440; Android thiết bị thật và HTTPS còn NOT_RUN.
 - Người dùng chọn máy Windows này. Bản native tại `%LOCALAPPDATA%\KhoTriThuc`, mã checkout từ GitHub; Python 3.13, Node 24, PostgreSQL 18.4 riêng ở loopback 54329, Waitress và worker ở loopback 8009. Build/migrate/check/start/stop/restart thành công, [runbook](operations/WINDOWS_SETUP.md). Runtime chưa có dữ liệu nội dung của người dùng.
-- Google Cloud đã tạo app OAuth và Web client theo xác nhận của người dùng, callback loopback chính xác, scope `drive.file`, một test user. JSON đã tải và nạp vào runtime, không đưa email/credential/JSON lên Git. Ứng dụng đang mở trang đăng nhập; chờ người dùng đăng nhập rồi tiếp tục consent Google và xác minh Drive thật.
+- Google Cloud đã tạo app OAuth và Web client theo xác nhận của người dùng, callback loopback chính xác, scope `drive.file`, một test user. JSON đã nạp vào runtime, người dùng đăng nhập ứng dụng và xác nhận consent Google. UI Cài đặt hiển thị Đã kết nối. Không đưa email/credential/JSON lên Git.
+- Live Drive smoke từ runtime Windows PASS trên ba mẫu TXT UTF-8 tiếng Việt (85 byte), PNG (83 byte), PDF (429 byte). Dùng DriveStorage thật, refresh token mới, upload resumable, SHA-256/size/MIME, tải lại đúng byte và gọi save lần nữa giữ file ID. Mẫu đã chuyển vào Thùng rác, transaction catalog rollback. [Kết quả khử thông tin riêng](operations/drive-live-results.json), runner `tools/drive_smoke.py`. Đây là test adapter thực, chưa thay thế nghiệm thu UI/multipart/worker bằng file người dùng hoặc tải lớn/video.
 - Mã/tài liệu/test lưu trên GitHub. Database, OAuth secret, staging và cache runtime nằm ngoài folder đồng bộ Drive. Rollback mã bằng PR revert; sao lưu database trước khi đảo migration trên môi trường có dữ liệu thật.
 
-**Việc tiếp theo:** hoàn tất đăng nhập ứng dụng, consent Google và thử lưu/đọc lại file thật. Tiếp tục benchmark PDF, nghiệm thu chất lượng nhóm, video, Android và pilot ChatGPT theo từng cổng còn mở.
+**Việc tiếp theo:** dùng một file thực do người dùng chọn để nghiệm thu UI/multipart/worker và mở trên Drive. Tiếp tục benchmark PDF, nghiệm thu chất lượng nhóm, video, Android và pilot ChatGPT theo từng cổng còn mở.
 
-**Chưa xác minh:** Drive upload/đọc lại/đổi client-project; quota thật; Docker Windows; host 24/7/HTTPS; Android; video; benchmark PDF 3 thư viện; chất lượng nhóm trên tập thực; ChatGPT pilot 5–10 Item. Không hỏi lại các quyết định đã chốt; chỉ nêu blocker khi bắt đầu tác vụ phụ thuộc thông tin đó.
+**Chưa xác minh:** UI/worker với file người dùng, Drive đổi client-project, upload lớn, quota thật; Docker Windows; host 24/7/HTTPS; Android; video; benchmark PDF 3 thư viện; chất lượng nhóm trên tập thực; ChatGPT pilot 5–10 Item. Không hỏi lại các quyết định đã chốt; chỉ nêu blocker khi bắt đầu tác vụ phụ thuộc thông tin đó.
 
 ## 5. Quy tắc cập nhật trạng thái
 
