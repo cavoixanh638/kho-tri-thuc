@@ -1,0 +1,54 @@
+name: KT-001 smoke
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scaffold:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Validate Compose and start the stack
+        run: |
+          git rev-parse HEAD
+          cp .env.example .env
+          docker compose config --quiet
+          docker compose up --detach --build --wait --wait-timeout 120
+
+      - name: Check Django and migrate forward and backward
+        run: |
+          docker compose exec -T api python manage.py check --database default
+          docker compose exec -T api python manage.py makemigrations --check --dry-run
+          docker compose exec -T api python manage.py migrate --check
+          docker compose exec -T api python manage.py migrate sessions zero --noinput
+          docker compose exec -T api python manage.py migrate sessions --noinput
+          docker compose exec -T api python manage.py migrate --check
+          docker compose exec -T api python manage.py test
+
+      - name: Check worker, API and built frontend
+        run: |
+          docker compose exec -T worker python manage.py run_worker --check
+          curl --fail --silent --show-error http://127.0.0.1:8000/api/v1/health | jq -e '.status == "ready"'
+          curl --fail --silent --show-error http://127.0.0.1:5173/api/v1/health | jq -e '.status == "ready"'
+          curl --fail --silent --show-error http://127.0.0.1:5173/ | grep -F '<title>Kho Tri Thức</title>'
+
+      - name: Collect logs on failure
+        if: failure()
+        run: docker compose logs --no-color
+
+      - name: Stop test services
+        if: always()
+        run: docker compose down --volumes

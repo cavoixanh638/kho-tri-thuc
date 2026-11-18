@@ -1,7 +1,7 @@
 # HIỆN TRẠNG THỰC TẾ — KHO TRI THỨC
 
 **Ngày checkpoint:** 18/11/2026 (Asia/Ho_Chi_Minh).
-**Nguồn kiểm chứng:** cây file GitHub nhánh `main`, bộ tài liệu v4.7, khảo sát read-only [QLVB_System_new](https://github.com/cavoixanh638/QLVB_System_new); **chỉ tài liệu được kiểm chứng, chưa có test ứng dụng**.
+**Nguồn kiểm chứng:** baseline tài liệu trên `main` (`a223ed0`), thay đổi KT-001 trên nhánh `codex/kt-001-scaffold` và khảo sát read-only [QLVB_System_new](https://github.com/cavoixanh638/QLVB_System_new).
 **Mục đích:** nơi duy nhất ghi **đã hoàn thành điều gì thật**. Roadmap là kế hoạch/điều kiện PASS, không là chứng cứ chạy thật.
 
 ## 1. Tình trạng tổng quát
@@ -10,15 +10,15 @@
 | --- | --- | --- |
 | Thiết kế phạm vi/kiến trúc | **DECIDED / DOCS_ONLY** | Baseline **v4.7**: Google Drive, PostgreSQL, Django+Ninja, React+Mantine, một worker; CaptureEvent bất biến, auto-group và RelatedItem đã được đặc tả |
 | Chuẩn bị bố trí repo và AI routing | **DOCS_PREPARED** | Có `REPOSITORY_LAYOUT.md`, `docs/README.md`, `CURRENT_STATE.md` và liên kết từ README/AGENTS/roadmap trong commit chuẩn bị repository này |
-| Ứng dụng React/Django | **NOT_STARTED** | Chưa có `apps/`, API hoặc UI chạy thật |
-| PostgreSQL/Docker Compose | **NOT_STARTED** | Chưa tạo database/schema/volume hay test migration |
+| Ứng dụng React/Django | **PASS (scaffold KT-001)** | API kiểm tra kết nối và bản build React qua smoke test; worker cùng image Django khởi động và kết nối được PostgreSQL |
+| PostgreSQL/Docker Compose | **PASS (Ubuntu CI)** | PostgreSQL 18, volume riêng, migration Django và rollback/reapply migration `sessions` đã chạy |
 | Kết nối Google Drive | **NOT_STARTED** | Chưa có OAuth Client/refresh token được cấu hình cho ứng dụng, chưa upload hay verify |
 | Download video, trích chữ, thumbnail, FTS | **NOT_STARTED** | KT-010/102/104 mới là yêu cầu; chưa có kết quả benchmark/index/runtime thực tế |
 | **Nhận URL/text, giữ giờ, tự nhóm và Item liên quan** | **DOCS_ONLY / NOT_STARTED** | Hợp đồng tại [CAPTURE_AND_ORGANIZE.md](CAPTURE_AND_ORGANIZE.md); KT-011/KT-110, N01–N17 và U19–U23 mới là **tiêu chí nghiệm thu**, không phải API/worker đã chạy |
 | ChatGPT Drive pilot / xuất tri thức / MCP | **NOT_STARTED** | Chưa có thử nghiệm trực tiếp với tài khoản/workspace |
 | Backup/restore dữ liệu | **NOT_STARTED** | Chưa có PostgreSQL dump, manifest thực tế hoặc thử restore |
 | Triển khai Windows/Linux/Android | **NOT_STARTED** | Chưa xác minh máy chạy, URL, HTTPS hay PWA Share Target |
-| Test/CI runtime | **NOT_RUN** | **0 runtime test được ghi nhận cho Kho Tri Thức**, không suy từ việc tài liệu GitHub đã được commit |
+| Test/CI runtime | **PASS (KT-001)** | [GitHub Actions #44320811635](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44320811635) và smoke trên Windows với PostgreSQL tạm |
 
 **Không được gọi các dòng NOT_STARTED/NOT_RUN là PASS.** Tạo kế hoạch không có nghĩa đã có môi trường hoặc dữ liệu dùng thật.
 
@@ -34,7 +34,7 @@
 | Mã / mốc | Trạng thái | Bằng chứng cần có tiếp theo |
 | --- | --- | --- |
 | Chuẩn bị repository trước KT-001 | **DOCS_PREPARED** | Commit GitHub chứa tài liệu định tuyến/cấu trúc/hiện trạng và readback kiểm tra nội dung; không phải test ứng dụng |
-| KT-001 — Scaffold | **NOT_STARTED** | Django/React khởi động trên môi trường thử, PostgreSQL riêng, migration + test, hướng dẫn LOCAL_SETUP dựa trên lệnh thật |
+| KT-001 — Scaffold | **PASS (kiểm thử)** | [PR #1](https://github.com/cavoixanh638/kho-tri-thuc/pull/1), [Actions](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44320811635), [hướng dẫn chạy](operations/LOCAL_SETUP.md) |
 | KT-002–KT-011 — Gate A | **NOT_STARTED** | CaptureEvent/receipt và giờ server, note chữ nguyên văn, retry/gửi lại, Drive/Job/backup/restore phải chạy/test thật |
 | KT-101–KT-110 — Gate B | **NOT_STARTED** | Metadata/video/parser, auto-group thực, RelatedItem, FTS/Android và bài đánh giá phải chạy thật |
 | KT-201–KT-204 — Gate C | **NOT_STARTED** | Pilot ChatGPT được kiểm chứng theo workspace thực tế |
@@ -42,7 +42,13 @@
 
 ## 4. Việc cần làm tiếp và các thông tin còn thiếu
 
-**Việc tiếp theo rõ ràng:** `KT-001` — scaffold Django 5.2 LTS + Ninja, React/Vite/Mantine, PostgreSQL Docker và một worker cùng codebase; thiết kế nền cho `KT-002/KT-011` (CaptureEvent, receipt URL/text), `.env.example` không secret, API/UI mẫu, migration/build test. **Chỉ sau khi thực sự chạy mới tạo `docs/operations/LOCAL_SETUP.md` với lệnh đã xác minh**.
+**KT-001 đã kiểm chứng.** Nhánh `codex/kt-001-scaffold`, [PR #1](https://github.com/cavoixanh638/kho-tri-thuc/pull/1), SHA mã nguồn `5fe1def5b8feb0b04d9e6bd481b7ccab0996da75`. GitHub Actions chạy trên Ubuntu 24.04, SHA merge thử `1f3bd587b221eedc9f470f380d9a4fe1b60ba10d`. [Kết quả CI](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44320811635)
+
+- **Ubuntu CI:** build Docker Compose và khởi động PostgreSQL 18, Django, worker và frontend. Django check/makemigrations check đều qua. Đã rollback rồi áp lại migration `sessions.0001_initial`. Hai test API (200 khi có DB và 503 khi lỗi DB) đều qua. Worker kết nối được DB. Bản build và API qua proxy frontend trả về đúng.
+- **Windows:** chạy ứng dụng trên loopback với PostgreSQL 18.4 và Node.js 24.15.0 trong thư mục tạm. `pip check`, migration xuôi/ngược, 2 test, worker, Vite build, trang HTML, bundle JS và API qua proxy đều qua.
+- **Chưa chạy:** Docker Desktop trên Windows, Android/PWA và tích hợp bên ngoài. Kiểm thử KT-001 dùng DB thử riêng. Rollback thay đổi bằng PR revert nếu đã merge.
+
+**Việc tiếp theo** là `KT-002` theo [ROADMAP_AND_TESTS.md](ROADMAP_AND_TESTS.md), bắt đầu với schema và các bất biến của `CaptureEvent`, `Item` và quan hệ dữ liệu. `KT-011` sẽ nối schema vào luồng tiếp nhận.
 
 **Chưa xác minh:** cấu hình Docker trên Windows; máy chủ 24/7; dự trữ/quota thật của Drive; OAuth; định dạng file ChatGPT app có thể đọc; quyền/media của từng nền tảng; thư viện PDF nào trích tiếng Việt tốt nhất. Không hỏi lại các quyết định đã chốt; chỉ nêu blocker khi bắt đầu tác vụ phụ thuộc thông tin đó.
 
