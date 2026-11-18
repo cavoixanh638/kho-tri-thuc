@@ -23,7 +23,7 @@ coverage/
 .vite/
 # Local databases, downloads and user data
 data/
-storage/
+/storage/
 uploads/
 downloads/
 backups/
