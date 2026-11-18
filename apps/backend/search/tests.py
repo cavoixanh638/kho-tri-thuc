@@ -1,6 +1,8 @@
 import unicodedata
+from unittest import skipUnless
 from unittest.mock import patch
 
+from django.apps import apps
 from django.contrib.auth import get_user_model
 from django.db import connection
 from django.test import TestCase
@@ -14,6 +16,7 @@ from .queries import SEARCH_SQL
 from .services import SearchFilters, SearchService, _search_params
 
 
+@skipUnless(apps.is_installed("search"), "Register the search app to apply its migrations")
 class SearchServiceTests(TestCase):
     @classmethod
     def setUpTestData(cls):
