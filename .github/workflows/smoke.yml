@@ -53,6 +53,14 @@ jobs:
           docker compose exec -T -e DJANGO_SUPERUSER_PASSWORD=kt-smoke-fixture-only api python manage.py createsuperuser --noinput --username kt-smoke --email kt-smoke@example.invalid
           python3 tools/smoke/capture.py
 
+      - name: Verify Compose backup and restore to a fresh database
+        run: |
+          bundle="$RUNNER_TEMP/kho-tri-thuc-backup"
+          python3 tools/backup/backup.py --compose create "$bundle"
+          python3 tools/backup/backup.py verify "$bundle"
+          docker compose exec -T db sh -ec 'createdb --no-password -U "$POSTGRES_USER" --template=template0 --encoding=UTF8 kt_restore'
+          python3 tools/backup/backup.py --compose restore "$bundle" --target-db kt_restore
+
       - name: Collect logs on failure
         if: failure()
         run: docker compose logs --no-color

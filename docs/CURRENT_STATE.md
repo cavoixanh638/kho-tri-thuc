@@ -13,10 +13,11 @@
 | Ứng dụng React/Django | **PASS (tiếp nhận và thư viện)** | Có đăng nhập, gửi URL/chữ, biên nhận, lịch sử, xem/chỉnh sửa và khôi phục Item. API upload nhận file vào staging bền vững |
 | PostgreSQL/Docker Compose | **PASS (Ubuntu CI)** | PostgreSQL 18, volume riêng, migration Django và rollback/reapply migration `sessions` đã chạy |
 | Kết nối Google Drive | **MOCK_VERIFIED (KT-003–005)** | OAuth `drive.file`, mã hóa refresh token, upload resumable và retry cùng Drive ID qua test. Cần tài khoản/OAuth thực để kiểm chứng upload và đọc lại |
-| Download video, trích chữ, thumbnail, FTS | **NOT_STARTED** | KT-010/102/104 mới là yêu cầu; chưa có kết quả benchmark/index/runtime thực tế |
+| Thumbnail PDF/ảnh/video | **PASS (tích hợp KT-010)** | Renderer/caching, 8 EXIF Orientation, API riêng tư và upload hook qua test; xem mốc vận hành bên dưới |
+| Video, trích chữ và FTS | **IN_PROGRESS** | Các nhánh KT-101/102/104 đang được tích hợp |
 | **Nhận URL/text và giữ giờ** | **PASS (bản tích hợp)** | Session/CSRF, ACK sau transaction, retry/gửi lại, lịch sử và giao diện qua proxy đã được kiểm thử |
 | ChatGPT Drive pilot / xuất tri thức / MCP | **NOT_STARTED** | Chưa có thử nghiệm trực tiếp với tài khoản/workspace |
-| Backup/restore dữ liệu | **NOT_STARTED** | Chưa có PostgreSQL dump, manifest thực tế hoặc thử restore |
+| Backup/restore dữ liệu | **PASS (dữ liệu thử)** | Dump/manifest cùng snapshot và khôi phục vào database mới đã chạy trên Windows và Docker Compose. Drive thật/bản sao thật vẫn cần xác minh |
 | Triển khai Windows/Linux/Android | **NOT_STARTED** | Chưa xác minh máy chạy, URL, HTTPS hay PWA Share Target |
 | Test/CI runtime | **PASS (KT-001, KT-002, KT-003–005 mô phỏng)** | [GitHub Actions #44320811635](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44320811635) và smoke trên Windows với PostgreSQL tạm |
 
@@ -38,7 +39,7 @@
 | KT-002 — Schema | **PASS (kiểm thử)** | [PR #2](https://github.com/cavoixanh638/kho-tri-thuc/pull/2), [Actions](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44324868660) |
 | KT-003–005 — Drive OAuth/lưu file | **MOCK_VERIFIED** | [PR #3](https://github.com/cavoixanh638/kho-tri-thuc/pull/3), [Actions](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44327959927), chưa thử Drive thật |
 | KT-006/007/011 — UI, worker, tiếp nhận | **PASS (bản tích hợp)** | [PR #5](https://github.com/cavoixanh638/kho-tri-thuc/pull/5), [CI](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44333379367) |
-| KT-008–KT-010 — Vận hành, đối chiếu và thumbnail | **IN_PROGRESS** | CaptureEvent/receipt và giờ server, note chữ nguyên văn, retry/gửi lại, Drive/Job/backup/restore phải chạy/test thật |
+| KT-008–010 — Vận hành/thumbnail | **PASS (CI và mô phỏng)** | PR #16, CI #44339513395. OAuth/Drive thật còn NOT_RUN |
 | KT-101–KT-110 — Gate B | **NOT_STARTED** | Metadata/video/parser, auto-group thực, RelatedItem, FTS/Android và bài đánh giá phải chạy thật |
 | KT-201–KT-204 — Gate C | **NOT_STARTED** | Pilot ChatGPT được kiểm chứng theo workspace thực tế |
 | Gate D — nâng cấp | **NOT_STARTED / CONDITIONAL** | Chỉ khởi động khi có trigger từ thực tế và người dùng giao |
@@ -86,7 +87,14 @@ Chín đầu việc dùng mốc `c51d39f`. Chat điều phối nối router, c�
 - [GitHub Actions #44333379367](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44333379367) PASS qua Docker Compose. Biên nhận sau commit, ghi chú tiếng Việt nguyên văn, retry cùng key, hai lần gửi URL cùng Item, và upload multipart thử nghiệm qua Vite proxy. Drive thật chưa kết nối; receipt upload chỉ xác nhận đã tiếp nhận vào staging.
 - Worker PostgreSQL đã thử lease, SKIP LOCKED và restart. Tệp chỉ được xác nhận sau khi Drive adapter kiểm chứng. CI chạy dữ liệu thử; sau khi có dữ liệu thật cần sao lưu trước khi rollback migration. Màn hình upload tệp đã kiểm Chromium với API mô phỏng ở `0678592`. Sao lưu và thumbnail đang tích hợp.
 
-**Việc tiếp theo:** kết hợp KT-008/009/010 cho Gate A và nối KT-101/103/104/110 cho Gate B. Kiểm Drive thật khi có cấu hình OAuth và môi trường phù hợp.
+### KT-008–010 đã kiểm chứng trong bản vận hành
+
+- [PR #16](https://github.com/cavoixanh638/kho-tri-thuc/pull/16), SHA mã nguồn `44aec79b00756487015c961f835939bee68ed974`, [GitHub Actions #44339513395](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44339513395) PASS.
+- Native Windows kiểm renderer và API bằng PostgreSQL 18.4. Lượt full suite 76 test có 1 SKIP FFmpeg, kiểm riêng thêm 18 ca OAuth/upload/khôi phục đều PASS. CI cài FFmpeg trong image, chạy suite, smoke và tạo/verify/restore bản sao vào DB mới.
+- Dữ liệu gốc, timestamp và ID được giữ qua restore. Reconcile phân biệt file đã trash và thiếu quyền, làm stale nội dung dẫn xuất khi file đổi. Thumbnail có cache volume riêng, hiển thị lazy-load và helper khôi phục cache có kiểm SHA-256.
+- Bản chạy Windows được người dùng chọn. Docker Desktop chưa có trên máy, đang chuẩn bị launcher native sử dụng Python/Node/PostgreSQL 18 đã có. OAuth client/consent, mở file Drive thật, đổi host/client/project và Android vật lý còn NOT_RUN.
+
+**Việc tiếp theo:** tích hợp Gate B và bản chạy Windows, rồi xác minh Drive thật với cấu hình OAuth của người dùng.
 
 **Chưa xác minh:** cấu hình Docker trên Windows; máy chủ 24/7; dự trữ/quota thật của Drive; OAuth; định dạng file ChatGPT app có thể đọc; quyền/media của từng nền tảng; thư viện PDF nào trích tiếng Việt tốt nhất. Không hỏi lại các quyết định đã chốt; chỉ nêu blocker khi bắt đầu tác vụ phụ thuộc thông tin đó.
 

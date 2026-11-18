@@ -7,6 +7,7 @@ from catalog.api import router as library_router
 from catalog.groups_api import router as groups_router
 from ingestion.api import router as capture_router
 from processing.content_api import router as content_router
+from processing.thumbnail_api import router as thumbnail_router
 from search.api import router as search_router
 from storage.api import router as drive_router
 from storage.uploads import router as upload_router
@@ -20,6 +21,7 @@ api.add_router("", groups_router)
 api.add_router("", search_router)
 api.add_router("", capture_router)
 api.add_router("", content_router)
+api.add_router("", thumbnail_router)
 api.add_router("/uploads", upload_router)
 
 

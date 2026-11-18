@@ -81,3 +81,4 @@ LOGGING = {
 }
 
 UPLOAD_STAGING_ROOT = os.getenv("UPLOAD_STAGING_ROOT", "/var/lib/kho-tri-thuc/staging")
+THUMBNAIL_CACHE_DIR = os.getenv("THUMBNAIL_CACHE_DIR", "/var/lib/kho-tri-thuc/thumbnails")

@@ -1,3 +1,4 @@
+import { AssetPreview } from './AssetPreview';
 import { SegmentedControl } from '@mantine/core';
 import { useState } from 'react';
 import type { Item, Page } from './api';
@@ -26,6 +27,7 @@ export function LibraryScreen() {
           : library.data.results.length ? <ul className="library-list">
             {library.data.results.map((item) => <li key={item.item_id}>
               <a href={itemHref(item.item_id)} className="library-entry">
+                <AssetPreview assets={item.assets} />
                 <span className="library-entry-text">
                   <span className="capture-kind">{kindLabels[item.kind]}</span>
                   <span className="library-entry-title">{itemTitle(item)}</span>

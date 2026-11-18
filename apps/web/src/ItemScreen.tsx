@@ -1,4 +1,5 @@
 import { ExtractedContent } from './ExtractedContent';
+import { AssetPreview } from './AssetPreview';
 import { Button, Textarea, TextInput } from '@mantine/core';
 import { useRef, useState, type SubmitEvent } from 'react';
 import { externalHttpUrl, request, type Capture, type Item, type Page } from './api';
@@ -6,7 +7,7 @@ import { ItemOrganization, RelatedItems } from './ItemOrganization';
 import { CaptureList, Empty, ErrorNotice, itemTitle, kindLabels, Loading, PageControls, PageTitle, ServerTime, useResource } from './views';
 
 const fetchStates: Record<string, string> = {
-  pending: 'Đang chờ', partial: 'Đã lấy một phần', done: 'Đã thu thập', failed: 'Không thu thập được',
+  not_applicable: 'Không áp dụng', pending: 'Đang chờ', partial: 'Đã lấy một phần', done: 'Đã thu thập', failed: 'Không thu thập được',
 };
 const storageStates: Record<string, string> = {
   not_applicable: 'Không áp dụng', pending: 'Đang chờ', verified: 'Đã xác minh trên Drive',
@@ -121,6 +122,7 @@ function ItemContent({ initial, csrf }: { initial: Item; csrf: string }) {
           </>}
           {item.assets.length > 0 && <div className="assets">
             <h3>Tệp đính kèm</h3>
+            <AssetPreview assets={item.assets} />
             <ul>
               {item.assets.map((asset) => <li key={asset.asset_id}>
                 <span>
