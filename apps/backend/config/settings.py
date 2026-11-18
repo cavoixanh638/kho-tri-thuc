@@ -14,6 +14,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.staticfiles",
     "ninja",
+    "catalog",
+    "ingestion",
+    "storage",
+    "processing",
     "jobs",
 ]
 
