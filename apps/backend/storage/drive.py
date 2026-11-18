@@ -113,6 +113,30 @@ class DriveClient:
     def get_file(self, file_id, fields):
         return self.execute(self.api.files().get(fileId=file_id, fields=fields))
 
+    def find_root(self):
+        parents = self.api.files()
+        marker = "appProperties has { key='kt_root' and value='1' }"
+        query = f"trashed = false and mimeType = '{FOLDER_MIME}' and {marker}"
+        found = []
+        page_token = None
+        for _ in range(10):
+            page = self.execute(
+                parents.list(
+                    q=query,
+                    spaces="drive",
+                    pageSize=2,
+                    fields="nextPageToken,files(id)",
+                    pageToken=page_token,
+                )
+            )
+            found.extend(file["id"] for file in page.get("files", []))
+            if len(found) > 1:
+                raise DriveError("drive_root_ambiguous")
+            page_token = page.get("nextPageToken")
+            if not page_token:
+                return found[0] if found else None
+        raise DriveError("drive_root_lookup_incomplete", retryable=True)
+
     def ensure_root(self, root_id):
         fields = "id,mimeType,trashed,appProperties"
         try:

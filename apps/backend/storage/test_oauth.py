@@ -79,6 +79,7 @@ class OAuthIntegrationTests(TestCase):
             "permissionId": "same-user",
             "displayName": "Drive test",
         }
+        client.find_root.return_value = None
         client.reserve_file_id.return_value = "root-id"
         flow = Mock()
         flow.credentials = SimpleNamespace(
