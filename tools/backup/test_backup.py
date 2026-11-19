@@ -51,7 +51,7 @@ def seed_database():
     from ingestion.models import CaptureEvent
     from jobs.models import Job
     from processing.models import DerivedContent
-    from storage.models import Asset, DriveAccount, StorageLocation
+    from storage.models import Asset, DriveAccount, KnowledgeExport, StorageLocation
 
     owner = get_user_model().objects.create_user("kt008-fixture")
     note = Item.objects.create(owner=owner, kind="text", saved_at=FIRST, note=RAW_NOTE)
@@ -111,6 +111,7 @@ def seed_database():
         refresh_token_ciphertext=OAUTH_MARKER, state="connected",
     )
     Session.objects.create(session_key="synthetic-session", session_data="fixture", expire_date=LATER)
+    KnowledgeExport.objects.create(item=link, provider_file_id="synthetic-knowledge-file", source_version="b" * 64, exported_version="b" * 64, status="disabled")
     return SimpleNamespace(note=note, link=link, event=event, asset=asset, job=job)
 
 
@@ -167,7 +168,7 @@ class BackupRoundTripTests(unittest.TestCase):
         from django.contrib.sessions.models import Session
         from django.db import IntegrityError, transaction
         from ingestion.models import CaptureEvent
-        from storage.models import Asset, DriveAccount
+        from storage.models import Asset, DriveAccount, KnowledgeExport
         from storage.service import DriveStorage
 
         package = self.directory / "backup"
@@ -185,16 +186,18 @@ class BackupRoundTripTests(unittest.TestCase):
             {name: len(rows) for name, rows in collections.items()},
             {"items": 2, "capture_events": 3, "sources": 1, "topics": 2, "projects": 1,
              "tags": 1, "item_topics": 1, "item_projects": 1, "item_tags": 1, "assets": 1,
-             "storage_locations": 1, "derived_contents": 1, "related_items": 1, "jobs": 1},
+             "storage_locations": 1, "derived_contents": 1, "related_items": 1, "jobs": 1, "knowledge_exports": 1},
         )
         event = next(row for row in collections["capture_events"] if row["id"] == str(self.fixture.event.pk))
         self.assertEqual(event["raw_text"], RAW_NOTE)
         self.assertEqual(event["server_received_at"], UTC_FIRST)
         self.assertEqual(collections["storage_locations"][0]["provider_file_id"], DRIVE_ID)
+        self.assertEqual(collections['knowledge_exports'][0]['provider_file_id'], 'synthetic-knowledge-file')
 
         self.assert_cli_ok("restore", copy, "--target-db", self.target)
         self.assertFalse(DriveAccount.objects.using("restored").exists())
         self.assertFalse(Session.objects.using("restored").exists())
+        self.assertEqual(KnowledgeExport.objects.using('restored').get().provider_file_id, 'synthetic-knowledge-file')
         self.assertEqual(Source.objects.using("restored").get().metadata, {"extra": OPAQUE_MARKER})
         assignment = ItemTopic.objects.using("restored").select_related("topic__parent").get()
         self.assertEqual(assignment.topic.parent.name, "Thư viện")

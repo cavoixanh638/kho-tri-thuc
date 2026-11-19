@@ -5,6 +5,7 @@ import { useRef, useState, type SubmitEvent } from 'react';
 import { externalHttpUrl, request, type Capture, type Item, type Page } from './api';
 import { ItemOrganization, RelatedItems } from './ItemOrganization';
 import { itemNeedsRefresh } from './itemProcessing';
+import { KnowledgeExportPanel } from './KnowledgeExportPanel';
 import { CaptureList, Empty, ErrorNotice, itemTitle, kindLabels, Loading, PageControls, PageTitle, ServerTime, useResource } from './views';
 
 const fetchStates: Record<string, string> = {
@@ -188,6 +189,7 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
           </div>
         </section>
         <ItemOrganization id={item.item_id} csrf={csrf} deleted={item.deleted} refreshKey={evidenceRevision} />
+        <KnowledgeExportPanel id={item.item_id} csrf={csrf} deleted={item.deleted} refreshKey={evidenceRevision} />
         {confirmation && <div className="notice" role="status">{confirmation}</div>}
         {error && <ErrorNotice>{error}</ErrorNotice>}
       </div>

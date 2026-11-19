@@ -30,11 +30,18 @@ def retrieve_video(job: Job) -> None:
     download_video(job)
 
 
+def export_knowledge(job: Job) -> None:
+    from processing.knowledge_sync import export_knowledge as synchronize
+
+    synchronize(job)
+
+
 HANDLERS: dict[str, Callable[[Job], None]] = {
     "upload_asset": upload_original,
     "fetch_source": retrieve_source,
     "organize": organize,
     "download_video": retrieve_video,
+    "export_knowledge": export_knowledge,
 }
 
 

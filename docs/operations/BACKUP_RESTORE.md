@@ -14,7 +14,7 @@ python tools/backup/backup.py verify $ktCopy
 
 `create` lấy dump và JSON từ cùng một snapshot PostgreSQL. Thư mục gói được công bố sau khi đủ ba tệp `database.dump`, `manifest.json` và `SHA256SUMS`. `verify` đọc bản sao cục bộ, kiểm tra SHA-256 của cả hai tệp và định dạng manifest. Gói chứa nội dung người dùng và dump chứa dữ liệu xác thực Django đã băm. Giới hạn quyền đọc thư mục gói và lưu toàn bộ gói khi sao chép.
 
-Manifest `schema_version: 1` chứa Item, CaptureEvent, Source, Topic, Project, Tag, ba loại assignment, Asset, StorageLocation, DerivedContent, RelatedItem và Job. Các ID, khóa ngoại, nguyên văn và thời điểm UTC có offset được giữ. Để tra file gốc, nối Item → Asset qua `item_id`, rồi Asset → StorageLocation qua `asset_id` và đọc `provider_file_id` của provider `google_drive`. Các payload JSON mở của Source, DerivedContent và Job chỉ có trong dump. Dữ liệu bảng OAuth Drive và phiên Django được loại khỏi gói.
+Manifest `schema_version: 2` chứa Item, CaptureEvent, Source, Topic, Project, Tag, ba loại assignment, Asset, StorageLocation, DerivedContent, RelatedItem, Job và KnowledgeExport. Mapping/preference/version bản xuất được giữ. Bản v1 cũ có 14 collection vẫn xác minh và restore được, không đòi bảng KnowledgeExport đã tồn tại. Các ID, khóa ngoại, nguyên văn và thời điểm UTC có offset được giữ. Để tra file gốc, nối Item → Asset qua `item_id`, rồi Asset → StorageLocation qua `asset_id` và đọc `provider_file_id` của provider `google_drive`. Các payload JSON mở của Source, DerivedContent và Job chỉ có trong dump. Dữ liệu bảng OAuth Drive và phiên Django được loại khỏi gói.
 
 ## Khôi phục vào cơ sở dữ liệu mới
 
@@ -51,7 +51,7 @@ Runner thực hiện tuần tự các bước sau sau khi chủ dữ liệu xác
 1. Lấy snapshot chỉ đọc của database Windows đang chạy, tạo dump/manifest nhất quán và một bản sao cục bộ ngoài Drive sync.
 2. Đóng gói ba tệp thành ZIP, giữ receipt chứa ID Drive trong thư mục riêng trên máy. Tạo một tệp bất biến dưới `Kho Tri Thuc/System_Backups` bằng upload resumable, giữ ID khi retry và kiểm checksum.
 3. Tải ZIP từ Drive, kiểm SHA-256 và định dạng archive, phục hồi gói đã tải vào một database PostgreSQL mới có tiền tố `kt_recovery_`. Runner không dừng ứng dụng hoặc phục hồi đè lên database nguồn.
-4. Đối chiếu cả 14 nhóm manifest, xác nhận bảng OAuth/session rỗng. Dùng credential runtime đang có chỉ để kiểm tra mapping đã khôi phục, gọi adapter mở file và đối chiếu SHA-256 toàn bộ file gốc tải lại. Thay đổi thời điểm verify trong database thử được rollback.
+4. Đối chiếu đủ collection theo manifest (v1: 14, v2: 15), xác nhận bảng OAuth/session rỗng. Dùng credential runtime đang có chỉ để kiểm tra mapping đã khôi phục, gọi adapter mở file và đối chiếu SHA-256 toàn bộ file gốc tải lại. Thay đổi thời điểm verify trong database thử được rollback.
 5. Ghi báo cáo đã khử thông tin riêng chỉ gồm số lượng, số byte, hash và kết quả. Dump, manifest, archive, ID Drive và receipt nằm ngoài Git. Gốc media trên Drive giữ nguyên.
 
 Payload sao lưu có thể chứa ghi chú, URL, lịch sử tiếp nhận, metadata, nhóm và dữ liệu xác thực Django đã băm. OAuth token và Django session được loại. Lần chuẩn bị bị cơ chế tự duyệt quyền từ chối do thiếu xác nhận payload/nơi nhận. Sau khi người dùng xác nhận rõ ngày 19/11/2026, runner `760be80` đã chạy thật và PASS: ZIP 94.495 byte, retry cùng ID, readback SHA-256 đúng, restore đủ 14 collection vào database tạm mới, OAuth/session đều 0. Tệp MP4 gốc 18.394.669 byte cũng tải lại khớp SHA-256 từ mapping đã restore. Database production chỉ đọc.

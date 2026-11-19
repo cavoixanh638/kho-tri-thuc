@@ -115,7 +115,47 @@ Chín đầu việc dùng mốc `c51d39f`. Chat điều phối nối router, c�
 - [Báo cáo thực đã khử thông tin riêng](operations/facebook-live-results.json) PASS, tạo bằng `tools/verify_drive_item.py` đã chạy thật. MP4 18.394.669 byte, H.264 720×1280 + AAC, ffprobe đo 59,645375 giây. SHA-256 `3fd6884f8d6fdfd6099c9378b70878c6ba7f7fceb4f4da989b2840587a1d6ca5` khớp metadata Drive và toàn bộ tệp tải lại. `source_fetch=done`, `asset_storage=verified`, cả bốn job done, thumbnail đã cache. Một Asset, một file Drive không trashed và một CaptureEvent; fingerprint đầu vào/giờ nhận đầu giữ nguyên qua các lần retry. Báo cáo không chứa URL nội dung, Drive ID, account ID hoặc token.
 - Mã và báo cáo nằm trên GitHub. MP4 gốc nằm trên Drive, staging đã được dọn sau verify; runtime/config và token vẫn ngoài Git. [Runbook Windows](operations/WINDOWS_SETUP.md) có media tools được kiểm SHA-256. Chỉ thử một Reel công khai progressive; chưa xác nhận mọi Reel, video riêng tư, YouTube/TikTok, video lớn hoặc phát preview Drive.
 
-**Việc tiếp theo:** tiếp tục các cổng chưa nghiệm thu của Gate B/C. Upload Reel người dùng đã giao hoàn tất, không cần gửi lại liên kết.
+### Đợt hoàn thiện sau PR #18 — đang thực hiện
+
+Người dùng giao tiếp tục các phần còn lại tới khi hoàn thành hệ thống, giữ mã và kết quả trên GitHub. Baseline của đợt là `e04bfd1f6026f2fc238c03cf68d1c589dc0a47b8`. Không làm lại các phần đã PASS và không coi các cổng thiết bị/tài khoản chưa thử là hoàn tất.
+
+| Chủ sở hữu / nhiệm vụ | Nhánh | Điều kiện bàn giao |
+| --- | --- | --- |
+| PDF worker — KT-102 | `codex/kt-102-pdf-evidence` | 20–30 PDF tiếng Việt thật, so ba parser, thời gian/RAM/Unicode/thứ tự đọc/locator, giấy phép và quyết định có bằng chứng |
+| Recovery worker — KT-008/009 | `codex/kt-008-live-recovery` | Snapshot dữ liệu thật, backup Drive+copy độc lập, tải lại/restore vào DB mới, mở đúng file đã ánh xạ; không restore lên production |
+| UI worker — KT-108 | `codex/kt-108-processing-ui` | Trạng thái worker tự cập nhật, không mất bản chỉnh sửa, polling có giới hạn/hủy; kiểm thử và build, thiết bị thật ghi riêng |
+| Điều phối — KT-201/202E và tích hợp | `codex/kt-202e-knowledge-pilot` | Xuất per-item có version/opt-in/retry cùng file, pilot đọc bằng connector, tích hợp CI và cập nhật Windows |
+
+Connector Drive search không thấy thư mục ứng dụng, `files.get` đúng ID trả 404 trong khi runtime vẫn đọc được. Settings xác nhận connector dùng tài khoản khác. Người dùng yêu cầu mở kết nối lại; đã mở Connect another account tới màn hình Google chọn tài khoản, chờ người dùng hoàn tất. Không lưu account ID/credential vào Git. Android được người dùng chủ động để sau, hoàn thiện Windows trước.
+
+Các agent dừng do workspace hết credits; điều phối tiếp nhận phần đang dở.
+KT-102 có 60 lượt đo và PDFium fallback, PR #20 đã CI PASS/merge/deploy Windows.
+KT-108 PR #19 đã CI PASS/merge/deploy, 12 test frontend PASS.
+Recovery [PR #21](https://github.com/cavoixanh638/kho-tri-thuc/pull/21) head
+`9f020094a71872dc2c22cd1601f3351ccf3343d2` đã [CI #44498590620](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44498590620)
+PASS, merge `fe315ceb115653fd9f03cfb03858c67071677686` theo yêu cầu tiếp tục.
+Backup/restore dữ liệu thật đã PASS theo xác nhận người dùng; xem báo cáo trên main.
+
+Lần tiếp tục: người dùng đã mở khóa Windows nhưng CUA vẫn không đọc được AX,
+screenshot đen và launch báo handler chưa ready. Browser integration cũng không
+có trong chat. Connector `files.get` thư mục ứng dụng vẫn lỗi. Không coi đây là
+file mất hoặc tự đổi OAuth scope/chia sẻ thư mục. Tiếp tục backend/UI/test xuất
+tri thức độc lập; pilot connector và native Google Docs vẫn cần kiểm thực tế.
+
+KT-202E có model KnowledgeExport, migration `storage.0003`, snapshot renderer và
+6 test PostgreSQL tạm **PASS** (ghi chú/giờ bất biến, version, active/stale,
+phân quyền nhóm, transcript rỗng, cắt có cảnh báo và chặn credential-like input).
+`makemigrations --check` PASS. Snapshot không opt-in hoặc ghi Drive khi được đọc.
+Đã bổ sung adapter TXT/Markdown, worker lease/idempotence, API opt-in/owner/CSRF,
+panel từng Item và backup manifest v2 có mapping KnowledgeExport, đọc v1.
+13 backend pilot test và 14 frontend JSDOM test/build PASS. Full backend 179 test:
+178 PASS/1 skip FFmpeg do PATH; đã chạy lại riêng 11 thumbnail test với FFmpeg
+đúng đường dẫn, tất cả PASS. Backup v2/compat v1/roundtrip 11 test PASS. Migration
+0003/0004 xuôi/ngược/áp lại, check migration và lint/format module mới PASS.
+**IN_PROGRESS/CI_PENDING**: chưa PR/merge/deploy/live export. Không có bản xuất
+tri thức nào được tạo trên Drive. [Hợp đồng và cách tiếp tục](operations/KNOWLEDGE_EXPORT.md).
+
+**Việc tiếp theo:** tích hợp từng nhánh khi có mã/test/bằng chứng, giữ các cổng chưa đạt có trạng thái rõ. Chất lượng nhóm cần tập thực và người dùng đánh giá, không thay bằng fixture tự soạn. Upload Reel người dùng đã giao hoàn tất, không cần gửi lại liên kết.
 
 **Chưa xác minh:** UI multipart với file người dùng, Drive đổi client-project, upload lớn/quota, preview playback; Docker Windows; host 24/7/HTTPS; Android; nguồn video khác và transcript; benchmark PDF 3 thư viện; chất lượng nhóm trên tập thực; ChatGPT pilot 5–10 Item. Không hỏi lại các quyết định đã chốt; chỉ nêu blocker khi bắt đầu tác vụ phụ thuộc thông tin đó.
 

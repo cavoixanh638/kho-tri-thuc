@@ -29,4 +29,12 @@ class Worker:
             settled = JobRepository.complete(job)
         if not settled:
             logger.warning("Lease no longer active for job %s", job.pk)
+        elif job.item_id and job.kind != "export_knowledge":
+            # Some processors use bulk updates, which do not emit model signals.
+            from processing.knowledge_sync import request_sync
+
+            try:
+                request_sync(job.item_id)
+            except Exception:
+                logger.warning("Knowledge sync queue unavailable after job %s", job.pk)
         return True

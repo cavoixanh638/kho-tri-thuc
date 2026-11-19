@@ -8,3 +8,4 @@ export { CaptureScreen } from '../src/CaptureScreen';
 export { App } from '../src/App';
 export { readSharedCapture } from '../src/sharedCapture';
 export { itemNeedsRefresh } from '../src/itemProcessing';
+export { KnowledgeExportPanel } from '../src/KnowledgeExportPanel';
