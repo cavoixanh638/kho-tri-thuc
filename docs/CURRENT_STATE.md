@@ -150,7 +150,7 @@ Chín đầu việc dùng mốc `c51d39f`. Chat điều phối nối router, c�
 - Mẫu cùng một tổ chức và nhiều trang đầu: chưa phải CER/WER/toàn văn/bảng/scan.
   Giữ pypdf đầu tiên, PDFium renderer KT-010 và fallback text khi primary lỗi/rỗng;
   encrypted không bypass, có processor/version riêng. 6 test extraction PostgreSQL
-  tạm PASS, gồm PDFium thật và dữ liệu tổng hợp. Chưa deploy fallback, chờ CI head.
+  tạm PASS, gồm PDFium thật và dữ liệu tổng hợp. Fallback đã deploy sau CI bên dưới.
   KT-102 còn nguồn khác/nghiệm thu toàn văn, không ghi toàn task DONE.
   Raw PDF/text/render ngoài Git.
 
