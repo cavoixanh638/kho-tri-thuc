@@ -154,14 +154,24 @@ Chín đầu việc dùng mốc `c51d39f`. Chat điều phối nối router, c�
   KT-102 còn nguồn khác/nghiệm thu toàn văn, không ghi toàn task DONE.
   Raw PDF/text/render ngoài Git.
 
+- [PR #20](https://github.com/cavoixanh638/kho-tri-thuc/pull/20), head
+  `c2cfe37f7e829dc5ee4b0bee90648bb6ab8760e4`, [CI #44497632923](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44497632923)
+  PASS trước merge. Windows đã cập nhật `eab593d4e00f2a541c263ff2a0ede5e21acbfe6b`,
+  restart/API 200/PostgreSQL running PASS. Fallback đã được triển khai.
+
 ### Cổng tài khoản và nghiệm thu còn chờ
 
 - Người dùng yêu cầu hoàn thiện Windows trước; Android để sau. Connector Drive
   đang dùng tài khoản khác runtime; đã mở Connect another account tới màn hình
   chọn Google, chờ người dùng đăng nhập/cấp quyền. Chưa có pilot đọc thành công.
 - Recovery mã `760be80` ở `codex/kt-008-live-recovery`: 7 test archive/Drive giả
-  PASS. Automatic approval review yêu cầu xác nhận riêng backup chứa notes/URLs/
-  hashed authentication và đích System_Backups; đã gửi xác nhận, chưa chạy live.
+  PASS. Người dùng đã xác nhận payload notes/URLs/hashed authentication và nơi
+  lưu, sau yêu cầu của automatic approval review. Live backup/restore **PASS**:
+  [báo cáo](operations/backup-live-results.json), ZIP trên Drive tải lại đúng SHA,
+  restore 14 collection vào DB mới, OAuth/session rỗng. Mapping file gốc mở được,
+  MP4 tải lại khớp SHA. Private Windows copy đã kiểm 12 file dưới thư mục backups.
+  Không restore lên production. Dữ liệu live chưa có nhóm/note không rỗng và
+  chưa kiểm client/project khác, không suy fixture thành live.
 - KT-202E tại `codex/kt-202e-knowledge-pilot` vẫn WIP, chưa merge/deploy/export.
   Các agent hết workspace credits; mã và checkpoint hiện tại được lưu ở GitHub.
 
