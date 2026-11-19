@@ -115,7 +115,20 @@ Chín đầu việc dùng mốc `c51d39f`. Chat điều phối nối router, c�
 - [Báo cáo thực đã khử thông tin riêng](operations/facebook-live-results.json) PASS, tạo bằng `tools/verify_drive_item.py` đã chạy thật. MP4 18.394.669 byte, H.264 720×1280 + AAC, ffprobe đo 59,645375 giây. SHA-256 `3fd6884f8d6fdfd6099c9378b70878c6ba7f7fceb4f4da989b2840587a1d6ca5` khớp metadata Drive và toàn bộ tệp tải lại. `source_fetch=done`, `asset_storage=verified`, cả bốn job done, thumbnail đã cache. Một Asset, một file Drive không trashed và một CaptureEvent; fingerprint đầu vào/giờ nhận đầu giữ nguyên qua các lần retry. Báo cáo không chứa URL nội dung, Drive ID, account ID hoặc token.
 - Mã và báo cáo nằm trên GitHub. MP4 gốc nằm trên Drive, staging đã được dọn sau verify; runtime/config và token vẫn ngoài Git. [Runbook Windows](operations/WINDOWS_SETUP.md) có media tools được kiểm SHA-256. Chỉ thử một Reel công khai progressive; chưa xác nhận mọi Reel, video riêng tư, YouTube/TikTok, video lớn hoặc phát preview Drive.
 
-**Việc tiếp theo:** tiếp tục các cổng chưa nghiệm thu của Gate B/C. Upload Reel người dùng đã giao hoàn tất, không cần gửi lại liên kết.
+### Đợt hoàn thiện sau PR #18 — đang thực hiện
+
+Người dùng giao tiếp tục các phần còn lại tới khi hoàn thành hệ thống, giữ mã và kết quả trên GitHub. Baseline của đợt là `e04bfd1f6026f2fc238c03cf68d1c589dc0a47b8`. Không làm lại các phần đã PASS và không coi các cổng thiết bị/tài khoản chưa thử là hoàn tất.
+
+| Chủ sở hữu / nhiệm vụ | Nhánh | Điều kiện bàn giao |
+| --- | --- | --- |
+| PDF worker — KT-102 | `codex/kt-102-pdf-evidence` | 20–30 PDF tiếng Việt thật, so ba parser, thời gian/RAM/Unicode/thứ tự đọc/locator, giấy phép và quyết định có bằng chứng |
+| Recovery worker — KT-008/009 | `codex/kt-008-live-recovery` | Snapshot dữ liệu thật, backup Drive+copy độc lập, tải lại/restore vào DB mới, mở đúng file đã ánh xạ; không restore lên production |
+| UI worker — KT-108 | `codex/kt-108-processing-ui` | Trạng thái worker tự cập nhật, không mất bản chỉnh sửa, polling có giới hạn/hủy; kiểm thử và build, thiết bị thật ghi riêng |
+| Điều phối — KT-201/202E và tích hợp | `codex/kt-202e-knowledge-pilot` | Xuất per-item có version/opt-in/retry cùng file, pilot đọc bằng connector, tích hợp CI và cập nhật Windows |
+
+Connector Drive hiện search không thấy thư mục ứng dụng, `files.get` đúng ID trả 404 trong khi tài khoản runtime vẫn đọc được. Đây là thiếu khả năng truy cập từ connector, chưa kết luận file mất. Đã hỏi người dùng kiểm tra đúng tài khoản connector và khả năng kiểm Android; các phần mã độc lập vẫn tiếp tục. Chưa đổi Client/OAuth scope hoặc mở network/public tunnel.
+
+**Việc tiếp theo:** tích hợp từng nhánh khi có mã/test/bằng chứng, giữ các cổng chưa đạt có trạng thái rõ. Chất lượng nhóm cần tập thực và người dùng đánh giá, không thay bằng fixture tự soạn. Upload Reel người dùng đã giao hoàn tất, không cần gửi lại liên kết.
 
 **Chưa xác minh:** UI multipart với file người dùng, Drive đổi client-project, upload lớn/quota, preview playback; Docker Windows; host 24/7/HTTPS; Android; nguồn video khác và transcript; benchmark PDF 3 thư viện; chất lượng nhóm trên tập thực; ChatGPT pilot 5–10 Item. Không hỏi lại các quyết định đã chốt; chỉ nêu blocker khi bắt đầu tác vụ phụ thuộc thông tin đó.
 
