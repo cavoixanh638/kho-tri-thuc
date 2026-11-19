@@ -1,6 +1,6 @@
 {
   "status": "PASS_CONTROLLED_LIVE",
-  "phase": "prepare",
+  "phase": "update",
   "application_source_sha": "6aedd4b89dd19a7a64e839a1a17271f5cb2befa1",
   "runner_sha256": "0e6293595280169ec0df6e4877d4172d52e9dd8a571f9c7a737454742af22601",
   "corpus_sha256": "35c741fc1cfe521e5fa42d5a574c55d0312025fda475b66af3646f841b24a761",
@@ -34,7 +34,7 @@
       "response_sha256": "002efd1a81f7aacf1342b28b0969e38f9227dcd29131083784d4b8c9ed29741d"
     }
   ],
-  "checked_at": "2026-11-19T13:41:40.232400+00:00",
+  "checked_at": "2026-11-19T13:44:06.146134+00:00",
   "scope": "8 controlled Items: 4 verified public-source paraphrases, 4 authored fixtures; real Drive adapter and isolated PostgreSQL",
   "checks": {
     "production_connection_read_only": true,
@@ -49,6 +49,93 @@
     "unique_file_per_item": true
   },
   "exports": [
+    {
+      "key": "commit",
+      "format": "markdown",
+      "bytes": 1211,
+      "sha256": "16b54e24aa624ee22ee41cfa60b95d2980d35d2062dce7c903d2c8cff455983a",
+      "exact_readback": true,
+      "versions_match": true,
+      "truncated": false
+    },
+    {
+      "key": "backup",
+      "format": "text",
+      "bytes": 1226,
+      "sha256": "08a1ec123fe7f532e6f0cdedc3c563f492e1ae6e74db7f19656804aa8f6ed820",
+      "exact_readback": true,
+      "versions_match": true,
+      "truncated": false
+    },
+    {
+      "key": "scope",
+      "format": "markdown",
+      "bytes": 1261,
+      "sha256": "f73196cbcb01c17c2bf957767ff1ff81634151e303b50a0fe16f002c417ed020",
+      "exact_readback": true,
+      "versions_match": true,
+      "truncated": false
+    },
+    {
+      "key": "unicode",
+      "format": "text",
+      "bytes": 1194,
+      "sha256": "8c90d6c8711c52e258672cc8344770f78ae189f1e5c7ea2fa5507788bf632369",
+      "exact_readback": true,
+      "versions_match": true,
+      "truncated": false
+    },
+    {
+      "key": "note",
+      "format": "markdown",
+      "bytes": 966,
+      "sha256": "32a6daf3a592a55049c52289dcdf9fd7212f675d370e03021e8ff79741b9f3b5",
+      "exact_readback": true,
+      "versions_match": true,
+      "truncated": false
+    },
+    {
+      "key": "page",
+      "format": "text",
+      "bytes": 1084,
+      "sha256": "e87f5721391b58dffcdbcf7d08e50d765948b6ccea160049ce87aa695f813f55",
+      "exact_readback": true,
+      "versions_match": true,
+      "truncated": false
+    },
+    {
+      "key": "subtitle",
+      "format": "markdown",
+      "bytes": 1201,
+      "sha256": "4583568320bc3ff38d8d70c7495c4e05e048b9b9e06c7d77ef45f179b568c412",
+      "exact_readback": true,
+      "versions_match": true,
+      "truncated": false
+    },
+    {
+      "key": "missing",
+      "format": "text",
+      "bytes": 1080,
+      "sha256": "3adec5a8e6ec75bec14ebbf603813ab7aba4d535a3fc578ac3ab1ef3927b2545",
+      "exact_readback": true,
+      "versions_match": true,
+      "truncated": false
+    }
+  ],
+  "not_verified": [
+    "personal corpus quality",
+    "PDF parsing or video ASR",
+    "native Google Docs",
+    "connector retrieval: recorded separately"
+  ],
+  "update_runner": {
+    "status": "FAIL",
+    "phase": "update",
+    "application_source_sha": "356fb2f506b83d25b103e58301b3e5daf2274e04",
+    "runner_sha256": "bb3bd45d5eead7c8c3430a9733ee005dfa67c3c55abb0ba99d8d96cdf8aefa03",
+    "corpus_sha256": "35c741fc1cfe521e5fa42d5a574c55d0312025fda475b66af3646f841b24a761"
+  },
+  "initial_exports": [
     {
       "key": "commit",
       "format": "markdown",
@@ -122,10 +209,13 @@
       "truncated": false
     }
   ],
-  "not_verified": [
-    "personal corpus quality",
-    "PDF parsing or video ASR",
-    "native Google Docs",
-    "connector retrieval: recorded separately"
-  ]
+  "updates": {
+    "note": true,
+    "project_rename_two_items": true,
+    "subtitle_version": true,
+    "stale_visible_before_worker": true,
+    "retry_unchanged_version": true,
+    "format_roundtrip": true,
+    "withdraw_restore_same_identity": true
+  }
 }

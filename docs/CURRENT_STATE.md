@@ -1,7 +1,7 @@
 # HIỆN TRẠNG THỰC TẾ — KHO TRI THỨC
 
 **Ngày checkpoint:** 19/11/2026 (Asia/Ho_Chi_Minh).
-**Nguồn kiểm chứng:** `main` và runtime Windows tại `4b57891c140c28cf6088ee03582e9d30082c6671` khi nghiệm thu giao diện ngày 19/11/2026; tính năng xuất tri thức từ PR #22, GitHub Actions và các báo cáo vận hành bên dưới. SHA này là mốc kiểm tra, cần đọc lại GitHub khi tiếp tục. Khảo sát [QLVB_System_new](https://github.com/cavoixanh638/QLVB_System_new) chỉ là tham khảo thiết kế.
+**Nguồn kiểm chứng:** `main`/runtime Windows tại `9d0bb50ca84b1944d9b3c5ae8fc08a3bcfc60088` trước pilot; runner chuẩn bị `6aedd4b`, cập nhật `356fb2f` trên nhánh `codex/kt-202-controlled-pilot`, [PR #27](https://github.com/cavoixanh638/kho-tri-thuc/pull/27). Tính năng ứng dụng từ PR #22 không đổi; xem GitHub và báo cáo bên dưới khi tiếp tục. Khảo sát [QLVB_System_new](https://github.com/cavoixanh638/QLVB_System_new) chỉ là tham khảo thiết kế.
 **Mục đích:** nơi duy nhất ghi **đã hoàn thành điều gì thật**. Roadmap là kế hoạch/điều kiện PASS, không là chứng cứ chạy thật.
 
 ## 1. Tình trạng tổng quát
@@ -16,7 +16,7 @@
 | Thumbnail PDF/ảnh/video | **PASS (tích hợp KT-010)** | Renderer/caching, 8 EXIF Orientation, API riêng tư và upload hook qua test; xem mốc vận hành bên dưới |
 | Video, trích chữ và FTS | **PARTIAL / TESTED** | Facebook Reel công khai đã tải MP4 và lưu Drive thật. Fetch web, parser nhẹ và hai GIN/search đã nối. YouTube/TikTok, transcript/ASR, benchmark PDF và đánh giá phân nhóm thực còn mở |
 | **Nhận URL/text và giữ giờ** | **PASS (bản tích hợp)** | Session/CSRF, ACK sau transaction, retry/gửi lại, lịch sử và giao diện qua proxy đã được kiểm thử |
-| ChatGPT Drive pilot / xuất tri thức / MCP | **SINGLE_ITEM_LIVE_PASS / PILOT_PARTIAL** | Một Item thực xuất Markdown/TXT, cùng file khi retry/thu hồi/bật lại; connector đọc được cả hai. UI đồng bộ lại đã kiểm trực quan. Pilot 5–10 Item/câu hỏi và native Docs còn mở; chưa xây MCP |
+| ChatGPT Drive pilot / xuất tri thức / MCP | **CONTROLLED_PILOT_PASS_WITH_SEARCH_LIMITATION** | Một Reel người dùng và pilot riêng 8 Item có kiểm soát đã đọc qua connector; 9 câu hỏi đủ bằng chứng sau một fallback từ khóa. Note/Project/subtitle cập nhật cùng ID. Chưa phải corpus cá nhân, ChatGPT UI độc lập hay native Docs; chưa xây MCP |
 | Backup/restore dữ liệu | **LIVE_PASS (phạm vi đã thử)** | Drive tải lại đúng hash, bản sao Windows riêng, restore DB mới đủ 15 collection gồm mapping KnowledgeExport; không restore đè production. Nhóm/note không rỗng và client-project khác còn chưa thử |
 | Triển khai Windows/Linux/Android | **WINDOWS_PASS / ANDROID_NOT_RUN** | Native Windows phục vụ loopback cổng 8009, PostgreSQL 18 riêng, start/stop/restart đã chạy. CI Linux Compose PASS. Android/HTTPS còn NOT_RUN |
 | Test/CI runtime | **PASS (phạm vi bản tích hợp)** | Backend 179 test: 178 PASS/1 skip PATH, riêng 11 thumbnail test chạy FFmpeg rõ đường dẫn đều PASS; frontend 14 PASS/build PASS. PR #22–25 đã CI PASS trước merge; [CI #44529471636](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44529471636). Chi tiết và giới hạn ở các mốc bên dưới |
@@ -193,7 +193,28 @@ credential, backup và ID riêng không đưa lên Git. [Hợp đồng](operatio
 
 **Việc tiếp theo:** tích hợp từng nhánh khi có mã/test/bằng chứng, giữ các cổng chưa đạt có trạng thái rõ. Chất lượng nhóm cần tập thực và người dùng đánh giá, không thay bằng fixture tự soạn. Upload Reel người dùng đã giao hoàn tất, không cần gửi lại liên kết.
 
-**Chưa xác minh:** UI multipart với file người dùng, Drive đổi client-project, upload lớn/quota, preview playback; Docker Windows; host 24/7/HTTPS; Android; nguồn video khác và transcript; benchmark PDF 3 thư viện; chất lượng nhóm trên tập thực; ChatGPT pilot 5–10 Item. Không hỏi lại các quyết định đã chốt; chỉ nêu blocker khi bắt đầu tác vụ phụ thuộc thông tin đó.
+**Chưa xác minh:** UI multipart với file người dùng, Drive đổi client-project, upload lớn/quota, preview playback; Docker Windows; host 24/7/HTTPS; Android; nguồn video khác và transcript; chất lượng PDF toàn văn/đa nguồn; chất lượng nhóm trên tập thực; corpus cá nhân và ChatGPT consumer UI độc lập/native Docs. Không hỏi lại các quyết định đã chốt; chỉ nêu blocker khi bắt đầu tác vụ phụ thuộc thông tin đó.
+
+### KT-201/202E/202 — pilot riêng 8 Item và 9 câu hỏi
+
+- Người dùng giao tự chọn cách check. Dùng bốn nguồn tài liệu chính thức có HTTP
+  200/anchor kiểm lại và bốn fixture tự soạn có nhãn; không thêm fixture vào
+  production. Cluster PostgreSQL khác, folder Drive `KIEM THU KT202` riêng;
+  nguồn production read-only, fingerprint catalogue trước/sau không đổi.
+- Chuẩn bị `6aedd4b`, cập nhật `356fb2f`: 4 Markdown/4 TXT, full readback SHA và
+  version 8/8 PASS, chỉ tám tệp hoạt động. Sửa note, đổi tên project trên hai Item,
+  thay subtitle phiên bản, force retry, TXT/MD/TXT và thu hồi/bật lại cùng ID PASS.
+  CaptureEvent/giờ nhận giữ nguyên. OAuth bind trong bộ nhớ, không chép token
+  vào DB thử. [Bằng chứng Drive](operations/knowledge-pilot-live-results.json).
+- Connector đọc 8/8 trước/sau, nhận đúng note/project/subtitle mới. Truy vấn đầu
+  tìm đúng 8/9; câu Q5 hụt, fallback `kiểm kê` tìm đúng. Chín câu trả lời do
+  nghiệm thu viết có bằng chứng trong bản fetch, locator trang/đoạn và cảnh báo
+  thiếu transcript; không tính đây là benchmark mù hoặc phiên ChatGPT UI độc lập.
+  [Kết quả từng câu](operations/knowledge-pilot-connector-results.json).
+- Năm safety test Windows PASS và thêm vào CI; lint/format/JSON/diff check PASS.
+  [Corpus, cách chạy và giới hạn](../evals/knowledge/README.md). Native Docs,
+  chất lượng phân nhóm trên dữ liệu cá nhân và parser/ASR không được suy là PASS.
+  Rollback: revert tools/evidence, không đổi schema hay mã ứng dụng đang phục vụ.
 
 ## 5. Quy tắc cập nhật trạng thái
 
@@ -239,7 +260,8 @@ credential, backup và ID riêng không đưa lên Git. [Hợp đồng](operatio
 
 - Người dùng yêu cầu hoàn thiện Windows trước; Android để sau. Connector đúng
   Primary đã đọc được Markdown và TXT của một Item thực; UI đồng bộ lại PASS.
-  Pilot 5–10 Item/câu hỏi và native Docs vẫn NOT_RUN, không ghi toàn hệ thống DONE.
+  Pilot có kiểm soát 8 Item/9 câu đã chạy theo mốc trên; corpus cá nhân và native
+  Docs vẫn NOT_RUN, không ghi toàn hệ thống DONE.
 - Recovery mã `760be80` ở `codex/kt-008-live-recovery`: 7 test archive/Drive giả
   PASS. Người dùng đã xác nhận payload notes/URLs/hashed authentication và nơi
   lưu, sau yêu cầu của automatic approval review. Live backup/restore **PASS**:
@@ -248,10 +270,11 @@ credential, backup và ID riêng không đưa lên Git. [Hợp đồng](operatio
   MP4 tải lại khớp SHA. Private Windows copy đã kiểm 12 file dưới thư mục backups.
   Không restore lên production. Dữ liệu live chưa có nhóm/note không rỗng và
   chưa kiểm client/project khác, không suy fixture thành live.
-- KT-202E đã merge/deploy theo PR #22; live, connector MD/TXT và UI một Item PASS.
-  Nghiệm thu pilot nhiều Item vẫn mở theo đoạn trên. Mã/checkpoint và các báo cáo
-  khử riêng tư lưu trên GitHub. Bước kế tiếp cần tập Item đại diện được phép dùng;
-  không tự xuất thêm nội dung kho hoặc tạo dữ liệu giả vào production.
+- KT-202E đã merge/deploy theo PR #22; live, connector MD/TXT và UI một Item PASS,
+  pilot riêng tám Item PASS có giới hạn tìm kiếm. Mã/checkpoint/báo cáo khử riêng
+  tư lưu trên GitHub. Bước tiếp theo Windows có thể kiểm multipart bằng file
+  công khai/tự soạn trong môi trường riêng; corpus cá nhân cần dữ liệu được phép.
+  Không tự xuất thêm nội dung kho hoặc tạo dữ liệu giả vào production.
 
 - Mỗi lần hoàn tất task ghi **ID, SHA commit, branch/PR, test thực sự đã chạy + kết quả, điều chưa test, blocker và một bước kế tiếp**. Không tự thăng trạng thái thành PASS khi chưa có bằng chứng.
 - Kiểm tra lại GitHub `main` và diff hiện hành trước mỗi lần ghi. Nếu nhiều AI làm song song, phân file/branch không chồng chéo. Không cần dựng workboard/dispatcher nếu chưa thực sự có nhiều đầu việc đồng thời.

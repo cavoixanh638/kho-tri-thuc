@@ -1,0 +1,191 @@
+{
+  "checked_at": "2026-11-19T13:47:33.812637+00:00",
+  "status": "PASS_CONTROLLED_WITH_SEARCH_LIMITATION",
+  "scope": "Codex Google Drive connector, 8 controlled Items, 9 predeclared questions; folder-scoped keyword retrieval and auditor-written grounded answers",
+  "method": "Initial query uses several question terms; a predeclared shorter keyword is allowed after a miss. Full file text is fetched before and after changes. This does not measure general semantic search or independent ChatGPT UI behavior.",
+  "checks": {
+    "eight_files_readable_before_and_after": true,
+    "same_file_ids_before_and_after": true,
+    "changed_fields_read_as_current": true,
+    "unchanged_content_exact": true,
+    "current_note_has_new_deadline": true,
+    "original_capture_note_still_present": true,
+    "subtitle_current_version_only": true,
+    "missing_video_transcript_explicit": true,
+    "provided_subtitle_not_marked_missing": true
+  },
+  "summary": {
+    "primary_query_successes": 8,
+    "questions": 9,
+    "answers_with_retrieved_evidence": 9,
+    "keyword_fallbacks": 1,
+    "formats": {
+      "text/markdown": 4,
+      "text/plain": 4
+    }
+  },
+  "questions": [
+    {
+      "id": "Q1",
+      "question": "Callback nào chỉ chạy sau khi giao dịch lưu thành công?",
+      "primary_query": "callback sau khi giao dịch commit",
+      "primary_found_expected": true,
+      "primary_result_count": 1,
+      "keyword_fallback_used": false,
+      "fallback_query": null,
+      "retrieved_expected_sources": true,
+      "evidence_terms_present": true,
+      "superseded_terms_excluded": true,
+      "answer": "transaction.on_commit đăng ký callback sau commit thành công; rollback sẽ bỏ callback.",
+      "source_cases": [
+        "commit"
+      ],
+      "result": "PASS"
+    },
+    {
+      "id": "Q2",
+      "question": "Công cụ nào xuất database nhất quán khi vẫn có người đang dùng?",
+      "primary_query": "sao lưu nhất quán đang được dùng",
+      "primary_found_expected": true,
+      "primary_result_count": 1,
+      "keyword_fallback_used": false,
+      "fallback_query": null,
+      "retrieved_expected_sources": true,
+      "evidence_terms_present": true,
+      "superseded_terms_excluded": true,
+      "answer": "pg_dump xuất nhất quán một database đang được dùng; archive dùng pg_restore để khôi phục.",
+      "source_cases": [
+        "backup"
+      ],
+      "result": "PASS"
+    },
+    {
+      "id": "Q3",
+      "question": "Ứng dụng có được đọc toàn bộ Drive chỉ với quyền theo tệp không?",
+      "primary_query": "quyền theo tệp đọc toàn bộ",
+      "primary_found_expected": true,
+      "primary_result_count": 1,
+      "keyword_fallback_used": false,
+      "fallback_query": null,
+      "retrieved_expected_sources": true,
+      "evidence_terms_present": true,
+      "superseded_terms_excluded": true,
+      "answer": "Không. drive.file chỉ cấp phạm vi tệp được ứng dụng tạo hoặc người dùng mở/chọn/chia sẻ với ứng dụng.",
+      "source_cases": [
+        "scope"
+      ],
+      "result": "PASS"
+    },
+    {
+      "id": "Q4",
+      "question": "Dùng dạng chuẩn nào để tổ hợp lại dấu tiếng Việt?",
+      "primary_query": "chuẩn hóa dấu tổ hợp tiếng Việt",
+      "primary_found_expected": true,
+      "primary_result_count": 1,
+      "keyword_fallback_used": false,
+      "fallback_query": null,
+      "retrieved_expected_sources": true,
+      "evidence_terms_present": true,
+      "superseded_terms_excluded": true,
+      "answer": "NFC phân rã chính tắc rồi tổ hợp lại; NFD là dạng phân rã. Không nên suy hai chuỗi nhìn giống nhau luôn bằng nhau.",
+      "source_cases": [
+        "unicode"
+      ],
+      "result": "PASS"
+    },
+    {
+      "id": "Q5",
+      "question": "Ghi chú kiểm kê hiện tại có hạn ngày nào và nhãn màu gì?",
+      "primary_query": "ghi chú kiểm kê hiện tại",
+      "primary_found_expected": false,
+      "primary_result_count": 0,
+      "keyword_fallback_used": true,
+      "fallback_query": "kiểm kê",
+      "retrieved_expected_sources": true,
+      "evidence_terms_present": true,
+      "superseded_terms_excluded": true,
+      "answer": "Ghi chú người dùng hiện tại: hạn 30/11, nhãn màu lục. Mốc 27/11 là lịch sử tiếp nhận cũ.",
+      "source_cases": [
+        "note"
+      ],
+      "result": "PASS"
+    },
+    {
+      "id": "Q6",
+      "question": "Khe đo trong biên bản là bao nhiêu và ở trang nào?",
+      "primary_query": "biên bản khe đo trang",
+      "primary_found_expected": true,
+      "primary_result_count": 1,
+      "keyword_fallback_used": false,
+      "fallback_query": null,
+      "retrieved_expected_sources": true,
+      "evidence_terms_present": true,
+      "superseded_terms_excluded": true,
+      "answer": "Biên bản fixture ghi khe đo 42 cm, locator {\"page\": 4}; đây không phải nghiệm thu parser PDF.",
+      "source_cases": [
+        "page"
+      ],
+      "result": "PASS"
+    },
+    {
+      "id": "Q7",
+      "question": "Phụ đề hiện hành tại giây 12–18 nói đặt cờ màu gì?",
+      "primary_query": "phụ đề điểm đặt bóng",
+      "primary_found_expected": true,
+      "primary_result_count": 1,
+      "keyword_fallback_used": false,
+      "fallback_query": null,
+      "retrieved_expected_sources": true,
+      "evidence_terms_present": true,
+      "superseded_terms_excluded": true,
+      "answer": "Phụ đề fixture phiên bản hai tại 00:12-00:18 ghi đặt cờ cam; không dùng bản đã stale.",
+      "source_cases": [
+        "subtitle"
+      ],
+      "result": "PASS"
+    },
+    {
+      "id": "Q8",
+      "question": "Diễn giả trong video chỉ có metadata đã nói gì?",
+      "primary_query": "video metadata lời nói",
+      "primary_found_expected": true,
+      "primary_result_count": 1,
+      "keyword_fallback_used": false,
+      "fallback_query": null,
+      "retrieved_expected_sources": true,
+      "evidence_terms_present": true,
+      "superseded_terms_excluded": true,
+      "answer": "Chưa đủ dữ liệu để biết diễn giả nói gì: CHƯA CÓ TRANSCRIPT VIDEO. Chỉ có metadata, không suy diễn lời nói.",
+      "source_cases": [
+        "missing"
+      ],
+      "result": "PASS"
+    },
+    {
+      "id": "Q9",
+      "question": "Những nguồn nào nằm trong dự án Vận hành có phục hồi?",
+      "primary_query": "Vận hành có phục hồi",
+      "primary_found_expected": true,
+      "primary_result_count": 2,
+      "keyword_fallback_used": false,
+      "fallback_query": null,
+      "retrieved_expected_sources": true,
+      "evidence_terms_present": true,
+      "superseded_terms_excluded": true,
+      "answer": "Hai nguồn Django callback sau commit và PostgreSQL pg_dump đều thuộc Dự án Vận hành có phục hồi.",
+      "source_cases": [
+        "commit",
+        "backup"
+      ],
+      "result": "PASS"
+    }
+  ],
+  "limitations": [
+    "Controlled public paraphrases and authored fixtures; not personal-corpus quality",
+    "Question terms and folder were supplied by the auditor; not blind ranking or unrestricted discovery",
+    "One primary query missed; shorter keyword found the expected note",
+    "No independent ChatGPT consumer UI session or indexing-latency SLA",
+    "No native Google Docs, PDF parser or ASR acceptance"
+  ],
+  "data_handling": "Only case aliases, public/fixture answers and outcomes retained; provider IDs and retrieved export text stay outside Git"
+}
