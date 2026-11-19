@@ -1,0 +1,24 @@
+{
+  "checked_date": "2026-11-19",
+  "status": "PASS",
+  "scope": "KT-108 native Windows deployment and HTTP smoke",
+  "deployed_sha": "ccc0a333c087ee1687a9d0df7de4b6326532a253",
+  "tested_head_sha": "285e9db76fa2fc77b25e0fa67fce7fbc86978cd6",
+  "pull_request": "https://github.com/cavoixanh638/kho-tri-thuc/pull/19",
+  "ci": "https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44495738623",
+  "frontend_tests": {"environment": "Windows Node 24, JSDOM", "passed": 12, "failed": 0},
+  "runtime": {
+    "npm_ci": "PASS",
+    "production_build": "PASS",
+    "restart_own_application_processes": "PASS",
+    "api_status": 200,
+    "postgresql": "running",
+    "page_status": 200,
+    "bundle": "/assets/index-CONTIITO.js",
+    "bundle_status": 200,
+    "processing_refresh_present_in_served_bundle": true,
+    "health": "ready"
+  },
+  "not_run": ["new real-browser interactive acceptance", "Android physical-device acceptance (deferred by user)"],
+  "data_handling": "No migration, private data export, Drive file change or credential change in this deployment"
+}

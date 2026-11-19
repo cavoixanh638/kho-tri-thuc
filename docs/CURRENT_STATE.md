@@ -121,7 +121,7 @@ Chín đầu việc dùng mốc `c51d39f`. Chat điều phối nối router, c�
 
 ## 5. Quy tắc cập nhật trạng thái
 
-### Checkpoint KT-108 — chờ tích hợp
+### KT-108 — đã tích hợp và cập nhật Windows
 
 - Nhánh `codex/kt-108-processing-ui`, baseline `e04bfd1`. Item/thư viện polling
   khi còn xử lý, giới hạn 10 phút, backoff và dừng sau ba lỗi; hủy request khi
@@ -132,8 +132,35 @@ Chín đầu việc dùng mốc `c51d39f`. Chat điều phối nối router, c�
   chỉ kiểm DOM, **không phải browser/device acceptance**.
 - Agent dừng do workspace hết credits; điều phối sửa harness (fonts/RAF,
   request thật sự in-flight và hợp đồng body capture), chạy lại suite PASS.
-- Chưa PR/CI/tích hợp/deploy. Bước tiếp: review diff, thêm npm test vào CI,
-  chạy CI đúng head rồi nghiệm thu Windows. Android được người dùng để sau.
+- [PR #19](https://github.com/cavoixanh638/kho-tri-thuc/pull/19), head
+  `285e9db76fa2fc77b25e0fa67fce7fbc86978cd6`, [CI #44495738623](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44495738623)
+  PASS trước merge. Windows đã cập nhật main `ccc0a333c087ee1687a9d0df7de4b6326532a253`,
+  npm ci/build/restart PASS; HTML, bundle mới và API 200. Không đổi schema/OAuth.
+  [Bằng chứng](operations/windows-processing-results.json). Browser tương tác mới
+  chưa kiểm lại; Android được người dùng để sau.
+
+### KT-102 — mốc đo 20 PDF / ba parser
+
+- Mã đo `ec21b59`, nhánh `codex/kt-102-pdf-evidence`, [báo cáo](../evals/pdf/README.md).
+  Đã chạy 60 lượt subprocess trên Windows: cả ba parser 20/20 không lỗi/timeout,
+  kiểm 42 anchor trên trang vật lý và 20 probe thứ tự đọc bằng ảnh render.
+- Cả ba tìm 40/42 anchor; pypdf/PDFium đúng thứ tự 16/20, PyMuPDF 19/20.
+  Đo lại cả process tree để sửa sai số RAM của Windows venv launcher. Có nguồn
+  license chính thức, chưa đưa PyMuPDF vào runtime. Lint/format/diff check PASS.
+- Mẫu cùng một tổ chức và nhiều trang đầu: chưa phải CER/WER/toàn văn/bảng/scan.
+  Giữ pypdf runtime baseline, PDFium renderer KT-010. KT-102 còn fallback tự động
+  và nguồn ngoài PDF, không ghi toàn task DONE. Raw PDF/text/render ngoài Git.
+
+### Cổng tài khoản và nghiệm thu còn chờ
+
+- Người dùng yêu cầu hoàn thiện Windows trước; Android để sau. Connector Drive
+  đang dùng tài khoản khác runtime; đã mở Connect another account tới màn hình
+  chọn Google, chờ người dùng đăng nhập/cấp quyền. Chưa có pilot đọc thành công.
+- Recovery mã `760be80` ở `codex/kt-008-live-recovery`: 7 test archive/Drive giả
+  PASS. Automatic approval review yêu cầu xác nhận riêng backup chứa notes/URLs/
+  hashed authentication và đích System_Backups; đã gửi xác nhận, chưa chạy live.
+- KT-202E tại `codex/kt-202e-knowledge-pilot` vẫn WIP, chưa merge/deploy/export.
+  Các agent hết workspace credits; mã và checkpoint hiện tại được lưu ở GitHub.
 
 - Mỗi lần hoàn tất task ghi **ID, SHA commit, branch/PR, test thực sự đã chạy + kết quả, điều chưa test, blocker và một bước kế tiếp**. Không tự thăng trạng thái thành PASS khi chưa có bằng chứng.
 - Kiểm tra lại GitHub `main` và diff hiện hành trước mỗi lần ghi. Nếu nhiều AI làm song song, phân file/branch không chồng chéo. Không cần dựng workboard/dispatcher nếu chưa thực sự có nhiều đầu việc đồng thời.
