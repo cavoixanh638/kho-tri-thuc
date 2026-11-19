@@ -126,7 +126,18 @@ Người dùng giao tiếp tục các phần còn lại tới khi hoàn thành h
 | UI worker — KT-108 | `codex/kt-108-processing-ui` | Trạng thái worker tự cập nhật, không mất bản chỉnh sửa, polling có giới hạn/hủy; kiểm thử và build, thiết bị thật ghi riêng |
 | Điều phối — KT-201/202E và tích hợp | `codex/kt-202e-knowledge-pilot` | Xuất per-item có version/opt-in/retry cùng file, pilot đọc bằng connector, tích hợp CI và cập nhật Windows |
 
-Connector Drive hiện search không thấy thư mục ứng dụng, `files.get` đúng ID trả 404 trong khi tài khoản runtime vẫn đọc được. Đây là thiếu khả năng truy cập từ connector, chưa kết luận file mất. Đã hỏi người dùng kiểm tra đúng tài khoản connector và khả năng kiểm Android; các phần mã độc lập vẫn tiếp tục. Chưa đổi Client/OAuth scope hoặc mở network/public tunnel.
+Connector Drive search không thấy thư mục ứng dụng, `files.get` đúng ID trả 404 trong khi runtime vẫn đọc được. Settings xác nhận connector dùng tài khoản khác. Người dùng yêu cầu mở kết nối lại; đã mở Connect another account tới màn hình Google chọn tài khoản, chờ người dùng hoàn tất. Không lưu account ID/credential vào Git. Android được người dùng chủ động để sau, hoàn thiện Windows trước.
+
+Các agent dừng do workspace hết credits; điều phối tiếp nhận phần đang dở.
+KT-102 có manifest/runner/số đo sơ bộ trên nhánh riêng, QA chưa có và số RAM cần
+xác minh lại. KT-108 đã có 12 test JSDOM và build PASS, chưa CI/deploy.
+Recovery có mã `760be80` và 7 test archive/Drive mô phỏng PASS; live audit chưa chạy
+vì automatic approval review yêu cầu xác nhận cụ thể payload backup và nơi nhận.
+
+KT-202E hiện chỉ có model KnowledgeExport và snapshot renderer **WIP/TEST_PENDING**.
+Chưa migration/export adapter/job/API/UI; không được merge hoặc deploy branch này
+ở trạng thái hiện tại. Không có bản xuất tri thức nào được tạo trên Drive.
+Tiếp tục từ mã đang có, thêm migration/tests và exporter idempotent trước pilot.
 
 **Việc tiếp theo:** tích hợp từng nhánh khi có mã/test/bằng chứng, giữ các cổng chưa đạt có trạng thái rõ. Chất lượng nhóm cần tập thực và người dùng đánh giá, không thay bằng fixture tự soạn. Upload Reel người dùng đã giao hoàn tất, không cần gửi lại liên kết.
 

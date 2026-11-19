@@ -1,10 +1,9 @@
 from uuid import uuid4
 
+from catalog.models import Item
 from django.conf import settings
 from django.db import models
 from django.db.models import Q
-
-from catalog.models import Item
 
 
 class Asset(models.Model):
@@ -72,3 +71,32 @@ class DriveAccount(models.Model):
         max_length=16, choices=State.choices, default=State.PENDING
     )
     connected_at = models.DateTimeField(null=True, blank=True)
+
+
+class KnowledgeExport(models.Model):
+    class Status(models.TextChoices):
+        DISABLED = "disabled", "Disabled"
+        PENDING = "pending", "Pending"
+        SYNCED = "synced", "Synced"
+        FAILED = "failed", "Failed"
+
+    item = models.OneToOneField(
+        Item, on_delete=models.CASCADE, related_name="knowledge_export"
+    )
+    enabled = models.BooleanField(default=False)
+    format = models.CharField(
+        max_length=12,
+        choices=[("markdown", "Markdown"), ("text", "Text")],
+        default="markdown",
+    )
+    provider = models.CharField(max_length=32, default="google_drive")
+    provider_file_id = models.CharField(max_length=255, blank=True)
+    source_version = models.CharField(max_length=64, blank=True)
+    exported_version = models.CharField(max_length=64, blank=True)
+    content_sha256 = models.CharField(max_length=64, blank=True)
+    status = models.CharField(
+        max_length=12, choices=Status.choices, default=Status.DISABLED
+    )
+    truncated = models.BooleanField(default=False)
+    last_error = models.CharField(max_length=64, blank=True)
+    last_synced_at = models.DateTimeField(null=True, blank=True)
