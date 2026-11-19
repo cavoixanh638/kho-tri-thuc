@@ -35,7 +35,7 @@ Mở Cài đặt của ứng dụng và bấm Kết nối Google Drive. Chủ t�
 
 Web OAuth client thật đã được tạo, callback đã đăng ký, scope `drive.file` và tài khoản thử nghiệm đã lưu trong Google Cloud. JSON đã được nạp bằng `configure-drive`; ứng dụng đã build, migrate và khởi động lại thành công. Client secret chỉ nằm trong cấu hình riêng trên Windows.
 
-Đăng nhập/cấp quyền Google đã hoàn tất. [Live smoke](drive-live-results.json) đã kiểm upload/verify/đọc lại byte chính xác và retry cùng file với TXT tiếng Việt, PNG, PDF qua adapter thật. Mẫu đã chuyển vào Thùng rác Drive, các bản ghi catalog thử nằm trong transaction rollback. UI/worker với file người dùng, đổi client/project, upload lớn, Android thiết bị thật và HTTPS còn cần kiểm chứng. Bản hiện tại phục vụ loopback trên Windows.
+Đăng nhập/cấp quyền Google đã hoàn tất. [Live smoke](drive-live-results.json) đã kiểm upload/verify/đọc lại byte chính xác và retry cùng file với TXT tiếng Việt, PNG, PDF qua adapter thật. Mẫu đã chuyển vào Thùng rác Drive, các bản ghi catalog thử nằm trong transaction rollback. [Reel thực](facebook-live-results.json) đã đi qua tiếp nhận UI, worker và Drive, tải lại khớp SHA-256. UI multipart với file người dùng, đổi client/project, upload lớn, Android thiết bị thật và HTTPS còn cần kiểm chứng. Bản hiện tại phục vụ loopback trên Windows.
 
 OAuth đang ở trạng thái External/Testing. Refresh token có hạn 7 ngày khi dùng scope Drive, theo [Google OAuth](https://developers.google.com/identity/protocols/oauth2#expiration). Khi hết hạn, mở Cài đặt và Kết nối lại. Chuyển sang Production là bước riêng còn mở trước khi vận hành lâu dài.
 
@@ -49,6 +49,31 @@ $ktConfig.environment.psobject.Properties | ForEach-Object {
 }
 & "$ktRuntime\venv\Scripts\python.exe" tools/drive_smoke.py --owner admin --output "$env:TEMP\kt-drive-smoke.json"
 ```
+
+## Video Facebook công khai
+
+Worker tiếp nhận liên kết trước, rồi chạy `download_video` độc lập với lấy HTML. Downloader `yt-dlp==2026.10.26` ở tiến trình riêng có giới hạn 120 giây/128 MiB, không dùng cookie hoặc đăng nhập Facebook. Bản này hỗ trợ URL HTTPS Facebook dạng `/share/r/...`, `/reel/<số>` và `/watch?v=<số>`, chọn MP4 progressive HD/SD có cả hình và tiếng. Khi không lấy được tệp, liên kết và lịch sử tiếp nhận vẫn còn.
+
+Trước khi tạo Asset, ffprobe xác minh MP4 có video/audio. Tệp được fsync vào staging rồi job upload sẵn có đưa lên Drive và kiểm SHA-256. Retry tái sử dụng Asset/Drive ID, không tạo CaptureEvent mới. Tải được video chưa đồng nghĩa đã có transcript hoặc đã hiểu nội dung.
+
+Transport Drive dùng factory `googleapiclient.http.build_http()` để giao phản hồi `308 Resume Incomplete` cho bộ upload, tránh nhầm thành redirect thiếu Location. Chunk 1 MiB, timeout mỗi request 30 giây, budget upload 360 giây. [Google mô tả upload nhiều chunk và mã 308](https://developers.google.com/workspace/drive/api/guides/manage-uploads).
+
+Công cụ `tools/verify_drive_item.py` tải streaming để đối chiếu SHA-256, kiểm file Drive duy nhất và so fingerprint CaptureEvent với mốc trước thao tác. Nạp biến môi trường runtime như phần Drive smoke ở trên. Ghi baseline trước retry, rồi chạy xác minh sau khi worker hoàn tất. File baseline chỉ có thời điểm, số lượt và fingerprint, không chứa nội dung gốc.
+
+```powershell
+$ktPython = Join-Path $env:LOCALAPPDATA 'KhoTriThuc\venv\Scripts\python.exe'
+& $ktPython tools/verify_drive_item.py --owner admin --item '<UUID của mục>' --baseline "$env:TEMP\kt-capture-before.json" --record-baseline
+# Thử xử lý lại mục trong ứng dụng, chờ worker hoàn tất.
+& $ktPython tools/verify_drive_item.py --owner admin --item '<UUID của mục>' --baseline "$env:TEMP\kt-capture-before.json" --output "$env:TEMP\kt-drive-verified.json"
+```
+
+Trên Windows cài media tools bằng lệnh đã kiểm chứng sau, từ checkout. Script tải FFmpeg/ffprobe 9.0.2 từ Gyan, kiểm SHA-256 của gói trước khi chạy và ghi đường dẫn vào cấu hình riêng. Binary và giấy phép đi kèm nằm ngoài Git trong `%LOCALAPPDATA%\KhoTriThuc\tools`. Khởi động lại ứng dụng sau cài.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools/windows/install_ffmpeg.ps1
+```
+
+[FFmpeg giới thiệu nhà cung cấp Windows](https://ffmpeg.org/download.html) · [Gói và checksum Gyan](https://www.gyan.dev/ffmpeg/builds/) · [yt-dlp](https://github.com/yt-dlp/yt-dlp)
 
 ## Quyết định runtime
 

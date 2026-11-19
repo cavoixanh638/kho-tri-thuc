@@ -1,7 +1,7 @@
 # HIỆN TRẠNG THỰC TẾ — KHO TRI THỨC
 
-**Ngày checkpoint:** 18/11/2026 (Asia/Ho_Chi_Minh).
-**Nguồn kiểm chứng:** `main` tại `e9784557780243246e476e071191fc89f7e795c5`, bản tích hợp `codex/kt-gate-b-library` tại `c9896e5b11b11bc7a4ebc845d9b8c6aabaae6060`, GitHub Actions và runtime Windows thực tế. Khảo sát [QLVB_System_new](https://github.com/cavoixanh638/QLVB_System_new) chỉ là tham khảo thiết kế.
+**Ngày checkpoint:** 19/11/2026 (Asia/Ho_Chi_Minh).
+**Nguồn kiểm chứng:** `main` tại `3d63c0f85d47a8685f60ab971d8212cd7ad30bce`, bản video `codex/kt-101-facebook` tại `e04a3211875df4308acf4290da95313cbe2f45b5`, GitHub Actions và runtime Windows thực tế. Khảo sát [QLVB_System_new](https://github.com/cavoixanh638/QLVB_System_new) chỉ là tham khảo thiết kế.
 **Mục đích:** nơi duy nhất ghi **đã hoàn thành điều gì thật**. Roadmap là kế hoạch/điều kiện PASS, không là chứng cứ chạy thật.
 
 ## 1. Tình trạng tổng quát
@@ -12,14 +12,14 @@
 | Chuẩn bị bố trí repo và AI routing | **DOCS_PREPARED** | Có `REPOSITORY_LAYOUT.md`, `docs/README.md`, `CURRENT_STATE.md` và liên kết từ README/AGENTS/roadmap trong commit chuẩn bị repository này |
 | Ứng dụng React/Django | **PASS (tiếp nhận và thư viện)** | Có đăng nhập, gửi URL/chữ, biên nhận, lịch sử, xem/chỉnh sửa và khôi phục Item. API upload nhận file vào staging bền vững |
 | PostgreSQL/Docker Compose | **PASS (Ubuntu CI)** | PostgreSQL 18, volume riêng, migration Django và rollback/reapply migration `sessions` đã chạy |
-| Kết nối Google Drive | **LIVE_STORAGE_PASS** | OAuth thật trên Windows; adapter upload/verify/đọc lại chính xác TXT tiếng Việt, PNG và PDF, retry cùng file ID. Mẫu chuyển vào Thùng rác, bản ghi thử rollback. Luồng UI/worker với file người dùng và đổi client/project còn NOT_RUN |
+| Kết nối Google Drive | **LIVE_VIDEO_PASS** | Reel thực do người dùng gửi đã đi qua UI tiếp nhận, worker tải và upload Drive; đọc lại toàn bộ MP4 khớp SHA-256, thumbnail có cache, một Asset/một CaptureEvent. TXT/PNG/PDF adapter smoke trước đó PASS. UI multipart với file người dùng, đổi client/project và Drive preview playback còn NOT_RUN |
 | Thumbnail PDF/ảnh/video | **PASS (tích hợp KT-010)** | Renderer/caching, 8 EXIF Orientation, API riêng tư và upload hook qua test; xem mốc vận hành bên dưới |
-| Video, trích chữ và FTS | **PARTIAL / TESTED** | Đã nối fetch web an toàn, parser nhẹ và hai GIN/search tiếng Việt. Chưa có tải video, benchmark PDF 3 thư viện hoặc dữ liệu thực để nghiệm thu chất lượng |
+| Video, trích chữ và FTS | **PARTIAL / TESTED** | Facebook Reel công khai đã tải MP4 và lưu Drive thật. Fetch web, parser nhẹ và hai GIN/search đã nối. YouTube/TikTok, transcript/ASR, benchmark PDF và đánh giá phân nhóm thực còn mở |
 | **Nhận URL/text và giữ giờ** | **PASS (bản tích hợp)** | Session/CSRF, ACK sau transaction, retry/gửi lại, lịch sử và giao diện qua proxy đã được kiểm thử |
 | ChatGPT Drive pilot / xuất tri thức / MCP | **NOT_STARTED** | Chưa có thử nghiệm trực tiếp với tài khoản/workspace |
 | Backup/restore dữ liệu | **PASS (dữ liệu thử)** | Dump/manifest cùng snapshot và khôi phục vào database mới đã chạy trên Windows và Docker Compose. Drive thật/bản sao thật vẫn cần xác minh |
 | Triển khai Windows/Linux/Android | **WINDOWS_PASS / ANDROID_NOT_RUN** | Native Windows phục vụ loopback cổng 8009, PostgreSQL 18 riêng, start/stop/restart đã chạy. CI Linux Compose PASS. Android/HTTPS còn NOT_RUN |
-| Test/CI runtime | **PASS (136 test)** | [GitHub Actions #44344447208](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44344447208), migrations, build, smoke API/UI và backup/restore |
+| Test/CI runtime | **PASS (164 test Windows/CI)** | Bản video/Drive tại `e04a321` đã chạy toàn suite trên PostgreSQL 18.4 và [CI #44437313933](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44437313933), migrations/build/smoke và backup/restore đều PASS |
 
 **Không được gọi các dòng NOT_STARTED/NOT_RUN là PASS.** Tạo kế hoạch không có nghĩa đã có môi trường hoặc dữ liệu dùng thật.
 
@@ -98,18 +98,26 @@ Chín đầu việc dùng mốc `c51d39f`. Chat điều phối nối router, c�
 
 - [PR #17](https://github.com/cavoixanh638/kho-tri-thuc/pull/17), SHA mã `c9896e5b11b11bc7a4ebc845d9b8c6aabaae6060`. [CI #44344447208](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44344447208) PASS với 136 test trên PostgreSQL 18, build frontend, migration/rollback, smoke qua proxy và backup/verify/restore vào database mới.
 - Có hai GIN Item/DerivedContent, tìm dấu/không dấu, ghi chú tối đa 100.000 ký tự, lọc nhóm/chưa phân loại, CRUD nhóm và quan hệ manual/pinned. Worker tổ chức lại sau chỉnh sửa; API nội dung dẫn xuất có provenance, phân trang và giới hạn preview. Retry không tạo CaptureEvent mới.
-- Fetch web kiểm URL/redirect/IP và giới hạn tải; PDF/DOCX/XLSX/text được trích trong tiến trình có timeout. PDF hiện dùng pypdf làm baseline tạm, chưa chốt KT-102. Không có tải video bằng yt-dlp hoặc transcript video thực.
+- Tại mốc PR #17, fetch web kiểm URL/redirect/IP và giới hạn tải; PDF/DOCX/XLSX/text được trích trong tiến trình có timeout. PDF dùng pypdf làm baseline tạm, chưa chốt KT-102. Tải video Facebook được bổ sung ở PR #18 bên dưới; chưa có transcript video thực.
 - Đánh giá tổ chức chỉ có 40 fixture tổng hợp. Ngưỡng lexical bảo thủ đã điều chỉnh bằng tập này; chưa đo trên 30–50 Item thực do con người gán nhãn. Không suy rộng kết quả tổng hợp thành chất lượng dữ liệu cá nhân.
 - PWA có manifest/icon và GET share target. Chromium fixture smoke trước đó đã kiểm các kích thước 390/768/1440; Android thiết bị thật và HTTPS còn NOT_RUN.
-- Người dùng chọn máy Windows này. Bản native tại `%LOCALAPPDATA%\KhoTriThuc`, mã checkout từ GitHub; Python 3.13, Node 24, PostgreSQL 18.4 riêng ở loopback 54329, Waitress và worker ở loopback 8009. Build/migrate/check/start/stop/restart thành công, [runbook](operations/WINDOWS_SETUP.md). Runtime chưa có dữ liệu nội dung của người dùng.
+- Người dùng chọn máy Windows này. Bản native tại `%LOCALAPPDATA%\KhoTriThuc`, mã checkout từ GitHub; Python 3.13, Node 24, PostgreSQL 18.4 riêng ở loopback 54329, Waitress và worker ở loopback 8009. Build/migrate/check/start/stop/restart thành công, [runbook](operations/WINDOWS_SETUP.md). Sau mốc này đã tiếp nhận Reel thực theo PR #18.
 - Google Cloud đã tạo app OAuth và Web client theo xác nhận của người dùng, callback loopback chính xác, scope `drive.file`, một test user. JSON đã nạp vào runtime, người dùng đăng nhập ứng dụng và xác nhận consent Google. UI Cài đặt hiển thị Đã kết nối. Không đưa email/credential/JSON lên Git.
 - Cloud vẫn ở External/Testing nên refresh token Drive có hạn 7 ngày theo chính sách Google. Đã có luồng Kết nối lại; chuyển Production còn mở trước vận hành lâu dài, chưa tự công bố ứng dụng.
 - Live Drive smoke từ runtime Windows PASS trên ba mẫu TXT UTF-8 tiếng Việt (85 byte), PNG (83 byte), PDF (429 byte). Dùng DriveStorage thật, refresh token mới, upload resumable, SHA-256/size/MIME, tải lại đúng byte và gọi save lần nữa giữ file ID. Mẫu đã chuyển vào Thùng rác, transaction catalog rollback. [Kết quả khử thông tin riêng](operations/drive-live-results.json), runner `tools/drive_smoke.py`. Đây là test adapter thực, chưa thay thế nghiệm thu UI/multipart/worker bằng file người dùng hoặc tải lớn/video.
 - Mã/tài liệu/test lưu trên GitHub. Database, OAuth secret, staging và cache runtime nằm ngoài folder đồng bộ Drive. Rollback mã bằng PR revert; sao lưu database trước khi đảo migration trên môi trường có dữ liệu thật.
 
-**Việc tiếp theo:** dùng một file thực do người dùng chọn để nghiệm thu UI/multipart/worker và mở trên Drive. Tiếp tục benchmark PDF, nghiệm thu chất lượng nhóm, video, Android và pilot ChatGPT theo từng cổng còn mở.
+### KT-101 — Facebook Reel thật đã lưu Drive
 
-**Chưa xác minh:** UI/worker với file người dùng, Drive đổi client-project, upload lớn, quota thật; Docker Windows; host 24/7/HTTPS; Android; video; benchmark PDF 3 thư viện; chất lượng nhóm trên tập thực; ChatGPT pilot 5–10 Item. Không hỏi lại các quyết định đã chốt; chỉ nêu blocker khi bắt đầu tác vụ phụ thuộc thông tin đó.
+- [PR #18](https://github.com/cavoixanh638/kho-tri-thuc/pull/18), mã được chạy trên Windows `e04a3211875df4308acf4290da95313cbe2f45b5`. 164 test PostgreSQL 18.4 trên Windows và [CI #44437313933](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44437313933) PASS, không có test skip. CI kiểm migration/rollback, build/proxy smoke và backup/restore. Lint/format các file Python thay đổi và diff check PASS.
+- Người dùng gửi Reel qua UI, server nhận lúc 07:54 ngày 19/11/2026. Worker cũ lấy được metadata. Đã bổ sung downloader `yt-dlp==2026.10.26` chạy tiến trình riêng không cookie, giới hạn 120 giây/128 MiB, chỉ cho HTTPS Facebook và CDN được phép trên IP công khai. ffprobe kiểm MP4 có hình/tiếng trước khi stage fsync và enqueue upload. Lease fencing, retry và UUID Asset ổn định được kiểm thử.
+- Upload nhiều chunk bộc lộ lỗi `RedirectMissingLocation`: custom httplib2 transport xử lý `308 Resume Incomplete` thành redirect. Đã tái hiện bằng test transport thật với phản hồi 200/308/200, sửa dùng `googleapiclient.http.build_http()` và kiểm lại toàn bộ suite. Chunk 1 MiB, request timeout 30 giây, một lượt upload có budget 360 giây. Chỉ log loại lỗi, không log URL/header/token.
+- [Báo cáo thực đã khử thông tin riêng](operations/facebook-live-results.json) PASS, tạo bằng `tools/verify_drive_item.py` đã chạy thật. MP4 18.394.669 byte, H.264 720×1280 + AAC, ffprobe đo 59,645375 giây. SHA-256 `3fd6884f8d6fdfd6099c9378b70878c6ba7f7fceb4f4da989b2840587a1d6ca5` khớp metadata Drive và toàn bộ tệp tải lại. `source_fetch=done`, `asset_storage=verified`, cả bốn job done, thumbnail đã cache. Một Asset, một file Drive không trashed và một CaptureEvent; fingerprint đầu vào/giờ nhận đầu giữ nguyên qua các lần retry. Báo cáo không chứa URL nội dung, Drive ID, account ID hoặc token.
+- Mã và báo cáo nằm trên GitHub. MP4 gốc nằm trên Drive, staging đã được dọn sau verify; runtime/config và token vẫn ngoài Git. [Runbook Windows](operations/WINDOWS_SETUP.md) có media tools được kiểm SHA-256. Chỉ thử một Reel công khai progressive; chưa xác nhận mọi Reel, video riêng tư, YouTube/TikTok, video lớn hoặc phát preview Drive.
+
+**Việc tiếp theo:** tiếp tục các cổng chưa nghiệm thu của Gate B/C. Upload Reel người dùng đã giao hoàn tất, không cần gửi lại liên kết.
+
+**Chưa xác minh:** UI multipart với file người dùng, Drive đổi client-project, upload lớn/quota, preview playback; Docker Windows; host 24/7/HTTPS; Android; nguồn video khác và transcript; benchmark PDF 3 thư viện; chất lượng nhóm trên tập thực; ChatGPT pilot 5–10 Item. Không hỏi lại các quyết định đã chốt; chỉ nêu blocker khi bắt đầu tác vụ phụ thuộc thông tin đó.
 
 ## 5. Quy tắc cập nhật trạng thái
 
