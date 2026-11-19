@@ -1,0 +1,285 @@
+{
+  "selection": "Convenience sample of20SHA-unique official UNICEF Vietnamese documents; English mislabeled downloads excluded after visual review.",
+  "documents": [
+    {
+      "id": "vi01",
+      "url": "https://www.unicef.org/vietnam/vi/media/20486/file/B%C3%A1o%20c%C3%A1o%20T%C3%ACnh%20h%C3%ACnh%20C%E1%BA%A3nh%20b%C3%A1o%20S%E1%BB%9Bm%20v%C3%A0%20S%E1%BA%B5n%20s%C3%A0ng%20%E1%BB%A8ng%20ph%C3%B3%20B%C3%A1o%20c%C3%A1o%20s%E1%BB%91%202.pdf",
+      "source": "https://www.unicef.org/vietnam/vi/bao-cao/tinh-hinh-canh-bao-som-va-san-sang-ung-pho",
+      "sha256": "ab05d929d106f5671fb561614e2f4efc39b3aaebea57c85eab4baf9dd57915b2",
+      "bytes": 758747,
+      "pages": 5,
+      "language_check": {
+        "vietnamese_specific_characters_first_3_pages": 1913,
+        "characters_first_3_pages": 12102
+      },
+      "language": "vi",
+      "qa": []
+    },
+    {
+      "id": "vi02",
+      "url": "https://www.unicef.org/vietnam/vi/media/20426/file/Designed%20Full%20Report%20on%20Capacity%20Assessment%20on%20Social%20Services-Viet.pdf",
+      "source": "https://www.unicef.org/vietnam/vi/bao-cao/danh-gia-nang-luc-cung-cap-dich-vu-xa-hoi-cho-tre-em",
+      "sha256": "200800e8b4fe473b044797d7f246f06be2fa44869909606834b7aa48d0b53eab",
+      "bytes": 4822240,
+      "pages": 52,
+      "language_check": {
+        "vietnamese_specific_characters_first_3_pages": 597,
+        "characters_first_3_pages": 6844
+      },
+      "language": "vi",
+      "qa": []
+    },
+    {
+      "id": "vi04",
+      "url": "https://www.unicef.org/vietnam/vi/media/20381/file/UNICEF%20Viet%20Nam%20El%20Nino%20Early%20Warning%20Situation%20Report%20No.1%20Final%2019August26_vn.pdf.pdf",
+      "source": "https://www.unicef.org/vietnam/vi/bao-cao/el-nino-2026-2027-canh-bao-som-va-chuan-bi",
+      "sha256": "127fba173b8975a467db2fa0e1059c695363576921f22c2a5d5daf04ab1dc642",
+      "bytes": 794880,
+      "pages": 4,
+      "language_check": {
+        "vietnamese_specific_characters_first_3_pages": 2018,
+        "characters_first_3_pages": 13137
+      },
+      "language": "vi",
+      "qa": []
+    },
+    {
+      "id": "vi05",
+      "url": "https://www.unicef.org/vietnam/vi/media/20256/file/2024.In-depth%20Analysis%20of%20Disaparities%20and%20MDCP%20among%2053%20EM%20Groups_VN.pdf.pdf",
+      "source": "https://www.unicef.org/vietnam/vi/documents/nhung-khac-biet-ve-dac-trung-kinh-te-xa-hoi-va-ngheo-da-chieu-tre-em-trong-cong-dong-cac",
+      "sha256": "a01738385d3682d9367061edbb9da12ede8178ff5a21747ad1ad7b0ee79745dc",
+      "bytes": 17061592,
+      "pages": 210,
+      "language_check": {
+        "vietnamese_specific_characters_first_3_pages": 37,
+        "characters_first_3_pages": 251
+      },
+      "language": "vi",
+      "qa": []
+    },
+    {
+      "id": "vi06",
+      "url": "https://www.unicef.org/vietnam/vi/media/19971/file/T%C3%A0i%20li%E1%BB%87u%20t%E1%BA%ADp%20hu%E1%BA%A5n%20m%E1%BA%ABu%20TPNCTN_Gi%E1%BB%9Bi_H%E1%BB%8Dc%20vi%C3%AAn.pdf.pdf",
+      "source": "https://www.unicef.org/vietnam/vi/documents/mo-dun-tap-huan-mau-ve-tu-phap-than-thien-voi-nguoi-chua-thanh-nien-va-co-trach-nhiem",
+      "sha256": "890509a418cdb75a23b2bb6ebea2ac0b7f7a192219905895268f74789983a898",
+      "bytes": 633385,
+      "pages": 40,
+      "language_check": {
+        "vietnamese_specific_characters_first_3_pages": 91,
+        "characters_first_3_pages": 652
+      },
+      "language": "vi",
+      "qa": []
+    },
+    {
+      "id": "vi07",
+      "url": "https://www.unicef.org/vietnam/vi/media/19976/file/T%C3%A0i%20li%E1%BB%87u%20t%E1%BA%ADp%20hu%E1%BA%A5n%20m%E1%BA%ABu%20TPNCTN_Gi%E1%BB%9Bi_Gi%E1%BA%A3ng%20vi%C3%AAn.pdf.pdf",
+      "source": "https://www.unicef.org/vietnam/vi/documents/mo-dun-tap-huan-mau-ve-tu-phap-than-thien-voi-nguoi-chua-thanh-nien-va-co-trach-nhiem",
+      "sha256": "205bb4208b21e6a7586d7b991dc5e347387f21e45e30e5d314d1ec31c5d8c6f0",
+      "bytes": 818027,
+      "pages": 60,
+      "language_check": {
+        "vietnamese_specific_characters_first_3_pages": 95,
+        "characters_first_3_pages": 658
+      },
+      "language": "vi",
+      "qa": []
+    },
+    {
+      "id": "vi08",
+      "url": "https://www.unicef.org/vietnam/vi/media/20421/file/Final%20Report%20on%20Financing%20Options%20for%20SRSP%202026%20-Viet-11%20May%202026%20VN.pdf.pdf",
+      "source": "https://www.unicef.org/vietnam/vi/bao-cao/nghien-cuu-lua-chon-tai-chinh-an-sinh-xa-hoi-thich-ung-cu-soc",
+      "sha256": "967e88242141bffdd5e3d46cb2205b42fccfacec41d3c0e5de8d01d979f808a6",
+      "bytes": 5004450,
+      "pages": 50,
+      "language_check": {
+        "vietnamese_specific_characters_first_3_pages": 0,
+        "characters_first_3_pages": 3162
+      },
+      "language": "vi",
+      "qa": []
+    },
+    {
+      "id": "vi10",
+      "url": "https://www.unicef.org/vietnam/vi/media/19751/file/Final%20-%20Designed%20Viet%20Nam%202045%20Full%20report%20-%20VI.pdf.pdf",
+      "source": "https://www.unicef.org/vietnam/vi/bao-cao/tam-nhin-phat-trien-toan-dien-tre-em-2045",
+      "sha256": "6500efbad2e5865d41e067059e0d43f7e51a46490f7e671e39ab7fcdf8197b6b",
+      "bytes": 2902178,
+      "pages": 142,
+      "language_check": {
+        "vietnamese_specific_characters_first_3_pages": 96,
+        "characters_first_3_pages": 660
+      },
+      "language": "vi",
+      "qa": []
+    },
+    {
+      "id": "vi11",
+      "url": "https://www.unicef.org/vietnam/vi/media/19756/file/Final%20-%20Designed%20Viet%20Nam%202045%20Summary%20Report-Viet.pdf.pdf",
+      "source": "https://www.unicef.org/vietnam/vi/bao-cao/tam-nhin-phat-trien-toan-dien-tre-em-2045",
+      "sha256": "8c2454658aea369fea4879f45166dd3fd7de80e85b97db39625d3894c104ee80",
+      "bytes": 1114159,
+      "pages": 74,
+      "language_check": {
+        "vietnamese_specific_characters_first_3_pages": 184,
+        "characters_first_3_pages": 4771
+      },
+      "language": "vi",
+      "qa": []
+    },
+    {
+      "id": "vi12",
+      "url": "https://www.unicef.org/vietnam/vi/media/19721/file/TInh%20hinh%20bi%20can,%20bi%20cao,%20bi%20hai%20duoi%2018t_2023.pdf",
+      "source": "https://www.unicef.org/vietnam/vi/documents/tinh-hinh-nguoi-duoi-18-tuoi-la-bi-can-bi-cao-bi-hai-trong-cac-vu-an-hinh-su-tai-viet-nam",
+      "sha256": "27cc75ce99add59606c446f1c137cb5ffd06c05f1f6731e17eea8920d9be5d82",
+      "bytes": 22715556,
+      "pages": 61,
+      "language_check": {
+        "vietnamese_specific_characters_first_3_pages": 48,
+        "characters_first_3_pages": 364
+      },
+      "language": "vi",
+      "qa": []
+    },
+    {
+      "id": "vi13",
+      "url": "https://www.unicef.org/vietnam/vi/media/19456/file/Full%20report%20-%20Vietnamese.pdf",
+      "source": "https://www.unicef.org/vietnam/vi/bao-cao/quan-diem-tre-em-bien-doi-khi-hau-phat-trien-kinh-te",
+      "sha256": "10dc49d3c931101e0ac9fa1c25f6f8ed49df1c90e559096134f445cbe96bde33",
+      "bytes": 8474111,
+      "pages": 67,
+      "language_check": {
+        "vietnamese_specific_characters_first_3_pages": 561,
+        "characters_first_3_pages": 9051
+      },
+      "language": "vi",
+      "qa": []
+    },
+    {
+      "id": "vi14",
+      "url": "https://www.unicef.org/vietnam/vi/media/19466/file/Summary%20report%20-%20Vietnamese.pdf",
+      "source": "https://www.unicef.org/vietnam/vi/bao-cao/quan-diem-tre-em-bien-doi-khi-hau-phat-trien-kinh-te",
+      "sha256": "6e7eb05edcb814757e513c4c11ac0a48eda464a68e2a516a39aa58b9b604b60d",
+      "bytes": 4036053,
+      "pages": 12,
+      "language_check": {
+        "vietnamese_specific_characters_first_3_pages": 683,
+        "characters_first_3_pages": 4592
+      },
+      "language": "vi",
+      "qa": []
+    },
+    {
+      "id": "vi15",
+      "url": "https://www.unicef.org/vietnam/vi/media/19441/file/Final%20Desgined%20Synthesis%20Report%20on%20Children%20and%20Provincial%20SEDP%20and%20Climate%20related%20Plans-Viet.pdf.pdf",
+      "source": "https://www.unicef.org/vietnam/vi/bao-cao/long-ghep-phuong-phap-tiep-can-than-thien-tre-em",
+      "sha256": "dff48a6c8c176467b29a665d10f94a650b0fa471de42500360d4e198278588e3",
+      "bytes": 5013157,
+      "pages": 52,
+      "language_check": {
+        "vietnamese_specific_characters_first_3_pages": 544,
+        "characters_first_3_pages": 8403
+      },
+      "language": "vi",
+      "qa": []
+    },
+    {
+      "id": "vi16",
+      "url": "https://www.unicef.org/vietnam/vi/media/19281/file/02b-Final%20Full%20Report%20Viet%20Nam%2050-Year%20Progress%20on%20Children%20and%20Future%20Prospects-%20Viet.pdf.pdf",
+      "source": "https://www.unicef.org/vietnam/vi/bao-cao/50-nam-tien-bo-tre-em-viet-nam",
+      "sha256": "d2eefb40dcb203c1d93e47ac17e5bc62bc7f697bd7f4fc95444229d49c351fa0",
+      "bytes": 2806305,
+      "pages": 100,
+      "language_check": {
+        "vietnamese_specific_characters_first_3_pages": 40,
+        "characters_first_3_pages": 306
+      },
+      "language": "vi",
+      "qa": []
+    },
+    {
+      "id": "vi17",
+      "url": "https://www.unicef.org/vietnam/vi/media/19291/file/Summary%20-%20Vietnamese.pdf",
+      "source": "https://www.unicef.org/vietnam/vi/bao-cao/50-nam-tien-bo-tre-em-viet-nam",
+      "sha256": "d8fc370dd98bc52c3951050ce4a6facd7af96db39bc2a1ca72f32061497d4f36",
+      "bytes": 11357516,
+      "pages": 36,
+      "language_check": {
+        "vietnamese_specific_characters_first_3_pages": 42,
+        "characters_first_3_pages": 338
+      },
+      "language": "vi",
+      "qa": []
+    },
+    {
+      "id": "vi18",
+      "url": "https://www.unicef.org/vietnam/vi/media/15111/file/UNICEF-Innocenti-GRASSP-VietNam-Brief-2024-VI.pdf.pdf",
+      "source": "https://www.unicef.org/vietnam/vi/bao-cao/an-sinh-xa-hoi-dap-ung-gioi-do-tuoi-viet-nam",
+      "sha256": "3742814e444b5965ac2021fb78aa7fae99b62bf76909fc8ab35faa67f0c1c8a0",
+      "bytes": 870400,
+      "pages": 11,
+      "language_check": {
+        "vietnamese_specific_characters_first_3_pages": 900,
+        "characters_first_3_pages": 6015
+      },
+      "language": "vi",
+      "qa": []
+    },
+    {
+      "id": "vi19",
+      "url": "https://www.unicef.org/vietnam/vi/media/15121/file/UNICEF-Innocenti-GRASSP-VietNam-Report-2024-VI.pdf.pdf",
+      "source": "https://www.unicef.org/vietnam/vi/bao-cao/an-sinh-xa-hoi-dap-ung-gioi-do-tuoi-viet-nam",
+      "sha256": "56cb6519e5c8fc8c33a3dbb369dc4311eaf82a9d8b621beceb158bb1faa501b5",
+      "bytes": 1311914,
+      "pages": 96,
+      "language_check": {
+        "vietnamese_specific_characters_first_3_pages": 1017,
+        "characters_first_3_pages": 6778
+      },
+      "language": "vi",
+      "qa": []
+    },
+    {
+      "id": "vi20",
+      "url": "https://www.unicef.org/vietnam/vi/media/15131/file/UNICEF-Innocenti-GRASSP-VietNam-Annex-2024-VI.pdf.pdf",
+      "source": "https://www.unicef.org/vietnam/vi/bao-cao/an-sinh-xa-hoi-dap-ung-gioi-do-tuoi-viet-nam",
+      "sha256": "377561219128f66683878bb1bd8fec7f972079b4e5db7b923671de18cc18991e",
+      "bytes": 353153,
+      "pages": 21,
+      "language_check": {
+        "vietnamese_specific_characters_first_3_pages": 1022,
+        "characters_first_3_pages": 5957
+      },
+      "language": "vi",
+      "qa": []
+    },
+    {
+      "id": "vi22",
+      "url": "https://www.unicef.org/vietnam/vi/media/17551/file/Nhung%20dau%20an%20cua%20UNICEF%20Viet%20Nam%20nam%202024.pdf",
+      "source": "https://www.unicef.org/vietnam/reports/hope-action",
+      "sha256": "140aa2be10c36612c6a1fee5d32cbab8656a7e2b9ff3426a2f58c59c1db05553",
+      "bytes": 11313700,
+      "pages": 12,
+      "language_check": {
+        "vietnamese_specific_characters_first_3_pages": 493,
+        "characters_first_3_pages": 3202
+      },
+      "language": "vi",
+      "qa": []
+    },
+    {
+      "id": "vi23",
+      "url": "https://www.unicef.org/vietnam/vi/media/16681/file/Sit%20Rep%205%20-%20Typhoon%20Yagi%20vn.pdf.pdf",
+      "source": "https://www.unicef.org/vietnam/vi/media/16681/file/Sit%20Rep%205%20-%20Typhoon%20Yagi%20vn.pdf.pdf",
+      "sha256": "7a13ac9d220e528880bb61b0caec6610188bbfec400bb64ec7ec357574dc2b3f",
+      "bytes": 520403,
+      "pages": 5,
+      "language_check": {
+        "vietnamese_specific_characters_first_3_pages": 2058,
+        "characters_first_3_pages": 13079
+      },
+      "language": "vi",
+      "qa": []
+    }
+  ]
+}
