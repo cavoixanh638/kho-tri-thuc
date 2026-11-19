@@ -1,0 +1,60 @@
+{
+  "checked_at": "2026-11-19 05:13:01 UTC",
+  "status": "READY_LIVE_APPROVAL_PENDING",
+  "scope": "KT-008/009 immutable Drive backup and same-client recovery audit",
+  "verification": {
+    "postgres_18_synthetic_roundtrip_tests": {
+      "status": "PASS",
+      "tests": 3,
+      "includes": [
+        "snapshot consistency during committed write",
+        "manifest and dump checksum damage rejection",
+        "fresh database restore and source UUID/timestamp/note/group/mapping preservation"
+      ]
+    },
+    "drive_archive_unit_tests": {
+      "status": "PASS",
+      "tests": 7,
+      "includes": [
+        "deterministic ZIP and checksum-verified unpack",
+        "archive traversal and extra entry rejection",
+        "lost upload response retries with the same pre-generated Drive file ID",
+        "corrupted remote checksum does not overwrite immutable backup",
+        "bad download hash removes pending file",
+        "non-disposable database rejected before runtime access",
+        "source connection forced read-only"
+      ]
+    },
+    "ruff": "PASS",
+    "git_diff_check": "PASS"
+  },
+  "live": {
+    "executed": false,
+    "production_database_accessed_by_auditor": false,
+    "backup_uploaded_to_drive": false,
+    "fresh_database_restore_from_drive": "NOT_RUN",
+    "mapped_original_readback": "NOT_RUN",
+    "different_oauth_client_or_project": "NOT_RUN"
+  },
+  "blocker": {
+    "type": "AUTOMATIC_APPROVAL_REVIEW_REJECTED",
+    "action": "Export consistent live PostgreSQL dump and manifest to app Google Drive System_Backups with local independent copy and restore only to fresh audit database",
+    "reason": "Explicit user approval of this sensitive backup payload and its Drive destination is required"
+  },
+  "data_handling": {
+    "backup_may_include": [
+      "private notes and URLs",
+      "capture history and groups",
+      "hashed Django authentication data"
+    ],
+    "excluded": [
+      "Drive OAuth account rows and tokens",
+      "Django sessions"
+    ],
+    "outside_git": [
+      "database dump and full manifest",
+      "backup archives and original media",
+      "runtime credentials and Drive receipts"
+    ]
+  }
+}

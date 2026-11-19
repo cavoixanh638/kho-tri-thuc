@@ -82,8 +82,8 @@ function GroupEditor({ id, csrf, current, onSaved, onCancel }: {
   </form>;
 }
 
-export function ItemOrganization({ id, csrf, deleted }: { id: string; csrf: string; deleted: boolean }) {
-  const organization = useResource<Organization>(`/items/${encodeURIComponent(id)}/organization`);
+export function ItemOrganization({ id, csrf, deleted, refreshKey }: { id: string; csrf: string; deleted: boolean; refreshKey?: string }) {
+  const organization = useResource<Organization>(`/items/${encodeURIComponent(id)}/organization`, { refreshKey });
   const [editing, setEditing] = useState(false);
   const [saved, setSaved] = useState(false);
   const current = organization.data;
@@ -120,8 +120,8 @@ export function ItemOrganization({ id, csrf, deleted }: { id: string; csrf: stri
   </section>;
 }
 
-export function RelatedItems({ id }: { id: string }) {
-  const related = useResource<{ results: RelatedResult[] }>(`/items/${encodeURIComponent(id)}/related`);
+export function RelatedItems({ id, refreshKey }: { id: string; refreshKey?: string }) {
+  const related = useResource<{ results: RelatedResult[] }>(`/items/${encodeURIComponent(id)}/related`, { refreshKey });
 
   return <section className="panel" aria-labelledby="item-related-title">
     <h2 id="item-related-title">Mục liên quan</h2>

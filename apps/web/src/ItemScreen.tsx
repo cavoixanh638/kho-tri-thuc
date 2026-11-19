@@ -4,6 +4,7 @@ import { Button, Textarea, TextInput } from '@mantine/core';
 import { useRef, useState, type SubmitEvent } from 'react';
 import { externalHttpUrl, request, type Capture, type Item, type Page } from './api';
 import { ItemOrganization, RelatedItems } from './ItemOrganization';
+import { itemNeedsRefresh } from './itemProcessing';
 import { CaptureList, Empty, ErrorNotice, itemTitle, kindLabels, Loading, PageControls, PageTitle, ServerTime, useResource } from './views';
 
 const fetchStates: Record<string, string> = {
@@ -39,10 +40,12 @@ function ItemHistory({ id }: { id: string }) {
   </section>;
 }
 
-function ItemContent({ initial, csrf }: { initial: Item; csrf: string }) {
-  const [item, setItem] = useState(initial);
+function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPaused }: {
+  item: Item; csrf: string; onUpdated: (item: Item) => void; onRefresh: () => void;
+  refreshError?: boolean; pollingPaused?: boolean;
+}) {
   const [editing, setEditing] = useState(false);
-  const [draft, setDraft] = useState({ title: initial.title, description: initial.description, note: initial.note });
+  const [draft, setDraft] = useState({ title: item.title, description: item.description, note: item.note });
   const [busy, setBusy] = useState(false);
   const inFlight = useRef(false);
   const [openingAsset, setOpeningAsset] = useState<string>();
@@ -50,6 +53,7 @@ function ItemContent({ initial, csrf }: { initial: Item; csrf: string }) {
   const [assetError, setAssetError] = useState<string>();
   const [confirmation, setConfirmation] = useState('');
   const sourceUrl = externalHttpUrl(item.original_url);
+  const evidenceRevision = [item.updated_at, item.source_fetch, item.content_extract, item.classification_status].join(':');
 
   async function update(patch: Partial<Pick<Item, 'title' | 'description' | 'note' | 'favorite' | 'deleted'>>) {
     if (inFlight.current) return;
@@ -59,7 +63,7 @@ function ItemContent({ initial, csrf }: { initial: Item; csrf: string }) {
     setBusy(true);
     try {
       const result = await request<Item>(`/items/${encodeURIComponent(item.item_id)}`, { method: 'PATCH', csrf, body: patch });
-      setItem(result);
+      onUpdated(result);
       if (patch.title !== undefined || patch.note !== undefined || patch.description !== undefined) setEditing(false);
       setConfirmation(patch.deleted === true ? 'Đã chuyển vào thùng rác.'
         : patch.deleted === false ? 'Đã khôi phục mục.'
@@ -96,6 +100,7 @@ function ItemContent({ initial, csrf }: { initial: Item; csrf: string }) {
     try {
       const result = await request<{ queued: number }>(`/items/${encodeURIComponent(item.item_id)}/retry`, { method: 'POST', csrf });
       setConfirmation(result.queued ? 'Đã đưa vào hàng đợi để thử lại.' : 'Mục đang xử lý hoặc chưa có tác vụ cần thử lại.');
+      onRefresh();
     } catch {
       setError('Chưa yêu cầu xử lý lại được. Hãy thử lại.');
     } finally {
@@ -152,9 +157,9 @@ function ItemContent({ initial, csrf }: { initial: Item; csrf: string }) {
             {assetError && <ErrorNotice>{assetError}</ErrorNotice>}
           </div>}
         </section>
-        {!item.deleted && <ExtractedContent id={item.item_id} />}
+        {!item.deleted && <ExtractedContent id={item.item_id} refreshKey={evidenceRevision} />}
         <ItemHistory id={item.item_id} />
-        <RelatedItems id={item.item_id} />
+        <RelatedItems id={item.item_id} refreshKey={evidenceRevision} />
       </div>
       <div className="panel-stack">
         <section className="panel" aria-labelledby="item-status">
@@ -168,6 +173,11 @@ function ItemContent({ initial, csrf }: { initial: Item; csrf: string }) {
             <div><dt>Trích nội dung</dt><dd>{stateText(item.content_extract, extractStates)}</dd></div>
             <div><dt>Phân loại</dt><dd>{stateText(item.classification_status, organizationStates)}</dd></div>
           </dl>
+          {refreshError ? <ErrorNotice retry={onRefresh}>Chưa cập nhật được trạng thái mới. Dữ liệu đang hiển thị là lần kiểm tra trước.</ErrorNotice>
+            : pollingPaused && <div className="notice" role="status">
+              <span>Tạm dừng cập nhật tự động.</span>
+              <Button variant="default" size="compact-sm" onClick={onRefresh}>Cập nhật trạng thái</Button>
+            </div>}
           <div className="item-actions">
             {!item.deleted && (item.source_fetch === 'failed' || item.source_fetch === 'partial' || item.asset_storage === 'failed') && <Button variant="default" disabled={busy} onClick={() => void retryProcessing()}>Thử xử lý lại</Button>}
             {item.deleted ? <Button variant="default" disabled={busy} onClick={() => void update({ deleted: false })}>Khôi phục</Button>
@@ -177,7 +187,7 @@ function ItemContent({ initial, csrf }: { initial: Item; csrf: string }) {
               </>}
           </div>
         </section>
-        <ItemOrganization id={item.item_id} csrf={csrf} deleted={item.deleted} />
+        <ItemOrganization id={item.item_id} csrf={csrf} deleted={item.deleted} refreshKey={evidenceRevision} />
         {confirmation && <div className="notice" role="status">{confirmation}</div>}
         {error && <ErrorNotice>{error}</ErrorNotice>}
       </div>
@@ -186,8 +196,9 @@ function ItemContent({ initial, csrf }: { initial: Item; csrf: string }) {
 }
 
 export function ItemScreen({ id, csrf }: { id: string; csrf: string }) {
-  const item = useResource<Item>(`/items/${encodeURIComponent(id)}`);
-  if (item.data) return <ItemContent initial={item.data} csrf={csrf} />;
+  const item = useResource<Item>(`/items/${encodeURIComponent(id)}`, { pollWhile: itemNeedsRefresh });
+  if (item.data) return <ItemContent key={item.data.item_id} item={item.data} csrf={csrf}
+    onUpdated={item.replace} onRefresh={item.retry} refreshError={item.refreshError} pollingPaused={item.pollingPaused} />;
   return <>
     <a className="back-link" href="#/thu-vien">‹ Thư viện</a>
     <PageTitle title="Chi tiết mục" />

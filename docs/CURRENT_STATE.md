@@ -149,6 +149,60 @@ idempotent và cập nhật backup mapping trước pilot.
 
 ## 5. Quy tắc cập nhật trạng thái
 
+### KT-108 — đã tích hợp và cập nhật Windows
+
+- Nhánh `codex/kt-108-processing-ui`, baseline `e04bfd1`. Item/thư viện polling
+  khi còn xử lý, giới hạn 10 phút, backoff và dừng sau ba lỗi; hủy request khi
+  chuyển trang/unmount, dừng khi hết quyền. Item mới từ server không xóa draft.
+- Windows Node 24: `npm test` **12/12 PASS**, `npm run build` **PASS**.
+  Có kiểm StrictMode/share Unicode/chống gửi trùng, retry, phiên hết hạn và
+  thay đổi trạng thái/tệp. JSDOM không render layout: các ca width 390/768/1440
+  chỉ kiểm DOM, **không phải browser/device acceptance**.
+- Agent dừng do workspace hết credits; điều phối sửa harness (fonts/RAF,
+  request thật sự in-flight và hợp đồng body capture), chạy lại suite PASS.
+- [PR #19](https://github.com/cavoixanh638/kho-tri-thuc/pull/19), head
+  `285e9db76fa2fc77b25e0fa67fce7fbc86978cd6`, [CI #44495738623](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44495738623)
+  PASS trước merge. Windows đã cập nhật main `ccc0a333c087ee1687a9d0df7de4b6326532a253`,
+  npm ci/build/restart PASS; HTML, bundle mới và API 200. Không đổi schema/OAuth.
+  [Bằng chứng](operations/windows-processing-results.json). Browser tương tác mới
+  chưa kiểm lại; Android được người dùng để sau.
+
+### KT-102 — mốc đo 20 PDF / ba parser
+
+- Mã đo `ec21b59`, nhánh `codex/kt-102-pdf-evidence`, [báo cáo](../evals/pdf/README.md).
+  Đã chạy 60 lượt subprocess trên Windows: cả ba parser 20/20 không lỗi/timeout,
+  kiểm 42 anchor trên trang vật lý và 20 probe thứ tự đọc bằng ảnh render.
+- Cả ba tìm 40/42 anchor; pypdf/PDFium đúng thứ tự 16/20, PyMuPDF 19/20.
+  Đo lại cả process tree để sửa sai số RAM của Windows venv launcher. Có nguồn
+  license chính thức, chưa đưa PyMuPDF vào runtime. Lint/format/diff check PASS.
+- Mẫu cùng một tổ chức và nhiều trang đầu: chưa phải CER/WER/toàn văn/bảng/scan.
+  Giữ pypdf đầu tiên, PDFium renderer KT-010 và fallback text khi primary lỗi/rỗng;
+  encrypted không bypass, có processor/version riêng. 6 test extraction PostgreSQL
+  tạm PASS, gồm PDFium thật và dữ liệu tổng hợp. Fallback đã deploy sau CI bên dưới.
+  KT-102 còn nguồn khác/nghiệm thu toàn văn, không ghi toàn task DONE.
+  Raw PDF/text/render ngoài Git.
+
+- [PR #20](https://github.com/cavoixanh638/kho-tri-thuc/pull/20), head
+  `c2cfe37f7e829dc5ee4b0bee90648bb6ab8760e4`, [CI #44497632923](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44497632923)
+  PASS trước merge. Windows đã cập nhật `eab593d4e00f2a541c263ff2a0ede5e21acbfe6b`,
+  restart/API 200/PostgreSQL running PASS. Fallback đã được triển khai.
+
+### Cổng tài khoản và nghiệm thu còn chờ
+
+- Người dùng yêu cầu hoàn thiện Windows trước; Android để sau. Connector Drive
+  đang dùng tài khoản khác runtime; đã mở Connect another account tới màn hình
+  chọn Google, chờ người dùng đăng nhập/cấp quyền. Chưa có pilot đọc thành công.
+- Recovery mã `760be80` ở `codex/kt-008-live-recovery`: 7 test archive/Drive giả
+  PASS. Người dùng đã xác nhận payload notes/URLs/hashed authentication và nơi
+  lưu, sau yêu cầu của automatic approval review. Live backup/restore **PASS**:
+  [báo cáo](operations/backup-live-results.json), ZIP trên Drive tải lại đúng SHA,
+  restore 14 collection vào DB mới, OAuth/session rỗng. Mapping file gốc mở được,
+  MP4 tải lại khớp SHA. Private Windows copy đã kiểm 12 file dưới thư mục backups.
+  Không restore lên production. Dữ liệu live chưa có nhóm/note không rỗng và
+  chưa kiểm client/project khác, không suy fixture thành live.
+- KT-202E tại `codex/kt-202e-knowledge-pilot` vẫn WIP, chưa merge/deploy/export.
+  Các agent hết workspace credits; mã và checkpoint hiện tại được lưu ở GitHub.
+
 - Mỗi lần hoàn tất task ghi **ID, SHA commit, branch/PR, test thực sự đã chạy + kết quả, điều chưa test, blocker và một bước kế tiếp**. Không tự thăng trạng thái thành PASS khi chưa có bằng chứng.
 - Kiểm tra lại GitHub `main` và diff hiện hành trước mỗi lần ghi. Nếu nhiều AI làm song song, phân file/branch không chồng chéo. Không cần dựng workboard/dispatcher nếu chưa thực sự có nhiều đầu việc đồng thời.
 - Không tự bổ sung lịch sử nhiều trang. Dữ liệu đo chi tiết có thể lưu dưới `evals/` khi bắt đầu đo; `CURRENT_STATE.md` giữ bản tóm tắt và liên kết bằng chứng.

@@ -28,6 +28,14 @@ jobs:
           docker compose config --quiet
           docker compose up --detach --build --wait --wait-timeout 120
 
+      - name: Test frontend resource lifecycle and capture
+        run: docker compose exec -T web npm test
+
+      - name: Test immutable backup archive and Drive retry behavior
+        run: |
+          docker compose cp tools/backup api:/tmp/kt-backup-tools
+          docker compose exec -T -e PYTHONPATH=/app -e DJANGO_SETTINGS_MODULE=config.settings api python -m unittest discover -s /tmp/kt-backup-tools -p test_drive_bundle.py -v
+
       - name: Check Django and migrate forward and backward
         run: |
           docker compose exec -T api python manage.py check --database default
