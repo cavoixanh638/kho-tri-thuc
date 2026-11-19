@@ -55,6 +55,10 @@ kho-tri-thuc/
 
 ## 3. Quy tắc đặt file theo trách nhiệm
 
+`docs/knowledge/` chứa các bài tham khảo công khai được biên soạn để nhập vào
+kho theo yêu cầu người dùng. Chỉ đưa bài chia sẻ được vào Git; văn bản riêng,
+media, bản xuất tự động và database vẫn theo ranh giới dữ liệu ở Mục 4.
+
 | Loại | Đặt ở đâu | Lưu ý |
 | --- | --- | --- |
 | UI, trang, component, API client TypeScript | `apps/web/` | Không nhét logic nghiệp vụ vào component |

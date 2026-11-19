@@ -6,6 +6,18 @@
 
 ## 1. Tình trạng tổng quát
 
+### Đang triển khai KT-112 — ưu tiên văn bản theo yêu cầu 19/11/2026
+
+Nhánh `codex/kt-112-text-first-knowledge`: nội dung `Item.note` đọc bằng Markdown
+trong mục Tri thức, nguồn/media đặt sau; màn hình gửi mặc định văn bản, thư viện
+có trích đoạn. Tệp `.md`/`.markdown` UTF-8 được trích vào DerivedContent để tìm.
+Renderer react-markdown/remark-gfm bỏ HTML nguồn và URL ngoài HTTP(S), ảnh chỉ
+mở khi bấm; 16 test frontend/build PASS. Chín test backend extraction/import
+trên PostgreSQL thử PASS, gồm Unicode, CRLF, import không trùng và giữ chỉnh sửa.
+Lệnh `import_knowledge_notes` có preview và `--apply`, nhập bài công khai qua
+CaptureService, có opt-in export. Bốn bài thật ở `docs/knowledge/`, khác bốn
+fixture giả trong pilot. **Chưa ghi deployed/live-import PASS trước khi chạy.**
+
 | Hạng mục | Trạng thái đã kiểm tra | Diễn giải |
 | --- | --- | --- |
 | Thiết kế phạm vi/kiến trúc | **DECIDED / DOCS_ONLY** | Baseline **v4.7**: Google Drive, PostgreSQL, Django+Ninja, React+Mantine, một worker; CaptureEvent bất biến, auto-group và RelatedItem đã được đặc tả |

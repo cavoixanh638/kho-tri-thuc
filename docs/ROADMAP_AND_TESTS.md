@@ -64,6 +64,16 @@
 
 ## 4. Mốc C — Tích hợp ChatGPT (KHÔNG xây mặc định)
 
+### KT-112 — văn bản/Markdown là nội dung chính (người dùng chốt 19/11/2026)
+
+Nhận bài Markdown trong luồng text hoặc file, hiển thị có cấu trúc ngay trong
+thư viện/Chi tiết, chỉnh sửa nguyên văn và tìm kiếm được; nguồn/media đứng sau
+phần tri thức. Không tự ghi đè bài người dùng bằng DerivedContent. Kiểm HTML/
+URL độc hại, Unicode/xuống dòng, import retry không nhân Item/CaptureEvent,
+không ghi đè chỉnh sửa và `.md` UTF-8 được trích vào search có nguồn/version.
+Nghiệm thu thực bằng bài công khai đã biên soạn trong kho đang dùng; fixture
+thử riêng không thay bước này. Bản xuất Drive vẫn một Item/một tệp có version.
+
 | ID | Công việc | Tiêu chí |
 | --- | --- | --- |
 | KT-201 | Thử Google Drive app với file thật, ghi chú/DerivedContent chỉ ở PostgreSQL và MP4 thiếu transcript | Ghi rõ nội dung ChatGPT đọc được, phân biệt file Drive với metadata trong PostgreSQL, không tự suy đoán MP4 |

@@ -1,5 +1,25 @@
 # KIẾN TRÚC, DỮ LIỆU VÀ LỘ TRÌNH NÂNG CẤP — V4.7 (CAPTURE VÀ TỰ TỔ CHỨC)
 
+## Bổ sung ngày 19/11/2026 — văn bản là nội dung tri thức chính
+
+- `Item.note` là văn bản/Markdown do người dùng biên soạn, giữ nguyên nội dung
+  khi lưu; UI gọi là **Tri thức**. Không tạo Asset giả cho bài văn bản thuần.
+- `DerivedContent` giữ phần trích xuất có provenance/version, đọc được trong
+  cùng mục. Không tự ghi đè bài biên soạn bằng nội dung trích xuất hay AI.
+- Source/Asset/StorageLocation giữ nguồn và media minh họa; xuất hiện sau phần
+  văn bản. `KnowledgeExport` là bản chiếu lên Drive của cùng Item, không nhập
+  ngược bản xuất của chính nó thành Item mới để tránh vòng lặp và nhân bản.
+- Nhận Markdown bằng ô nhập văn bản hoặc tệp `.md`/`.markdown` UTF-8. Cả note
+  và text trích từ tệp đi vào SearchService/OrganizationService hiện có.
+- Đã so ba lựa chọn renderer: [react-markdown](https://github.com/remarkjs/react-markdown)
+  tạo React elements, phù hợp stack và mặc định không dùng innerHTML;
+  [Marked](https://marked.js.org/) tạo HTML, cần thêm sanitizer;
+  [markdown-it](https://github.com/markdown-it/markdown-it) cũng cần bước nối HTML
+  vào React. Chọn react-markdown 10.1.0 + remark-gfm 4.0.1, MIT, không thêm dịch vụ
+  hay chi phí mạng, có thể thay renderer mà không đổi dữ liệu. Khóa dependency,
+  bỏ HTML nguồn, chỉ cho URL HTTP(S); ảnh Markdown mở qua liên kết do người dùng
+  bấm, media đã lưu tiếp tục dùng preview riêng. Kiểm XSS và markup bằng UI test.
+
 **Ngày:** 18/11/2026 · **Dựa trên:** `MASTER_PLAN.md` v4.7 · **Đối tượng:** một người dùng lúc đầu, Google Drive là kho file chính; phát triển thêm tính năng AI và có thể nhiều dữ liệu/worker về sau.  
 **Trạng thái:** quyết định thiết kế, **chưa triển khai hoặc benchmark** tại baseline 18/11/2026. Trạng thái thực tế sau này xem [CURRENT_STATE.md](CURRENT_STATE.md); cách bố trí tệp và ranh giới Git/Drive/runtime xem [REPOSITORY_LAYOUT.md](REPOSITORY_LAYOUT.md). Mọi số liệu hiệu năng và điều kiện nâng cấp dưới đây là mục tiêu/trigger để đo, không phải kết quả đo.
 

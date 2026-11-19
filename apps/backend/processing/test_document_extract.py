@@ -24,6 +24,25 @@ class DocumentExtractionTests(TestCase):
         self.addCleanup(self.directory.cleanup)
         self.root = Path(self.directory.name)
 
+    def test_markdown_mime_and_extension_preserve_unicode_markup_and_original(self):
+        original = (
+            "# Tri thức\n\n**Tiếng Việt** và [nguồn](https://example.com)\n".encode()
+        )
+        path = self.root / "staged-file"
+        path.write_bytes(b"\xef\xbb\xbf" + original)
+        for mime, filename in (
+            ("text/markdown", "note"),
+            ("text/x-markdown", "note"),
+            ("application/octet-stream", "NOTE.MD"),
+            ("text/plain", "note.markdown"),
+        ):
+            with self.subTest(mime=mime, filename=filename):
+                result = extract_document(path, mime=mime, filename=filename)
+                self.assertEqual(result["state"], "done")
+                self.assertEqual(result["processor"], "utf-8-markdown")
+                self.assertEqual(result["parts"][0]["text"], original.decode())
+                self.assertEqual(path.read_bytes(), b"\xef\xbb\xbf" + original)
+
     def test_docx_and_xlsx_preserve_unicode_and_locators(self):
         docx = self.root / "test.docx"
         document = Document()

@@ -1,5 +1,13 @@
 # QUY TRÌNH TIẾP NHẬN VÀ TỰ TỔ CHỨC TRI THỨC — V4.7
 
+**Bổ sung theo người dùng ngày 19/11/2026:** đối tượng để đọc/nghiên cứu là bài
+văn bản/Markdown trong Item; nguồn và media đi kèm để minh họa/truy nguyên.
+Gửi bài Markdown phải thấy trong thư viện, đọc và chỉnh được, tìm theo nội dung.
+Nguồn thiếu text hiện rõ chưa có bài/văn bản, không dùng trạng thái đã lưu media
+để ngụ ý đã hiểu tri thức. Bản xuất Drive liên kết cùng Item; không nhân đôi bài
+vì đổi định dạng. Nội dung thử giả giữ ngoài production; bài nguồn công khai được
+biên soạn thật có thể nhập vào kho đang dùng khi người dùng giao.
+
 **Ngày quyết định:** 18/11/2026. **Trạng thái:** đặc tả để giao Codex, chưa có runtime test PASS.
 **Nguồn chuẩn:** tài liệu này mô tả nghiệp vụ; `MASTER_PLAN.md` giữ phạm vi, `ARCHITECTURE_AND_DATA.md` giữ schema/kiến trúc, `ROADMAP_AND_TESTS.md` giữ tiêu chí nghiệm thu; `CURRENT_STATE.md` giữ tiến độ thật.
 

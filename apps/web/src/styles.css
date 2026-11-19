@@ -114,6 +114,19 @@ time { font-variant-numeric: tabular-nums; }
 .back-link { display: inline-block; margin-block-end: 12px; color: var(--muted); }
 .detail-source { margin: 12px 0 0; overflow-wrap: anywhere; }
 .prose-text { margin: 12px 0 0; }
+.knowledge-text { overflow-wrap: anywhere; line-height: 1.75; max-width: 76ch; }
+.knowledge-text h3 { font-size: 19px; margin: 24px 0 10px; line-height: 1.4; }
+.knowledge-text h4 { font-size: 16px; margin: 20px 0 8px; }
+.knowledge-text > :first-child { margin-block-start: 8px; }
+.knowledge-text p, .knowledge-text ul, .knowledge-text ol { margin-block: 12px; }
+.knowledge-text blockquote { margin: 16px 0; padding-inline-start: 16px; border-inline-start: 3px solid var(--rule); color: var(--muted); }
+.knowledge-text pre, .raw-knowledge pre { white-space: pre-wrap; overflow-wrap: anywhere; padding: 12px; background: var(--ground); border-radius: 4px; }
+.knowledge-text code { font-size: .92em; }
+.knowledge-table { max-width: 100%; overflow-x: auto; }
+.knowledge-table table { border-collapse: collapse; width: 100%; font-size: 14px; }
+.knowledge-table th, .knowledge-table td { padding: 8px 12px; border-bottom: 1px solid var(--rule); text-align: start; }
+.source-description, .raw-knowledge { margin-block-start: 20px; color: var(--muted); }
+.library-knowledge-preview { color: var(--muted); font-size: 14px; white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .item-note { padding: 12px; background: var(--ground); border-radius: 6px; }
 .assets { margin-block-start: 20px; }
 .assets li { padding: 10px 0; display: flex; justify-content: space-between; align-items: center; gap: 10px; }

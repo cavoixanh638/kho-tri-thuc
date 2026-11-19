@@ -9,7 +9,7 @@ from zipfile import ZipFile
 MAX_PARTS = 1000
 MAX_TEXT = 1_000_000
 MAX_EXPANDED = 32 * 1024 * 1024
-PROCESSOR_VERSION = "light-documents-v2"
+PROCESSOR_VERSION = "light-documents-v3"
 
 
 def checked_zip(path):
@@ -138,12 +138,21 @@ def extract_local(path, mime, filename):
     ):
         state, parts = xlsx_parts(path)
         processor = "openpyxl"
-    elif mime == "text/plain":
+    elif mime in {"text/plain", "text/markdown", "text/x-markdown"} or extension in {
+        ".md",
+        ".markdown",
+        ".txt",
+    }:
         raw = path.read_bytes()[: MAX_TEXT * 4 + 1]
         text = raw.decode("utf-8-sig")
         state = "partial" if len(text) > MAX_TEXT else "done"
         parts = [{"text": text, "locator": {}}]
-        processor = "utf-8"
+        processor = (
+            "utf-8-markdown"
+            if mime in {"text/markdown", "text/x-markdown"}
+            or extension in {".md", ".markdown"}
+            else "utf-8"
+        )
     else:
         return {"state": "not_available", "parts": [], "processor": "unsupported"}
 
