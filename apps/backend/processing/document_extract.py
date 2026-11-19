@@ -9,7 +9,7 @@ from zipfile import ZipFile
 MAX_PARTS = 1000
 MAX_TEXT = 1_000_000
 MAX_EXPANDED = 32 * 1024 * 1024
-PROCESSOR_VERSION = "light-documents-v1"
+PROCESSOR_VERSION = "light-documents-v2"
 
 
 def checked_zip(path):
@@ -35,6 +35,41 @@ def pdf_parts(path):
             for number, page in enumerate(reader.pages[:200], start=1)
         ],
     )
+
+
+def pdfium_parts(path):
+    import pypdfium2 as pdfium
+
+    parts = []
+    with pdfium.PdfDocument(path) as document:
+        state = "partial" if len(document) > 200 else "done"
+        for index in range(min(len(document), 200)):
+            page = document[index]
+            text_page = None
+            try:
+                text_page = page.get_textpage()
+                parts.append(
+                    {
+                        "text": text_page.get_text_bounded(),
+                        "locator": {"page": index + 1},
+                    }
+                )
+            finally:
+                if text_page is not None:
+                    text_page.close()
+                page.close()
+    return state, parts
+
+
+def extract_pdf(path):
+    try:
+        state, parts = pdf_parts(path)
+    except Exception:  # noqa: BLE001 - untrusted parser; outer child still enforces timeout
+        state, parts = "failed", []
+    if state == "encrypted" or any(part["text"].strip() for part in parts):
+        return state, parts, "pypdf-baseline"
+    state, parts = pdfium_parts(path)
+    return state, parts, "pypdfium2-fallback"
 
 
 def docx_parts(path):
@@ -89,8 +124,7 @@ def xlsx_parts(path):
 def extract_local(path, mime, filename):
     extension = Path(filename).suffix.casefold()
     if mime == "application/pdf" or extension == ".pdf":
-        state, parts = pdf_parts(path)
-        processor = "pypdf-baseline"
+        state, parts, processor = extract_pdf(path)
     elif (
         mime
         == "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
@@ -157,7 +191,7 @@ def extract_document(path, *, mime, filename):
 def main():
     try:
         result = extract_local(Path(sys.argv[1]), sys.argv[2], sys.argv[3])
-    except Exception:
+    except Exception:  # noqa: BLE001 - child boundary returns only a safe failure state
         result = {"state": "failed", "parts": [], "processor": "light-documents"}
     print(json.dumps(result, ensure_ascii=True))
 

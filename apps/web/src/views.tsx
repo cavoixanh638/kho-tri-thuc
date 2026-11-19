@@ -1,6 +1,6 @@
 import { Button, Skeleton } from '@mantine/core';
-import { useEffect, useState, type ReactNode } from 'react';
-import { request, type Capture, type Item } from './api';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { ApiError, request, type Capture, type Item } from './api';
 
 const vietnamTime = new Intl.DateTimeFormat('vi-VN', {
   timeZone: 'Asia/Ho_Chi_Minh',
@@ -42,30 +42,76 @@ export function Empty({ children }: { children: ReactNode }) {
   return <div className="empty-state">{children}</div>;
 }
 
-type Resource<T> = { path: string; data?: T; error?: boolean };
+type Resource<T> = { path: string; data?: T; error?: boolean; refreshError?: boolean; pollingPaused?: boolean };
+type ResourceOptions<T> = {
+  pollWhile?: (data: T) => boolean;
+  intervalMs?: number;
+  maxPollMs?: number;
+  refreshKey?: string;
+};
 
-export function useResource<T>(path: string) {
+export function useResource<T>(path: string, options: ResourceOptions<T> = {}) {
   const [resource, setResource] = useState<Resource<T>>({ path });
   const [revision, setRevision] = useState(0);
   const current = resource.path === path ? resource : { path };
+  const latestOptions = useRef(options);
+  useEffect(() => { latestOptions.current = options; });
 
   useEffect(() => {
     const controller = new AbortController();
-    void request<T>(path, { signal: controller.signal }).then(
-      (data) => {
-        if (!controller.signal.aborted) setResource({ path, data });
-      },
-      () => {
-        if (!controller.signal.aborted) setResource({ path, error: true });
-      },
-    );
-    return () => controller.abort();
-  }, [path, revision]);
+    let timer: number | undefined;
+    let data = resource.path === path ? resource.data : undefined;
+    let failures = 0;
+    const deadline = Date.now() + (latestOptions.current.maxPollMs ?? 10 * 60_000);
+
+    function schedule() {
+      const config = latestOptions.current;
+      if (!data || !config.pollWhile?.(data) || controller.signal.aborted) return;
+      const delay = Math.min((config.intervalMs ?? 2_500) * 2 ** failures, 30_000);
+      if (failures >= 3 || Date.now() + delay >= deadline) {
+        setResource({ path, data, refreshError: failures > 0, pollingPaused: true });
+        return;
+      }
+      timer = window.setTimeout(() => {
+        if (document.visibilityState === 'hidden') schedule();
+        else void load();
+      }, delay);
+    }
+
+    async function load() {
+      try {
+        const result = await request<T>(path, { signal: controller.signal });
+        if (controller.signal.aborted) return;
+        data = result;
+        failures = 0;
+        setResource({ path, data });
+        schedule();
+      } catch (error) {
+        if (controller.signal.aborted) return;
+        if (error instanceof ApiError && [401, 403, 404].includes(error.status)) {
+          setResource({ path, error: true });
+          return;
+        }
+        failures += 1;
+        setResource(data ? { path, data, refreshError: true } : { path, error: true });
+        schedule();
+      }
+    }
+
+    void load();
+    return () => {
+      controller.abort();
+      window.clearTimeout(timer);
+    };
+  }, [path, revision, options.refreshKey]);
 
   return {
     ...current,
     retry() {
-      setResource({ path });
+      setRevision((value) => value + 1);
+    },
+    replace(data: T) {
+      setResource({ path, data });
       setRevision((value) => value + 1);
     },
   };
