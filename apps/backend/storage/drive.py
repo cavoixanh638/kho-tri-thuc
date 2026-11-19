@@ -10,7 +10,7 @@ from google.auth.exceptions import RefreshError, TransportError
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-from googleapiclient.http import MediaIoBaseUpload
+from googleapiclient.http import MediaIoBaseUpload, build_http
 
 DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.file"
 TOKEN_URI = "https://oauth2.googleapis.com/token"
@@ -72,9 +72,11 @@ def http_error(exc):
 
 class DriveClient:
     def __init__(self, credentials, *, on_reauthorize=None):
-        transport = google_auth_httplib2.AuthorizedHttp(
-            credentials, http=httplib2.Http(timeout=30)
-        )
+        # Google's factory leaves resumable 308 responses for next_chunk() to
+        # interpret, instead of following them as HTTP permanent redirects.
+        http = build_http()
+        http.timeout = 30
+        transport = google_auth_httplib2.AuthorizedHttp(credentials, http=http)
         self.api = build("drive", "v3", http=transport, cache_discovery=False)
         self.on_reauthorize = on_reauthorize
 
