@@ -18,6 +18,8 @@ render để bổ sung 20 probe. Xem [manifest](sources.json) và [số đo](res
 
 Windows 11, Python 3.13.15. Mỗi cặp tài liệu/parser chạy subprocess riêng: 45 giây,
 512 MiB, 250 trang/2 triệu ký tự. Thời gian lạnh gồm import/startup.
+API: pypdf `extract_text()` mặc định, PDFium `get_text_bounded()`, PyMuPDF
+`get_text('text', sort=True)`; kết quả chỉ áp dụng cho các tùy chọn này.
 
 | Parser | Lượt thành công | Median giây | RSS lớn nhất MiB | Anchor đúng trang | Probe đúng thứ tự |
 | --- | --- | --- | --- | --- | --- |
@@ -45,11 +47,18 @@ ghi, không phải CER/WER, độ chính xác toàn văn hoặc tái dựng cấ
   AGPLv3 hoặc thương mại. Chỉ có trong venv eval, không thêm runtime của private repo
   khi chưa quyết định license/phân phối.
 
-**Giữ pypdf baseline cho runtime hiện tại.** Mẫu chưa chứng minh lợi ích chất
-lượng đủ để đổi parser. PDFium vẫn là renderer KT-010 và ứng viên fallback khi
-pypdf lỗi/rỗng, nhưng fallback extraction tự động **chưa triển khai**; không giả
-rằng nó giải quyết được vi08 và không tự bật OCR. Mốc đo ba parser đã có bằng
-chứng; toàn bộ KT-102 vẫn IN_PROGRESS vì fallback/nguồn khác chưa nghiệm thu.
+**Giữ pypdf làm parser đầu tiên.** Mẫu chưa chứng minh lợi ích chất lượng đủ để
+đổi parser mặc định. PDFium vẫn là renderer KT-010, đồng thời đã bổ sung fallback
+text khi pypdf ném lỗi hoặc toàn bộ text rỗng; không thử bypass PDF có password.
+Provenance ghi `pypdfium2-fallback`, version `light-documents-v2`, locator trang
+vật lý, giữ giới hạn 200 trang/1 triệu ký tự và timeout child 45 giây của runtime.
+Không phát hiện/sửa được mọi lỗi thứ tự hoặc font khi primary trả text không rỗng;
+không giả rằng fallback giải quyết được vi08, không tự bật OCR.
+
+6 test document extraction trên PostgreSQL tạm PASS, gồm fallback gọi PDFium thật
+trên PDF tổng hợp, giữ file gốc/locator, encrypted không bypass, DOCX/XLSX Unicode,
+ZIP lớn, idempotent DerivedContent. Toàn bộ KT-102 vẫn IN_PROGRESS vì nguồn khác
+và nghiệm thu chất lượng toàn văn chưa hoàn tất; CI đúng head còn phải PASS.
 
 ## Chạy lại
 

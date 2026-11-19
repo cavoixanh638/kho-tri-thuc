@@ -1,19 +1,19 @@
 import hashlib
 import tempfile
 from pathlib import Path
+from unittest.mock import patch
 from zipfile import ZIP_DEFLATED, ZipFile
 
+from catalog.models import Item
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from docx import Document
+from jobs.models import Job
 from openpyxl import Workbook
 from pypdf import PdfWriter
-
-from catalog.models import Item
-from jobs.models import Job
 from storage.models import Asset
 
-from .document_extract import extract_document
+from .document_extract import extract_document, extract_local
 from .document_job import extract_from_staging
 from .models import DerivedContent
 
@@ -84,6 +84,72 @@ class DocumentExtractionTests(TestCase):
             )["state"],
             "failed",
         )
+
+    def test_pdf_fallback_runs_real_pdfium_after_primary_failure(self):
+        from pypdf.generic import DecodedStreamObject, DictionaryObject, NameObject
+
+        pdf = self.root / "fallback.pdf"
+        writer = PdfWriter()
+        page = writer.add_blank_page(width=200, height=200)
+        font = DictionaryObject(
+            {
+                NameObject("/Type"): NameObject("/Font"),
+                NameObject("/Subtype"): NameObject("/Type1"),
+                NameObject("/BaseFont"): NameObject("/Helvetica"),
+            }
+        )
+        page[NameObject("/Resources")] = DictionaryObject(
+            {
+                NameObject("/Font"): DictionaryObject(
+                    {NameObject("/F1"): writer._add_object(font)}
+                )
+            }
+        )
+        stream = DecodedStreamObject()
+        stream.set_data(b"BT /F1 12 Tf 10 100 Td (Real fallback text) Tj ET")
+        page[NameObject("/Contents")] = writer._add_object(stream)
+        writer.write(pdf)
+        original = pdf.read_bytes()
+        with patch(
+            "processing.document_extract.pdf_parts",
+            side_effect=ValueError("fixture parser failure"),
+        ):
+            result = extract_local(pdf, "application/pdf", "fallback.pdf")
+        self.assertEqual(result["state"], "done")
+        self.assertEqual(result["processor"], "pypdfium2-fallback")
+        self.assertEqual(result["parts"][0]["locator"], {"page": 1})
+        self.assertIn("Real fallback text", result["parts"][0]["text"])
+        self.assertEqual(pdf.read_bytes(), original)
+
+    def test_pdf_encryption_is_not_bypassed_and_empty_text_uses_fallback(self):
+        with (
+            patch(
+                "processing.document_extract.pdf_parts", return_value=("encrypted", [])
+            ),
+            patch("processing.document_extract.pdfium_parts") as fallback,
+        ):
+            result = extract_local(
+                self.root / "encrypted.pdf", "application/pdf", "encrypted.pdf"
+            )
+            self.assertEqual(result["state"], "encrypted")
+            fallback.assert_not_called()
+        with (
+            patch(
+                "processing.document_extract.pdf_parts",
+                return_value=("done", [{"text": " ", "locator": {"page": 1}}]),
+            ),
+            patch(
+                "processing.document_extract.pdfium_parts",
+                return_value=("done", [{"text": "Tiếng Việt", "locator": {"page": 2}}]),
+            ),
+        ):
+            result = extract_local(
+                self.root / "empty.pdf", "application/pdf", "empty.pdf"
+            )
+            self.assertEqual(
+                result["parts"], [{"text": "Tiếng Việt", "locator": {"page": 2}}]
+            )
+            self.assertEqual(result["processor"], "pypdfium2-fallback")
 
     def test_idempotent_persistence_preserves_note_and_saved_at(self):
         owner = get_user_model().objects.create(username="owner")

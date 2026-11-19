@@ -148,8 +148,11 @@ Chín đầu việc dùng mốc `c51d39f`. Chat điều phối nối router, c�
   Đo lại cả process tree để sửa sai số RAM của Windows venv launcher. Có nguồn
   license chính thức, chưa đưa PyMuPDF vào runtime. Lint/format/diff check PASS.
 - Mẫu cùng một tổ chức và nhiều trang đầu: chưa phải CER/WER/toàn văn/bảng/scan.
-  Giữ pypdf runtime baseline, PDFium renderer KT-010. KT-102 còn fallback tự động
-  và nguồn ngoài PDF, không ghi toàn task DONE. Raw PDF/text/render ngoài Git.
+  Giữ pypdf đầu tiên, PDFium renderer KT-010 và fallback text khi primary lỗi/rỗng;
+  encrypted không bypass, có processor/version riêng. 6 test extraction PostgreSQL
+  tạm PASS, gồm PDFium thật và dữ liệu tổng hợp. Chưa deploy fallback, chờ CI head.
+  KT-102 còn nguồn khác/nghiệm thu toàn văn, không ghi toàn task DONE.
+  Raw PDF/text/render ngoài Git.
 
 ### Cổng tài khoản và nghiệm thu còn chờ
 
