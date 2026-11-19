@@ -38,6 +38,30 @@ $env:KT_BACKUP_TEST='1'
 python -m unittest discover -s tools/backup -v
 ```
 
-Test dùng adapter Drive với client giả để kiểm tra mở đường dẫn của ID được khôi phục. Flag `--compose` đặt trước động từ CLI và dùng bộ công cụ trong service `db` của repo. Đường Compose create/verify/restore đã PASS trong CI [#44339513395](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44339513395). Upload bản sao và mở file qua tài khoản Drive thật còn **NOT_RUN**.
+Test dùng adapter Drive với client giả để kiểm tra mở đường dẫn của ID được khôi phục. Flag `--compose` đặt trước động từ CLI và dùng bộ công cụ trong service `db` của repo. Đường Compose create/verify/restore đã PASS trong CI [#44339513395](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44339513395). Upload bản sao và mở file qua tài khoản Drive thật còn **NOT_RUN / APPROVAL_PENDING**.
 
 Khi chuyển host cùng lúc có upload đang chờ, giữ cả volume staging hoặc hoàn tất các lượt upload trước khi chuyển. Gói dump lưu bản ghi công việc; byte chưa xác minh vẫn thuộc staging của host nguồn.
+
+## Kiểm chứng Drive thật và chuyển host cùng OAuth client
+
+Đã bổ sung `tools/backup/drive_bundle.py` và runner `tools/backup/live_recovery.py`. Bản chuẩn bị đã qua kiểm thử với PostgreSQL 18.4 thử riêng và Drive mô phỏng. [Báo cáo chuẩn bị](backup-recovery-readiness.json) tách kết quả đó với thao tác dịch vụ thật còn chờ xác nhận.
+
+Runner thực hiện tuần tự các bước sau sau khi chủ dữ liệu xác nhận xuất bản sao lên Drive.
+
+1. Lấy snapshot chỉ đọc của database Windows đang chạy, tạo dump/manifest nhất quán và một bản sao cục bộ ngoài Drive sync.
+2. Đóng gói ba tệp thành ZIP, giữ receipt chứa ID Drive trong thư mục riêng trên máy. Tạo một tệp bất biến dưới `Kho Tri Thuc/System_Backups` bằng upload resumable, giữ ID khi retry và kiểm checksum.
+3. Tải ZIP từ Drive, kiểm SHA-256 và định dạng archive, phục hồi gói đã tải vào một database PostgreSQL mới có tiền tố `kt_recovery_`. Runner không dừng ứng dụng hoặc phục hồi đè lên database nguồn.
+4. Đối chiếu cả 14 nhóm manifest, xác nhận bảng OAuth/session rỗng. Dùng credential runtime đang có chỉ để kiểm tra mapping đã khôi phục, gọi adapter mở file và đối chiếu SHA-256 toàn bộ file gốc tải lại. Thay đổi thời điểm verify trong database thử được rollback.
+5. Ghi báo cáo đã khử thông tin riêng chỉ gồm số lượng, số byte, hash và kết quả. Dump, manifest, archive, ID Drive và receipt nằm ngoài Git. Gốc media trên Drive giữ nguyên.
+
+Payload sao lưu có thể chứa ghi chú, URL, lịch sử tiếp nhận, metadata, nhóm và dữ liệu xác thực Django đã băm. OAuth token và Django session được loại. Việc chạy thử xuất payload cụ thể này lên Drive đã bị cơ chế tự duyệt quyền từ chối vì cần xác nhận rõ của người dùng cho dữ liệu và nơi nhận. Chưa chạy lại thao tác đó, chưa tạo backup thật trên Drive và chưa gọi là PASS.
+
+Lệnh dưới đây là **đường chạy đã chuẩn bị, chưa thực thi trên dữ liệu thật**. Chọn `$ktAuditRoot` là đường dẫn mới dưới `%LOCALAPPDATA%\KhoTriThuc\backups`, đặt biến `KT_BACKUP_AUDIT_PASSWORD` cho cluster thử riêng nếu cần. Các tham số mặc định của cluster thử là loopback cổng 62224 và role `kt_dev`.
+
+```powershell
+& "$env:LOCALAPPDATA\KhoTriThuc\venv\Scripts\python.exe" tools/backup/live_recovery.py `
+    --runtime-config "$env:LOCALAPPDATA\KhoTriThuc\runtime\config.json" `
+    --work-dir $ktAuditRoot --report $ktReport --target-db $ktTarget
+```
+
+Thư mục runtime ứng dụng đã có ACL riêng trên Windows. Đặt backup và receipt bên trong thư mục riêng đó. Bản sao cục bộ trên cùng máy giúp khôi phục khi Drive không khả dụng, nhưng chưa bảo vệ trước mất cả máy. Khi chuyển máy, OAuth refresh token không đi theo dump; phải kết nối lại cùng client/project và tài khoản được quyền đọc các ID gốc. Chưa kiểm đổi client/project hoặc phục hồi từ một máy vật lý khác.
