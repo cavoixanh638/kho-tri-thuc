@@ -1,7 +1,7 @@
 # HIỆN TRẠNG THỰC TẾ — KHO TRI THỨC
 
 **Ngày checkpoint:** 19/11/2026 (Asia/Ho_Chi_Minh).
-**Nguồn kiểm chứng:** `main` tại `3d63c0f85d47a8685f60ab971d8212cd7ad30bce`, bản video `codex/kt-101-facebook` tại `e04a3211875df4308acf4290da95313cbe2f45b5`, GitHub Actions và runtime Windows thực tế. Khảo sát [QLVB_System_new](https://github.com/cavoixanh638/QLVB_System_new) chỉ là tham khảo thiết kế.
+**Nguồn kiểm chứng:** `main` và runtime Windows tại `4b57891c140c28cf6088ee03582e9d30082c6671` khi nghiệm thu giao diện ngày 19/11/2026; tính năng xuất tri thức từ PR #22, GitHub Actions và các báo cáo vận hành bên dưới. SHA này là mốc kiểm tra, cần đọc lại GitHub khi tiếp tục. Khảo sát [QLVB_System_new](https://github.com/cavoixanh638/QLVB_System_new) chỉ là tham khảo thiết kế.
 **Mục đích:** nơi duy nhất ghi **đã hoàn thành điều gì thật**. Roadmap là kế hoạch/điều kiện PASS, không là chứng cứ chạy thật.
 
 ## 1. Tình trạng tổng quát
@@ -16,10 +16,10 @@
 | Thumbnail PDF/ảnh/video | **PASS (tích hợp KT-010)** | Renderer/caching, 8 EXIF Orientation, API riêng tư và upload hook qua test; xem mốc vận hành bên dưới |
 | Video, trích chữ và FTS | **PARTIAL / TESTED** | Facebook Reel công khai đã tải MP4 và lưu Drive thật. Fetch web, parser nhẹ và hai GIN/search đã nối. YouTube/TikTok, transcript/ASR, benchmark PDF và đánh giá phân nhóm thực còn mở |
 | **Nhận URL/text và giữ giờ** | **PASS (bản tích hợp)** | Session/CSRF, ACK sau transaction, retry/gửi lại, lịch sử và giao diện qua proxy đã được kiểm thử |
-| ChatGPT Drive pilot / xuất tri thức / MCP | **NOT_STARTED** | Chưa có thử nghiệm trực tiếp với tài khoản/workspace |
-| Backup/restore dữ liệu | **PASS (dữ liệu thử)** | Dump/manifest cùng snapshot và khôi phục vào database mới đã chạy trên Windows và Docker Compose. Drive thật/bản sao thật vẫn cần xác minh |
+| ChatGPT Drive pilot / xuất tri thức / MCP | **SINGLE_ITEM_LIVE_PASS / PILOT_PARTIAL** | Một Item thực xuất Markdown/TXT, cùng file khi retry/thu hồi/bật lại; connector đọc được cả hai. UI đồng bộ lại đã kiểm trực quan. Pilot 5–10 Item/câu hỏi và native Docs còn mở; chưa xây MCP |
+| Backup/restore dữ liệu | **LIVE_PASS (phạm vi đã thử)** | Drive tải lại đúng hash, bản sao Windows riêng, restore DB mới đủ 15 collection gồm mapping KnowledgeExport; không restore đè production. Nhóm/note không rỗng và client-project khác còn chưa thử |
 | Triển khai Windows/Linux/Android | **WINDOWS_PASS / ANDROID_NOT_RUN** | Native Windows phục vụ loopback cổng 8009, PostgreSQL 18 riêng, start/stop/restart đã chạy. CI Linux Compose PASS. Android/HTTPS còn NOT_RUN |
-| Test/CI runtime | **PASS (164 test Windows/CI)** | Bản video/Drive tại `e04a321` đã chạy toàn suite trên PostgreSQL 18.4 và [CI #44437313933](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44437313933), migrations/build/smoke và backup/restore đều PASS |
+| Test/CI runtime | **PASS (phạm vi bản tích hợp)** | Backend 179 test: 178 PASS/1 skip PATH, riêng 11 thumbnail test chạy FFmpeg rõ đường dẫn đều PASS; frontend 14 PASS/build PASS. PR #22–25 đã CI PASS trước merge; [CI #44529471636](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44529471636). Chi tiết và giới hạn ở các mốc bên dưới |
 
 **Không được gọi các dòng NOT_STARTED/NOT_RUN là PASS.** Tạo kế hoạch không có nghĩa đã có môi trường hoặc dữ liệu dùng thật.
 
@@ -179,9 +179,13 @@ file. Chưa suy thành mọi format hoặc mọi truy vấn đều được đ�
 PASS và merge `21fb7d3`; Windows source đã fast-forward tới cùng SHA, API 200.
 PR #24 head `b8c128e` đã [CI #44528296946](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44528296946)
 PASS và merge `d703b57`; Windows source đồng bộ và health vẫn PASS. Mã ứng dụng
-không đổi sau PR #22, bản xuất cuối giữ bật Markdown. Phiên browser tích hợp đang
-chờ người dùng đăng nhập để kiểm panel trực quan; không dùng thiếu bước này để
-phủ nhận test chức năng/Drive đã PASS, cũng không ghi browser acceptance PASS.
+không đổi sau PR #22, bản xuất cuối giữ bật Markdown. PR #25 đã CI #44529471636
+PASS và merge `4b57891`, Windows source đồng bộ tới cùng SHA. Sau khi người dùng
+đăng nhập, browser tích hợp đã kiểm trực quan panel và bấm Đồng bộ lại: trạng thái
+chuyển Đang chờ đồng bộ rồi tự về Đã đồng bộ, giờ đồng bộ tiến lên và liên kết
+Drive giữ nguyên. Markdown, tệp gốc đã xác minh và cảnh báo thiếu transcript
+hiển thị đúng; bố cục ở kích thước browser hiện tại đọc được. Đây không phải
+nghiệm thu Android hay ma trận viewport. [Báo cáo UI](operations/knowledge-ui-live-results.json).
 Runner `tools/verify_knowledge_export.py` có `--preview` không gọi Drive và
 `--exercise` đã chạy sau xác nhận; kiểm MD/TXT/MD, full readback, unique file,
 thu hồi/bật lại cùng ID và giữ CaptureEvent/Item/original. Toàn văn preview,
@@ -234,8 +238,8 @@ credential, backup và ID riêng không đưa lên Git. [Hợp đồng](operatio
 ### Cổng tài khoản và nghiệm thu còn chờ
 
 - Người dùng yêu cầu hoàn thiện Windows trước; Android để sau. Connector đúng
-  Primary đã đọc được bản xuất Markdown của một Item thực. Pilot 5–10 Item và
-  so sánh TXT/native Docs vẫn NOT_RUN, không ghi toàn hệ thống DONE.
+  Primary đã đọc được Markdown và TXT của một Item thực; UI đồng bộ lại PASS.
+  Pilot 5–10 Item/câu hỏi và native Docs vẫn NOT_RUN, không ghi toàn hệ thống DONE.
 - Recovery mã `760be80` ở `codex/kt-008-live-recovery`: 7 test archive/Drive giả
   PASS. Người dùng đã xác nhận payload notes/URLs/hashed authentication và nơi
   lưu, sau yêu cầu của automatic approval review. Live backup/restore **PASS**:
@@ -244,8 +248,10 @@ credential, backup và ID riêng không đưa lên Git. [Hợp đồng](operatio
   MP4 tải lại khớp SHA. Private Windows copy đã kiểm 12 file dưới thư mục backups.
   Không restore lên production. Dữ liệu live chưa có nhóm/note không rỗng và
   chưa kiểm client/project khác, không suy fixture thành live.
-- KT-202E đã merge/deploy theo PR #22; nghiệm thu live và connector vẫn còn mở
-  theo đoạn trên. Mã/checkpoint và các báo cáo khử riêng tư lưu trên GitHub.
+- KT-202E đã merge/deploy theo PR #22; live, connector MD/TXT và UI một Item PASS.
+  Nghiệm thu pilot nhiều Item vẫn mở theo đoạn trên. Mã/checkpoint và các báo cáo
+  khử riêng tư lưu trên GitHub. Bước kế tiếp cần tập Item đại diện được phép dùng;
+  không tự xuất thêm nội dung kho hoặc tạo dữ liệu giả vào production.
 
 - Mỗi lần hoàn tất task ghi **ID, SHA commit, branch/PR, test thực sự đã chạy + kết quả, điều chưa test, blocker và một bước kế tiếp**. Không tự thăng trạng thái thành PASS khi chưa có bằng chứng.
 - Kiểm tra lại GitHub `main` và diff hiện hành trước mỗi lần ghi. Nếu nhiều AI làm song song, phân file/branch không chồng chéo. Không cần dựng workboard/dispatcher nếu chưa thực sự có nhiều đầu việc đồng thời.

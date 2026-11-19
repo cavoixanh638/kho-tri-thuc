@@ -1,0 +1,45 @@
+{
+  "checked_at": "2026-11-19T13:24:00Z",
+  "status": "PASS_SINGLE_ITEM",
+  "scope": "Authenticated Windows browser acceptance of the knowledge export panel",
+  "runtime_source_sha": "4b57891c140c28cf6088ee03582e9d30082c6671",
+  "application_feature_sha": "843642e4046ac741f0aa5b5ecb1fd217dcfe11b3",
+  "environment": {
+    "host": "native Windows, loopback application",
+    "browser": "Codex in-app browser",
+    "authentication": "existing user session after user sign-in"
+  },
+  "checks": {
+    "item_detail_loaded": "PASS",
+    "original_attachment_verified_on_drive_visible": "PASS",
+    "no_extracted_text_state_visible": "PASS",
+    "knowledge_export_panel_visible_and_readable": "PASS",
+    "format_markdown_selected": "PASS",
+    "initial_status_synced": "PASS",
+    "sync_again_button": "PASS",
+    "pending_state_after_click": "PASS",
+    "polling_returns_to_synced_without_navigation": "PASS",
+    "last_synced_display_advanced": "PASS",
+    "same_drive_link_before_and_after_retry": "PASS",
+    "withdraw_control_visible_but_not_activated": "PASS",
+    "missing_transcript_caveat_visible": "PASS",
+    "visual_layout_at_current_desktop_browser_size": "PASS"
+  },
+  "final_state": {
+    "enabled": true,
+    "format": "markdown",
+    "status": "synced"
+  },
+  "not_verified": [
+    "responsive viewport matrix or Android hardware",
+    "Drive preview playback",
+    "5 to 10 representative Items and natural-language questions",
+    "spoken video content without transcript"
+  ],
+  "related_evidence": [
+    "knowledge-export-live-results.json",
+    "drive-connector-live-results.json",
+    "knowledge-backup-live-results.json"
+  ],
+  "data_handling": "Only sanitized outcomes retained in Git; no screenshot containing user content, raw export, account, user or Drive IDs, or credentials"
+}
