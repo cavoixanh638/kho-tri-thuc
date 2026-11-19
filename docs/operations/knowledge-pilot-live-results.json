@@ -1,0 +1,219 @@
+{
+  "status": "PASS_CONTROLLED_LIVE",
+  "phase": "update",
+  "application_source_sha": "6aedd4b89dd19a7a64e839a1a17271f5cb2befa1",
+  "runner_sha256": "0e6293595280169ec0df6e4877d4172d52e9dd8a571f9c7a737454742af22601",
+  "corpus_sha256": "35c741fc1cfe521e5fa42d5a574c55d0312025fda475b66af3646f841b24a761",
+  "public_source_checks": [
+    {
+      "key": "commit",
+      "url": "https://docs.djangoproject.com/en/5.2/topics/db/transactions/",
+      "http_status": 200,
+      "anchor_present": true,
+      "response_sha256": "efa544b6c228c59c46a2b4a863ae49cd3529444d60b6d1915816197a366f59bd"
+    },
+    {
+      "key": "backup",
+      "url": "https://www.postgresql.org/docs/18/app-pgdump.html",
+      "http_status": 200,
+      "anchor_present": true,
+      "response_sha256": "dd3040a52e06fa53b47142db343ba8b81b49aa32b7b7dcebda4431d45dd36fc4"
+    },
+    {
+      "key": "scope",
+      "url": "https://developers.google.com/workspace/drive/api/guides/api-specific-auth",
+      "http_status": 200,
+      "anchor_present": true,
+      "response_sha256": "d3c55e5f528eb9b599388b110ece1a12a7de03d6159ed37949b04e86f939286a"
+    },
+    {
+      "key": "unicode",
+      "url": "https://docs.python.org/3.13/library/unicodedata.html",
+      "http_status": 200,
+      "anchor_present": true,
+      "response_sha256": "002efd1a81f7aacf1342b28b0969e38f9227dcd29131083784d4b8c9ed29741d"
+    }
+  ],
+  "checked_at": "2026-11-19T13:44:06.146134+00:00",
+  "scope": "8 controlled Items: 4 verified public-source paraphrases, 4 authored fixtures; real Drive adapter and isolated PostgreSQL",
+  "checks": {
+    "production_connection_read_only": true,
+    "production_catalog_unchanged": true,
+    "separate_postgres_cluster": true,
+    "dedicated_marked_drive_folder": true,
+    "oauth_token_not_copied_to_pilot_db": true,
+    "credentials_bound_in_memory": true,
+    "capture_history_unchanged": true,
+    "capture_retry_reuses_event": true,
+    "active_export_file_count": 8,
+    "unique_file_per_item": true
+  },
+  "exports": [
+    {
+      "key": "commit",
+      "format": "markdown",
+      "bytes": 1211,
+      "sha256": "16b54e24aa624ee22ee41cfa60b95d2980d35d2062dce7c903d2c8cff455983a",
+      "exact_readback": true,
+      "versions_match": true,
+      "truncated": false
+    },
+    {
+      "key": "backup",
+      "format": "text",
+      "bytes": 1226,
+      "sha256": "08a1ec123fe7f532e6f0cdedc3c563f492e1ae6e74db7f19656804aa8f6ed820",
+      "exact_readback": true,
+      "versions_match": true,
+      "truncated": false
+    },
+    {
+      "key": "scope",
+      "format": "markdown",
+      "bytes": 1261,
+      "sha256": "f73196cbcb01c17c2bf957767ff1ff81634151e303b50a0fe16f002c417ed020",
+      "exact_readback": true,
+      "versions_match": true,
+      "truncated": false
+    },
+    {
+      "key": "unicode",
+      "format": "text",
+      "bytes": 1194,
+      "sha256": "8c90d6c8711c52e258672cc8344770f78ae189f1e5c7ea2fa5507788bf632369",
+      "exact_readback": true,
+      "versions_match": true,
+      "truncated": false
+    },
+    {
+      "key": "note",
+      "format": "markdown",
+      "bytes": 966,
+      "sha256": "32a6daf3a592a55049c52289dcdf9fd7212f675d370e03021e8ff79741b9f3b5",
+      "exact_readback": true,
+      "versions_match": true,
+      "truncated": false
+    },
+    {
+      "key": "page",
+      "format": "text",
+      "bytes": 1084,
+      "sha256": "e87f5721391b58dffcdbcf7d08e50d765948b6ccea160049ce87aa695f813f55",
+      "exact_readback": true,
+      "versions_match": true,
+      "truncated": false
+    },
+    {
+      "key": "subtitle",
+      "format": "markdown",
+      "bytes": 1201,
+      "sha256": "4583568320bc3ff38d8d70c7495c4e05e048b9b9e06c7d77ef45f179b568c412",
+      "exact_readback": true,
+      "versions_match": true,
+      "truncated": false
+    },
+    {
+      "key": "missing",
+      "format": "text",
+      "bytes": 1080,
+      "sha256": "3adec5a8e6ec75bec14ebbf603813ab7aba4d535a3fc578ac3ab1ef3927b2545",
+      "exact_readback": true,
+      "versions_match": true,
+      "truncated": false
+    }
+  ],
+  "not_verified": [
+    "personal corpus quality",
+    "PDF parsing or video ASR",
+    "native Google Docs",
+    "connector retrieval: recorded separately"
+  ],
+  "update_runner": {
+    "application_source_sha": "356fb2f506b83d25b103e58301b3e5daf2274e04",
+    "runner_sha256": "bb3bd45d5eead7c8c3430a9733ee005dfa67c3c55abb0ba99d8d96cdf8aefa03",
+    "corpus_sha256": "35c741fc1cfe521e5fa42d5a574c55d0312025fda475b66af3646f841b24a761"
+  },
+  "initial_exports": [
+    {
+      "key": "commit",
+      "format": "markdown",
+      "bytes": 1204,
+      "sha256": "6e44bc33b2491c499ba5eb33570f40ea2622597f733e531c245880530d4b7913",
+      "exact_readback": true,
+      "versions_match": true,
+      "truncated": false
+    },
+    {
+      "key": "backup",
+      "format": "text",
+      "bytes": 1219,
+      "sha256": "614b853856e9e3bb9b3948f5f9490045fb287a36a53a8bc0cf568c9898cf84e2",
+      "exact_readback": true,
+      "versions_match": true,
+      "truncated": false
+    },
+    {
+      "key": "scope",
+      "format": "markdown",
+      "bytes": 1261,
+      "sha256": "f73196cbcb01c17c2bf957767ff1ff81634151e303b50a0fe16f002c417ed020",
+      "exact_readback": true,
+      "versions_match": true,
+      "truncated": false
+    },
+    {
+      "key": "unicode",
+      "format": "text",
+      "bytes": 1194,
+      "sha256": "8c90d6c8711c52e258672cc8344770f78ae189f1e5c7ea2fa5507788bf632369",
+      "exact_readback": true,
+      "versions_match": true,
+      "truncated": false
+    },
+    {
+      "key": "note",
+      "format": "markdown",
+      "bytes": 964,
+      "sha256": "a9e0fe9f36b678cc8c7a2a0dafebaac0ee6c47990bf95d4a55e38c2f6153d308",
+      "exact_readback": true,
+      "versions_match": true,
+      "truncated": false
+    },
+    {
+      "key": "page",
+      "format": "text",
+      "bytes": 1084,
+      "sha256": "e87f5721391b58dffcdbcf7d08e50d765948b6ccea160049ce87aa695f813f55",
+      "exact_readback": true,
+      "versions_match": true,
+      "truncated": false
+    },
+    {
+      "key": "subtitle",
+      "format": "markdown",
+      "bytes": 1204,
+      "sha256": "95628876bb6fb27e8b95c25f616840703ba2304552aeb16b95afbad5c8c70511",
+      "exact_readback": true,
+      "versions_match": true,
+      "truncated": false
+    },
+    {
+      "key": "missing",
+      "format": "text",
+      "bytes": 1080,
+      "sha256": "3adec5a8e6ec75bec14ebbf603813ab7aba4d535a3fc578ac3ab1ef3927b2545",
+      "exact_readback": true,
+      "versions_match": true,
+      "truncated": false
+    }
+  ],
+  "updates": {
+    "note": true,
+    "project_rename_two_items": true,
+    "subtitle_version": true,
+    "stale_visible_before_worker": true,
+    "retry_unchanged_version": true,
+    "format_roundtrip": true,
+    "withdraw_restore_same_identity": true
+  }
+}

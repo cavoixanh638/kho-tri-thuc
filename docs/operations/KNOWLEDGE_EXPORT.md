@@ -75,6 +75,14 @@ version; vẫn xác minh/restore được manifest v1 (14 collection). OAuth/ses
 không đi theo dump. Sau restore phải migrate nếu schema cũ và kết nối lại OAuth;
 folder ChatGPT_Index được tìm lại bằng marker, không suy folder từ tên.
 
-KT-201/202E còn pilot 5–10 Item thật/nguồn công khai và câu hỏi kiểm đọc, so TXT/
-Markdown/native Docs khi connector truy cập được. Không thêm dữ liệu giả vào
-runtime production, không tự xuất toàn kho và không xây MCP để né cổng này.
+KT-201/202E/202 đã có pilot có kiểm soát **8 Item, 4 Markdown/4 TXT, 9 câu hỏi**:
+bốn diễn giải nguồn công khai và bốn fixture có nhãn, cluster PostgreSQL và
+folder Drive riêng. Sửa note/project/subtitle, retry/đổi format/thu hồi-bật lại
+giữ cùng ID, đọc lại SHA/version PASS. Connector đọc trước/sau 8/8; truy vấn đầu
+8/9, một câu phải rút gọn từ khóa. [Corpus và giao thức](../../evals/knowledge/README.md),
+[Drive](knowledge-pilot-live-results.json), [từng câu hỏi](knowledge-pilot-connector-results.json).
+Khi hỏi, ưu tiên từ khóa cụ thể/tên dự án và đọc phần hiện hành; chú thích lượt
+tiếp nhận có thể giữ nội dung cũ có chủ đích. Không có kết quả không chứng minh
+nguồn không tồn tại. Video thiếu transcript phải trả lời chưa đủ dữ liệu.
+Chưa phải benchmark mù, corpus cá nhân, phiên ChatGPT consumer UI độc lập hoặc
+native Docs. Không thêm dữ liệu giả vào production, tự xuất toàn kho hay xây MCP.

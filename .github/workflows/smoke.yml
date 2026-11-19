@@ -36,6 +36,14 @@ jobs:
           docker compose cp tools/backup api:/tmp/kt-backup-tools
           docker compose exec -T -e PYTHONPATH=/app -e DJANGO_SETTINGS_MODULE=config.settings api python -m unittest discover -s /tmp/kt-backup-tools -p test_drive_bundle.py -v
 
+      - name: Test controlled pilot isolation gates without external writes
+        run: |
+          docker compose exec -T api mkdir -p /tmp/kt-pilot/tools /tmp/kt-pilot/evals/knowledge
+          docker compose cp tools/knowledge_pilot.py api:/tmp/kt-pilot/tools/knowledge_pilot.py
+          docker compose cp tools/test_knowledge_pilot.py api:/tmp/kt-pilot/tools/test_knowledge_pilot.py
+          docker compose cp evals/knowledge/pilot-cases.json api:/tmp/kt-pilot/evals/knowledge/pilot-cases.json
+          docker compose exec -T api python -m unittest discover -s /tmp/kt-pilot/tools -p test_knowledge_pilot.py -v
+
       - name: Check Django and migrate forward and backward
         run: |
           docker compose exec -T api python manage.py check --database default
