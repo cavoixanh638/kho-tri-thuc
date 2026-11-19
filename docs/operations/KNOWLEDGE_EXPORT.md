@@ -56,6 +56,8 @@ của người dùng cho Reel đã gửi và ChatGPT_Index, live verifier `151b4
 MD 929 byte/TXT 909 byte/MD đọc lại đúng SHA-256, một file, cùng ID khi đổi format
 và thu hồi/bật lại, version khớp, CaptureEvent và original catalog nguyên vẹn.
 [Báo cáo live](knowledge-export-live-results.json). Mục này giữ bật Markdown.
+Backup Drive sau thử giữ đúng một KnowledgeExport và đủ 15 collection khi restore
+vào DB mới, OAuth/session rỗng; [báo cáo](knowledge-backup-live-results.json).
 Đây chưa phải nghiệm thu 5–10 Item hoặc khả năng ChatGPT tìm/đọc. Connector vẫn
 không đọc được chính file đã xác minh; đang xử lý tài khoản Primary trên UI.
 

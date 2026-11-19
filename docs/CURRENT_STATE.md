@@ -164,6 +164,9 @@ Sau khi người dùng xác nhận cụ thể payload/đích ChatGPT_Index, live
 Tắt/thu hồi rồi bật lại giữ cùng ID; CaptureEvent/giờ nhận và danh mục original
 không đổi. Mục Reel được giữ bật Markdown sau thử. [Báo cáo](operations/knowledge-export-live-results.json).
 Đây là nghiệm thu một Item người dùng giao; chưa thay pilot 5–10 Item/ChatGPT đọc.
+Backup sau export thật cũng PASS: đủ 15 collection và **1 KnowledgeExport** giữ
+nguyên mapping/version khi restore vào DB mới; file MP4 gốc đọc lại đúng hash.
+[Báo cáo backup có mapping bản xuất](operations/knowledge-backup-live-results.json).
 Connector vẫn không đọc được chính file đã verify; đã đề nghị người dùng mở trang
 Connected accounts và xác định đúng tài khoản Primary để tiếp tục phần UI.
 Runner `tools/verify_knowledge_export.py` có `--preview` không gọi Drive và
