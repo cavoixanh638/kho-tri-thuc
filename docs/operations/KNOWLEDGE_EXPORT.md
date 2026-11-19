@@ -51,10 +51,13 @@ FFmpeg rõ đường dẫn, PASS không skip. Backup v2 roundtrip/archive/compat
 11 test PASS. Migration 0003/0004 xuôi/ngược/áp lại và makemigrations check PASS.
 PR #22 head `b4d1a65` đã CI #44508674959 PASS và merge; Windows đã triển khai
 `843642e` sau backup riêng trước migration. Check/build/restart/API/bundle mới
-PASS. [Báo cáo triển khai](knowledge-windows-results.json). Live export chờ xác
-nhận payload cụ thể sau khi automatic approval review từ chối lần chạy trước.
-Preview chỉ được tạo cục bộ, không có Drive calls hoặc opt-in ngầm.
-Browser tương tác/connector thật vẫn cần nghiệm thu.
+PASS. [Báo cáo triển khai](knowledge-windows-results.json). Sau xác nhận cụ thể
+của người dùng cho Reel đã gửi và ChatGPT_Index, live verifier `151b4d5` đã PASS:
+MD 929 byte/TXT 909 byte/MD đọc lại đúng SHA-256, một file, cùng ID khi đổi format
+và thu hồi/bật lại, version khớp, CaptureEvent và original catalog nguyên vẹn.
+[Báo cáo live](knowledge-export-live-results.json). Mục này giữ bật Markdown.
+Đây chưa phải nghiệm thu 5–10 Item hoặc khả năng ChatGPT tìm/đọc. Connector vẫn
+không đọc được chính file đã xác minh; đang xử lý tài khoản Primary trên UI.
 
 Backup manifest v2 thêm `knowledge_exports`, giữ file mapping, preference và
 version; vẫn xác minh/restore được manifest v1 (14 collection). OAuth/session vẫn

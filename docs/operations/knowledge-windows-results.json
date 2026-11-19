@@ -20,9 +20,10 @@
     "knowledge_export_panel_in_bundle": true
   },
   "live_export": {
-    "status": "APPROVAL_PENDING",
-    "executed": false,
-    "reason": "Automatic approval review requires explicit consent for the exact assembled payload and ChatGPT_Index destination",
+    "status": "PASS",
+    "executed": true,
+    "user_approved_exact_payload_and_destination": true,
+    "report": "knowledge-export-live-results.json",
     "private_local_preview_bytes": 929,
     "preview_notes_present": false,
     "preview_groups": 0,

@@ -158,12 +158,16 @@ PASS và merge. Windows đã chạy `843642e4046ac741f0aa5b5ecb1fd217dcfe11b3`:
 backup riêng trước migration, storage 0003/0004, build/restart/check đều PASS;
 API/bundle mới 200. [Báo cáo Windows](operations/knowledge-windows-results.json).
 
-Lượt live export bị automatic approval review từ chối trước khi thực thi vì cần
-xác nhận riêng payload và đích ChatGPT_Index. Đã tạo preview **chỉ cục bộ** 929
-byte cho Reel người dùng giao (0 note/nhóm/DerivedContent), gửi xác nhận xuất một
-mục sang tài khoản Drive runtime. Chưa có opt-in hoặc bản xuất Drive ở mốc này.
+Sau khi người dùng xác nhận cụ thể payload/đích ChatGPT_Index, live export đã
+**PASS** bằng verifier `151b4d5`: Markdown 929 byte → TXT 909 byte → Markdown,
+đọc lại toàn bộ đúng SHA-256, đúng source/exported version, chỉ một file hoạt động.
+Tắt/thu hồi rồi bật lại giữ cùng ID; CaptureEvent/giờ nhận và danh mục original
+không đổi. Mục Reel được giữ bật Markdown sau thử. [Báo cáo](operations/knowledge-export-live-results.json).
+Đây là nghiệm thu một Item người dùng giao; chưa thay pilot 5–10 Item/ChatGPT đọc.
+Connector vẫn không đọc được chính file đã verify; đã đề nghị người dùng mở trang
+Connected accounts và xác định đúng tài khoản Primary để tiếp tục phần UI.
 Runner `tools/verify_knowledge_export.py` có `--preview` không gọi Drive và
-`--exercise` chỉ chạy sau xác nhận; kiểm MD/TXT/MD, full readback, unique file,
+`--exercise` đã chạy sau xác nhận; kiểm MD/TXT/MD, full readback, unique file,
 thu hồi/bật lại cùng ID và giữ CaptureEvent/Item/original. Toàn văn preview,
 credential, backup và ID riêng không đưa lên Git. [Hợp đồng](operations/KNOWLEDGE_EXPORT.md).
 

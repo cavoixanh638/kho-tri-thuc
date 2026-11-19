@@ -1,0 +1,57 @@
+{
+  "checked_at": "2026-11-19T12:02:44.142541+00:00",
+  "status": "PASS",
+  "verifier_sha": "151b4d5ee70d51c5d6bce1e168e1875d74208a27",
+  "checks": [
+    {
+      "format": "markdown",
+      "mime": "text/markdown",
+      "bytes": 929,
+      "sha256": "baff8026110d71b6cbc8e8492c3e5883ef95ba20766368f3e425373a931c653a",
+      "exact_readback": true,
+      "unique_active_file": true,
+      "versions_match": true,
+      "truncated": false,
+      "video_transcript_warning": true
+    },
+    {
+      "format": "text",
+      "mime": "text/plain",
+      "bytes": 909,
+      "sha256": "268c510b2815a4da0a8358439e09243b17775d8fccf36012321d1912eb575bc3",
+      "exact_readback": true,
+      "unique_active_file": true,
+      "versions_match": true,
+      "truncated": false,
+      "video_transcript_warning": true
+    },
+    {
+      "format": "markdown",
+      "mime": "text/markdown",
+      "bytes": 929,
+      "sha256": "baff8026110d71b6cbc8e8492c3e5883ef95ba20766368f3e425373a931c653a",
+      "exact_readback": true,
+      "unique_active_file": true,
+      "versions_match": true,
+      "truncated": false,
+      "video_transcript_warning": true
+    },
+    {
+      "format": "markdown",
+      "mime": "text/markdown",
+      "bytes": 929,
+      "sha256": "baff8026110d71b6cbc8e8492c3e5883ef95ba20766368f3e425373a931c653a",
+      "exact_readback": true,
+      "unique_active_file": true,
+      "versions_match": true,
+      "truncated": false,
+      "video_transcript_warning": true
+    }
+  ],
+  "runtime_source_sha": "843642e4046ac741f0aa5b5ecb1fd217dcfe11b3",
+  "stage": "complete",
+  "withdraw_and_restore_same_id": true,
+  "capture_history_unchanged": true,
+  "original_catalog_unchanged": true,
+  "same_file_across_all_checks": true
+}
