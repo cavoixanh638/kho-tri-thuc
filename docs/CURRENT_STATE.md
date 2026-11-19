@@ -129,11 +129,18 @@ Người dùng giao tiếp tục các phần còn lại tới khi hoàn thành h
 Connector Drive search không thấy thư mục ứng dụng, `files.get` đúng ID trả 404 trong khi runtime vẫn đọc được. Settings xác nhận connector dùng tài khoản khác. Người dùng yêu cầu mở kết nối lại; đã mở Connect another account tới màn hình Google chọn tài khoản, chờ người dùng hoàn tất. Không lưu account ID/credential vào Git. Android được người dùng chủ động để sau, hoàn thiện Windows trước.
 
 Các agent dừng do workspace hết credits; điều phối tiếp nhận phần đang dở.
-KT-102 đã đo lại 60 lượt, đối chiếu 42 anchor/20 probe và rà license, ở PR #20;
-chưa hoàn tất fallback/nguồn khác. KT-108 PR #19 đã CI PASS và merge, Windows đã
-chạy `ccc0a33`, API/HTML/bundle mới đều 200; báo cáo ở nhánh PDF/PR #20.
-Recovery có mã `760be80` và 7 test archive/Drive mô phỏng PASS; live audit chưa chạy
-vì automatic approval review yêu cầu xác nhận cụ thể payload backup và nơi nhận.
+KT-102 có 60 lượt đo và PDFium fallback, PR #20 đã CI PASS/merge/deploy Windows.
+KT-108 PR #19 đã CI PASS/merge/deploy, 12 test frontend PASS.
+Recovery [PR #21](https://github.com/cavoixanh638/kho-tri-thuc/pull/21) head
+`9f020094a71872dc2c22cd1601f3351ccf3343d2` đã [CI #44498590620](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44498590620)
+PASS, merge `fe315ceb115653fd9f03cfb03858c67071677686` theo yêu cầu tiếp tục.
+Backup/restore dữ liệu thật đã PASS theo xác nhận người dùng; xem báo cáo trên main.
+
+Lần tiếp tục: người dùng đã mở khóa Windows nhưng CUA vẫn không đọc được AX,
+screenshot đen và launch báo handler chưa ready. Browser integration cũng không
+có trong chat. Connector `files.get` thư mục ứng dụng vẫn lỗi. Không coi đây là
+file mất hoặc tự đổi OAuth scope/chia sẻ thư mục. Tiếp tục backend/UI/test xuất
+tri thức độc lập; pilot connector và native Google Docs vẫn cần kiểm thực tế.
 
 KT-202E có model KnowledgeExport, migration `storage.0003`, snapshot renderer và
 6 test PostgreSQL tạm **PASS** (ghi chú/giờ bất biến, version, active/stale,
