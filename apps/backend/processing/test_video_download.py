@@ -68,6 +68,8 @@ class NetworkGuardTests(unittest.TestCase):
             "fe80::1",
             "224.0.0.1",
             "::ffff:8.8.8.8",
+            "64:ff9b::7f00:1",
+            "2002:7f00:1::",
         ):
             with self.subTest(ip=ip):
                 self.assertFalse(child.public_ip(ip))

@@ -13,6 +13,7 @@ from urllib.parse import urlsplit
 
 MAX_BYTES = 128 * 1024 * 1024
 ALLOWED_DOMAINS = ("facebook.com", "fbcdn.net", "fbsbx.com")
+GLOBAL_V6 = ipaddress.ip_network("2000::/3")
 
 
 class DownloadBlocked(OSError):
@@ -31,6 +32,10 @@ def allowed_host(host):
 def public_ip(address):
     try:
         ip = ipaddress.ip_address(address)
+        if isinstance(ip, ipaddress.IPv6Address) and (
+            ip not in GLOBAL_V6 or ip.ipv4_mapped or ip.sixtofour or ip.teredo
+        ):
+            return False
         return (
             ip.is_global
             and not ip.is_multicast
