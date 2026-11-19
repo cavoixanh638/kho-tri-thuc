@@ -1,0 +1,142 @@
+{
+  "status": "PASS",
+  "candidate_sha": "0c3f6eaa44309d5ca9b18486ecc10856e7032330",
+  "stage": "complete",
+  "prechange_private_backup_verified": true,
+  "build_restart_health": "PASS",
+  "original_video_and_history_unchanged": true,
+  "articles": [
+    {
+      "filename": "giao-dich-va-tac-vu-nen.md",
+      "text_matches_source": true,
+      "capture_count": 1,
+      "no_artificial_media_asset": true,
+      "search_query": "on_commit",
+      "search_hit": true,
+      "drive": {
+        "format": "markdown",
+        "mime": "text/markdown",
+        "bytes": 2788,
+        "sha256": "e1eb7d912194cf40e5e6b4a48c47084b067c7ad0eddecd57fdaba2eb9c51996e",
+        "exact_readback": true,
+        "unique_active_file": true,
+        "versions_match": true,
+        "truncated": false,
+        "video_transcript_warning": false
+      }
+    },
+    {
+      "filename": "quyen-google-drive.md",
+      "text_matches_source": true,
+      "capture_count": 1,
+      "no_artificial_media_asset": true,
+      "search_query": "drive.file",
+      "search_hit": true,
+      "drive": {
+        "format": "markdown",
+        "mime": "text/markdown",
+        "bytes": 2955,
+        "sha256": "b1f9ef9d969cc905e97b013ec7fcf699fce4ab0691fd64388c47d33c461d34be",
+        "exact_readback": true,
+        "unique_active_file": true,
+        "versions_match": true,
+        "truncated": false,
+        "video_transcript_warning": false
+      }
+    },
+    {
+      "filename": "sao-luu-va-khoi-phuc.md",
+      "text_matches_source": true,
+      "capture_count": 1,
+      "no_artificial_media_asset": true,
+      "search_query": "pg_dump",
+      "search_hit": true,
+      "drive": {
+        "format": "markdown",
+        "mime": "text/markdown",
+        "bytes": 2887,
+        "sha256": "eccaa83dc8acbd4b04d94227d7cfdd2ec215a6824bce199e2bc7ca076013f549",
+        "exact_readback": true,
+        "unique_active_file": true,
+        "versions_match": true,
+        "truncated": false,
+        "video_transcript_warning": false
+      }
+    },
+    {
+      "filename": "van-ban-tieng-viet-va-unicode.md",
+      "text_matches_source": true,
+      "capture_count": 1,
+      "no_artificial_media_asset": true,
+      "search_query": "NFC",
+      "search_hit": true,
+      "drive": {
+        "format": "markdown",
+        "mime": "text/markdown",
+        "bytes": 2762,
+        "sha256": "2ddba2eaea38f9706e8694cb38f962495614617a207e5a6ab196851c3d5d4ee7",
+        "exact_readback": true,
+        "unique_active_file": true,
+        "versions_match": true,
+        "truncated": false,
+        "video_transcript_warning": false
+      }
+    }
+  ],
+  "library_item_count": 5,
+  "import_replay": {
+    "status": "IMPORTED",
+    "articles": 4,
+    "created": 0,
+    "reused": 4,
+    "exports_requested": true,
+    "filenames": [
+      "giao-dich-va-tac-vu-nen.md",
+      "quyen-google-drive.md",
+      "sao-luu-va-khoi-phuc.md",
+      "van-ban-tieng-viet-va-unicode.md"
+    ]
+  },
+  "checked_at": "2026-11-19T14:49:05.009219+00:00",
+  "scope": "Production Windows library: four attributed public Markdown articles imported through CaptureService, existing Reel preserved",
+  "ui_feature_sha": "0e2c3c761a64a331597f3f1279756d013a01917f",
+  "tests": {
+    "backend_affected_passed": 9,
+    "frontend_passed": 17,
+    "frontend_build": "PASS",
+    "candidate_ci_run": 44546796615,
+    "candidate_ci_result": "success",
+    "ui_ci_run": 44548249840,
+    "ui_ci_result": "success"
+  },
+  "browser": {
+    "status": "PASS",
+    "surface": "authenticated Codex in-app browser",
+    "scope": "current desktop viewport",
+    "library_lists_four_text_articles_and_existing_reel": true,
+    "headings_table_and_source_link_readable": true,
+    "raw_markdown_preserved_in_editor": true,
+    "edit_cancel_did_not_submit": true,
+    "text_capture_selected_by_default": true,
+    "no_missing_extraction_status_for_text_article": true,
+    "not_verified": [
+      "Android hardware",
+      "responsive viewport matrix",
+      "live Markdown file upload through browser"
+    ]
+  },
+  "connector": {
+    "metadata_and_text_fetch_passed": 4,
+    "format": "text/markdown",
+    "parent": "application ChatGPT_Index folder",
+    "scope": "exact imported article files",
+    "provider_ids_in_report": false
+  },
+  "limits": [
+    "Existing Reel still has no transcript or compiled knowledge article; no speech was inferred",
+    "Public articles are short curated notes, not full original documentation",
+    "Drive exports remain opt-in with existing ten-Item pilot cap",
+    "No change to OCR/ASR, MCP, source ownership or backup schema"
+  ],
+  "data_handling": "Only public article filenames, checksums and outcomes in Git; no account/provider IDs, credentials, raw user data, database dump or browser screenshots"
+}
