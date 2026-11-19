@@ -127,6 +127,8 @@ time { font-variant-numeric: tabular-nums; }
 .knowledge-table th, .knowledge-table td { padding: 8px 12px; border-bottom: 1px solid var(--rule); text-align: start; }
 .source-description, .raw-knowledge { margin-block-start: 20px; color: var(--muted); }
 .library-knowledge-preview { color: var(--muted); font-size: 14px; white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.text-illustration { appearance: none; background: transparent; border: 0; color: var(--signal); font: inherit; text-decoration: underline; text-underline-offset: 3px; padding: 4px 8px; cursor: pointer; }
+.text-illustration:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
 .item-note { padding: 12px; background: var(--ground); border-radius: 6px; }
 .assets { margin-block-start: 20px; }
 .assets li { padding: 10px 0; display: flex; justify-content: space-between; align-items: center; gap: 10px; }

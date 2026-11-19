@@ -136,6 +136,52 @@ class TranscriptBoundaryTests(SimpleTestCase):
             ):
                 run(model_dir / "media", model_dir)
 
+    def test_segment_locators_clip_to_actual_duration_and_empty_clipped_segments_are_skipped(
+        self,
+    ):
+        with tempfile.TemporaryDirectory() as directory:
+            model_dir = Path(directory)
+            (model_dir / "model.bin").write_bytes(b"model")
+            manifest = {
+                "repository": "Systran/faster-whisper-base",
+                "revision": "fixture-model-version",
+                "model_sha256": hashlib.sha256(b"model").hexdigest(),
+            }
+            (model_dir / "kt-model.json").write_text(json.dumps(manifest))
+            whisper = Mock()
+            whisper.return_value.transcribe.return_value = (
+                [
+                    SimpleNamespace(text="Trước đầu clip", start=-1.0, end=-0.5),
+                    SimpleNamespace(text="Đoạn đầu", start=-0.4, end=1.0),
+                    SimpleNamespace(text="Đoạn cuối", start=54.0, end=61.0),
+                    SimpleNamespace(text="Ngoài clip", start=60.0, end=62.0),
+                    SimpleNamespace(text="Độ dài bằng không", start=59.54, end=59.54),
+                ],
+                SimpleNamespace(
+                    duration=59.6, language="en", language_probability=0.99
+                ),
+            )
+            with (
+                patch("processing.transcribe._media_duration", return_value=59.5406),
+                patch.dict(
+                    sys.modules,
+                    {"faster_whisper": SimpleNamespace(WhisperModel=whisper)},
+                ),
+            ):
+                result = run(model_dir / "media", model_dir)
+            self.assertEqual(
+                [row["text"] for row in result["segments"]], ["Đoạn đầu", "Đoạn cuối"]
+            )
+            self.assertEqual(result["segments"][0]["start"], 0.0)
+            self.assertEqual(result["segments"][-1]["end"], 59.54)
+            self.assertTrue(
+                all(
+                    0 <= row["start"] < row["end"] <= 59.5406
+                    for row in result["segments"]
+                )
+            )
+            self.assertEqual(result["duration"], 59.54)
+
 
 @override_settings(LOCAL_ASR_MODEL_DIR="fixture-local-model")
 class TranscriptJobTests(TestCase):

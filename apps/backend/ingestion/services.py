@@ -150,6 +150,11 @@ def submit_capture(owner, submission):
         elif submission.target_item_id is None:
             item = source.item
 
+        if new_source and submission.target_item_id is not None:
+            item.source_fetch = "pending"
+            item.content_extract = "pending"
+            item.save(update_fields=["source_fetch", "content_extract", "updated_at"])
+
         event = CaptureEvent.objects.create(
             owner=owner,
             item=item,

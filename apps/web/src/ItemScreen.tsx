@@ -23,6 +23,7 @@ const extractStates: Record<string, string> = {
   done: 'Đã trích xuất', failed: 'Không trích xuất được',
 };
 const organizationStates: Record<string, string> = {
+  user_assigned: 'Đã xếp nhóm',
   pending: 'Đang chờ', auto_assigned: 'Đã tự xếp nhóm', suggested: 'Có đề xuất',
   unclassified: 'Chưa phân loại', needs_review: 'Cần xem lại',
 };
@@ -58,7 +59,7 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
   const [confirmation, setConfirmation] = useState('');
   const mediaDetails = useRef<HTMLDetailsElement>(null);
   const sourceUrl = externalHttpUrl(item.original_url);
-  const hasSourceContent = item.kind !== 'text' || item.assets.length > 0;
+  const hasSourceContent = item.kind !== 'text' || item.assets.length > 0 || Boolean(item.original_url);
   const evidenceRevision = [item.updated_at, item.source_fetch, item.content_extract, item.classification_status].join(':');
 
   async function update(patch: Partial<Pick<Item, 'title' | 'description' | 'note' | 'favorite' | 'deleted'>>) {
@@ -202,7 +203,7 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
               </>}
           </div>
         </section>
-        <ItemOrganization id={item.item_id} csrf={csrf} deleted={item.deleted} refreshKey={evidenceRevision} />
+        <ItemOrganization id={item.item_id} csrf={csrf} deleted={item.deleted} refreshKey={evidenceRevision} onSaved={onRefresh} />
         <KnowledgeExportPanel id={item.item_id} csrf={csrf} deleted={item.deleted} refreshKey={evidenceRevision} />
         {confirmation && <div className="notice" role="status">{confirmation}</div>}
         {error && <ErrorNotice>{error}</ErrorNotice>}

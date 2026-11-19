@@ -116,7 +116,7 @@ def snapshot(item_id, format="markdown"):
         "parts": parts,
         "events": events,
         "format": format,
-        "schema": 2,
+        "schema": 3,
     }
     serialized = json.dumps(projection, sort_keys=True, ensure_ascii=False, default=str)
     version = hashlib.sha256(serialized.encode()).hexdigest()
@@ -132,30 +132,36 @@ def snapshot(item_id, format="markdown"):
     ]
     for label, values in groups.items():
         lines.append(label + ": " + (", ".join(values) or "Chưa phân loại"))
-    # Reading text precedes media/provenance. Human-authored notes remain authoritative.
-    lines += ["", "## Tri thức", item.note]
-    if not item.note.strip():
-        for row in parts[:MAX_PARTS]:
-            locator = (
-                row["source_locator"] if isinstance(row["source_locator"], dict) else {}
-            )
-            section = locator.get("section", "")
-            lines += ["", f"### {section or row['kind']}", row["preview"]]
-        if any(row["processor"] == "faster-whisper" for row in parts):
-            lines += [
-                "",
-                "Bản chép lời tự động trên Windows, cần rà soát với video nguồn.",
-            ]
+    # Keep each body once, before media/provenance, so duplicate rendering does
+    # not consume the bounded export budget or falsely truncate a valid note.
     lines += [
         "",
-        "## Mô tả",
-        item.description,
+        "## Tri thức",
         "",
         "## Ghi chú người dùng",
         item.note,
         "",
-        "## Nguồn",
+        "## Nội dung trích xuất hiện hành",
     ]
+    for row in parts[:MAX_PARTS]:
+        locator = {
+            key: value
+            for key, value in (
+                row["source_locator"] if isinstance(row["source_locator"], dict) else {}
+            ).items()
+            if key in {"page", "paragraph", "sheet", "row", "range", "section"}
+            and isinstance(value, (str, int))
+        }
+        lines += [
+            f"### {row['kind']} — {row['processor']} {row['processor_version']} — {json.dumps(locator, ensure_ascii=False)}",
+            row["preview"],
+        ]
+    if any(row["processor"] == "faster-whisper" for row in parts):
+        lines += [
+            "",
+            "Bản chép lời tự động trên Windows, cần rà soát với video nguồn.",
+        ]
+    lines += ["", "## Mô tả", item.description, "", "## Nguồn"]
     lines += [row["original_url"] for row in sources[:MAX_PARTS]]
     lines += ["", "## Tệp gốc (trạng thái theo lần xác minh gần nhất)"]
     lines += [
@@ -187,21 +193,12 @@ def snapshot(item_id, format="markdown"):
     lines += ["", "## Chú thích từng lượt tiếp nhận"]
     for row in events[:MAX_PARTS]:
         if row["annotation"]:
-            lines += [str(row["server_received_at"]), row["annotation"]]
-    lines += ["", "## Nội dung trích xuất hiện hành"]
-    for row in parts[:MAX_PARTS]:
-        locator = {
-            key: value
-            for key, value in (
-                row["source_locator"] if isinstance(row["source_locator"], dict) else {}
-            ).items()
-            if key in {"page", "paragraph", "sheet", "row", "range", "section"}
-            and isinstance(value, (str, int))
-        }
-        lines += [
-            f"### {row['kind']} — {row['processor']} {row['processor_version']} — {json.dumps(locator, ensure_ascii=False)}",
-            row["preview"],
-        ]
+            annotation = (
+                "Nội dung trùng với ghi chú người dùng hiện hành ở trên."
+                if row["annotation"] == item.note
+                else row["annotation"]
+            )
+            lines += [str(row["server_received_at"]), annotation]
     text = "\n".join(lines)
     truncated = len(text) > MAX_CHARS or any(
         len(rows) > MAX_PARTS for rows in (sources, assets, links, parts, events)

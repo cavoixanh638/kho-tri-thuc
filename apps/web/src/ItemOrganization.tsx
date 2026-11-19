@@ -82,7 +82,7 @@ function GroupEditor({ id, csrf, current, onSaved, onCancel }: {
   </form>;
 }
 
-export function ItemOrganization({ id, csrf, deleted, refreshKey }: { id: string; csrf: string; deleted: boolean; refreshKey?: string }) {
+export function ItemOrganization({ id, csrf, deleted, refreshKey, onSaved }: { id: string; csrf: string; deleted: boolean; refreshKey?: string; onSaved?: () => void }) {
   const organization = useResource<Organization>(`/items/${encodeURIComponent(id)}/organization`, { refreshKey });
   const [editing, setEditing] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -114,6 +114,7 @@ export function ItemOrganization({ id, csrf, deleted, refreshKey }: { id: string
             setEditing(false);
             setSaved(true);
             organization.retry();
+            onSaved?.();
           }} />}
         </>}
     {saved && <div className="notice" role="status">Đã lưu nhóm.</div>}

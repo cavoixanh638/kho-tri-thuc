@@ -4,9 +4,11 @@ from uuid import UUID
 from django.db import transaction
 from django.db.models import (
     Case,
+    Exists,
     IntegerField,
     OuterRef,
     Prefetch,
+    Q,
     Subquery,
     Value,
     When,
@@ -23,7 +25,7 @@ from storage.drive import DriveError
 from storage.models import Asset, StorageLocation
 from storage.service import DRIVE_PROVIDER, storage_for_owner
 
-from .models import Item, Source
+from .models import Item, ItemProject, ItemTag, ItemTopic, Source
 
 router = Router(tags=["Library"], auth=django_auth)
 
@@ -108,7 +110,26 @@ def catalog(owner):
     )
     return (
         Item.objects.filter(owner=owner)
-        .annotate(extracted_excerpt=Substr(Subquery(excerpt), 1, 512))
+        .annotate(
+            extracted_excerpt=Substr(Subquery(excerpt), 1, 512),
+            has_user_groups=Exists(
+                ItemTopic.objects.filter(
+                    item_id=OuterRef("pk"), topic__owner=owner, topic__archived=False
+                ).filter(Q(origin="user") | Q(user_pinned=True))
+            )
+            | Exists(
+                ItemProject.objects.filter(
+                    item_id=OuterRef("pk"),
+                    project__owner=owner,
+                    project__archived=False,
+                ).filter(Q(origin="user") | Q(user_pinned=True))
+            )
+            | Exists(
+                ItemTag.objects.filter(item_id=OuterRef("pk"), tag__owner=owner).filter(
+                    Q(origin="user") | Q(user_pinned=True)
+                )
+            ),
+        )
         .prefetch_related(
             Prefetch(
                 "sources",
@@ -139,7 +160,9 @@ def summarize(item):
         "updated_at": item.updated_at,
         "favorite": item.favorite,
         "deleted": item.deleted_at is not None,
-        "classification_status": item.classification_status,
+        "classification_status": "user_assigned"
+        if item.has_user_groups
+        else item.classification_status,
         "original_url": original_url,
         "source_fetch": "not_applicable" if note_only else item.source_fetch,
         "asset_storage": "not_applicable" if note_only else item.asset_storage,

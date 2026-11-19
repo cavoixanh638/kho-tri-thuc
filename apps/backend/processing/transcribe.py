@@ -13,7 +13,7 @@ from time import monotonic, sleep
 MAX_SECONDS = 600
 MAX_SEGMENTS = 1000
 MAX_CHARS = 100_000
-PROCESSOR_VERSION = "faster-whisper-1.2.1-base-int8-v1"
+PROCESSOR_VERSION = "faster-whisper-1.2.1-base-int8-v2"
 MAX_RESULT_BYTES = 2_000_000
 
 
@@ -132,6 +132,9 @@ def run(path, model_dir):
     )
     if not math.isfinite(info.duration) or not 0 < info.duration <= MAX_SECONDS:
         return {"state": "failed", "error": "transcript_duration_limit", "segments": []}
+    # Whisper may place the last segment beyond the actual clip. Truncate
+    # locators to the smaller decoder/container duration and never round out.
+    duration_limit = math.floor(min(duration, info.duration) * 1000) / 1000
     output, size = [], 0
     for part in segments:
         text = part.text.strip()
@@ -139,9 +142,13 @@ def run(path, model_dir):
             continue
         if (
             not all(math.isfinite(value) for value in (part.start, part.end))
-            or not 0 <= part.start <= part.end <= MAX_SECONDS + 1
+            or part.start > part.end
         ):
             raise ValueError("invalid segment timing")
+        start = min(duration_limit, max(0.0, round(part.start, 3)))
+        end = min(duration_limit, max(0.0, round(part.end, 3)))
+        if end <= start:
+            continue
         size += len(text)
         if len(output) >= MAX_SEGMENTS or size > MAX_CHARS:
             return {
@@ -149,15 +156,13 @@ def run(path, model_dir):
                 "error": "transcript_output_limit",
                 "segments": [],
             }
-        output.append(
-            {"start": round(part.start, 3), "end": round(part.end, 3), "text": text}
-        )
+        output.append({"start": start, "end": end, "text": text})
     return {
         "state": "done" if output else "not_available",
         "segments": output,
         "language": info.language,
         "language_probability": round(info.language_probability, 4),
-        "duration": round(info.duration, 3),
+        "duration": duration_limit,
         "model_revision": manifest["revision"],
     }
 

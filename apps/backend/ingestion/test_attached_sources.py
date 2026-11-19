@@ -31,6 +31,9 @@ class AttachedSourceTests(TransactionTestCase):
         )
 
     def test_attach_retry_keeps_authored_text_and_single_source_event_job(self):
+        self.article.source_fetch = "done"
+        self.article.content_extract = "done"
+        self.article.save(update_fields=["source_fetch", "content_extract"])
         original = (
             self.article.note,
             self.article.saved_at,
@@ -43,6 +46,9 @@ class AttachedSourceTests(TransactionTestCase):
         self.assertEqual(first.pk, again.pk)
         self.assertEqual(first.server_received_at, again.server_received_at)
         self.assertEqual(first.item_id, self.article.pk)
+        self.article.refresh_from_db()
+        self.assertEqual(self.article.source_fetch, "pending")
+        self.assertEqual(self.article.content_extract, "pending")
         self.assertEqual(
             (
                 Item.objects.count(),
