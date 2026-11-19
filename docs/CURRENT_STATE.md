@@ -171,10 +171,17 @@ nguyên mapping/version khi restore vào DB mới; file MP4 gốc đọc lại �
 [Báo cáo backup có mapping bản xuất](operations/knowledge-backup-live-results.json).
 Connector hiện **đã đọc được chính file đã verify**: metadata MIME Markdown,
 search đúng tên trả một kết quả, fetch có nguồn/tệp gốc/checksum/giờ nhận và cảnh
-báo thiếu transcript. Chưa suy thành mọi format hoặc mọi truy vấn đều được đọc.
+báo thiếu transcript. Đã kiểm thêm TXT đọc được qua connector, cùng file ID,
+trả lại Markdown/full readback PASS; fullText bằng cụm nguồn đã biết trả đúng một
+file. Chưa suy thành mọi format hoặc mọi truy vấn đều được đọc.
 [PR #23](https://github.com/cavoixanh638/kho-tri-thuc/pull/23), head `8c3ab2b`,
 [CI #44520958931](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44520958931)
 PASS và merge `21fb7d3`; Windows source đã fast-forward tới cùng SHA, API 200.
+PR #24 head `b8c128e` đã [CI #44528296946](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44528296946)
+PASS và merge `d703b57`; Windows source đồng bộ và health vẫn PASS. Mã ứng dụng
+không đổi sau PR #22, bản xuất cuối giữ bật Markdown. Phiên browser tích hợp đang
+chờ người dùng đăng nhập để kiểm panel trực quan; không dùng thiếu bước này để
+phủ nhận test chức năng/Drive đã PASS, cũng không ghi browser acceptance PASS.
 Runner `tools/verify_knowledge_export.py` có `--preview` không gọi Drive và
 `--exercise` đã chạy sau xác nhận; kiểm MD/TXT/MD, full readback, unique file,
 thu hồi/bật lại cùng ID và giữ CaptureEvent/Item/original. Toàn văn preview,

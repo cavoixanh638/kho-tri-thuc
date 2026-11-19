@@ -1,7 +1,7 @@
 {
   "checked_at": "2026-11-19T12:53:23Z",
   "status": "PASS_SINGLE_ITEM",
-  "scope": "KT-201 connector search and readable Markdown knowledge export",
+  "scope": "KT-201 connector search and readable Markdown/TXT knowledge export",
   "runtime_source_sha": "21fb7d3b35cbf55e9c2eaeaf014ba9a61594202a",
   "application_feature_sha": "843642e4046ac741f0aa5b5ecb1fd217dcfe11b3",
   "account_verification": {
@@ -24,13 +24,24 @@
     "unclassified_groups_explicit": true,
     "missing_transcript_warning_present": true
   },
+  "additional_format_checks": {
+    "text_plain_metadata": "PASS",
+    "text_plain_readable_fetch": "PASS",
+    "text_plain_bytes_verified_by_application": 909,
+    "missing_transcript_warning_in_text_plain": true,
+    "same_file_id_for_markdown_and_text": true,
+    "final_format": "markdown",
+    "final_markdown_exact_readback_and_versions": "PASS",
+    "fulltext_search_for_known_source_phrase": "PASS",
+    "fulltext_matching_results": 1
+  },
   "related_evidence": [
     "knowledge-export-live-results.json",
     "knowledge-backup-live-results.json"
   ],
   "not_verified": [
     "5 to 10 representative real Items",
-    "ChatGPT readable TXT and native Google Docs comparison",
+    "native Google Docs comparison",
     "natural-language search coverage or indexing latency",
     "spoken video content without transcript"
   ],
