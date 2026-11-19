@@ -1,5 +1,7 @@
 import json
+import logging
 from http import HTTPStatus
+from time import monotonic
 
 import google_auth_httplib2
 import httplib2
@@ -13,6 +15,7 @@ from googleapiclient.http import MediaIoBaseUpload
 DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.file"
 TOKEN_URI = "https://oauth2.googleapis.com/token"
 FOLDER_MIME = "application/vnd.google-apps.folder"
+logger = logging.getLogger(__name__)
 
 
 class DriveError(Exception):
@@ -70,7 +73,7 @@ def http_error(exc):
 class DriveClient:
     def __init__(self, credentials, *, on_reauthorize=None):
         transport = google_auth_httplib2.AuthorizedHttp(
-            credentials, http=httplib2.Http(timeout=15)
+            credentials, http=httplib2.Http(timeout=30)
         )
         self.api = build("drive", "v3", http=transport, cache_discovery=False)
         self.on_reauthorize = on_reauthorize
@@ -89,7 +92,8 @@ class DriveClient:
             if error.code == "drive_reauthorize" and self.on_reauthorize:
                 self.on_reauthorize()
             raise error from None
-        except (OSError, httplib2.HttpLib2Error, TransportError):
+        except (OSError, httplib2.HttpLib2Error, TransportError) as error:
+            logger.warning("drive_transport_error type=%s", type(error).__name__)
             raise DriveError("drive_unavailable", retryable=True) from None
 
     def execute(self, request):
@@ -172,12 +176,15 @@ class DriveClient:
 
     def upload_blob(self, stream, mime, metadata, *, resumable):
         media = MediaIoBaseUpload(
-            stream, mimetype=mime, chunksize=8 * 1024 * 1024, resumable=resumable
+            stream, mimetype=mime, chunksize=1024 * 1024, resumable=resumable
         )
         request = self.api.files().create(body=metadata, media_body=media, fields="id")
         if not resumable:
             return self.execute(request)
         response = None
+        deadline = monotonic() + 360
         while response is None:
+            if monotonic() >= deadline:
+                raise DriveError("drive_upload_timeout", retryable=True)
             _, response = self.call(request.next_chunk)
         return response
