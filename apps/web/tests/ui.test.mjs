@@ -179,6 +179,36 @@ const item = (patch = {}) => ({
   classification_status: 'unclassified', original_url: 'https://example.invalid/source', source_fetch: 'pending',
   asset_storage: 'pending', content_extract: 'not_available', assets: [], ...patch,
 });
+
+test('knowledge Markdown renders structure while HTML, active URLs and remote images stay inert', async () => {
+  await render(ui.KnowledgeText, { text: '# Tri thức\n\n**Ý chính**\n\n| Cột | Giá trị |\n| --- | --- |\n| A | 42 |\n\n[nguồn](https://example.com/doc)\n\n[xấu](javascript:alert%281%29)\n\n![minh họa](https://example.com/pixel.png)\n\n<script>alert(1)</script><img src=x onerror=alert(1)>' });
+  assert.equal(container.querySelector('h3').textContent, 'Tri thức');
+  assert.equal(container.querySelector('strong').textContent, 'Ý chính');
+  assert.equal(container.querySelector('td').textContent, 'A');
+  assert.equal(container.querySelector('a').rel, 'noopener noreferrer');
+  assert.equal(container.querySelectorAll('script,img,iframe').length, 0);
+  assert.equal(container.querySelectorAll('a[href^="javascript:"]').length, 0);
+  assert.ok(container.textContent.includes('Ảnh minh họa'));
+});
+
+test('new capture defaults to text and preserves Markdown bytes in the submitted knowledge', async () => {
+  let sent;
+  globalThis.fetch = async (path, options) => {
+    if (options?.method === 'POST') { sent = JSON.parse(options.body); return response({ item_id: 'new-text', capture_id: 'event', received_at: '2026-11-19T00:00:00Z' }); }
+    return response({ results: [], next_offset: null });
+  };
+  await render(ui.CaptureScreen, { csrf: 'fixture-csrf' });
+  const field = container.querySelector('textarea');
+  assert.ok(field, 'Text is the primary capture');
+  const markdown = '# Ghi chép\n\n  Tiếng Việt **nguyên văn**  ';
+  await ui.act(async () => {
+    Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value').set.call(field, markdown);
+    field.dispatchEvent(new window.Event('input', { bubbles: true })); await settle();
+  });
+  await click('Gửi vào kho');
+  assert.equal(sent.kind, 'text');
+  assert.equal(sent.text, markdown);
+});
 function itemRoutes(current) {
   return async (path, options) => {
     if (path.endsWith('/retry')) return response({ queued: 1 });
@@ -187,6 +217,16 @@ function itemRoutes(current) {
     return response({ results: [], next_offset: null });
   };
 }
+
+test('a text article reads as knowledge without misleading missing-extraction status or repeated title', async () => {
+  globalThis.fetch = itemRoutes(() => item({ kind: 'text', title: 'Bài tri thức', note: '# Bài tri thức\n\nNội dung **đã có**.', original_url: '', source_fetch: 'not_applicable', asset_storage: 'not_applicable' }));
+  await render(ui.ItemScreen, { id: 'fixture-item', csrf: 'fixture-csrf' });
+  assert.equal(container.querySelector('h1').textContent, 'Bài tri thức');
+  assert.equal(container.querySelector('.knowledge-text strong').textContent, 'đã có');
+  assert.equal(container.querySelector('.knowledge-text h3'), null);
+  assert.equal(container.querySelector('#extracted-content'), null);
+  assert.ok(!container.textContent.includes('Chưa có nội dung'));
+});
 
 test('item status and attachment update without erasing a draft under editing', async () => {
   let calls = 0;

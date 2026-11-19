@@ -118,10 +118,10 @@ export function useResource<T>(path: string, options: ResourceOptions<T> = {}) {
 }
 
 export const itemHref = (id: string) => `#/muc/${encodeURIComponent(id)}`;
-export const kindLabels: Record<Item['kind'], string> = { link: 'Liên kết', text: 'Ghi chú', file: 'Tệp' };
+export const kindLabels: Record<Item['kind'], string> = { link: 'Nguồn liên kết', text: 'Tri thức văn bản', file: 'Tài liệu nguồn' };
 
 export function itemTitle(item: Item) {
-  const label = item.title.trim() || (item.kind === 'link' ? item.original_url : item.note.trim().split('\n', 1)[0]);
+  const label = item.title.trim() || (item.kind === 'link' ? item.original_url : item.note.trim().split('\n', 1)[0].replace(/^#{1,6}\s+/, ''));
   const characters = Array.from(label || kindLabels[item.kind]);
   return characters.length > 180 ? characters.slice(0, 179).join('') + '…' : characters.join('');
 }

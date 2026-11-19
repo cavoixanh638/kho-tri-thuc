@@ -149,19 +149,19 @@ export function CaptureScreen({ csrf }: { csrf: string }) {
   }
 
   return <>
-    <PageTitle title="Gửi vào kho" description="Tiếp nhận liên kết, ghi chú hoặc tệp." />
+    <PageTitle title="Gửi vào kho" description="Lưu tri thức bằng văn bản hoặc Markdown; thêm liên kết, tài liệu và media làm nguồn." />
     <div className="split-view">
       <section className="panel" aria-labelledby="compose-title">
         <h2 id="compose-title">Lượt gửi mới</h2>
         <form className="form-stack" onSubmit={submit}>
           <SegmentedControl aria-label="Loại nội dung" value={kind} disabled={saving} onChange={changeKind}
-            data={[{ label: 'Liên kết', value: 'link' }, { label: 'Ghi chú', value: 'text' }, { label: 'Tệp', value: 'file' }]} />
+            data={[{ label: 'Văn bản / Markdown', value: 'text' }, { label: 'Liên kết', value: 'link' }, { label: 'Tệp', value: 'file' }]} />
           {kind === 'link' ? <>
             <TextInput label="Liên kết" type="url" inputMode="url" placeholder="https://…" value={url} disabled={saving} required maxLength={4096}
               onChange={(event) => { clearAttempt(); setUrl(event.currentTarget.value); }} />
             <Textarea label="Ghi chú kèm theo" description="Tùy chọn" value={annotation} disabled={saving} minRows={3} autosize maxRows={8}
               onChange={(event) => { clearAttempt(); setAnnotation(event.currentTarget.value); }} />
-          </> : kind === 'text' ? <Textarea label="Nội dung ghi chú" value={note} disabled={saving} required minRows={7} maxRows={18} autosize
+          </> : kind === 'text' ? <Textarea label="Nội dung tri thức (Markdown)" description="Có thể dùng tiêu đề #, danh sách, bảng và liên kết. Văn bản được giữ nguyên khi lưu." value={note} disabled={saving} required minRows={10} maxRows={24} autosize
             onChange={(event) => { clearAttempt(); setNote(event.currentTarget.value); }} />
             : <FileInput label="Tệp gửi vào kho" description="Tối đa 128 MiB" placeholder="Chọn tệp" value={file} disabled={saving}
               clearable clearButtonProps={{ 'aria-label': 'Bỏ chọn tệp' }} onChange={(value) => {

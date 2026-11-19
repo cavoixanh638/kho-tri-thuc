@@ -6,6 +6,7 @@ import { externalHttpUrl, request, type Capture, type Item, type Page } from './
 import { ItemOrganization, RelatedItems } from './ItemOrganization';
 import { itemNeedsRefresh } from './itemProcessing';
 import { KnowledgeExportPanel } from './KnowledgeExportPanel';
+import { KnowledgeText } from './KnowledgeText';
 import { CaptureList, Empty, ErrorNotice, itemTitle, kindLabels, Loading, PageControls, PageTitle, ServerTime, useResource } from './views';
 
 const fetchStates: Record<string, string> = {
@@ -54,6 +55,7 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
   const [assetError, setAssetError] = useState<string>();
   const [confirmation, setConfirmation] = useState('');
   const sourceUrl = externalHttpUrl(item.original_url);
+  const hasSourceContent = item.kind !== 'text' || item.assets.length > 0;
   const evidenceRevision = [item.updated_at, item.source_fetch, item.content_extract, item.classification_status].join(':');
 
   async function update(patch: Partial<Pick<Item, 'title' | 'description' | 'note' | 'favorite' | 'deleted'>>) {
@@ -122,7 +124,7 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
       <div className="panel-stack">
         <section className="panel" aria-labelledby="item-content">
           <div className="panel-heading">
-            <h2 id="item-content">Nội dung</h2>
+            <h2 id="item-content">Tri thức</h2>
             {!editing && <Button variant="default" onClick={() => {
               setDraft({ title: item.title, description: item.description, note: item.note });
               setEditing(true);
@@ -131,19 +133,25 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
           {editing ? <form className="form-stack" onSubmit={saveNotes}>
             <TextInput label="Tiêu đề" value={draft.title} maxLength={512} disabled={busy} onChange={(event) => setDraft({ ...draft, title: event.currentTarget.value })} />
             <Textarea label="Mô tả" value={draft.description} minRows={3} autosize disabled={busy} onChange={(event) => setDraft({ ...draft, description: event.currentTarget.value })} />
-            <Textarea label="Ghi chú" value={draft.note} minRows={5} autosize disabled={busy} onChange={(event) => setDraft({ ...draft, note: event.currentTarget.value })} />
+            <Textarea label="Nội dung tri thức (Markdown)" description="Văn bản chính để đọc, tìm kiếm và tổ chức. Nguồn và media được giữ kèm theo." value={draft.note} minRows={10} autosize disabled={busy} onChange={(event) => setDraft({ ...draft, note: event.currentTarget.value })} />
             <div className="form-actions">
               <Button type="submit" loading={busy}>Lưu thay đổi</Button>
               <Button variant="default" disabled={busy} onClick={() => setEditing(false)}>Hủy</Button>
             </div>
           </form> : <>
-            {item.original_url && <p className="detail-source">{sourceUrl ? <a href={sourceUrl} target="_blank" rel="noopener noreferrer">{item.original_url}</a> : item.original_url}</p>}
-            {item.description && <p className="prose-text">{item.description}</p>}
-            {item.note && <div className="prose-text item-note">{item.note}</div>}
-            {!item.original_url && !item.description && !item.note && <Empty>Chưa có nội dung hoặc ghi chú.</Empty>}
+            {item.note ? <>
+              <KnowledgeText text={item.note} title={itemTitle(item)} />
+              <details className="raw-knowledge"><summary>Xem Markdown gốc</summary><pre>{item.note}</pre></details>
+            </> : <Empty>Chưa có bài tri thức được biên soạn. Bạn có thể chỉnh sửa để thêm nội dung; văn bản trích từ nguồn nằm bên dưới.</Empty>}
+            {(item.original_url || item.description) && <details className="source-description"><summary>Nguồn và mô tả</summary>
+              {item.original_url && <p className="detail-source">{sourceUrl ? <a href={sourceUrl} target="_blank" rel="noopener noreferrer">{item.original_url}</a> : item.original_url}</p>}
+              {item.description && <p className="prose-text">{item.description}</p>}
+            </details>}
           </>}
-          {item.assets.length > 0 && <div className="assets">
-            <h3>Tệp đính kèm</h3>
+        </section>
+        {!item.deleted && hasSourceContent && <ExtractedContent id={item.item_id} refreshKey={evidenceRevision} />}
+        {item.assets.length > 0 && <section className="panel assets" aria-labelledby="item-media">
+            <h2 id="item-media">Media và tài liệu nguồn</h2>
             <AssetPreview assets={item.assets} />
             <ul>
               {item.assets.map((asset) => <li key={asset.asset_id}>
@@ -156,9 +164,7 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
               </li>)}
             </ul>
             {assetError && <ErrorNotice>{assetError}</ErrorNotice>}
-          </div>}
-        </section>
-        {!item.deleted && <ExtractedContent id={item.item_id} refreshKey={evidenceRevision} />}
+          </section>}
         <ItemHistory id={item.item_id} />
         <RelatedItems id={item.item_id} refreshKey={evidenceRevision} />
       </div>
@@ -169,9 +175,11 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
             <div><dt>Loại</dt><dd>{kindLabels[item.kind]}</dd></div>
             <div><dt>Nhận lần đầu</dt><dd><ServerTime value={item.saved_at} /></dd></div>
             <div><dt>Ngày nguồn đăng</dt><dd>{item.published_at ? <ServerTime value={item.published_at} /> : '—'}</dd></div>
-            <div><dt>Thu thập nguồn</dt><dd>{stateText(item.source_fetch, fetchStates)}</dd></div>
-            <div><dt>Lưu tệp</dt><dd>{stateText(item.asset_storage, storageStates)}</dd></div>
-            <div><dt>Trích nội dung</dt><dd>{stateText(item.content_extract, extractStates)}</dd></div>
+            {hasSourceContent && <>
+              <div><dt>Thu thập nguồn</dt><dd>{stateText(item.source_fetch, fetchStates)}</dd></div>
+              <div><dt>Lưu tệp</dt><dd>{stateText(item.asset_storage, storageStates)}</dd></div>
+              <div><dt>Trích nội dung</dt><dd>{stateText(item.content_extract, extractStates)}</dd></div>
+            </>}
             <div><dt>Phân loại</dt><dd>{stateText(item.classification_status, organizationStates)}</dd></div>
           </dl>
           {refreshError ? <ErrorNotice retry={onRefresh}>Chưa cập nhật được trạng thái mới. Dữ liệu đang hiển thị là lần kiểm tra trước.</ErrorNotice>

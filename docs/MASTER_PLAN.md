@@ -6,6 +6,12 @@
 
 ## 1. Mục tiêu của bản đầu
 
+**Định hướng người dùng chốt ngày 19/11/2026:** tri thức được đọc, tìm kiếm và
+tổ chức chủ yếu bằng **văn bản/Markdown**. Media và tài liệu nguồn giữ vai trò
+minh họa, bằng chứng và truy nguyên. Bài văn bản phải xuất hiện ngay trong thư
+viện đang dùng, không chỉ tồn tại dưới dạng bản xuất hoặc tập kiểm thử tách riêng.
+Nguồn chưa có text phải hiện rõ thiếu nội dung; không suy kiến thức từ metadata video.
+
 - Tiếp nhận URL FB/TikTok/YouTube/web, video, ảnh, tài liệu PDF/DOCX/XLSX và ghi chú bằng Android/Windows.
 - Lưu file gốc trên Google Drive My Drive do chủ sở hữu kết nối, video chỉ tải khi nền tảng cho phép và công cụ hoạt động; link thất bại vẫn được giữ.
 - Thu thập metadata và văn bản dễ lấy (PDF có chữ, DOCX, XLSX, HTML, phụ đề có sẵn); chạy nền, không làm nghẽn lưu file.

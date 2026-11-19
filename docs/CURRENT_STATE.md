@@ -6,11 +6,38 @@
 
 ## 1. Tình trạng tổng quát
 
+### KT-112 — văn bản là nội dung chính, Windows LIVE_PASS
+
+Nhánh `codex/kt-112-text-first-knowledge`: nội dung `Item.note` đọc bằng Markdown
+trong mục Tri thức, nguồn/media đặt sau; màn hình gửi mặc định văn bản, thư viện
+có trích đoạn. Tệp `.md`/`.markdown` UTF-8 được trích vào DerivedContent để tìm.
+Renderer react-markdown/remark-gfm bỏ HTML nguồn và URL ngoài HTTP(S), ảnh chỉ
+mở khi bấm; 17 test frontend/build PASS. Chín test backend extraction/import
+trên PostgreSQL thử PASS, gồm Unicode, CRLF, import không trùng và giữ chỉnh sửa.
+Lệnh `import_knowledge_notes` có preview và `--apply`, nhập bài công khai qua
+CaptureService, có opt-in export. Bốn bài thật ở `docs/knowledge/`, khác bốn
+fixture giả trong pilot. [PR #28](https://github.com/cavoixanh638/kho-tri-thuc/pull/28):
+candidate `0c3f6ea` đã [CI #44546796615](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44546796615)
+PASS trước triển khai. Sau backup riêng được verify, Windows build/restart/check
+PASS; nhập bốn bài công khai qua CaptureService, không tạo Asset giả. Chạy lại
+lệnh giữ bốn Item/Event, không thêm lượt; thư viện có năm mục tại nghiệm thu.
+SearchService tìm được cả bốn, Drive full readback SHA/version 4/4 PASS,
+connector metadata/fetch 4/4 PASS trong ChatGPT_Index của ứng dụng.
+Candidate UI `0e2c3c7` đã [CI #44548249840](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44548249840)
+PASS: bỏ tiêu đề lặp và trạng thái trích nguồn không áp dụng cho bài văn bản.
+Browser thật sau reload đã thấy bốn bài và Reel, đọc bảng/link/heading, mở editor
+giữ đúng Markdown rồi Hủy không submit, mặc định gửi văn bản. Screenshot giữ riêng;
+nghiệm thu ở viewport hiện tại, chưa thay kiểm Android hay upload `.md` qua UI.
+Catalogue video, Asset/StorageLocation và CaptureEvent gốc khớp backup trước đổi.
+Reel vẫn chưa có transcript/bài biên soạn; không suy nội dung lời nói.
+[Báo cáo](operations/text-first-live-results.json), [hướng dẫn](operations/TEXT_KNOWLEDGE.md).
+
 | Hạng mục | Trạng thái đã kiểm tra | Diễn giải |
 | --- | --- | --- |
 | Thiết kế phạm vi/kiến trúc | **DECIDED / DOCS_ONLY** | Baseline **v4.7**: Google Drive, PostgreSQL, Django+Ninja, React+Mantine, một worker; CaptureEvent bất biến, auto-group và RelatedItem đã được đặc tả |
 | Chuẩn bị bố trí repo và AI routing | **DOCS_PREPARED** | Có `REPOSITORY_LAYOUT.md`, `docs/README.md`, `CURRENT_STATE.md` và liên kết từ README/AGENTS/roadmap trong commit chuẩn bị repository này |
 | Ứng dụng React/Django | **PASS (tiếp nhận và thư viện)** | Có đăng nhập, gửi URL/chữ, biên nhận, lịch sử, xem/chỉnh sửa và khôi phục Item. API upload nhận file vào staging bền vững |
+| Văn bản/Markdown trong kho | **LIVE_PASS (KT-112)** | Bốn bài công khai đã nhập vào thư viện chính, đọc/chỉnh Markdown và tìm theo text; media/nguồn đặt sau. Import replay không trùng, Drive/connector đọc được bốn bản xuất. Không dùng fixture riêng thay dữ liệu nhìn thấy |
 | PostgreSQL/Docker Compose | **PASS (Ubuntu CI)** | PostgreSQL 18, volume riêng, migration Django và rollback/reapply migration `sessions` đã chạy |
 | Kết nối Google Drive | **LIVE_VIDEO_PASS** | Reel thực do người dùng gửi đã đi qua UI tiếp nhận, worker tải và upload Drive; đọc lại toàn bộ MP4 khớp SHA-256, thumbnail có cache, một Asset/một CaptureEvent. TXT/PNG/PDF adapter smoke trước đó PASS. UI multipart với file người dùng, đổi client/project và Drive preview playback còn NOT_RUN |
 | Thumbnail PDF/ảnh/video | **PASS (tích hợp KT-010)** | Renderer/caching, 8 EXIF Orientation, API riêng tư và upload hook qua test; xem mốc vận hành bên dưới |

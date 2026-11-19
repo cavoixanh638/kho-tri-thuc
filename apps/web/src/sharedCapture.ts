@@ -9,7 +9,7 @@ export function readSharedCapture(): SharedCapture {
   const content = [title, text].filter(Boolean).join('\n');
   const candidate = url || (/^https?:\/\/\S+$/i.test(text.trim()) ? text.trim() : '');
   return {
-    kind: candidate ? 'link' : shared ? 'text' : 'link',
+    kind: candidate ? 'link' : 'text',
     url: candidate.slice(0, 4096),
     note: content.slice(0, 65536),
     annotation: candidate ? content.slice(0, 65536) : '',

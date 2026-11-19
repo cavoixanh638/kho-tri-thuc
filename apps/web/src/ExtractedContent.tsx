@@ -1,8 +1,9 @@
 import { Button } from '@mantine/core';
 import { useState } from 'react';
 import { Empty, ErrorNotice, Loading, useResource } from './views';
+import { KnowledgeText } from './KnowledgeText';
 
-type Part = { id: number; kind: string; text: string; locator: Record<string, unknown>; truncated: boolean };
+type Part = { id: number; kind: string; text: string; processor?: string; locator: Record<string, unknown>; truncated: boolean };
 type Content = { results: Part[]; next_offset: number | null };
 
 function locationLabel(part: Part) {
@@ -20,9 +21,9 @@ export function ExtractedContent({ id, refreshKey }: { id: string; refreshKey?: 
     <h2 id="extracted-content">Văn bản đã trích</h2>
     {content.error ? <ErrorNotice retry={content.retry}>Chưa tải được văn bản.</ErrorNotice>
       : !content.data ? <Loading />
-        : content.data.results.length ? content.data.results.map((part) => <details key={part.id} className="content-part">
+        : content.data.results.length ? content.data.results.map((part, index) => <details key={part.id} className="content-part" open={index === 0}>
           <summary>{locationLabel(part)}</summary>
-          <p className="prose-text">{part.text}</p>
+          {part.processor === 'utf-8-markdown' ? <KnowledgeText text={part.text} /> : <p className="prose-text">{part.text}</p>}
           {part.truncated && <p className="list-meta">Phần xem trước đã rút gọn. Mở tệp gốc để xem đầy đủ.</p>}
         </details>) : <Empty>Chưa có văn bản đã trích.</Empty>}
     {(offset > 0 || content.data?.next_offset != null) && <nav className="paging" aria-label="Các phần văn bản">

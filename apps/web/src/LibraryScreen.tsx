@@ -1,4 +1,4 @@
-import { AssetPreview } from './AssetPreview';
+import { knowledgePreview } from './KnowledgeText';
 import { Button, SegmentedControl } from '@mantine/core';
 import { useState } from 'react';
 import type { Item, Page } from './api';
@@ -16,7 +16,7 @@ export function LibraryScreen() {
   const library = useResource<Page<Item>>(`/items?${query}`, { pollWhile: (page) => page.results.some(itemNeedsRefresh) });
 
   return <>
-    <PageTitle title="Thư viện" description="Mỗi mục có một hồ sơ và có thể xuất hiện trong nhiều lượt gửi." />
+    <PageTitle title="Thư viện" description="Đọc, tìm và tổ chức tri thức văn bản. Media và tài liệu nguồn được giữ kèm từng mục." />
     <section className="panel" aria-label="Danh sách mục">
       <div className="filters">
         <SegmentedControl value={filter} aria-label="Lọc thư viện" onChange={(value) => {
@@ -34,10 +34,11 @@ export function LibraryScreen() {
           : library.data.results.length ? <ul className="library-list">
             {library.data.results.map((item) => <li key={item.item_id}>
               <a href={itemHref(item.item_id)} className="library-entry">
-                <AssetPreview assets={item.assets} />
                 <span className="library-entry-text">
                   <span className="capture-kind">{kindLabels[item.kind]}</span>
                   <span className="library-entry-title">{itemTitle(item)}</span>
+                  {item.note && <span className="library-knowledge-preview">{knowledgePreview(item.note)}</span>}
+                  {item.assets.length > 0 && <span className="list-meta">{item.assets.length} tệp nguồn / minh họa</span>}
                 </span>
                 <span className="library-entry-time"><span className="list-meta">Nhận lần đầu</span><ServerTime value={item.saved_at} /></span>
               </a>
