@@ -121,6 +121,20 @@ Chín đầu việc dùng mốc `c51d39f`. Chat điều phối nối router, c�
 
 ## 5. Quy tắc cập nhật trạng thái
 
+### Checkpoint KT-108 — chờ tích hợp
+
+- Nhánh `codex/kt-108-processing-ui`, baseline `e04bfd1`. Item/thư viện polling
+  khi còn xử lý, giới hạn 10 phút, backoff và dừng sau ba lỗi; hủy request khi
+  chuyển trang/unmount, dừng khi hết quyền. Item mới từ server không xóa draft.
+- Windows Node 24: `npm test` **12/12 PASS**, `npm run build` **PASS**.
+  Có kiểm StrictMode/share Unicode/chống gửi trùng, retry, phiên hết hạn và
+  thay đổi trạng thái/tệp. JSDOM không render layout: các ca width 390/768/1440
+  chỉ kiểm DOM, **không phải browser/device acceptance**.
+- Agent dừng do workspace hết credits; điều phối sửa harness (fonts/RAF,
+  request thật sự in-flight và hợp đồng body capture), chạy lại suite PASS.
+- Chưa PR/CI/tích hợp/deploy. Bước tiếp: review diff, thêm npm test vào CI,
+  chạy CI đúng head rồi nghiệm thu Windows. Android được người dùng để sau.
+
 - Mỗi lần hoàn tất task ghi **ID, SHA commit, branch/PR, test thực sự đã chạy + kết quả, điều chưa test, blocker và một bước kế tiếp**. Không tự thăng trạng thái thành PASS khi chưa có bằng chứng.
 - Kiểm tra lại GitHub `main` và diff hiện hành trước mỗi lần ghi. Nếu nhiều AI làm song song, phân file/branch không chồng chéo. Không cần dựng workboard/dispatcher nếu chưa thực sự có nhiều đầu việc đồng thời.
 - Không tự bổ sung lịch sử nhiều trang. Dữ liệu đo chi tiết có thể lưu dưới `evals/` khi bắt đầu đo; `CURRENT_STATE.md` giữ bản tóm tắt và liên kết bằng chứng.
