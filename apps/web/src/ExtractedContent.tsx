@@ -13,9 +13,9 @@ function locationLabel(part: Part) {
   return part.kind === 'web_text' ? 'Văn bản nguồn web' : 'Văn bản đã trích';
 }
 
-export function ExtractedContent({ id }: { id: string }) {
+export function ExtractedContent({ id, refreshKey }: { id: string; refreshKey?: string }) {
   const [offset, setOffset] = useState(0);
-  const content = useResource<Content>(`/items/${encodeURIComponent(id)}/content?limit=5&offset=${offset}`);
+  const content = useResource<Content>(`/items/${encodeURIComponent(id)}/content?limit=5&offset=${offset}`, { refreshKey });
   return <section className="panel" aria-labelledby="extracted-content">
     <h2 id="extracted-content">Văn bản đã trích</h2>
     {content.error ? <ErrorNotice retry={content.retry}>Chưa tải được văn bản.</ErrorNotice>

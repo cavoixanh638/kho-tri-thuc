@@ -28,6 +28,9 @@ jobs:
           docker compose config --quiet
           docker compose up --detach --build --wait --wait-timeout 120
 
+      - name: Test frontend resource lifecycle and capture
+        run: docker compose exec -T web npm test
+
       - name: Check Django and migrate forward and backward
         run: |
           docker compose exec -T api python manage.py check --database default
