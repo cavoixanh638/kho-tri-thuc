@@ -61,7 +61,10 @@ vào DB mới, OAuth/session rỗng; [báo cáo](knowledge-backup-live-results.j
 Sau khi kết nối đúng tài khoản Primary trong Codex, connector đã đọc metadata,
 tìm đúng một bản xuất theo tên và fetch được nội dung Markdown đầy đủ các phần
 nguồn/tệp/giờ nhận/cảnh báo thiếu transcript. [Bằng chứng connector](drive-connector-live-results.json).
-Đây là nghiệm thu một Item, chưa phải pilot 5–10 Item hoặc mọi định dạng/truy vấn.
+Đã thử đổi cùng file sang TXT 909 byte: connector nhận MIME text/plain và đọc được
+các phần nguồn/cảnh báo; trả lại Markdown và full readback/version PASS. Tìm
+fullText bằng cụm nguồn đã biết cũng trả đúng một file. Đây là nghiệm thu một Item,
+chưa phải pilot 5–10 Item, native Docs hoặc mọi truy vấn.
 
 Backup manifest v2 thêm `knowledge_exports`, giữ file mapping, preference và
 version; vẫn xác minh/restore được manifest v1 (14 collection). OAuth/session vẫn
