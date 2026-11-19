@@ -1,0 +1,50 @@
+{
+  "checked_at": "2026-11-19T09:36:54.953015+00:00",
+  "status": "PASS",
+  "auditor_code_sha": "760be8088d5c94ebcba04f2ba5bdb72de5f42fb0",
+  "runtime_source_sha_at_snapshot": "ccc0a333c087ee1687a9d0df7de4b6326532a253",
+  "user_approved_sensitive_payload_and_destinations": true,
+  "persistent_private_windows_copy": "verified, all 12 audit files match SHA-256",
+  "stage": "complete",
+  "consistent_snapshot": true,
+  "independent_local_copy_verified": true,
+  "local_copy_scope": "same Windows machine, outside Drive sync",
+  "archive_sha256": "9d681282af41348d9ada9c3e3f317fa9b4b1fb59f49e8dae8943c0e24578e0b8",
+  "archive_bytes": 94495,
+  "dump_sha256": "2003262bb92ceb0bb7931df6f84d6e738cfe654ccfa27f605aa0c83814a8b94f",
+  "manifest_sha256": "2f00dd8c78b26edc9602df86eaed8ddcdc2753a9236b5fe2b427bcb04a47f1d0",
+  "collection_counts": {
+    "items": 1,
+    "capture_events": 1,
+    "sources": 1,
+    "topics": 0,
+    "projects": 0,
+    "tags": 0,
+    "item_topics": 0,
+    "item_projects": 0,
+    "item_tags": 0,
+    "assets": 1,
+    "storage_locations": 1,
+    "derived_contents": 0,
+    "related_items": 0,
+    "jobs": 4
+  },
+  "backup_retry_same_file": true,
+  "drive_backup_exact_readback": true,
+  "all_14_collections_exact": true,
+  "oauth_rows_restored": 0,
+  "sessions_restored": 0,
+  "restored_originals": [
+    {
+      "bytes": 18394669,
+      "sha256": "3fd6884f8d6fdfd6099c9378b70878c6ba7f7fceb4f4da989b2840587a1d6ca5",
+      "exact_readback": true,
+      "adapter_open": true
+    }
+  ],
+  "live_nonempty_group_assignments": false,
+  "live_nonempty_notes": false,
+  "production_database_read_only": true,
+  "same_oauth_client_and_project": true,
+  "different_client_project_tested": false
+}
