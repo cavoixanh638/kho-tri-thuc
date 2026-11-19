@@ -1,21 +1,67 @@
-# KT-102 — checkpoint chưa nghiệm thu
+# KT-102 — benchmark PDF tiếng Việt
 
 Baseline `e04bfd1`; nhánh `codex/kt-102-pdf-evidence`.
 
-Đã thu manifest 20 PDF tiếng Việt công khai từ UNICEF, SHA-256 duy nhất,
-runner ba thư viện và số đo sơ bộ trong `results.json`. Agent dừng do workspace
-hết credits trước khi bàn giao. **IN_PROGRESS, không phải quyết định chọn parser.**
+Đã đo 60 lượt trên 20 PDF tiếng Việt công khai từ UNICEF, SHA-256 duy nhất.
+Điều phối tiếp nhận sau khi agent hết credits, sửa phép đo RAM và đối chiếu ảnh
+render để bổ sung 20 probe. Xem [manifest](sources.json) và [số đo](results.json).
 
-- `qa` trong manifest còn rỗng: chưa có gold anchor, thứ tự đọc hoặc đối chiếu
-  locator được nghiệm thu; không suy độ chính xác từ số ký tự có dấu.
-- **Số RAM sơ bộ chưa đáng tin:** cần xác nhận Windows venv launcher/tiến trình
-  con thực tế được đo, rồi chạy lại. Chưa dùng số RAM để so sánh thư viện.
-- Cần rà giấy phép chính thức từng phiên bản, đặc biệt PyMuPDF; phụ thuộc trong
-  requirements chỉ dành cho môi trường đánh giá riêng, không thêm runtime.
+- `qa` gồm 42 anchor ngắn, giữ dấu, chấm tại trang PDF vật lý (từ 1); normalize
+  NFC/casefold/whitespace. Codex kiểm ảnh render, không phải nhãn người dùng độc lập.
+- RAM cũ chỉ đo launcher đã được thay thế. Runner đo đỉnh tổng RSS cây tiến trình
+  mỗi 10 ms và peak working set trong worker trên Windows. Shared pages có thể bị
+  đếm lặp; không phải private memory. Một lượt đo lạnh, chưa có confidence interval.
 - PDF, text trích đầy đủ và ảnh render ở cache/scratch ngoài Git; tải lại từ URL
   và kiểm hash. Không đưa corpus gốc hoặc bản xuất dài vào repository.
 
-Tiếp tục: tạo venv eval riêng, đọc runner, xác minh monitor process tree, đo lại;
-render trang ngoài Git và tạo anchor ngắn được kiểm bằng mắt; tổng hợp giới hạn,
-license và quyết định. `run.py --help` và `render_qa.py --help` mô tả đầu vào.
-Chưa chốt KT-102; production vẫn dùng pypdf baseline.
+## Kết quả ngày 19/11/2026
+
+Windows 11, Python 3.13.15. Mỗi cặp tài liệu/parser chạy subprocess riêng: 45 giây,
+512 MiB, 250 trang/2 triệu ký tự. Thời gian lạnh gồm import/startup.
+
+| Parser | Lượt thành công | Median giây | RSS lớn nhất MiB | Anchor đúng trang | Probe đúng thứ tự |
+| --- | --- | --- | --- | --- | --- |
+| pypdf 7.1.1 | 20/20 | 1.069 | 112.754 | 40/42 | 16/20 |
+| pypdfium2 5.15.2 | 20/20 | 0.499 | 68.461 | 40/42 | 16/20 |
+| PyMuPDF 2.1 | 20/20 | 0.866 | 84.500 | 40/42 | 19/20 |
+
+Không có timeout, memory kill, U+FFFD hoặc cắt theo budget. Tuy vậy vi08 không
+tìm được cả hai anchor dù ảnh đọc được; không coi text không rỗng là trích đúng.
+PyMuPDF giữ thứ tự tốt hơn tại vi05/22/23. Mẫu một tổ chức, text layer, nhiều
+trang đầu/mục lục: không đại diện scan/PDF hỏng. Anchor/probe chỉ đo đúng điểm đã
+ghi, không phải CER/WER, độ chính xác toàn văn hoặc tái dựng cấu trúc bảng.
+
+## License và quyết định
+
+Đã đối chiếu nguồn chính thức ngày 19/11/2026:
+
+- [pypdf 7.1.1](https://github.com/py-pdf/pypdf/blob/7.1.1/LICENSE): BSD 3-Clause;
+  dễ triển khai và cùng kết quả anchor với PDFium trong mẫu.
+- [pypdfium2/PDFium](https://pypdfium2.readthedocs.io/en/stable/readme.html#licensing):
+  binding Apache-2.0/BSD-3-Clause; binary PDFium/dependencies có notices riêng cần
+  giữ khi phân phối. Nhanh/ít RSS hơn ở lượt này, không cải thiện probe order.
+- [PyMuPDF 2.1](https://pypi.org/project/pymupdf/2.1/) và
+  [Artifex docs](https://pymupdf.readthedocs.io/en/latest/about.html#license-and-copyright):
+  AGPLv3 hoặc thương mại. Chỉ có trong venv eval, không thêm runtime của private repo
+  khi chưa quyết định license/phân phối.
+
+**Giữ pypdf baseline cho runtime hiện tại.** Mẫu chưa chứng minh lợi ích chất
+lượng đủ để đổi parser. PDFium vẫn là renderer KT-010 và ứng viên fallback khi
+pypdf lỗi/rỗng, nhưng fallback extraction tự động **chưa triển khai**; không giả
+rằng nó giải quyết được vi08 và không tự bật OCR. Mốc đo ba parser đã có bằng
+chứng; toàn bộ KT-102 vẫn IN_PROGRESS vì fallback/nguồn khác chưa nghiệm thu.
+
+## Chạy lại
+
+Tạo venv eval riêng, cài `requirements.txt`; từ root checkout:
+
+```powershell
+python evals/pdf/run.py download --cache C:\Temp\kt-pdf-cache --output C:\Temp\unused.json
+python evals/pdf/run.py measure --cache C:\Temp\kt-pdf-cache --scratch C:\Temp\kt-pdf-text --output evals/pdf/results.json
+python evals/pdf/run.py score --scratch C:\Temp\kt-pdf-text --output evals/pdf/results.json
+python evals/pdf/render_qa.py --cache C:\Temp\kt-pdf-cache --output C:\Temp\kt-pdf-renders
+```
+
+Đây là đường dẫn ví dụ; lượt thật dùng thư mục tạm ngoài checkout. Render mặc định
+trang 4; vi05/vi17 cần trang 10 khi rà lại. Giữ hash cố định hoặc đánh dấu thay
+corpus, không tự đổi manifest khi upstream thay PDF.

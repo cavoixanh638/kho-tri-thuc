@@ -1,5 +1,5 @@
 {
-  "measured_at": "2026-11-19T05:10:31.537567+00:00",
+  "measured_at": "2026-11-19T09:22:19.385086+00:00",
   "environment": {
     "platform": "Windows-11-10.0.26300-SP0",
     "python": "3.13.15",
@@ -11,6 +11,7 @@
     }
   },
   "limits": {
+    "memory_metric": "peak sampled aggregate process-tree RSS (10 ms); worker OS peak working set separately on Windows",
     "seconds_per_document_library": 45,
     "memory_mib": 512,
     "max_pages": 250,
@@ -20,10 +21,11 @@
     {
       "document_id": "vi01",
       "library": "pypdf",
-      "cold_wall_seconds": 0.633704,
-      "peak_rss_mib": 4.762,
+      "cold_wall_seconds": 0.678751,
+      "peak_rss_mib": 53.516,
       "status": "ok",
-      "extract_seconds": 0.473023,
+      "worker_peak_rss_mib": 40.906,
+      "extract_seconds": 0.460263,
       "page_count": 5,
       "pages_extracted": 5,
       "limited": false,
@@ -31,15 +33,32 @@
       "vietnamese_diacritics": 2874,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "0afec1a72859bef9fe02645afca8cef39ac25e17d711d2f1bceb53851648cd91"
+      "text_sha256": "0afec1a72859bef9fe02645afca8cef39ac25e17d711d2f1bceb53851648cd91",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi01",
       "library": "pypdfium2",
-      "cold_wall_seconds": 0.278047,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.487785,
+      "peak_rss_mib": 50.207,
       "status": "ok",
-      "extract_seconds": 0.115379,
+      "worker_peak_rss_mib": 37.809,
+      "extract_seconds": 0.268018,
       "page_count": 5,
       "pages_extracted": 5,
       "limited": false,
@@ -47,15 +66,32 @@
       "vietnamese_diacritics": 2874,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "99bc9d2f2e529e664252a4477277f1ae3254ad0b53313891e2d384c1ee9e5ef8"
+      "text_sha256": "99bc9d2f2e529e664252a4477277f1ae3254ad0b53313891e2d384c1ee9e5ef8",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi01",
       "library": "PyMuPDF",
-      "cold_wall_seconds": 0.743955,
-      "peak_rss_mib": 5.129,
+      "cold_wall_seconds": 0.554901,
+      "peak_rss_mib": 68.527,
       "status": "ok",
-      "extract_seconds": 0.575297,
+      "worker_peak_rss_mib": 55.91,
+      "extract_seconds": 0.324534,
       "page_count": 5,
       "pages_extracted": 5,
       "limited": false,
@@ -63,15 +99,32 @@
       "vietnamese_diacritics": 2874,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "c29c146b720e6b28fa305127b4e77d5cf490d6ad9e345607efb6aa828438c20f"
+      "text_sha256": "c29c146b720e6b28fa305127b4e77d5cf490d6ad9e345607efb6aa828438c20f",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi02",
       "library": "pypdf",
-      "cold_wall_seconds": 1.267092,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 1.258939,
+      "peak_rss_mib": 62.387,
       "status": "ok",
-      "extract_seconds": 1.099968,
+      "worker_peak_rss_mib": 49.793,
+      "extract_seconds": 1.035724,
       "page_count": 52,
       "pages_extracted": 52,
       "limited": false,
@@ -79,15 +132,32 @@
       "vietnamese_diacritics": 24431,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "aebcc1f0dc19c8ecdcd69e24c0758e416c171c6919e33f5283db89e63a04e16f"
+      "text_sha256": "aebcc1f0dc19c8ecdcd69e24c0758e416c171c6919e33f5283db89e63a04e16f",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi02",
       "library": "pypdfium2",
-      "cold_wall_seconds": 0.378306,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.543708,
+      "peak_rss_mib": 54.23,
       "status": "ok",
-      "extract_seconds": 0.222577,
+      "worker_peak_rss_mib": 41.766,
+      "extract_seconds": 0.328022,
       "page_count": 52,
       "pages_extracted": 52,
       "limited": false,
@@ -95,15 +165,32 @@
       "vietnamese_diacritics": 24419,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "ef5e25687949a73d9b422f556603ed41535bb4973693b3fd78d89850af003727"
+      "text_sha256": "ef5e25687949a73d9b422f556603ed41535bb4973693b3fd78d89850af003727",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi02",
       "library": "PyMuPDF",
-      "cold_wall_seconds": 1.421832,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 1.289424,
+      "peak_rss_mib": 73.492,
       "status": "ok",
-      "extract_seconds": 1.266381,
+      "worker_peak_rss_mib": 60.906,
+      "extract_seconds": 1.062791,
       "page_count": 52,
       "pages_extracted": 52,
       "limited": false,
@@ -111,15 +198,32 @@
       "vietnamese_diacritics": 24419,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "3d8a80fef1f68eaf822105f1aa8a0198c171207df41d211233226963858dc930"
+      "text_sha256": "3d8a80fef1f68eaf822105f1aa8a0198c171207df41d211233226963858dc930",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi04",
       "library": "pypdf",
-      "cold_wall_seconds": 0.700378,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.75665,
+      "peak_rss_mib": 57.371,
       "status": "ok",
-      "extract_seconds": 0.551641,
+      "worker_peak_rss_mib": 44.848,
+      "extract_seconds": 0.539685,
       "page_count": 4,
       "pages_extracted": 4,
       "limited": false,
@@ -127,15 +231,32 @@
       "vietnamese_diacritics": 2597,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "8818f7ed3e9d627e3de064e37931a198b409c2a7f868705d8de074854e2b96ca"
+      "text_sha256": "8818f7ed3e9d627e3de064e37931a198b409c2a7f868705d8de074854e2b96ca",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi04",
       "library": "pypdfium2",
-      "cold_wall_seconds": 0.273437,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.444366,
+      "peak_rss_mib": 50.328,
       "status": "ok",
-      "extract_seconds": 0.117253,
+      "worker_peak_rss_mib": 38.727,
+      "extract_seconds": 0.225476,
       "page_count": 4,
       "pages_extracted": 4,
       "limited": false,
@@ -143,15 +264,32 @@
       "vietnamese_diacritics": 2597,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "ef9e89eb3e72f7f2c996a0897d85c7bce63204f09d994e5e0b1da1ec62bd07f8"
+      "text_sha256": "ef9e89eb3e72f7f2c996a0897d85c7bce63204f09d994e5e0b1da1ec62bd07f8",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi04",
       "library": "PyMuPDF",
-      "cold_wall_seconds": 0.39079,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.434559,
+      "peak_rss_mib": 68.164,
       "status": "ok",
-      "extract_seconds": 0.215776,
+      "worker_peak_rss_mib": 55.578,
+      "extract_seconds": 0.21262,
       "page_count": 4,
       "pages_extracted": 4,
       "limited": false,
@@ -159,15 +297,32 @@
       "vietnamese_diacritics": 2597,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "5340f13de5d9a9b04a913335a07081aca32cb07b2d3fafa9d71b2e95adcd35a7"
+      "text_sha256": "5340f13de5d9a9b04a913335a07081aca32cb07b2d3fafa9d71b2e95adcd35a7",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi05",
       "library": "pypdf",
-      "cold_wall_seconds": 7.204109,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 6.836933,
+      "peak_rss_mib": 112.754,
       "status": "ok",
-      "extract_seconds": 7.039067,
+      "worker_peak_rss_mib": 100.156,
+      "extract_seconds": 6.603355,
       "page_count": 210,
       "pages_extracted": 210,
       "limited": false,
@@ -175,15 +330,32 @@
       "vietnamese_diacritics": 48925,
       "replacement_characters": 0,
       "empty_pages": 3,
-      "text_sha256": "9bc49ac2ec8ad658c8a1317237756a2a18d813b5d8f7ec3a2dd25a4b2182762b"
+      "text_sha256": "9bc49ac2ec8ad658c8a1317237756a2a18d813b5d8f7ec3a2dd25a4b2182762b",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 0,
+        "details": [
+          {
+            "page": 10,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": false
+          }
+        ]
+      }
     },
     {
       "document_id": "vi05",
       "library": "pypdfium2",
-      "cold_wall_seconds": 0.775171,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.996746,
+      "peak_rss_mib": 68.461,
       "status": "ok",
-      "extract_seconds": 0.610739,
+      "worker_peak_rss_mib": 56.293,
+      "extract_seconds": 0.75777,
       "page_count": 210,
       "pages_extracted": 210,
       "limited": false,
@@ -191,15 +363,32 @@
       "vietnamese_diacritics": 48902,
       "replacement_characters": 0,
       "empty_pages": 3,
-      "text_sha256": "fed5653c760cdad35ac09f51a2120c4f8183ec0005654cfd5102bd4bca71dd25"
+      "text_sha256": "fed5653c760cdad35ac09f51a2120c4f8183ec0005654cfd5102bd4bca71dd25",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 0,
+        "details": [
+          {
+            "page": 10,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": false
+          }
+        ]
+      }
     },
     {
       "document_id": "vi05",
       "library": "PyMuPDF",
-      "cold_wall_seconds": 3.100836,
-      "peak_rss_mib": 4.77,
+      "cold_wall_seconds": 3.116792,
+      "peak_rss_mib": 84.5,
       "status": "ok",
-      "extract_seconds": 2.924394,
+      "worker_peak_rss_mib": 71.961,
+      "extract_seconds": 2.881274,
       "page_count": 210,
       "pages_extracted": 210,
       "limited": false,
@@ -207,15 +396,32 @@
       "vietnamese_diacritics": 48902,
       "replacement_characters": 0,
       "empty_pages": 3,
-      "text_sha256": "c2f21b273cb88d6e82471de4bfd60db7493f58f45a237ec8b703679d32e4f042"
+      "text_sha256": "c2f21b273cb88d6e82471de4bfd60db7493f58f45a237ec8b703679d32e4f042",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 10,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi06",
       "library": "pypdf",
-      "cold_wall_seconds": 0.570328,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.668715,
+      "peak_rss_mib": 52.285,
       "status": "ok",
-      "extract_seconds": 0.417849,
+      "worker_peak_rss_mib": 39.68,
+      "extract_seconds": 0.440898,
       "page_count": 40,
       "pages_extracted": 40,
       "limited": false,
@@ -223,15 +429,32 @@
       "vietnamese_diacritics": 12374,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "9cd5945b06623ec7f02ed8310af98c959d61e13450ed50c6ce61a8132d15f179"
+      "text_sha256": "9cd5945b06623ec7f02ed8310af98c959d61e13450ed50c6ce61a8132d15f179",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi06",
       "library": "pypdfium2",
-      "cold_wall_seconds": 0.287249,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.465295,
+      "peak_rss_mib": 49.637,
       "status": "ok",
-      "extract_seconds": 0.125148,
+      "worker_peak_rss_mib": 37.152,
+      "extract_seconds": 0.24742,
       "page_count": 40,
       "pages_extracted": 40,
       "limited": false,
@@ -239,15 +462,32 @@
       "vietnamese_diacritics": 12374,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "53fa76c4994d77c95a67cbe1e8219703f418d680aa792be9bbdad100b2e28c12"
+      "text_sha256": "53fa76c4994d77c95a67cbe1e8219703f418d680aa792be9bbdad100b2e28c12",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi06",
       "library": "PyMuPDF",
-      "cold_wall_seconds": 0.841641,
-      "peak_rss_mib": 5.125,
+      "cold_wall_seconds": 0.834029,
+      "peak_rss_mib": 69.906,
       "status": "ok",
-      "extract_seconds": 0.665247,
+      "worker_peak_rss_mib": 57.309,
+      "extract_seconds": 0.601751,
       "page_count": 40,
       "pages_extracted": 40,
       "limited": false,
@@ -255,15 +495,32 @@
       "vietnamese_diacritics": 12374,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "c04430768d031df749266a47f1683fbc5fef6649a019ffae72160b80a2a87a97"
+      "text_sha256": "c04430768d031df749266a47f1683fbc5fef6649a019ffae72160b80a2a87a97",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi07",
       "library": "pypdf",
-      "cold_wall_seconds": 0.736558,
-      "peak_rss_mib": 5.129,
+      "cold_wall_seconds": 0.778586,
+      "peak_rss_mib": 53.543,
       "status": "ok",
-      "extract_seconds": 0.566025,
+      "worker_peak_rss_mib": 40.945,
+      "extract_seconds": 0.565616,
       "page_count": 60,
       "pages_extracted": 60,
       "limited": false,
@@ -271,15 +528,32 @@
       "vietnamese_diacritics": 12203,
       "replacement_characters": 0,
       "empty_pages": 1,
-      "text_sha256": "0ac918e3d60c0e66011522c721379f789c5514af4ea97fa5f1de0b4f9e7884d1"
+      "text_sha256": "0ac918e3d60c0e66011522c721379f789c5514af4ea97fa5f1de0b4f9e7884d1",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi07",
       "library": "pypdfium2",
-      "cold_wall_seconds": 0.293282,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.464668,
+      "peak_rss_mib": 50.504,
       "status": "ok",
-      "extract_seconds": 0.141451,
+      "worker_peak_rss_mib": 37.82,
+      "extract_seconds": 0.248314,
       "page_count": 60,
       "pages_extracted": 60,
       "limited": false,
@@ -287,15 +561,32 @@
       "vietnamese_diacritics": 12203,
       "replacement_characters": 0,
       "empty_pages": 1,
-      "text_sha256": "51eaf40477ae0fb6af9dc97c1c49da4c5b5061e6997cdd66af21638a15fe4c76"
+      "text_sha256": "51eaf40477ae0fb6af9dc97c1c49da4c5b5061e6997cdd66af21638a15fe4c76",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi07",
       "library": "PyMuPDF",
-      "cold_wall_seconds": 0.846199,
-      "peak_rss_mib": 4.789,
+      "cold_wall_seconds": 0.875562,
+      "peak_rss_mib": 70.074,
       "status": "ok",
-      "extract_seconds": 0.669739,
+      "worker_peak_rss_mib": 57.5,
+      "extract_seconds": 0.64261,
       "page_count": 60,
       "pages_extracted": 60,
       "limited": false,
@@ -303,15 +594,32 @@
       "vietnamese_diacritics": 12203,
       "replacement_characters": 0,
       "empty_pages": 1,
-      "text_sha256": "2bb1261700bb169a8c614286f80df8c0219e020c0059e6da8c38b8575b4e2553"
+      "text_sha256": "2bb1261700bb169a8c614286f80df8c0219e020c0059e6da8c38b8575b4e2553",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi08",
       "library": "pypdf",
-      "cold_wall_seconds": 3.668954,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 3.486828,
+      "peak_rss_mib": 80.566,
       "status": "ok",
-      "extract_seconds": 3.507403,
+      "worker_peak_rss_mib": 67.961,
+      "extract_seconds": 3.266172,
       "page_count": 50,
       "pages_extracted": 50,
       "limited": false,
@@ -319,15 +627,32 @@
       "vietnamese_diacritics": 22873,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "673caca1fe89c73237e9dfd49e3536f2a475562dc19f828917e2223aea36ee10"
+      "text_sha256": "673caca1fe89c73237e9dfd49e3536f2a475562dc19f828917e2223aea36ee10",
+      "qa": {
+        "anchors": 2,
+        "matching": 0,
+        "order_probes": 1,
+        "ordered": 0,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              false,
+              false
+            ],
+            "in_order": false
+          }
+        ]
+      }
     },
     {
       "document_id": "vi08",
       "library": "pypdfium2",
-      "cold_wall_seconds": 0.480783,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.648559,
+      "peak_rss_mib": 55.719,
       "status": "ok",
-      "extract_seconds": 0.321794,
+      "worker_peak_rss_mib": 43.387,
+      "extract_seconds": 0.42606,
       "page_count": 50,
       "pages_extracted": 50,
       "limited": false,
@@ -335,15 +660,32 @@
       "vietnamese_diacritics": 22873,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "e07b654483e16ff4d2a9a837305a6420552c9b477fb52dae6c16b1e1827e10a9"
+      "text_sha256": "e07b654483e16ff4d2a9a837305a6420552c9b477fb52dae6c16b1e1827e10a9",
+      "qa": {
+        "anchors": 2,
+        "matching": 0,
+        "order_probes": 1,
+        "ordered": 0,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              false,
+              false
+            ],
+            "in_order": false
+          }
+        ]
+      }
     },
     {
       "document_id": "vi08",
       "library": "PyMuPDF",
-      "cold_wall_seconds": 1.359316,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 1.36111,
+      "peak_rss_mib": 72.156,
       "status": "ok",
-      "extract_seconds": 1.203088,
+      "worker_peak_rss_mib": 59.562,
+      "extract_seconds": 1.120016,
       "page_count": 50,
       "pages_extracted": 50,
       "limited": false,
@@ -351,15 +693,32 @@
       "vietnamese_diacritics": 22873,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "5d568d30722f66cc23b9a728a41d4ddb9c4f6c22dd95b3446caf7872bc140e9e"
+      "text_sha256": "5d568d30722f66cc23b9a728a41d4ddb9c4f6c22dd95b3446caf7872bc140e9e",
+      "qa": {
+        "anchors": 2,
+        "matching": 0,
+        "order_probes": 1,
+        "ordered": 0,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              false,
+              false
+            ],
+            "in_order": false
+          }
+        ]
+      }
     },
     {
       "document_id": "vi10",
       "library": "pypdf",
-      "cold_wall_seconds": 3.313391,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 3.166426,
+      "peak_rss_mib": 64.426,
       "status": "ok",
-      "extract_seconds": 3.140454,
+      "worker_peak_rss_mib": 51.816,
+      "extract_seconds": 2.935897,
       "page_count": 142,
       "pages_extracted": 142,
       "limited": false,
@@ -367,15 +726,32 @@
       "vietnamese_diacritics": 65417,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "693bc8cf904ec1ca9d67a6e5c2654d30eeca1464700dd23a2dd77538a14a9427"
+      "text_sha256": "693bc8cf904ec1ca9d67a6e5c2654d30eeca1464700dd23a2dd77538a14a9427",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi10",
       "library": "pypdfium2",
-      "cold_wall_seconds": 0.677076,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.82628,
+      "peak_rss_mib": 57.223,
       "status": "ok",
-      "extract_seconds": 0.513903,
+      "worker_peak_rss_mib": 44.961,
+      "extract_seconds": 0.608444,
       "page_count": 142,
       "pages_extracted": 142,
       "limited": false,
@@ -383,15 +759,32 @@
       "vietnamese_diacritics": 65417,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "65797390336988f2ff5524f7b0fc59b49a2371f997b1e9ae243c3953d941564b"
+      "text_sha256": "65797390336988f2ff5524f7b0fc59b49a2371f997b1e9ae243c3953d941564b",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi10",
       "library": "PyMuPDF",
-      "cold_wall_seconds": 3.340644,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 3.201827,
+      "peak_rss_mib": 76.355,
       "status": "ok",
-      "extract_seconds": 3.176911,
+      "worker_peak_rss_mib": 63.914,
+      "extract_seconds": 2.960882,
       "page_count": 142,
       "pages_extracted": 142,
       "limited": false,
@@ -399,15 +792,32 @@
       "vietnamese_diacritics": 65417,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "bdc2a27d367d08913406c1692c7249245b383ffe2ba27237a0f1d341625c3650"
+      "text_sha256": "bdc2a27d367d08913406c1692c7249245b383ffe2ba27237a0f1d341625c3650",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi11",
       "library": "pypdf",
-      "cold_wall_seconds": 1.331234,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 1.332531,
+      "peak_rss_mib": 57.711,
       "status": "ok",
-      "extract_seconds": 1.170102,
+      "worker_peak_rss_mib": 45.285,
+      "extract_seconds": 1.115439,
       "page_count": 74,
       "pages_extracted": 74,
       "limited": false,
@@ -415,15 +825,32 @@
       "vietnamese_diacritics": 18258,
       "replacement_characters": 0,
       "empty_pages": 1,
-      "text_sha256": "465c63e04ee6e6a1b825636bba7bdfe836a3008a4b460c3fbdf4bd6b1b8d1438"
+      "text_sha256": "465c63e04ee6e6a1b825636bba7bdfe836a3008a4b460c3fbdf4bd6b1b8d1438",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi11",
       "library": "pypdfium2",
-      "cold_wall_seconds": 0.351073,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.545805,
+      "peak_rss_mib": 51.609,
       "status": "ok",
-      "extract_seconds": 0.203831,
+      "worker_peak_rss_mib": 40.078,
+      "extract_seconds": 0.322471,
       "page_count": 74,
       "pages_extracted": 74,
       "limited": false,
@@ -431,15 +858,32 @@
       "vietnamese_diacritics": 18189,
       "replacement_characters": 0,
       "empty_pages": 1,
-      "text_sha256": "d19b945b6706a1dd90c552d4e2149cb3fc466eaa66f258e578b0854fe9e0919f"
+      "text_sha256": "d19b945b6706a1dd90c552d4e2149cb3fc466eaa66f258e578b0854fe9e0919f",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi11",
       "library": "PyMuPDF",
-      "cold_wall_seconds": 1.194224,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 1.180104,
+      "peak_rss_mib": 70.91,
       "status": "ok",
-      "extract_seconds": 1.024407,
+      "worker_peak_rss_mib": 58.379,
+      "extract_seconds": 0.943269,
       "page_count": 74,
       "pages_extracted": 74,
       "limited": false,
@@ -447,15 +891,32 @@
       "vietnamese_diacritics": 18183,
       "replacement_characters": 0,
       "empty_pages": 1,
-      "text_sha256": "82f9488d9cacb041cd8f294503b9aaf3e829eb8ad8ce038d670e108d85c8e973"
+      "text_sha256": "82f9488d9cacb041cd8f294503b9aaf3e829eb8ad8ce038d670e108d85c8e973",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi12",
       "library": "pypdf",
-      "cold_wall_seconds": 1.02672,
-      "peak_rss_mib": 4.793,
+      "cold_wall_seconds": 1.056317,
+      "peak_rss_mib": 85.438,
       "status": "ok",
-      "extract_seconds": 0.862556,
+      "worker_peak_rss_mib": 83.828,
+      "extract_seconds": 0.843081,
       "page_count": 61,
       "pages_extracted": 61,
       "limited": false,
@@ -463,15 +924,32 @@
       "vietnamese_diacritics": 9802,
       "replacement_characters": 0,
       "empty_pages": 3,
-      "text_sha256": "42c451348287bb07f183e313938255207f907be9493cb44f4ffd9318313f4af6"
+      "text_sha256": "42c451348287bb07f183e313938255207f907be9493cb44f4ffd9318313f4af6",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi12",
       "library": "pypdfium2",
-      "cold_wall_seconds": 0.334884,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.497997,
+      "peak_rss_mib": 61.414,
       "status": "ok",
-      "extract_seconds": 0.175601,
+      "worker_peak_rss_mib": 59.086,
+      "extract_seconds": 0.28437,
       "page_count": 61,
       "pages_extracted": 61,
       "limited": false,
@@ -479,15 +957,32 @@
       "vietnamese_diacritics": 9802,
       "replacement_characters": 0,
       "empty_pages": 3,
-      "text_sha256": "b92f8670200ea6a80757616fee2c0adf77a4fd6bbbce027a7f3e7a2bee732344"
+      "text_sha256": "b92f8670200ea6a80757616fee2c0adf77a4fd6bbbce027a7f3e7a2bee732344",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi12",
       "library": "PyMuPDF",
-      "cold_wall_seconds": 0.786206,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.855592,
+      "peak_rss_mib": 84.309,
       "status": "ok",
-      "extract_seconds": 0.626317,
+      "worker_peak_rss_mib": 78.867,
+      "extract_seconds": 0.621411,
       "page_count": 61,
       "pages_extracted": 61,
       "limited": false,
@@ -495,15 +990,32 @@
       "vietnamese_diacritics": 9790,
       "replacement_characters": 0,
       "empty_pages": 3,
-      "text_sha256": "15fb8e43feeff72b9e9740d89cb0471a59ebfb6e77db9078f69b0380eb0270c6"
+      "text_sha256": "15fb8e43feeff72b9e9740d89cb0471a59ebfb6e77db9078f69b0380eb0270c6",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi13",
       "library": "pypdf",
-      "cold_wall_seconds": 1.359164,
-      "peak_rss_mib": 4.762,
+      "cold_wall_seconds": 1.379704,
+      "peak_rss_mib": 69.984,
       "status": "ok",
-      "extract_seconds": 1.213967,
+      "worker_peak_rss_mib": 57.402,
+      "extract_seconds": 1.15769,
       "page_count": 67,
       "pages_extracted": 67,
       "limited": false,
@@ -511,15 +1023,32 @@
       "vietnamese_diacritics": 24487,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "1438676af5af0628065054904944d6abb4082282539936c9733728523e83e898"
+      "text_sha256": "1438676af5af0628065054904944d6abb4082282539936c9733728523e83e898",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi13",
       "library": "pypdfium2",
-      "cold_wall_seconds": 0.406958,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.574568,
+      "peak_rss_mib": 58.129,
       "status": "ok",
-      "extract_seconds": 0.246441,
+      "worker_peak_rss_mib": 45.672,
+      "extract_seconds": 0.350955,
       "page_count": 67,
       "pages_extracted": 67,
       "limited": false,
@@ -527,15 +1056,32 @@
       "vietnamese_diacritics": 24487,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "252192031a4a88967c8e075e85a2284f2132d356036e03e560ced13956aad31c"
+      "text_sha256": "252192031a4a88967c8e075e85a2284f2132d356036e03e560ced13956aad31c",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi13",
       "library": "PyMuPDF",
-      "cold_wall_seconds": 1.337362,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 1.358661,
+      "peak_rss_mib": 77.879,
       "status": "ok",
-      "extract_seconds": 1.179411,
+      "worker_peak_rss_mib": 65.293,
+      "extract_seconds": 1.135321,
       "page_count": 67,
       "pages_extracted": 67,
       "limited": false,
@@ -543,15 +1089,32 @@
       "vietnamese_diacritics": 24487,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "a5af21a7d0a12555b0c490d954b05cf180afb2a35623522fab81661a7a0b5a48"
+      "text_sha256": "a5af21a7d0a12555b0c490d954b05cf180afb2a35623522fab81661a7a0b5a48",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi14",
       "library": "pypdf",
-      "cold_wall_seconds": 0.457813,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.520164,
+      "peak_rss_mib": 57.574,
       "status": "ok",
-      "extract_seconds": 0.305361,
+      "worker_peak_rss_mib": 45.062,
+      "extract_seconds": 0.304654,
       "page_count": 12,
       "pages_extracted": 12,
       "limited": false,
@@ -559,15 +1122,32 @@
       "vietnamese_diacritics": 4042,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "278eb9328aca17822bc7866480437ac82e4fde5bbbb9095d8af1621a80cce27e"
+      "text_sha256": "278eb9328aca17822bc7866480437ac82e4fde5bbbb9095d8af1621a80cce27e",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi14",
       "library": "pypdfium2",
-      "cold_wall_seconds": 0.274516,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.4414,
+      "peak_rss_mib": 51.844,
       "status": "ok",
-      "extract_seconds": 0.118879,
+      "worker_peak_rss_mib": 39.395,
+      "extract_seconds": 0.220501,
       "page_count": 12,
       "pages_extracted": 12,
       "limited": false,
@@ -575,15 +1155,32 @@
       "vietnamese_diacritics": 4042,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "316b070f781f883e8883cb8f1f741c9de3b26db49e7039a52dfd1c516c2a3978"
+      "text_sha256": "316b070f781f883e8883cb8f1f741c9de3b26db49e7039a52dfd1c516c2a3978",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi14",
       "library": "PyMuPDF",
-      "cold_wall_seconds": 0.425512,
-      "peak_rss_mib": 4.762,
+      "cold_wall_seconds": 0.487897,
+      "peak_rss_mib": 70.777,
       "status": "ok",
-      "extract_seconds": 0.262238,
+      "worker_peak_rss_mib": 58.434,
+      "extract_seconds": 0.261905,
       "page_count": 12,
       "pages_extracted": 12,
       "limited": false,
@@ -591,15 +1188,32 @@
       "vietnamese_diacritics": 4042,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "c4ea0e6dfd0c3508d91e2a4b19e3e7a925b176c123410c4a352d41478d9ac264"
+      "text_sha256": "c4ea0e6dfd0c3508d91e2a4b19e3e7a925b176c123410c4a352d41478d9ac264",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi15",
       "library": "pypdf",
-      "cold_wall_seconds": 1.297463,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 1.344855,
+      "peak_rss_mib": 62.172,
       "status": "ok",
-      "extract_seconds": 1.141197,
+      "worker_peak_rss_mib": 49.602,
+      "extract_seconds": 1.118326,
       "page_count": 52,
       "pages_extracted": 52,
       "limited": false,
@@ -607,15 +1221,32 @@
       "vietnamese_diacritics": 28372,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "a0acc6ce37720c7f09770235f735237b4b68e15e0f6a11cfdc7644bd42c60ca3"
+      "text_sha256": "a0acc6ce37720c7f09770235f735237b4b68e15e0f6a11cfdc7644bd42c60ca3",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi15",
       "library": "pypdfium2",
-      "cold_wall_seconds": 0.41068,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.566836,
+      "peak_rss_mib": 53.41,
       "status": "ok",
-      "extract_seconds": 0.247845,
+      "worker_peak_rss_mib": 41.414,
+      "extract_seconds": 0.343971,
       "page_count": 52,
       "pages_extracted": 52,
       "limited": false,
@@ -623,15 +1254,32 @@
       "vietnamese_diacritics": 28372,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "7c99f955c325730a459d9764adcfdc0f3a5148c0d77c03cdf67a2f93064e60f5"
+      "text_sha256": "7c99f955c325730a459d9764adcfdc0f3a5148c0d77c03cdf67a2f93064e60f5",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi15",
       "library": "PyMuPDF",
-      "cold_wall_seconds": 1.565128,
-      "peak_rss_mib": 4.77,
+      "cold_wall_seconds": 1.478823,
+      "peak_rss_mib": 73.484,
       "status": "ok",
-      "extract_seconds": 1.391616,
+      "worker_peak_rss_mib": 60.887,
+      "extract_seconds": 1.248628,
       "page_count": 52,
       "pages_extracted": 52,
       "limited": false,
@@ -639,15 +1287,32 @@
       "vietnamese_diacritics": 28372,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "3f7384a621285206d538af47ccebfdddc5b7672d23aa2aecd7a15e2bdb1d09ec"
+      "text_sha256": "3f7384a621285206d538af47ccebfdddc5b7672d23aa2aecd7a15e2bdb1d09ec",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi16",
       "library": "pypdf",
-      "cold_wall_seconds": 2.650421,
-      "peak_rss_mib": 4.77,
+      "cold_wall_seconds": 2.853878,
+      "peak_rss_mib": 66.914,
       "status": "ok",
-      "extract_seconds": 2.488955,
+      "worker_peak_rss_mib": 54.391,
+      "extract_seconds": 2.628363,
       "page_count": 100,
       "pages_extracted": 100,
       "limited": false,
@@ -655,15 +1320,32 @@
       "vietnamese_diacritics": 45830,
       "replacement_characters": 0,
       "empty_pages": 2,
-      "text_sha256": "efff13dfb7c2755f3d8e837b4984facea2b6605670483eab4c5be0fe81bf1b98"
+      "text_sha256": "efff13dfb7c2755f3d8e837b4984facea2b6605670483eab4c5be0fe81bf1b98",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi16",
       "library": "pypdfium2",
-      "cold_wall_seconds": 0.533442,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.71832,
+      "peak_rss_mib": 55.297,
       "status": "ok",
-      "extract_seconds": 0.372639,
+      "worker_peak_rss_mib": 43.027,
+      "extract_seconds": 0.483951,
       "page_count": 100,
       "pages_extracted": 100,
       "limited": false,
@@ -671,15 +1353,32 @@
       "vietnamese_diacritics": 45791,
       "replacement_characters": 0,
       "empty_pages": 2,
-      "text_sha256": "3b9b9a58ea6e2aef94d65162889e1099673397f58396a66f90c0d61f42c44371"
+      "text_sha256": "3b9b9a58ea6e2aef94d65162889e1099673397f58396a66f90c0d61f42c44371",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi16",
       "library": "PyMuPDF",
-      "cold_wall_seconds": 2.457224,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 2.454338,
+      "peak_rss_mib": 73.453,
       "status": "ok",
-      "extract_seconds": 2.288381,
+      "worker_peak_rss_mib": 60.84,
+      "extract_seconds": 2.188779,
       "page_count": 100,
       "pages_extracted": 100,
       "limited": false,
@@ -687,15 +1386,32 @@
       "vietnamese_diacritics": 45784,
       "replacement_characters": 0,
       "empty_pages": 2,
-      "text_sha256": "be070307a58989abb3fd7b2dceb002a27786531da56639305877094a68fcd492"
+      "text_sha256": "be070307a58989abb3fd7b2dceb002a27786531da56639305877094a68fcd492",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi17",
       "library": "pypdf",
-      "cold_wall_seconds": 0.973883,
-      "peak_rss_mib": 5.125,
+      "cold_wall_seconds": 1.081773,
+      "peak_rss_mib": 78.312,
       "status": "ok",
-      "extract_seconds": 0.806732,
+      "worker_peak_rss_mib": 65.734,
+      "extract_seconds": 0.86366,
       "page_count": 36,
       "pages_extracted": 36,
       "limited": false,
@@ -703,15 +1419,32 @@
       "vietnamese_diacritics": 8339,
       "replacement_characters": 0,
       "empty_pages": 2,
-      "text_sha256": "4b9a787a06aed83e3dbf1ac7f7c41c6f3223c49f744ae57bf17c99ee0e09cc39"
+      "text_sha256": "4b9a787a06aed83e3dbf1ac7f7c41c6f3223c49f744ae57bf17c99ee0e09cc39",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 10,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi17",
       "library": "pypdfium2",
-      "cold_wall_seconds": 0.316243,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.49968,
+      "peak_rss_mib": 61.531,
       "status": "ok",
-      "extract_seconds": 0.15361,
+      "worker_peak_rss_mib": 48.906,
+      "extract_seconds": 0.263883,
       "page_count": 36,
       "pages_extracted": 36,
       "limited": false,
@@ -719,15 +1452,32 @@
       "vietnamese_diacritics": 8281,
       "replacement_characters": 0,
       "empty_pages": 2,
-      "text_sha256": "1600dc47281720a34b4852b4403bf5369ce2ee5e303065dca95ac2b72cb5eb03"
+      "text_sha256": "1600dc47281720a34b4852b4403bf5369ce2ee5e303065dca95ac2b72cb5eb03",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 10,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi17",
       "library": "PyMuPDF",
-      "cold_wall_seconds": 0.82598,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.711538,
+      "peak_rss_mib": 79.312,
       "status": "ok",
-      "extract_seconds": 0.63162,
+      "worker_peak_rss_mib": 66.762,
+      "extract_seconds": 0.481136,
       "page_count": 36,
       "pages_extracted": 36,
       "limited": false,
@@ -735,15 +1485,32 @@
       "vietnamese_diacritics": 8276,
       "replacement_characters": 0,
       "empty_pages": 2,
-      "text_sha256": "13d28498c9872d615a8a22b77d9b09d63bdef260ac1942339a49f405e9bfafbb"
+      "text_sha256": "13d28498c9872d615a8a22b77d9b09d63bdef260ac1942339a49f405e9bfafbb",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 10,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi18",
       "library": "pypdf",
-      "cold_wall_seconds": 0.531624,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.556546,
+      "peak_rss_mib": 51.637,
       "status": "ok",
-      "extract_seconds": 0.34273,
+      "worker_peak_rss_mib": 39.027,
+      "extract_seconds": 0.335183,
       "page_count": 11,
       "pages_extracted": 11,
       "limited": false,
@@ -751,15 +1518,32 @@
       "vietnamese_diacritics": 3615,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "c16a2923e1b9058a1e90a98463db69055abd074deb414fab470e6e8760595ddf"
+      "text_sha256": "c16a2923e1b9058a1e90a98463db69055abd074deb414fab470e6e8760595ddf",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi18",
       "library": "pypdfium2",
-      "cold_wall_seconds": 0.266639,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.432285,
+      "peak_rss_mib": 48.645,
       "status": "ok",
-      "extract_seconds": 0.110253,
+      "worker_peak_rss_mib": 36.285,
+      "extract_seconds": 0.220706,
       "page_count": 11,
       "pages_extracted": 11,
       "limited": false,
@@ -767,15 +1551,32 @@
       "vietnamese_diacritics": 3615,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "31e6b3a24102cd662d7ece0f5610962bc4cadc49cd2366cefc476a6d0e6fdd8a"
+      "text_sha256": "31e6b3a24102cd662d7ece0f5610962bc4cadc49cd2366cefc476a6d0e6fdd8a",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi18",
       "library": "PyMuPDF",
-      "cold_wall_seconds": 0.470142,
-      "peak_rss_mib": 4.789,
+      "cold_wall_seconds": 0.487158,
+      "peak_rss_mib": 68.414,
       "status": "ok",
-      "extract_seconds": 0.288655,
+      "worker_peak_rss_mib": 55.809,
+      "extract_seconds": 0.25906,
       "page_count": 11,
       "pages_extracted": 11,
       "limited": false,
@@ -783,15 +1584,32 @@
       "vietnamese_diacritics": 3615,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "89573d0c22d2e335d2656e87ab17bdabe17d61c41a1822ede88f69f550358892"
+      "text_sha256": "89573d0c22d2e335d2656e87ab17bdabe17d61c41a1822ede88f69f550358892",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi19",
       "library": "pypdf",
-      "cold_wall_seconds": 3.024357,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 2.778655,
+      "peak_rss_mib": 57.594,
       "status": "ok",
-      "extract_seconds": 2.863317,
+      "worker_peak_rss_mib": 44.984,
+      "extract_seconds": 2.559685,
       "page_count": 96,
       "pages_extracted": 96,
       "limited": false,
@@ -799,15 +1617,32 @@
       "vietnamese_diacritics": 48768,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "83671eb37921b0a14b506eb8ed43732af0618744d0c6e926d72da5b2ab76feb8"
+      "text_sha256": "83671eb37921b0a14b506eb8ed43732af0618744d0c6e926d72da5b2ab76feb8",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi19",
       "library": "pypdfium2",
-      "cold_wall_seconds": 0.546037,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.69082,
+      "peak_rss_mib": 52.141,
       "status": "ok",
-      "extract_seconds": 0.379126,
+      "worker_peak_rss_mib": 39.809,
+      "extract_seconds": 0.468797,
       "page_count": 96,
       "pages_extracted": 96,
       "limited": false,
@@ -815,15 +1650,32 @@
       "vietnamese_diacritics": 48768,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "0f5b618597775fa554e832e614010c13cc2b322b4d0f0cc27d30af61b93d8927"
+      "text_sha256": "0f5b618597775fa554e832e614010c13cc2b322b4d0f0cc27d30af61b93d8927",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi19",
       "library": "PyMuPDF",
-      "cold_wall_seconds": 2.666396,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 2.317075,
+      "peak_rss_mib": 71.562,
       "status": "ok",
-      "extract_seconds": 2.489941,
+      "worker_peak_rss_mib": 58.98,
+      "extract_seconds": 2.082279,
       "page_count": 96,
       "pages_extracted": 96,
       "limited": false,
@@ -831,15 +1683,32 @@
       "vietnamese_diacritics": 48768,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "0e9fcd2119013c7a4393e8eb1c3776041b4d89c4ec9d5feacb2c270f5588e26c"
+      "text_sha256": "0e9fcd2119013c7a4393e8eb1c3776041b4d89c4ec9d5feacb2c270f5588e26c",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi20",
       "library": "pypdf",
-      "cold_wall_seconds": 0.728543,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.732146,
+      "peak_rss_mib": 51.098,
       "status": "ok",
-      "extract_seconds": 0.570197,
+      "worker_peak_rss_mib": 38.535,
+      "extract_seconds": 0.519303,
       "page_count": 21,
       "pages_extracted": 21,
       "limited": false,
@@ -847,15 +1716,33 @@
       "vietnamese_diacritics": 7486,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "4b58129f611e72d4c23d550582887dc6ad39efcb20a0ad8a79aa92bf762ae28b"
+      "text_sha256": "4b58129f611e72d4c23d550582887dc6ad39efcb20a0ad8a79aa92bf762ae28b",
+      "qa": {
+        "anchors": 3,
+        "matching": 3,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi20",
       "library": "pypdfium2",
-      "cold_wall_seconds": 0.291874,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.453147,
+      "peak_rss_mib": 48.73,
       "status": "ok",
-      "extract_seconds": 0.139986,
+      "worker_peak_rss_mib": 35.906,
+      "extract_seconds": 0.23872,
       "page_count": 21,
       "pages_extracted": 21,
       "limited": false,
@@ -863,15 +1750,33 @@
       "vietnamese_diacritics": 7486,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "e5c7ab56c9f6be45d7d586ad237c490f700eb49dd496a405a82363d57f0638e7"
+      "text_sha256": "e5c7ab56c9f6be45d7d586ad237c490f700eb49dd496a405a82363d57f0638e7",
+      "qa": {
+        "anchors": 3,
+        "matching": 3,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi20",
       "library": "PyMuPDF",
-      "cold_wall_seconds": 0.615056,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.652405,
+      "peak_rss_mib": 68.758,
       "status": "ok",
-      "extract_seconds": 0.443156,
+      "worker_peak_rss_mib": 56.137,
+      "extract_seconds": 0.425102,
       "page_count": 21,
       "pages_extracted": 21,
       "limited": false,
@@ -879,15 +1784,33 @@
       "vietnamese_diacritics": 7486,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "7be8271248d4959b96dfcc87d4f73d0d8241d15302a9d49d5048dc6dc255883c"
+      "text_sha256": "7be8271248d4959b96dfcc87d4f73d0d8241d15302a9d49d5048dc6dc255883c",
+      "qa": {
+        "anchors": 3,
+        "matching": 3,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi22",
       "library": "pypdf",
-      "cold_wall_seconds": 0.521532,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.573306,
+      "peak_rss_mib": 71.297,
       "status": "ok",
-      "extract_seconds": 0.36708,
+      "worker_peak_rss_mib": 59.0,
+      "extract_seconds": 0.34801,
       "page_count": 12,
       "pages_extracted": 12,
       "limited": false,
@@ -895,15 +1818,33 @@
       "vietnamese_diacritics": 3645,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "6d09982d95c042f15b13193f6d357d2337016edf56717215e75bb2c30e3caab9"
+      "text_sha256": "6d09982d95c042f15b13193f6d357d2337016edf56717215e75bb2c30e3caab9",
+      "qa": {
+        "anchors": 3,
+        "matching": 3,
+        "order_probes": 1,
+        "ordered": 0,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true,
+              true
+            ],
+            "in_order": false
+          }
+        ]
+      }
     },
     {
       "document_id": "vi22",
       "library": "pypdfium2",
-      "cold_wall_seconds": 0.37755,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.456036,
+      "peak_rss_mib": 62.852,
       "status": "ok",
-      "extract_seconds": 0.219044,
+      "worker_peak_rss_mib": 50.547,
+      "extract_seconds": 0.23727,
       "page_count": 12,
       "pages_extracted": 12,
       "limited": false,
@@ -911,15 +1852,33 @@
       "vietnamese_diacritics": 3645,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "106264f5d0a11bed7bf4f0b50e06755e34dade6333cacd4ee3e626ad3131c7b9"
+      "text_sha256": "106264f5d0a11bed7bf4f0b50e06755e34dade6333cacd4ee3e626ad3131c7b9",
+      "qa": {
+        "anchors": 3,
+        "matching": 3,
+        "order_probes": 1,
+        "ordered": 0,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true,
+              true
+            ],
+            "in_order": false
+          }
+        ]
+      }
     },
     {
       "document_id": "vi22",
       "library": "PyMuPDF",
-      "cold_wall_seconds": 0.477566,
-      "peak_rss_mib": 5.129,
+      "cold_wall_seconds": 0.522221,
+      "peak_rss_mib": 80.027,
       "status": "ok",
-      "extract_seconds": 0.304501,
+      "worker_peak_rss_mib": 67.422,
+      "extract_seconds": 0.288227,
       "page_count": 12,
       "pages_extracted": 12,
       "limited": false,
@@ -927,15 +1886,33 @@
       "vietnamese_diacritics": 3645,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "d5b1620c1c41d40ab940d4464a55c2fc568e5ebf0518531f4a8efd2471296a62"
+      "text_sha256": "d5b1620c1c41d40ab940d4464a55c2fc568e5ebf0518531f4a8efd2471296a62",
+      "qa": {
+        "anchors": 3,
+        "matching": 3,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     },
     {
       "document_id": "vi23",
       "library": "pypdf",
-      "cold_wall_seconds": 0.620377,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.644611,
+      "peak_rss_mib": 53.738,
       "status": "ok",
-      "extract_seconds": 0.466608,
+      "worker_peak_rss_mib": 41.121,
+      "extract_seconds": 0.424917,
       "page_count": 5,
       "pages_extracted": 5,
       "limited": false,
@@ -943,15 +1920,32 @@
       "vietnamese_diacritics": 2854,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "cca1dfd9a35acbfa4ac926f4177ba3dd06fcb146e3960f2f36683f3446a8d0a1"
+      "text_sha256": "cca1dfd9a35acbfa4ac926f4177ba3dd06fcb146e3960f2f36683f3446a8d0a1",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 0,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": false
+          }
+        ]
+      }
     },
     {
       "document_id": "vi23",
       "library": "pypdfium2",
-      "cold_wall_seconds": 0.262715,
-      "peak_rss_mib": 4.766,
+      "cold_wall_seconds": 0.446807,
+      "peak_rss_mib": 49.59,
       "status": "ok",
-      "extract_seconds": 0.113798,
+      "worker_peak_rss_mib": 37.43,
+      "extract_seconds": 0.231368,
       "page_count": 5,
       "pages_extracted": 5,
       "limited": false,
@@ -959,15 +1953,32 @@
       "vietnamese_diacritics": 2854,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "dc82a9a727d417029c51d3aba7daba7331c0d775668dd1876dbc0cbaed7e1e49"
+      "text_sha256": "dc82a9a727d417029c51d3aba7daba7331c0d775668dd1876dbc0cbaed7e1e49",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 0,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": false
+          }
+        ]
+      }
     },
     {
       "document_id": "vi23",
       "library": "PyMuPDF",
-      "cold_wall_seconds": 0.515004,
-      "peak_rss_mib": 5.125,
+      "cold_wall_seconds": 0.440579,
+      "peak_rss_mib": 68.016,
       "status": "ok",
-      "extract_seconds": 0.336735,
+      "worker_peak_rss_mib": 55.41,
+      "extract_seconds": 0.219157,
       "page_count": 5,
       "pages_extracted": 5,
       "limited": false,
@@ -975,7 +1986,23 @@
       "vietnamese_diacritics": 2854,
       "replacement_characters": 0,
       "empty_pages": 0,
-      "text_sha256": "47cabeeacea58504d3e22eedd0c8e66313da9bda6d5acc1d4d437cf0c8c7106f"
+      "text_sha256": "47cabeeacea58504d3e22eedd0c8e66313da9bda6d5acc1d4d437cf0c8c7106f",
+      "qa": {
+        "anchors": 2,
+        "matching": 2,
+        "order_probes": 1,
+        "ordered": 1,
+        "details": [
+          {
+            "page": 4,
+            "matches": [
+              true,
+              true
+            ],
+            "in_order": true
+          }
+        ]
+      }
     }
   ]
 }

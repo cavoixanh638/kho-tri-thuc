@@ -18,7 +18,9 @@ def main():
     if output == repository or repository in output.parents:
         raise ValueError("Rendered source pages must stay outside Git")
     output.mkdir(parents=True, exist_ok=True)
-    manifest = json.loads(Path(__file__).with_name("sources.json").read_text(encoding="utf-8"))
+    manifest = json.loads(
+        Path(__file__).with_name("sources.json").read_text(encoding="utf-8")
+    )
     sheet = None
     for index, document in enumerate(manifest["documents"]):
         pdf = pdfium.PdfDocument(args.cache / (document["sha256"] + ".pdf"))
@@ -33,7 +35,11 @@ def main():
             sheet = Image.new("RGB", (2020, 2070), "white")
         x, y = index % 2 * 1010, (index % 4 // 2) * 1035
         sheet.paste(image, (x, y + 28))
-        ImageDraw.Draw(sheet).text((x + 5, y + 5), f"{document['id']} physical page {page_number}", fill="black")
+        ImageDraw.Draw(sheet).text(
+            (x + 5, y + 5),
+            f"{document['id']} physical page {page_number}",
+            fill="black",
+        )
         if index % 4 == 3 or index == len(manifest["documents"]) - 1:
             sheet.save(output / f"contact-{index // 4 + 1}.png")
         page.close()

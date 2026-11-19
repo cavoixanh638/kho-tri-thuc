@@ -149,6 +149,8 @@ def extract(library, path):
 
 
 def worker(library, path, output):
+    import psutil
+
     started = time.perf_counter()
     try:
         result = extract(library, path)
@@ -156,6 +158,10 @@ def worker(library, path, output):
     except Exception as error:  # noqa: BLE001 - retain type only, no source content or paths
         result = {"status": "error", "error_type": type(error).__name__}
     result["extract_seconds"] = time.perf_counter() - started
+    memory = psutil.Process().memory_info()
+    result["worker_peak_rss_mib"] = round(
+        max(memory.rss, getattr(memory, "peak_wset", 0)) / 1024 / 1024, 3
+    )
     write_json(output, result)
 
 
@@ -163,6 +169,7 @@ def measure_one(library, document, cache, scratch):
     import psutil
 
     output = scratch / (document["id"] + "-" + library + ".json")
+    output.unlink(missing_ok=True)
     path = cache / (document["sha256"] + ".pdf")
     if (
         not path.is_file()
@@ -193,8 +200,14 @@ def measure_one(library, document, cache, scratch):
         monitored = psutil.Process(process.pid)
         while process.poll() is None:
             try:
-                memory = monitored.memory_info()
-                peak_rss = max(peak_rss, memory.rss, getattr(memory, "peak_wset", 0))
+                processes = [monitored, *monitored.children(recursive=True)]
+                resident = 0
+                for child in processes:
+                    try:
+                        resident += child.memory_info().rss
+                    except psutil.NoSuchProcess:
+                        continue
+                peak_rss = max(peak_rss, resident)
             except psutil.NoSuchProcess:
                 break
             if peak_rss > MEMORY_BYTES:
@@ -205,6 +218,11 @@ def measure_one(library, document, cache, scratch):
                 break
             time.sleep(0.01)
         if process.poll() is None:
+            for child in reversed(monitored.children(recursive=True)):
+                try:
+                    child.kill()
+                except psutil.NoSuchProcess:
+                    pass
             process.kill()
         process.wait(timeout=5)
     wall = time.perf_counter() - started
@@ -229,6 +247,7 @@ def measure_one(library, document, cache, scratch):
     return {
         **result,
         "status": "ok",
+        "worker_peak_rss_mib": extracted["worker_peak_rss_mib"],
         "extract_seconds": round(extracted["extract_seconds"], 6),
         "page_count": extracted["page_count"],
         "pages_extracted": len(extracted["pages"]),
@@ -318,6 +337,7 @@ def main():
                 },
             },
             "limits": {
+                "memory_metric": "peak sampled aggregate process-tree RSS (10 ms); worker OS peak working set separately on Windows",
                 "seconds_per_document_library": TIMEOUT,
                 "memory_mib": MEMORY_BYTES // 1024 // 1024,
                 "max_pages": MAX_PAGES,

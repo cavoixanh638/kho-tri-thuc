@@ -13,7 +13,15 @@
         "characters_first_3_pages": 12102
       },
       "language": "vi",
-      "qa": []
+      "qa": [
+        {
+          "page": 4,
+          "anchors": [
+            "Vật tư",
+            "Tổng quan Nguồn lực"
+          ]
+        }
+      ]
     },
     {
       "id": "vi02",
@@ -27,7 +35,15 @@
         "characters_first_3_pages": 6844
       },
       "language": "vi",
-      "qa": []
+      "qa": [
+        {
+          "page": 4,
+          "anchors": [
+            "Kết nối dữ liệu",
+            "KẾT LUẬN"
+          ]
+        }
+      ]
     },
     {
       "id": "vi04",
@@ -41,7 +57,15 @@
         "characters_first_3_pages": 13137
       },
       "language": "vi",
-      "qa": []
+      "qa": [
+        {
+          "page": 4,
+          "anchors": [
+            "Bảo vệ trẻ em",
+            "Bảo trợ xã hội"
+          ]
+        }
+      ]
     },
     {
       "id": "vi05",
@@ -55,7 +79,15 @@
         "characters_first_3_pages": 251
       },
       "language": "vi",
-      "qa": []
+      "qa": [
+        {
+          "page": 10,
+          "anchors": [
+            "DANH MỤC BẢNG",
+            "Cấu trúc hệ thống giáo dục"
+          ]
+        }
+      ]
     },
     {
       "id": "vi06",
@@ -69,7 +101,15 @@
         "characters_first_3_pages": 652
       },
       "language": "vi",
-      "qa": []
+      "qa": [
+        {
+          "page": 4,
+          "anchors": [
+            "GIỚI THIỆU",
+            "NHỮNG ĐIỀU LẦM TƯỞNG"
+          ]
+        }
+      ]
     },
     {
       "id": "vi07",
@@ -83,7 +123,15 @@
         "characters_first_3_pages": 658
       },
       "language": "vi",
-      "qa": []
+      "qa": [
+        {
+          "page": 4,
+          "anchors": [
+            "GIỚI THIỆU",
+            "MỤC TIÊU HỌC TẬP"
+          ]
+        }
+      ]
     },
     {
       "id": "vi08",
@@ -97,7 +145,15 @@
         "characters_first_3_pages": 3162
       },
       "language": "vi",
-      "qa": []
+      "qa": [
+        {
+          "page": 4,
+          "anchors": [
+            "Lời cảm ơn",
+            "Chúng tôi xin trân trọng"
+          ]
+        }
+      ]
     },
     {
       "id": "vi10",
@@ -111,7 +167,15 @@
         "characters_first_3_pages": 660
       },
       "language": "vi",
-      "qa": []
+      "qa": [
+        {
+          "page": 4,
+          "anchors": [
+            "PHƯƠNG PHÁP LUẬN",
+            "SỨC KHỎE VÀ DINH DƯỠNG"
+          ]
+        }
+      ]
     },
     {
       "id": "vi11",
@@ -125,7 +189,15 @@
         "characters_first_3_pages": 4771
       },
       "language": "vi",
-      "qa": []
+      "qa": [
+        {
+          "page": 4,
+          "anchors": [
+            "Trí tuệ Nhân tạo",
+            "Các đối tác phát triển"
+          ]
+        }
+      ]
     },
     {
       "id": "vi12",
@@ -139,7 +211,15 @@
         "characters_first_3_pages": 364
       },
       "language": "vi",
-      "qa": []
+      "qa": [
+        {
+          "page": 4,
+          "anchors": [
+            "LỜI GIỚI THIỆU",
+            "DANH MỤC BIỂU ĐỒ"
+          ]
+        }
+      ]
     },
     {
       "id": "vi13",
@@ -153,7 +233,15 @@
         "characters_first_3_pages": 9051
       },
       "language": "vi",
-      "qa": []
+      "qa": [
+        {
+          "page": 4,
+          "anchors": [
+            "Biến đổi khí hậu",
+            "Bảo vệ môi trường"
+          ]
+        }
+      ]
     },
     {
       "id": "vi14",
@@ -167,7 +255,15 @@
         "characters_first_3_pages": 4592
       },
       "language": "vi",
-      "qa": []
+      "qa": [
+        {
+          "page": 4,
+          "anchors": [
+            "Mô hình Ngôi nhà",
+            "Thư viện xanh"
+          ]
+        }
+      ]
     },
     {
       "id": "vi15",
@@ -181,7 +277,15 @@
         "characters_first_3_pages": 8403
       },
       "language": "vi",
-      "qa": []
+      "qa": [
+        {
+          "page": 4,
+          "anchors": [
+            "Biến đổi khí hậu",
+            "Bộ Tài chính"
+          ]
+        }
+      ]
     },
     {
       "id": "vi16",
@@ -195,7 +299,15 @@
         "characters_first_3_pages": 306
       },
       "language": "vi",
-      "qa": []
+      "qa": [
+        {
+          "page": 4,
+          "anchors": [
+            "LỜI CẢM ƠN",
+            "ĐẶT VẤN ĐỀ"
+          ]
+        }
+      ]
     },
     {
       "id": "vi17",
@@ -209,7 +321,15 @@
         "characters_first_3_pages": 338
       },
       "language": "vi",
-      "qa": []
+      "qa": [
+        {
+          "page": 10,
+          "anchors": [
+            "Nghị quyết 59-NQ/TW",
+            "Luật Giáo dục 2019"
+          ]
+        }
+      ]
     },
     {
       "id": "vi18",
@@ -223,7 +343,15 @@
         "characters_first_3_pages": 6015
       },
       "language": "vi",
-      "qa": []
+      "qa": [
+        {
+          "page": 4,
+          "anchors": [
+            "Các phát hiện chính",
+            "Hành động và cơ hội"
+          ]
+        }
+      ]
     },
     {
       "id": "vi19",
@@ -237,7 +365,15 @@
         "characters_first_3_pages": 6778
       },
       "language": "vi",
-      "qa": []
+      "qa": [
+        {
+          "page": 4,
+          "anchors": [
+            "Hành động và cơ hội",
+            "Trước tiên"
+          ]
+        }
+      ]
     },
     {
       "id": "vi20",
@@ -251,7 +387,16 @@
         "characters_first_3_pages": 5957
       },
       "language": "vi",
-      "qa": []
+      "qa": [
+        {
+          "page": 4,
+          "anchors": [
+            "THAY ĐỔI",
+            "CHƯƠNG V",
+            "Điều 24"
+          ]
+        }
+      ]
     },
     {
       "id": "vi22",
@@ -265,7 +410,16 @@
         "characters_first_3_pages": 3202
       },
       "language": "vi",
-      "qa": []
+      "qa": [
+        {
+          "page": 4,
+          "anchors": [
+            "tiếp tục phải đối mặt",
+            "Việt Nam là",
+            "Y tế"
+          ]
+        }
+      ]
     },
     {
       "id": "vi23",
@@ -279,7 +433,21 @@
         "characters_first_3_pages": 13079
       },
       "language": "vi",
-      "qa": []
+      "qa": [
+        {
+          "page": 4,
+          "anchors": [
+            "Dinh dưỡng",
+            "Lãnh đạo, điều phối"
+          ]
+        }
+      ]
     }
-  ]
+  ],
+  "quality_method": {
+    "reviewer": "Codex visual review of rendered source pages, 2026-11-19",
+    "normalization": "NFC, casefold, whitespace collapse; accents preserved",
+    "locator": "one-based physical PDF page, not printed page labels or TOC destinations",
+    "scope": "One narrow visual probe per document; many front-matter pages. Not CER/WER, full table reconstruction, human independent review or full-document reading-order accuracy."
+  }
 }
