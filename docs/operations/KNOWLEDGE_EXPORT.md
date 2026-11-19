@@ -65,6 +65,10 @@ nguồn/tệp/giờ nhận/cảnh báo thiếu transcript. [Bằng chứng conne
 các phần nguồn/cảnh báo; trả lại Markdown và full readback/version PASS. Tìm
 fullText bằng cụm nguồn đã biết cũng trả đúng một file. Đây là nghiệm thu một Item,
 chưa phải pilot 5–10 Item, native Docs hoặc mọi truy vấn.
+Browser Windows sau đăng nhập đã kiểm trực quan panel: Markdown/Đã đồng bộ,
+bấm Đồng bộ lại thấy chờ rồi tự về Đã đồng bộ và giữ cùng liên kết Drive.
+Cảnh báo video thiếu transcript hiển thị đúng. [Báo cáo UI](knowledge-ui-live-results.json).
+Chưa kiểm ma trận viewport, Android hoặc phát video qua Drive preview.
 
 Backup manifest v2 thêm `knowledge_exports`, giữ file mapping, preference và
 version; vẫn xác minh/restore được manifest v1 (14 collection). OAuth/session vẫn
