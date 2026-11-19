@@ -129,15 +129,19 @@ Người dùng giao tiếp tục các phần còn lại tới khi hoàn thành h
 Connector Drive search không thấy thư mục ứng dụng, `files.get` đúng ID trả 404 trong khi runtime vẫn đọc được. Settings xác nhận connector dùng tài khoản khác. Người dùng yêu cầu mở kết nối lại; đã mở Connect another account tới màn hình Google chọn tài khoản, chờ người dùng hoàn tất. Không lưu account ID/credential vào Git. Android được người dùng chủ động để sau, hoàn thiện Windows trước.
 
 Các agent dừng do workspace hết credits; điều phối tiếp nhận phần đang dở.
-KT-102 có manifest/runner/số đo sơ bộ trên nhánh riêng, QA chưa có và số RAM cần
-xác minh lại. KT-108 đã có 12 test JSDOM và build PASS, chưa CI/deploy.
+KT-102 đã đo lại 60 lượt, đối chiếu 42 anchor/20 probe và rà license, ở PR #20;
+chưa hoàn tất fallback/nguồn khác. KT-108 PR #19 đã CI PASS và merge, Windows đã
+chạy `ccc0a33`, API/HTML/bundle mới đều 200; báo cáo ở nhánh PDF/PR #20.
 Recovery có mã `760be80` và 7 test archive/Drive mô phỏng PASS; live audit chưa chạy
 vì automatic approval review yêu cầu xác nhận cụ thể payload backup và nơi nhận.
 
-KT-202E hiện chỉ có model KnowledgeExport và snapshot renderer **WIP/TEST_PENDING**.
-Chưa migration/export adapter/job/API/UI; không được merge hoặc deploy branch này
-ở trạng thái hiện tại. Không có bản xuất tri thức nào được tạo trên Drive.
-Tiếp tục từ mã đang có, thêm migration/tests và exporter idempotent trước pilot.
+KT-202E có model KnowledgeExport, migration `storage.0003`, snapshot renderer và
+6 test PostgreSQL tạm **PASS** (ghi chú/giờ bất biến, version, active/stale,
+phân quyền nhóm, transcript rỗng, cắt có cảnh báo và chặn credential-like input).
+`makemigrations --check` PASS. Snapshot không opt-in hoặc ghi Drive khi được đọc.
+Chưa export adapter/job/API/UI; **WIP**, không merge/deploy branch ở trạng thái
+hiện tại. Không có bản xuất tri thức nào được tạo trên Drive. Tiếp tục exporter
+idempotent và cập nhật backup mapping trước pilot.
 
 **Việc tiếp theo:** tích hợp từng nhánh khi có mã/test/bằng chứng, giữ các cổng chưa đạt có trạng thái rõ. Chất lượng nhóm cần tập thực và người dùng đánh giá, không thay bằng fixture tự soạn. Upload Reel người dùng đã giao hoàn tất, không cần gửi lại liên kết.
 

@@ -6,7 +6,7 @@ import re
 from dataclasses import dataclass
 
 from catalog.models import Item, ItemProject, ItemTag, ItemTopic
-from django.db.models.functions import Substr
+from django.db.models.functions import MD5, Substr
 from ingestion.models import CaptureEvent
 from storage.models import StorageLocation
 
@@ -68,7 +68,7 @@ def snapshot(item_id, format="markdown"):
     )
     parts = list(
         DerivedContent.objects.filter(item=item, status="active")
-        .annotate(preview=Substr("text", 1, MAX_CHARS + 1))
+        .annotate(preview=Substr("text", 1, MAX_CHARS + 1), text_version=MD5("text"))
         .order_by("asset_id", "id")
         .values(
             "id",
@@ -78,10 +78,11 @@ def snapshot(item_id, format="markdown"):
             "processor_version",
             "source_locator",
             "preview",
+            "text_version",
         )[: MAX_PARTS + 1]
     )
     events = list(
-        CaptureEvent.objects.filter(item=item)
+        CaptureEvent.objects.filter(item=item, owner_id=item.owner_id)
         .annotate(annotation=Substr("raw_text", 1, MAX_CHARS + 1))
         .order_by("server_received_at", "id")
         .values("id", "server_received_at", "annotation")[: MAX_PARTS + 1]
@@ -142,7 +143,16 @@ def snapshot(item_id, format="markdown"):
         if row["provider"] == "google_drive"
     ]
     if any(row["mime"].startswith("video/") for row in assets) and not any(
-        any(word in row["kind"] for word in ("transcript", "subtitle", "caption"))
+        row["kind"]
+        in {
+            "transcript",
+            "video_transcript",
+            "subtitle",
+            "subtitles",
+            "caption",
+            "captions",
+        }
+        and row["preview"].strip()
         for row in parts
     ):
         lines += [
@@ -157,7 +167,9 @@ def snapshot(item_id, format="markdown"):
     for row in parts[:MAX_PARTS]:
         locator = {
             key: value
-            for key, value in row["source_locator"].items()
+            for key, value in (
+                row["source_locator"] if isinstance(row["source_locator"], dict) else {}
+            ).items()
             if key in {"page", "paragraph", "sheet", "row", "range", "section"}
             and isinstance(value, (str, int))
         }
@@ -176,4 +188,6 @@ def snapshot(item_id, format="markdown"):
         )
     if format == "text":
         text = re.sub(r"(?m)^#{1,3} ", "", text)
-    return KnowledgeSnapshot(version, text.encode("utf-8"), truncated, blocked)
+    return KnowledgeSnapshot(
+        version, b"" if blocked else text.encode("utf-8"), truncated, blocked
+    )
