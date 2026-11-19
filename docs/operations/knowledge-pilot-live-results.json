@@ -129,8 +129,6 @@
     "connector retrieval: recorded separately"
   ],
   "update_runner": {
-    "status": "FAIL",
-    "phase": "update",
     "application_source_sha": "356fb2f506b83d25b103e58301b3e5daf2274e04",
     "runner_sha256": "bb3bd45d5eead7c8c3430a9733ee005dfa67c3c55abb0ba99d8d96cdf8aefa03",
     "corpus_sha256": "35c741fc1cfe521e5fa42d5a574c55d0312025fda475b66af3646f841b24a761"

@@ -373,7 +373,11 @@ def audit(args, report):
                 raise PilotError("receipt_target_mismatch")
             if receipt["source_fingerprint"] != fingerprint:
                 raise PilotError("source_changed_since_prepare")
-            phase_provenance = dict(report)
+            phase_provenance = {
+                key: value
+                for key, value in report.items()
+                if key not in {"status", "phase"}
+            }
             report.update(receipt["report"])
             report["update_runner"] = phase_provenance
             if report.get("updates"):

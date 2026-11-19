@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-11-19T13:47:33.812637+00:00",
+  "checked_at": "2026-11-19T13:48:47.108110+00:00",
   "status": "PASS_CONTROLLED_WITH_SEARCH_LIMITATION",
   "scope": "Codex Google Drive connector, 8 controlled Items, 9 predeclared questions; folder-scoped keyword retrieval and auditor-written grounded answers",
   "method": "Initial query uses several question terms; a predeclared shorter keyword is allowed after a miss. Full file text is fetched before and after changes. This does not measure general semantic search or independent ChatGPT UI behavior.",

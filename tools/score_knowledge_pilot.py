@@ -82,6 +82,7 @@ def score(corpus, observed):
         == len(after)
         == len(cases)
         == 8
+        and all(row["content"] for row in before.values())
         and all(row["content"] for row in after.values()),
         "same_file_ids_before_and_after": all(
             before[key]["id"] == after[key]["id"] for key in cases
