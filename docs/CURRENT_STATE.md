@@ -126,7 +126,11 @@ Người dùng giao tiếp tục các phần còn lại tới khi hoàn thành h
 | UI worker — KT-108 | `codex/kt-108-processing-ui` | Trạng thái worker tự cập nhật, không mất bản chỉnh sửa, polling có giới hạn/hủy; kiểm thử và build, thiết bị thật ghi riêng |
 | Điều phối — KT-201/202E và tích hợp | `codex/kt-202e-knowledge-pilot` | Xuất per-item có version/opt-in/retry cùng file, pilot đọc bằng connector, tích hợp CI và cập nhật Windows |
 
-Connector Drive search không thấy thư mục ứng dụng, `files.get` đúng ID trả 404 trong khi runtime vẫn đọc được. Settings xác nhận connector dùng tài khoản khác. Người dùng yêu cầu mở kết nối lại; đã mở Connect another account tới màn hình Google chọn tài khoản, chờ người dùng hoàn tất. Không lưu account ID/credential vào Git. Android được người dùng chủ động để sau, hoàn thiện Windows trước.
+Connector Drive ban đầu dùng tài khoản khác và không đọc được thư mục ứng dụng.
+Sau khi người dùng kết nối đúng tài khoản, Settings của phiên Codex đã xác nhận
+đúng Primary; connector metadata/search/fetch bản xuất Markdown thật đều PASS.
+[Bằng chứng khử riêng tư](operations/drive-connector-live-results.json). Android
+được người dùng chủ động để sau, hoàn thiện Windows trước.
 
 Các agent dừng do workspace hết credits; điều phối tiếp nhận phần đang dở.
 KT-102 có 60 lượt đo và PDFium fallback, PR #20 đã CI PASS/merge/deploy Windows.
@@ -136,11 +140,9 @@ Recovery [PR #21](https://github.com/cavoixanh638/kho-tri-thuc/pull/21) head
 PASS, merge `fe315ceb115653fd9f03cfb03858c67071677686` theo yêu cầu tiếp tục.
 Backup/restore dữ liệu thật đã PASS theo xác nhận người dùng; xem báo cáo trên main.
 
-Lần tiếp tục: người dùng đã mở khóa Windows nhưng CUA vẫn không đọc được AX,
-screenshot đen và launch báo handler chưa ready. Browser integration cũng không
-có trong chat. Connector `files.get` thư mục ứng dụng vẫn lỗi. Không coi đây là
-file mất hoặc tự đổi OAuth scope/chia sẻ thư mục. Tiếp tục backend/UI/test xuất
-tri thức độc lập; pilot connector và native Google Docs vẫn cần kiểm thực tế.
+Các lỗi CUA trước đó đã được vượt qua bằng phiên giao diện mới và quan sát ảnh.
+Không thay OAuth scope/chia sẻ thư mục để sửa kết nối. Browser tích hợp hiện đã
+mở ứng dụng Windows để kiểm panel cuối, đang chờ người dùng đăng nhập phiên này.
 
 KT-202E có model KnowledgeExport, migration `storage.0003`, snapshot renderer và
 6 test PostgreSQL tạm **PASS** (ghi chú/giờ bất biến, version, active/stale,
@@ -152,7 +154,7 @@ panel từng Item và backup manifest v2 có mapping KnowledgeExport, đọc v1.
 178 PASS/1 skip FFmpeg do PATH; đã chạy lại riêng 11 thumbnail test với FFmpeg
 đúng đường dẫn, tất cả PASS. Backup v2/compat v1/roundtrip 11 test PASS. Migration
 0003/0004 xuôi/ngược/áp lại, check migration và lint/format module mới PASS.
-**DEPLOYED/LIVE_ACCEPTANCE_PENDING**: [PR #22](https://github.com/cavoixanh638/kho-tri-thuc/pull/22)
+**DEPLOYED/SINGLE_ITEM_LIVE_PASS**: [PR #22](https://github.com/cavoixanh638/kho-tri-thuc/pull/22)
 head `b4d1a656cb6aef6be9926560b655dfd7c4690d04` đã [CI #44508674959](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44508674959)
 PASS và merge. Windows đã chạy `843642e4046ac741f0aa5b5ecb1fd217dcfe11b3`:
 backup riêng trước migration, storage 0003/0004, build/restart/check đều PASS;
@@ -163,12 +165,16 @@ Sau khi người dùng xác nhận cụ thể payload/đích ChatGPT_Index, live
 đọc lại toàn bộ đúng SHA-256, đúng source/exported version, chỉ một file hoạt động.
 Tắt/thu hồi rồi bật lại giữ cùng ID; CaptureEvent/giờ nhận và danh mục original
 không đổi. Mục Reel được giữ bật Markdown sau thử. [Báo cáo](operations/knowledge-export-live-results.json).
-Đây là nghiệm thu một Item người dùng giao; chưa thay pilot 5–10 Item/ChatGPT đọc.
+Đây là nghiệm thu một Item người dùng giao; chưa thay pilot 5–10 Item đại diện.
 Backup sau export thật cũng PASS: đủ 15 collection và **1 KnowledgeExport** giữ
 nguyên mapping/version khi restore vào DB mới; file MP4 gốc đọc lại đúng hash.
 [Báo cáo backup có mapping bản xuất](operations/knowledge-backup-live-results.json).
-Connector vẫn không đọc được chính file đã verify; đã đề nghị người dùng mở trang
-Connected accounts và xác định đúng tài khoản Primary để tiếp tục phần UI.
+Connector hiện **đã đọc được chính file đã verify**: metadata MIME Markdown,
+search đúng tên trả một kết quả, fetch có nguồn/tệp gốc/checksum/giờ nhận và cảnh
+báo thiếu transcript. Chưa suy thành mọi format hoặc mọi truy vấn đều được đọc.
+[PR #23](https://github.com/cavoixanh638/kho-tri-thuc/pull/23), head `8c3ab2b`,
+[CI #44520958931](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44520958931)
+PASS và merge `21fb7d3`; Windows source đã fast-forward tới cùng SHA, API 200.
 Runner `tools/verify_knowledge_export.py` có `--preview` không gọi Drive và
 `--exercise` đã chạy sau xác nhận; kiểm MD/TXT/MD, full readback, unique file,
 thu hồi/bật lại cùng ID và giữ CaptureEvent/Item/original. Toàn văn preview,
@@ -220,9 +226,9 @@ credential, backup và ID riêng không đưa lên Git. [Hợp đồng](operatio
 
 ### Cổng tài khoản và nghiệm thu còn chờ
 
-- Người dùng yêu cầu hoàn thiện Windows trước; Android để sau. Connector Drive
-  đang dùng tài khoản khác runtime; đã mở Connect another account tới màn hình
-  chọn Google, chờ người dùng đăng nhập/cấp quyền. Chưa có pilot đọc thành công.
+- Người dùng yêu cầu hoàn thiện Windows trước; Android để sau. Connector đúng
+  Primary đã đọc được bản xuất Markdown của một Item thực. Pilot 5–10 Item và
+  so sánh TXT/native Docs vẫn NOT_RUN, không ghi toàn hệ thống DONE.
 - Recovery mã `760be80` ở `codex/kt-008-live-recovery`: 7 test archive/Drive giả
   PASS. Người dùng đã xác nhận payload notes/URLs/hashed authentication và nơi
   lưu, sau yêu cầu của automatic approval review. Live backup/restore **PASS**:

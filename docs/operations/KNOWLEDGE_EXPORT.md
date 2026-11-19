@@ -58,8 +58,10 @@ và thu hồi/bật lại, version khớp, CaptureEvent và original catalog ngu
 [Báo cáo live](knowledge-export-live-results.json). Mục này giữ bật Markdown.
 Backup Drive sau thử giữ đúng một KnowledgeExport và đủ 15 collection khi restore
 vào DB mới, OAuth/session rỗng; [báo cáo](knowledge-backup-live-results.json).
-Đây chưa phải nghiệm thu 5–10 Item hoặc khả năng ChatGPT tìm/đọc. Connector vẫn
-không đọc được chính file đã xác minh; đang xử lý tài khoản Primary trên UI.
+Sau khi kết nối đúng tài khoản Primary trong Codex, connector đã đọc metadata,
+tìm đúng một bản xuất theo tên và fetch được nội dung Markdown đầy đủ các phần
+nguồn/tệp/giờ nhận/cảnh báo thiếu transcript. [Bằng chứng connector](drive-connector-live-results.json).
+Đây là nghiệm thu một Item, chưa phải pilot 5–10 Item hoặc mọi định dạng/truy vấn.
 
 Backup manifest v2 thêm `knowledge_exports`, giữ file mapping, preference và
 version; vẫn xác minh/restore được manifest v1 (14 collection). OAuth/session vẫn

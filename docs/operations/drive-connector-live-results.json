@@ -1,0 +1,38 @@
+{
+  "checked_at": "2026-11-19T12:53:23Z",
+  "status": "PASS_SINGLE_ITEM",
+  "scope": "KT-201 connector search and readable Markdown knowledge export",
+  "runtime_source_sha": "21fb7d3b35cbf55e9c2eaeaf014ba9a61594202a",
+  "application_feature_sha": "843642e4046ac741f0aa5b5ecb1fd217dcfe11b3",
+  "account_verification": {
+    "intended_runtime_account_is_primary_in_codex_settings": true,
+    "verified_by_native_ui": true,
+    "credential_or_scope_changes_by_auditor": false
+  },
+  "connector_checks": {
+    "exact_export_metadata_read": "PASS",
+    "exact_filename_search": "PASS",
+    "matching_results": 1,
+    "mime_type": "text/markdown",
+    "provider_size_bytes": 929,
+    "readable_text_fetch": "PASS",
+    "nonempty_text": true,
+    "title_and_source_description_present": true,
+    "original_source_url_present": true,
+    "original_media_reference_and_checksum_present": true,
+    "first_capture_timestamp_present": true,
+    "unclassified_groups_explicit": true,
+    "missing_transcript_warning_present": true
+  },
+  "related_evidence": [
+    "knowledge-export-live-results.json",
+    "knowledge-backup-live-results.json"
+  ],
+  "not_verified": [
+    "5 to 10 representative real Items",
+    "ChatGPT readable TXT and native Google Docs comparison",
+    "natural-language search coverage or indexing latency",
+    "spoken video content without transcript"
+  ],
+  "data_handling": "Only sanitized outcomes retained in Git; no source text, email, user or Drive IDs, credentials, or raw export"
+}
