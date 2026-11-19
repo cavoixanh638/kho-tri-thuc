@@ -20,7 +20,13 @@ _MAX_CHUNKS = _REBUILD_LIMIT // _DOWNLOAD_CHUNK + 2
 
 def thumbnail_service():
     cache_root = getattr(settings, "THUMBNAIL_CACHE_DIR", None)
-    return ThumbnailService(cache_root) if cache_root else None
+    return (
+        ThumbnailService(
+            cache_root, ffmpeg=getattr(settings, "FFMPEG_BINARY", "ffmpeg")
+        )
+        if cache_root
+        else None
+    )
 
 
 def verified_assets_for(owner_id):

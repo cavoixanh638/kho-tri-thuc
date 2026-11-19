@@ -1,0 +1,27 @@
+{
+  "checked_at": "2026-11-19T01:34:32.285534+00:00",
+  "source_fetch": "done",
+  "asset_storage": "verified",
+  "capture_history_unchanged": true,
+  "event_count": 1,
+  "asset_count": 1,
+  "bytes": 18394669,
+  "mime": "video/mp4",
+  "sha256": "3fd6884f8d6fdfd6099c9378b70878c6ba7f7fceb4f4da989b2840587a1d6ca5",
+  "remote_matching_files": 1,
+  "remote_identity_unique": true,
+  "staging_removed": true,
+  "readback_matches": true,
+  "remote_sha256_matches": true,
+  "thumbnail_cached": true,
+  "application_commit": "e04a3211875df4308acf4290da95313cbe2f45b5",
+  "media": {
+    "audio": true,
+    "width": 720,
+    "height": 1280,
+    "duration": 59.645375,
+    "processor": "yt-dlp",
+    "processor_version": "2026.10.26"
+  },
+  "status": "PASS"
+}

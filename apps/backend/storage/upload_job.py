@@ -1,9 +1,8 @@
 from pathlib import Path
 from uuid import UUID
 
-from django.conf import settings
-
 from catalog.models import Item
+from django.conf import settings
 from jobs.handlers import JobFailure
 from processing.document_job import extract_from_staging
 from processing.thumbnail_integration import thumbnail_from_staging
@@ -63,8 +62,9 @@ def upload_asset(job):
 
     if path.is_file():
         extract_from_staging(asset, path)
-    Item.objects.filter(pk=asset.item_id).update(
-        asset_storage="verified", source_fetch="not_applicable"
+    Item.objects.filter(pk=asset.item_id).update(asset_storage="verified")
+    Item.objects.filter(pk=asset.item_id, kind=Item.Kind.FILE).update(
+        source_fetch="not_applicable"
     )
     thumbnail_from_staging(asset, path)
 

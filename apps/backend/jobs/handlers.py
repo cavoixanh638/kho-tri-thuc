@@ -24,10 +24,17 @@ def organize(job: Job) -> None:
     organize_item(job)
 
 
+def retrieve_video(job: Job) -> None:
+    from processing.video_jobs import download_video
+
+    download_video(job)
+
+
 HANDLERS: dict[str, Callable[[Job], None]] = {
     "upload_asset": upload_original,
     "fetch_source": retrieve_source,
     "organize": organize,
+    "download_video": retrieve_video,
 }
 
 
