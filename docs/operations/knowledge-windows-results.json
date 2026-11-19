@@ -32,6 +32,7 @@
     "preview_assets": 1,
     "preview_source_urls": 1
   },
-  "connector_application_folder_read": "NOT_VERIFIED",
+  "connector_verified_export_search_and_read": "PASS",
+  "connector_report": "drive-connector-live-results.json",
   "pilot_5_to_10_items": "NOT_RUN"
 }
