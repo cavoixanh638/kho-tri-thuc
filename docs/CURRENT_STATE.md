@@ -6,6 +6,21 @@
 
 ## 1. Tình trạng tổng quát
 
+### Đang triển khai KT-113 — cây thư viện và text từ liên kết
+
+Nhánh `codex/kt-113-knowledge-tree` từ main `8828663`: dùng Topic.parent làm cây
+linh hoạt có loại/thứ tự, CRUD cha-con/cycle/owner, lọc cả nhánh và đếm Item không
+trùng; tree UI và đường dẫn nhóm. ReadKnowledgeService đưa text nguồn/transcript
+lên phần đọc, gắn URL vào cùng bài giữ note. Bỏ chỉ số tương tác từ nguồn.
+ASR Windows cục bộ faster-whisper/base/int8 offline đã thử chỉ đọc Reel: 11 đoạn
+tiếng Anh trong 5,33 giây sau sửa pin PyAV 16.1.0; chưa ghi transcript production.
+Model/cache/media/transcript thử ở ngoài Git. Backup manifest v3 thêm loại/thứ
+tự nhánh, đọc v1/v2. Agent frontend, backend tests và ASR làm phạm vi riêng;
+root tích hợp/CI/deploy. 33 test ảnh hưởng và 9 test backup PASS; đã sửa hash key
+ASR vượt128, chạy lại **208 backend test PASS**, FFmpeg rõ đường dẫn không skip.
+Frontend **19 test PASS/build PASS**, gồm tree nav/create/move/CSRF, transcript
+ở phần đọc và liên kết mở minh họa. Chưa ghi LIVE_PASS trước deploy/backup.
+
 ### KT-112 — văn bản là nội dung chính, Windows LIVE_PASS
 
 Nhánh `codex/kt-112-text-first-knowledge`: nội dung `Item.note` đọc bằng Markdown

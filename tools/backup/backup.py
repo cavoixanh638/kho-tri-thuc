@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[2]
 DUMP = "database.dump"
 MANIFEST = "manifest.json"
 CHECKSUMS = "SHA256SUMS"
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 PG_MAJOR = 18
 
 # The projection is part of the versioned format. Keep credential tables and
@@ -36,7 +36,10 @@ COLLECTIONS = {
         "id, item_id, original_url, canonical_url, identity_hash, platform, "
         "platform_id, captured_at, published_at",
     ),
-    "topics": ("catalog_topic", "id, owner_id, name, parent_id, archived"),
+    "topics": (
+        "catalog_topic",
+        "id, owner_id, name, parent_id, archived, node_kind, sort_order",
+    ),
     "projects": ("catalog_project", "id, owner_id, name, description, archived"),
     "tags": ("catalog_tag", "id, owner_id, name"),
     "item_topics": (
@@ -117,11 +120,19 @@ class Postgres:
         if not self.compose:
             return [tool, *args]
         return [
-            "docker", "compose", "exec", "-T", "db", "sh", "-ec",
+            "docker",
+            "compose",
+            "exec",
+            "-T",
+            "db",
+            "sh",
+            "-ec",
             'export PGUSER="$POSTGRES_USER" PGDATABASE="$POSTGRES_DB" '
             'PGPASSWORD="$POSTGRES_PASSWORD" PGHOST=127.0.0.1 '
             'PGCLIENTENCODING=UTF8 PGCONNECT_TIMEOUT=10; exec "$@"',
-            "kt-backup", tool, *args,
+            "kt-backup",
+            tool,
+            *args,
         ]
 
     def options(self):
@@ -137,8 +148,11 @@ class Postgres:
         if input is None and stdin is None:
             stdin = subprocess.DEVNULL
         result = subprocess.run(
-            self.command(tool, args), input=input, stdin=stdin,
-            stdout=output, **self.options(),
+            self.command(tool, args),
+            input=input,
+            stdin=stdin,
+            stdout=output,
+            **self.options(),
         )
         self.check(result.returncode, tool)
         return result.stdout
@@ -149,17 +163,23 @@ class Postgres:
 
     def snapshot(self):
         return subprocess.Popen(
-            self.command("psql", PSQL_ARGS), stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE, **self.options(),
+            self.command("psql", PSQL_ARGS),
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            **self.options(),
         )
 
     def require_version(self, tool):
         version = self.run(tool, "--version")
-        if not re.search(rb"\(PostgreSQL\) " + str(PG_MAJOR).encode() + rb"(?:\.|\s)", version):
+        if not re.search(
+            rb"\(PostgreSQL\) " + str(PG_MAJOR).encode() + rb"(?:\.|\s)", version
+        ):
             raise BackupError(f"{tool} must be from PostgreSQL {PG_MAJOR}.")
 
     def require_server(self, target=None):
-        version = self.psql(b"SELECT current_setting('server_version_num')::int / 10000;", target)
+        version = self.psql(
+            b"SELECT current_setting('server_version_num')::int / 10000;", target
+        )
         if version != str(PG_MAJOR).encode():
             raise BackupError(f"The database must use PostgreSQL {PG_MAJOR}.")
 
@@ -167,19 +187,25 @@ class Postgres:
     def check(returncode, tool):
         if returncode:
             # PostgreSQL error detail can include connection secrets or row contents.
-            raise BackupError(f"{tool} failed (exit {returncode}). Check the local database logs.")
+            raise BackupError(
+                f"{tool} failed (exit {returncode}). Check the local database logs."
+            )
 
 
-def manifest_query(names=None):
+def manifest_query(names=None, schema_version=SCHEMA_VERSION):
     parts = []
     for name, (table, columns) in COLLECTIONS.items():
         if names is not None and name not in names:
             continue
+        if name == "topics" and schema_version < 3:
+            columns = "id, owner_id, name, parent_id, archived"
         parts.append(
             f"'{name}', (SELECT COALESCE(json_agg(r ORDER BY r.id), '[]'::json) "
             f"FROM (SELECT {columns} FROM public.{table}) r)"
         )
-    return ("SELECT json_build_object(\n" + ",\n".join(parts) + "\n);\nCOMMIT;\n").encode()
+    return (
+        "SELECT json_build_object(\n" + ",\n".join(parts) + "\n);\nCOMMIT;\n"
+    ).encode()
 
 
 def record_backup(pg, directory):
@@ -193,7 +219,10 @@ def record_backup(pg, directory):
 
             with (directory / DUMP).open("wb") as archive:
                 pg.run(
-                    "pg_dump", "--format=custom", "--no-password", "--lock-wait-timeout=10s",
+                    "pg_dump",
+                    "--format=custom",
+                    "--no-password",
+                    "--lock-wait-timeout=10s",
                     f"--snapshot={snapshot.decode('ascii')}",
                     "--exclude-table-data=public.storage_driveaccount",
                     "--exclude-table-data=public.django_session",
@@ -213,9 +242,12 @@ def record_backup(pg, directory):
     }
     (directory / MANIFEST).write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8", newline="\n",
+        encoding="utf-8",
+        newline="\n",
     )
-    (directory / CHECKSUMS).write_text(checksum_lines(directory), encoding="ascii", newline="\n")
+    (directory / CHECKSUMS).write_text(
+        checksum_lines(directory), encoding="ascii", newline="\n"
+    )
 
 
 def checksum_lines(directory):
@@ -234,14 +266,19 @@ def verify_bundle(directory):
     if (
         not isinstance(manifest, dict)
         or type(manifest.get("schema_version")) is not int
-        or manifest["schema_version"] not in (1, SCHEMA_VERSION)
+        or manifest["schema_version"] not in (1, 2, SCHEMA_VERSION)
         or manifest.get("postgres_major") != PG_MAJOR
     ):
         raise BackupError("Unsupported backup manifest format.")
     collections = manifest.get("collections")
     if (
         not isinstance(collections, dict)
-        or set(collections) != (set(COLLECTIONS) if manifest["schema_version"] == 2 else set(COLLECTIONS) - {"knowledge_exports"})
+        or set(collections)
+        != (
+            set(COLLECTIONS)
+            if manifest["schema_version"] >= 2
+            else set(COLLECTIONS) - {"knowledge_exports"}
+        )
         or any(not isinstance(rows, list) for rows in collections.values())
     ):
         raise BackupError("Missing or invalid manifest collections.")
@@ -257,7 +294,9 @@ def create(pg, destination):
     pg.require_version("pg_dump")
     pg.require_server()
 
-    with tempfile.TemporaryDirectory(prefix=".kt-backup-", dir=destination.parent) as path:
+    with tempfile.TemporaryDirectory(
+        prefix=".kt-backup-", dir=destination.parent
+    ) as path:
         staging = Path(path) / "bundle"
         staging.mkdir()
         record_backup(pg, staging)
@@ -267,8 +306,13 @@ def create(pg, destination):
 
 def restore(pg, directory, target):
     if not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_-]{0,62}", target):
-        raise BackupError("Use a database name of up to 63 letters, digits, underscores or hyphens.")
+        raise BackupError(
+            "Use a database name of up to 63 letters, digits, underscores or hyphens."
+        )
     expected = verify_bundle(directory)
+    version = json.loads((directory / MANIFEST).read_text(encoding="utf-8"))[
+        "schema_version"
+    ]
     pg.require_version("psql")
     pg.require_version("pg_restore")
     if pg.compose and pg.psql(b"SELECT current_database();").decode("utf-8") == target:
@@ -280,26 +324,48 @@ def restore(pg, directory, target):
     # A pathless pg_restore reads its archive on stdin, including through Compose.
     with (directory / DUMP).open("rb") as archive:
         pg.run(
-            "pg_restore", "--single-transaction", "--exit-on-error", "--no-password",
-            "--no-owner", "--no-privileges", f"--dbname={target}",
-            stdin=archive, output=subprocess.DEVNULL,
+            "pg_restore",
+            "--single-transaction",
+            "--exit-on-error",
+            "--no-password",
+            "--no-owner",
+            "--no-privileges",
+            f"--dbname={target}",
+            stdin=archive,
+            output=subprocess.DEVNULL,
         )
 
-    actual = json.loads(pg.psql(TRANSACTION + manifest_query(expected), target))
+    actual = json.loads(
+        pg.psql(TRANSACTION + manifest_query(expected, version), target)
+    )
     if actual != expected:
-        mismatches = ", ".join(name for name in expected if actual[name] != expected[name])
-        raise BackupError(f"Restore contents differ from the manifest in: {mismatches}.")
+        mismatches = ", ".join(
+            name for name in expected if actual[name] != expected[name]
+        )
+        raise BackupError(
+            f"Restore contents differ from the manifest in: {mismatches}."
+        )
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--compose", action="store_true", help="Use PostgreSQL tools in Compose service db.")
+    parser.add_argument(
+        "--compose",
+        action="store_true",
+        help="Use PostgreSQL tools in Compose service db.",
+    )
     subparsers = parser.add_subparsers(dest="command", required=True)
-    create_parser = subparsers.add_parser("create", help="Create a new backup bundle directory.")
+    create_parser = subparsers.add_parser(
+        "create", help="Create a new backup bundle directory."
+    )
     create_parser.add_argument("directory", type=Path)
-    verify_parser = subparsers.add_parser("verify", help="Verify the local bundle checksums and format.")
+    verify_parser = subparsers.add_parser(
+        "verify", help="Verify the local bundle checksums and format."
+    )
     verify_parser.add_argument("directory", type=Path)
-    restore_parser = subparsers.add_parser("restore", help="Restore and compare contents to the manifest.")
+    restore_parser = subparsers.add_parser(
+        "restore", help="Restore and compare contents to the manifest."
+    )
     restore_parser.add_argument("directory", type=Path)
     restore_parser.add_argument("--target-db", required=True)
     args = parser.parse_args()

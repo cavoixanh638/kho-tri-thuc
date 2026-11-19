@@ -67,6 +67,43 @@ class CaptureError(Schema):
     code: str
 
 
+class AttachedSource(Schema):
+    url: str = Field(min_length=1, max_length=MAX_URL_LENGTH)
+
+
+@router.post(
+    "/items/{item_id}/sources",
+    response={200: CaptureReceipt, 201: CaptureReceipt, 422: CaptureError},
+)
+def attach_source(request, item_id: UUID, payload: AttachedSource):
+    if not Item.objects.filter(
+        pk=item_id, owner=request.auth, deleted_at__isnull=True
+    ).exists():
+        raise Http404
+    try:
+        event, created = submit_capture(
+            request.auth,
+            CaptureSubmission(
+                kind="link",
+                url=payload.url,
+                target_item_id=item_id,
+                source_channel="web",
+                idempotency_key=request.headers.get("Idempotency-Key"),
+            ),
+        )
+    except InvalidCapture as error:
+        return Status(422, {"code": error.code})
+    return Status(
+        201 if created else 200,
+        {
+            "capture_id": event.pk,
+            "item_id": event.item_id,
+            "received_at": event.server_received_at,
+            "state": "received",
+        },
+    )
+
+
 class HistoryQuery(Schema):
     limit: int = Field(default=50, ge=1, le=100)
     offset: int = Field(default=0, ge=0, le=2**31 - 1)

@@ -1,0 +1,5 @@
+# Optional Windows CPU transcription; install only when local ASR is enabled.
+faster-whisper==1.2.1
+ctranslate2==4.9.0
+# PyAV19 removed metadata_errors, still used by faster-whisper1.2.1.
+av==16.1.0

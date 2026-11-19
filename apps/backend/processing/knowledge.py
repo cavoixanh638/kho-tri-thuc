@@ -29,6 +29,8 @@ class KnowledgeSnapshot:
 
 
 def snapshot(item_id, format="markdown"):
+    from catalog.knowledge_tree import tree
+
     if format not in {"markdown", "text"}:
         raise ValueError("Unsupported knowledge format")
     item = Item.objects.get(pk=item_id)
@@ -38,6 +40,7 @@ def snapshot(item_id, format="markdown"):
         ).hexdigest()
         return KnowledgeSnapshot(version, b"", False, False)
     groups = {}
+    topic_paths = {row["id"]: row["path"] for row in tree(item.owner_id)}
     for name, model, field in (
         ("Chủ đề", ItemTopic, "topic"),
         ("Dự án", ItemProject, "project"),
@@ -51,6 +54,14 @@ def snapshot(item_id, format="markdown"):
                 field + "__name", flat=True
             )
         )
+        if field == "topic":
+            groups[name] = [
+                topic_paths[pk]
+                for pk in rows.order_by("topic__name", "topic_id").values_list(
+                    "topic_id", flat=True
+                )
+                if pk in topic_paths
+            ]
     sources = list(
         item.sources.order_by("id").values(
             "id", "original_url", "platform", "platform_id"
@@ -105,7 +116,7 @@ def snapshot(item_id, format="markdown"):
         "parts": parts,
         "events": events,
         "format": format,
-        "schema": 1,
+        "schema": 2,
     }
     serialized = json.dumps(projection, sort_keys=True, ensure_ascii=False, default=str)
     version = hashlib.sha256(serialized.encode()).hexdigest()
@@ -121,6 +132,20 @@ def snapshot(item_id, format="markdown"):
     ]
     for label, values in groups.items():
         lines.append(label + ": " + (", ".join(values) or "Chưa phân loại"))
+    # Reading text precedes media/provenance. Human-authored notes remain authoritative.
+    lines += ["", "## Tri thức", item.note]
+    if not item.note.strip():
+        for row in parts[:MAX_PARTS]:
+            locator = (
+                row["source_locator"] if isinstance(row["source_locator"], dict) else {}
+            )
+            section = locator.get("section", "")
+            lines += ["", f"### {section or row['kind']}", row["preview"]]
+        if any(row["processor"] == "faster-whisper" for row in parts):
+            lines += [
+                "",
+                "Bản chép lời tự động trên Windows, cần rà soát với video nguồn.",
+            ]
     lines += [
         "",
         "## Mô tả",

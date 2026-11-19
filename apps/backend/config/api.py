@@ -1,11 +1,11 @@
 from typing import Literal
 
-from django.db import DatabaseError
-from ninja import NinjaAPI, Schema, Status
-
 from catalog.api import router as library_router
 from catalog.groups_api import router as groups_router
+from catalog.tree_api import router as tree_router
+from django.db import DatabaseError
 from ingestion.api import router as capture_router
+from ninja import NinjaAPI, Schema, Status
 from processing.content_api import router as content_router
 from processing.knowledge_api import router as knowledge_router
 from processing.retry_api import router as retry_router
@@ -20,6 +20,7 @@ api = NinjaAPI(title="Kho Tri Thức", version="1.0.0")
 api.add_router("/integrations/drive", drive_router)
 api.add_router("", library_router)
 api.add_router("", groups_router)
+api.add_router("", tree_router)
 api.add_router("", search_router)
 api.add_router("", capture_router)
 api.add_router("", content_router)

@@ -14,6 +14,7 @@ export type Item = {
   kind: 'link' | 'text' | 'file';
   title: string;
   note: string;
+  knowledge_excerpt?: string;
   description: string;
   saved_at: string;
   published_at: string | null;

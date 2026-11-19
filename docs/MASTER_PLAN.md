@@ -6,6 +6,15 @@
 
 ## 1. Mục tiêu của bản đầu
 
+**Bổ sung ngày 19/11/2026:** Kho Tri Thức tổ chức thành nhiều kho con, lĩnh vực,
+bộ sách/sách/chương và nhánh nhỏ hơn khi cần. Đây là cây linh hoạt, không ép mỗi
+lĩnh vực có cùng số tầng. Một bài có thể xuất hiện ở nhiều nhánh nhưng chỉ có
+một nội dung/định danh. Liên kết phải đi qua trích text; video là nguồn minh họa
+gắn vào bài hoặc mốc thời gian, không là đối tượng kiến thức đã hiểu chỉ nhờ
+metadata. Lượt xem/thích/cảm xúc/chia sẻ không thuộc dữ liệu tri thức cần thu thập.
+Người dùng đã yêu cầu phần chuyển video thành text; mở cổng ASR cục bộ giới hạn,
+không triển khai OCR/embeddings/chatbot ngoài phạm vi này.
+
 **Định hướng người dùng chốt ngày 19/11/2026:** tri thức được đọc, tìm kiếm và
 tổ chức chủ yếu bằng **văn bản/Markdown**. Media và tài liệu nguồn giữ vai trò
 minh họa, bằng chứng và truy nguyên. Bài văn bản phải xuất hiện ngay trong thư

@@ -1,6 +1,7 @@
 import re
 from dataclasses import dataclass
 from datetime import datetime
+from uuid import UUID
 
 from catalog.models import Item, Source
 from django.contrib.auth import get_user_model
@@ -31,9 +32,15 @@ class CaptureSubmission:
     source_channel: str = "web"
     client_sent_at: datetime | None = None
     idempotency_key: str | None = None
+    target_item_id: UUID | None = None
 
 
 def _validated_identity(submission):
+    if (
+        submission.target_item_id is not None
+        and submission.kind != CaptureEvent.Kind.LINK
+    ):
+        raise InvalidCapture("source_requires_link")
     if submission.source_channel not in CAPTURE_CHANNELS:
         raise InvalidCapture("invalid_source_channel")
     if submission.client_sent_at is not None and timezone.is_naive(
@@ -83,6 +90,11 @@ def submit_capture(owner, submission):
                 idempotency_key=submission.idempotency_key,
             ).first()
             if existing is not None:
+                if (
+                    submission.target_item_id is not None
+                    and existing.item_id != submission.target_item_id
+                ):
+                    raise InvalidCapture("idempotency_target_mismatch")
                 return existing, False
 
         received_at = timezone.now()
@@ -98,7 +110,26 @@ def submit_capture(owner, submission):
                 .first()
             )
 
-        new_item = source is None
+        new_source = source is None and identity is not None
+        new_item = source is None and submission.target_item_id is None
+        if submission.target_item_id is not None:
+            item = Item.objects.filter(
+                pk=submission.target_item_id, owner=owner, deleted_at__isnull=True
+            ).first()
+            if item is None:
+                raise InvalidCapture("unknown_target_item")
+            if source is not None and source.item_id != item.pk:
+                raise InvalidCapture("source_already_in_another_item")
+            if source is None:
+                source = Source.objects.create(
+                    item=item,
+                    original_url=submission.url,
+                    canonical_url=identity.canonical_url,
+                    identity_hash=identity.identity_hash,
+                    platform=identity.platform,
+                    platform_id=identity.platform_id,
+                    captured_at=received_at,
+                )
         if new_item:
             item = Item.objects.create(
                 owner=owner,
@@ -116,7 +147,7 @@ def submit_capture(owner, submission):
                     platform_id=identity.platform_id,
                     captured_at=received_at,
                 )
-        else:
+        elif submission.target_item_id is None:
             item = source.item
 
         event = CaptureEvent.objects.create(
@@ -130,13 +161,18 @@ def submit_capture(owner, submission):
             client_sent_at=submission.client_sent_at,
             idempotency_key=submission.idempotency_key,
         )
-        if new_item:
+        if new_item or new_source:
             kind = "organize" if source is None else "fetch_source"
             input_ref = {"capture_id": str(event.pk)}
             if source is not None:
                 input_ref["source_id"] = source.pk
             Job.objects.create(
-                item=item, kind=kind, idempotency_key=str(item.pk), input_ref=input_ref
+                item=item,
+                kind=kind,
+                idempotency_key=str(item.pk)
+                if new_item
+                else f"{item.pk}:source:{source.pk}",
+                input_ref=input_ref,
             )
 
         return event, True

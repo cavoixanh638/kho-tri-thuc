@@ -18,7 +18,16 @@ class SourceFetchTests(unittest.TestCase):
         self.transport = Mock()
 
     def fetch(self, url=PAGE_URL, **options):
-        return fetch_source(url, resolver=self.resolve, transport=self.transport, **options)
+        return fetch_source(
+            url, resolver=self.resolve, transport=self.transport, **options
+        )
+
+    def test_article_body_is_preferred_over_navigation_footer_and_platform_chrome(self):
+        body = "<html><head><title>Bài gốc</title></head><body><div>Site controls</div><nav>Log in 12K likes</nav><main><article><h1>Kiến thức</h1><p>Nội dung bài được giữ.</p><aside>Recommended ads</aside></article></main><footer>Privacy</footer></body></html>".encode()
+        self.transport.return_value = Response(200, media_type="text/html", body=body)
+        result = self.fetch()
+        self.assertEqual(result.text, "Kiến thức\nNội dung bài được giữ.")
+        self.assertEqual(result.metadata.title, "Bài gốc")
 
     def test_html_metadata_and_web_text_with_provenance(self):
         body = """<!DOCTYPE html><html><head><title>Tiêu đề HTML</title>
@@ -26,7 +35,7 @@ class SourceFetchTests(unittest.TestCase):
 <meta name="description" content="Đọc bài gốc"></head>
 <body><main><h1>Nội dung</h1><p>Tiếng <strong>Việt</strong>.</p>
 <script>SECRET()</script><template><p>Hidden</p></template>
-<p>Hết.</p></main></body></html>""".encode("utf-8")
+<p>Hết.</p></main></body></html>""".encode()
         self.transport.return_value = Response(200, media_type="text/html", body=body)
 
         start = datetime.now(UTC)
@@ -35,26 +44,42 @@ class SourceFetchTests(unittest.TestCase):
         self.assertEqual(result.metadata.title, "Tiêu đề & ghi chú")
         self.assertEqual(result.metadata.description, "Đọc bài gốc")
         self.assertEqual(result.text, "Nội dung\nTiếng Việt.\nHết.")
-        self.assertEqual(result.available, (SourceMaterial.METADATA, SourceMaterial.WEB_TEXT))
+        self.assertEqual(
+            result.available, (SourceMaterial.METADATA, SourceMaterial.WEB_TEXT)
+        )
         self.assertEqual(result.provenance.source_url, PAGE_URL + "#paragraph")
         self.assertEqual(result.provenance.response_url, PAGE_URL)
         self.assertEqual(result.provenance.http_status, 200)
         self.assertEqual(result.provenance.content_type, "text/html")
-        self.assertEqual(result.provenance.body_sha256, hashlib.sha256(body).hexdigest())
+        self.assertEqual(
+            result.provenance.body_sha256, hashlib.sha256(body).hexdigest()
+        )
         self.assertLessEqual(start, result.provenance.attempted_at)
         self.assertLessEqual(result.provenance.attempted_at, datetime.now(UTC))
 
     def test_metadata_only_empty_html_and_web_text_are_distinct(self):
         cases = (
-            (b"<head><title>Video page</title></head>", "text/html", "fetched", ("metadata",)),
+            (
+                b"<head><title>Video page</title></head>",
+                "text/html",
+                "fetched",
+                ("metadata",),
+            ),
             (b"<script>secret()</script>", "text/html", "empty", ()),
             ("Điện thoại\0".encode("utf-16"), "text/plain", "fetched", ("web_text",)),
-            (b"WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nTest", "text/vtt", "unsupported", ()),
+            (
+                b"WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nTest",
+                "text/vtt",
+                "unsupported",
+                (),
+            ),
             (b"video bytes", "video/mp4", "unsupported", ()),
         )
         for body, media_type, status, materials in cases:
             with self.subTest(media_type=media_type, materials=materials):
-                self.transport.return_value = Response(200, media_type=media_type, body=body)
+                self.transport.return_value = Response(
+                    200, media_type=media_type, body=body
+                )
                 result = self.fetch()
                 self.assertEqual(result.status, status)
                 self.assertEqual(result.available, materials)
@@ -78,12 +103,16 @@ class SourceFetchTests(unittest.TestCase):
         for status_code, expected in cases:
             with self.subTest(status_code=status_code):
                 self.transport.return_value = Response(
-                    status_code, media_type="text/html", body=b"<title>Error page</title>"
+                    status_code,
+                    media_type="text/html",
+                    body=b"<title>Error page</title>",
                 )
                 result = self.fetch(original_url)
                 self.assertEqual(result.status, expected)
                 self.assertEqual(result.provenance.source_url, original_url)
-                self.assertEqual(result.provenance.response_url, original_url.split("#")[0])
+                self.assertEqual(
+                    result.provenance.response_url, original_url.split("#")[0]
+                )
                 self.assertEqual(result.provenance.http_status, status_code)
                 self.assertIs(result.provenance.attempted_at.tzinfo, UTC)
                 self.assertIsNone(result.provenance.body_sha256)
@@ -158,14 +187,20 @@ class SourceFetchTests(unittest.TestCase):
 
         self.assertEqual(result.text, "Content")
         self.assertEqual(result.provenance.source_url, PAGE_URL)
-        self.assertEqual(result.provenance.response_url, "https://other.test/ti%E1%BA%BFng?lang=vi")
+        self.assertEqual(
+            result.provenance.response_url, "https://other.test/ti%E1%BA%BFng?lang=vi"
+        )
         first, second = (call.args for call in self.transport.call_args_list)
         self.assertEqual(first[1], (PUBLIC_IP,))
         self.assertEqual(second[1], (second_ip,))
         self.assertEqual(first[2], second[2])
 
     def test_redirect_to_private_ip_or_unsafe_scheme_never_connects(self):
-        for location in ("//169.254.169.254/latest", "file:///etc/passwd", "https:/other.test"):
+        for location in (
+            "//169.254.169.254/latest",
+            "file:///etc/passwd",
+            "https:/other.test",
+        ):
             with self.subTest(location=location):
                 self.transport.reset_mock()
                 self.transport.return_value = Response(302, location=location)
@@ -188,7 +223,9 @@ class SourceFetchTests(unittest.TestCase):
                 self.transport.assert_called_once()
 
     def test_body_limit_and_timeout_do_not_yield_content(self):
-        self.transport.return_value = Response(200, media_type="text/plain", body=b"abcd")
+        self.transport.return_value = Response(
+            200, media_type="text/plain", body=b"abcd"
+        )
         result = self.fetch(max_body_bytes=3)
         self.assertEqual(result.error_code, "body_too_large")
         self.assertEqual(result.provenance.http_status, 200)

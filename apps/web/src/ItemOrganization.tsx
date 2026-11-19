@@ -62,7 +62,7 @@ function GroupEditor({ id, csrf, current, onSaved, onCancel }: {
   }
 
   return <form className="form-stack" onSubmit={save}>
-    <p className="group-edit-caption">Chọn các nhóm cần cố định. Các nhóm đã tự xếp vẫn được giữ.</p>
+    <p className="group-edit-caption">Chọn nhánh mục lục để xếp bài; có thể chọn nhiều nhánh mà không nhân bản nội dung. Các nhóm đã tự xếp vẫn được giữ.</p>
     {groups.error ? <ErrorNotice retry={groups.retry}>Chưa tải được các nhóm có thể chọn.</ErrorNotice>
       : !groups.data ? <Loading />
         : groupKinds.map((group) => {
@@ -71,7 +71,7 @@ function GroupEditor({ id, csrf, current, onSaved, onCancel }: {
           for (const entry of groups.data?.[group.field] ?? []) available.set(entry.id, entry);
           return <MultiSelect key={group.kind} label={group.label} disabled={saving} searchable
             nothingFoundMessage="Không tìm thấy nhóm." value={selected[group.field]}
-            data={[...available.values()].map((entry) => ({ value: String(entry.id), label: entry.name }))}
+            data={[...available.values()].map((entry) => ({ value: String(entry.id), label: entry.path || entry.name }))}
             onChange={(value) => setSelected({ ...selected, [group.field]: value })} />;
         })}
     {error && <ErrorNotice>Chưa lưu được các nhóm. Hãy thử lại.</ErrorNotice>}
@@ -104,7 +104,7 @@ export function ItemOrganization({ id, csrf, deleted, refreshKey }: { id: string
               <h3>{group.label}</h3>
               <ul className="group-list assigned-groups">
                 {current[group.field].map((entry) => <li key={entry.id}>
-                  <a href={groupSearchHref(group.filter, entry.id)} title="Xem mục cùng nhóm">{entry.name}</a>
+                  <a href={groupSearchHref(group.filter, entry.id)} title="Xem bài trong nhánh hoặc nhóm">{entry.path || entry.name}</a>
                   <span className="list-meta">{entry.user_pinned ? 'Đã cố định' : entry.origin === 'auto' ? 'Tự xếp' : 'Người dùng'}</span>
                 </li>)}
               </ul>

@@ -240,7 +240,16 @@ def audit(args, report):
         )
         with environment(target_pg):
             actual = json.loads(
-                pg.psql(backup.TRANSACTION + backup.manifest_query(), args.target_db)
+                pg.psql(
+                    backup.TRANSACTION
+                    + backup.manifest_query(
+                        collections,
+                        json.loads(
+                            (recovered / backup.MANIFEST).read_text(encoding="utf-8")
+                        )["schema_version"],
+                    ),
+                    args.target_db,
+                )
             )
             if actual != collections:
                 raise backup.BackupError(

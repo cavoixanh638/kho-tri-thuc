@@ -178,7 +178,7 @@ export function App() {
       {session && !authenticated && <Login csrf={session.csrf_token} onLogin={setSession} />}
       {session && authenticated && (itemId ? <ItemScreen id={itemId} csrf={session.csrf_token} key={itemId} />
         : path === '#/lich-su' ? <HistoryScreen />
-          : path === '#/thu-vien' ? <LibraryScreen />
+          : path.split('?', 1)[0] === '#/thu-vien' ? <LibraryScreen csrf={session.csrf_token} />
             : path.split('?', 1)[0] === '#/tim-kiem' ? <SearchScreen path={path} key={path} />
               : path === '#/cai-dat' ? <SettingsScreen csrf={session.csrf_token} driveResult={driveResult} username={session.username} />
                 : <CaptureScreen csrf={session.csrf_token} />)}

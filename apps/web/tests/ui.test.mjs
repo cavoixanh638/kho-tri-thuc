@@ -214,6 +214,7 @@ function itemRoutes(current) {
     if (path.endsWith('/retry')) return response({ queued: 1 });
     if (path.endsWith('/items/fixture-item')) return response(current(options));
     if (path.includes('/organization')) return response({ topics: [], projects: [], tags: [] });
+    if (path.includes('/knowledge')) return response({ origin: 'missing', text: '', parts: [], truncated: false, needs_review: false });
     return response({ results: [], next_offset: null });
   };
 }
@@ -226,6 +227,23 @@ test('a text article reads as knowledge without misleading missing-extraction st
   assert.equal(container.querySelector('.knowledge-text h3'), null);
   assert.equal(container.querySelector('#extracted-content'), null);
   assert.ok(!container.textContent.includes('Chưa có nội dung'));
+});
+
+test('extracted transcript is the main reading content with a source illustration link', async () => {
+  globalThis.fetch = async (path) => {
+    if (path.endsWith('/items/fixture-item')) return response(item({ note: '', content_extract: 'done', source_fetch: 'done', asset_storage: 'verified', assets: [{ asset_id: 'video', filename: 'source.mp4', status: 'verified', mime: 'video/mp4' }] }));
+    if (path.endsWith('/knowledge')) return response({ origin: 'extracted', text: '', parts: [{ id: 1, kind: 'video_transcript', text: '[00:05–00:10] Giữ mặt gậy mở.', asset_id: 'video', locator: { section: 'Đoạn 5–10 giây' }, processor: 'faster-whisper', format: 'text' }], truncated: false, needs_review: true });
+    if (path.includes('/organization')) return response({ topics: [], projects: [], tags: [] });
+    return response({ results: [], next_offset: null });
+  };
+  await render(ui.ItemScreen, { id: 'fixture-item', csrf: 'fixture-csrf' });
+  assert.ok(container.querySelector('[aria-labelledby="item-content"]').textContent.includes('Giữ mặt gậy mở.'));
+  assert.ok(container.textContent.includes('Cần đối chiếu video'));
+  const media = container.querySelector('#item-media');
+  assert.equal(media.open, false);
+  media.scrollIntoView = () => {};
+  await click('Xem minh họa từ nguồn');
+  assert.equal(media.open, true);
 });
 
 test('item status and attachment update without erasing a draft under editing', async () => {
@@ -337,4 +355,74 @@ test('knowledge export explains blocked or stale content and never opens a block
   assert.ok(container.textContent.includes('chưa theo kịp dữ liệu nguồn'));
   assert.ok(container.textContent.includes('bản xuất có giới hạn'));
   assert.equal(container.querySelector('a'), null);
+});
+
+test('knowledge tree routes subtree reads, excludes cyclic move parents and creates a child with CSRF', async () => {
+  const node = (id, parent_id, name, path_ids, path, patch = {}) => ({
+    id, parent_id, name, path_ids, path, depth: path_ids.length - 1,
+    node_kind: parent_id == null ? 'library' : 'folder', sort_order: 0,
+    direct_count: 0, item_count: 1, child_count: 0, ...patch,
+  });
+  const nodes = [
+    node(1, null, 'Công nghệ', [1], 'Công nghệ', { child_count: 1 }),
+    node(2, 1, 'Lập trình', [1, 2], 'Công nghệ / Lập trình', { child_count: 1 }),
+    node(3, 2, 'Python', [1, 2, 3], 'Công nghệ / Lập trình / Python'),
+    node(4, null, 'Đời sống', [4], 'Đời sống'),
+  ];
+  const reads = [];
+  let created;
+  globalThis.fetch = async (path, options) => {
+    if (path.endsWith('/knowledge-tree') && options?.method === 'POST') {
+      created = { body: JSON.parse(options.body), csrf: options.headers.get('X-CSRFToken') };
+      const child = node(5, 2, created.body.name, [1, 2, 5], 'Công nghệ / Lập trình / ' + created.body.name);
+      nodes.push(child);
+      return response(child, 201);
+    }
+    if (path.endsWith('/knowledge-tree')) return response({ nodes });
+    if (path.includes('/items?')) {
+      reads.push(new URL(path, window.location.origin).searchParams);
+      return response({ results: [item({ title: 'Bài trong nhánh con', source_fetch: 'done', asset_storage: 'verified' })], next_offset: null });
+    }
+    throw new Error('Unexpected request ' + path);
+  };
+  window.history.replaceState(null, '', '/#/thu-vien?node=1');
+  await render(ui.LibraryScreen, { csrf: 'tree-csrf' });
+  assert.equal(reads.at(-1).get('node_id'), '1');
+  assert.ok(container.querySelector('[aria-label="Các nhánh con"]').textContent.includes('Lập trình'));
+  assert.ok(container.querySelector('[aria-label="Danh sách mục"]').textContent.includes('Bài trong nhánh con'));
+
+  const branchLink = container.querySelector('[aria-label="Các nhánh con"] a');
+  await ui.act(async () => {
+    window.history.replaceState(null, '', branchLink.getAttribute('href'));
+    window.dispatchEvent(new window.Event('hashchange'));
+    await settle();
+  });
+  assert.equal(reads.at(-1).get('node_id'), '2');
+  assert.equal(container.querySelector('[aria-label="Đường dẫn mục lục"] a[aria-current="page"]').textContent, 'Lập trình');
+
+  await click('Đổi tên / chuyển nhánh');
+  const parentLabel = [...container.querySelectorAll('label')].find((label) => label.textContent === 'Nằm trong');
+  assert.ok(parentLabel);
+  const parentInput = document.getElementById(parentLabel.htmlFor);
+  await ui.act(async () => { parentInput.dispatchEvent(new window.MouseEvent('click', { bubbles: true })); await settle(); });
+  const parents = [...document.querySelectorAll('[role="option"]')].map((option) => option.textContent);
+  assert.ok(parents.includes('Công nghệ'));
+  assert.ok(parents.includes('Đời sống'));
+  assert.ok(!parents.includes('Công nghệ / Lập trình'));
+  assert.ok(!parents.includes('Công nghệ / Lập trình / Python'));
+  await click('Hủy');
+
+  await click('Thêm nhánh con');
+  const nameLabel = [...container.querySelectorAll('label')].find((label) => label.textContent.startsWith('Tên nhánh'));
+  assert.ok(nameLabel);
+  const nameInput = document.getElementById(nameLabel.htmlFor);
+  await ui.act(async () => {
+    Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set.call(nameInput, 'Tài liệu nhập môn');
+    nameInput.dispatchEvent(new window.Event('input', { bubbles: true })); await settle();
+  });
+  await click('Lưu nhánh');
+  assert.equal(created.csrf, 'tree-csrf');
+  assert.deepEqual(created.body, { name: 'Tài liệu nhập môn', node_kind: 'folder', parent_id: 2, sort_order: 0 });
+  assert.equal(reads.at(-1).get('node_id'), '5');
+  assert.equal(window.location.hash, '#/thu-vien?node=5');
 });

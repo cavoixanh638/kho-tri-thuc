@@ -32,6 +32,8 @@ def changed(sender, instance, **kwargs):
             Asset.objects.filter(pk=instance.asset_id).values_list("item_id", flat=True)
         )
     elif sender in (Topic, Project, Tag):
+        from catalog.knowledge_tree import descendants
+
         relation = {
             Topic: (ItemTopic, "topic"),
             Project: (ItemProject, "project"),
@@ -39,7 +41,15 @@ def changed(sender, instance, **kwargs):
         }[sender]
         ids = list(
             relation[0]
-            .objects.filter(**{relation[1] + "_id": instance.pk})
+            .objects.filter(
+                **{
+                    relation[1] + "_id__in": descendants(
+                        instance.owner_id, instance.pk, archived=True
+                    )
+                    if sender is Topic
+                    else [instance.pk]
+                }
+            )
             .values_list("item_id", flat=True)
         )
     else:
