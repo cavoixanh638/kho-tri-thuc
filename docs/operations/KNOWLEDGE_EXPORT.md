@@ -49,8 +49,12 @@ frontend có 14 JSDOM test PASS và production build PASS. Full regression Windo
 179 test, 178 PASS/1 skip FFmpeg do PATH; đã chạy riêng 11 thumbnail test với
 FFmpeg rõ đường dẫn, PASS không skip. Backup v2 roundtrip/archive/compat v1 có
 11 test PASS. Migration 0003/0004 xuôi/ngược/áp lại và makemigrations check PASS.
-Chưa deploy phần xuất tri thức ở mốc này, chờ CI đúng head.
-Browser tương tác/connector thật còn chặn bởi phiên CUA không đọc được giao diện.
+PR #22 head `b4d1a65` đã CI #44508674959 PASS và merge; Windows đã triển khai
+`843642e` sau backup riêng trước migration. Check/build/restart/API/bundle mới
+PASS. [Báo cáo triển khai](knowledge-windows-results.json). Live export chờ xác
+nhận payload cụ thể sau khi automatic approval review từ chối lần chạy trước.
+Preview chỉ được tạo cục bộ, không có Drive calls hoặc opt-in ngầm.
+Browser tương tác/connector thật vẫn cần nghiệm thu.
 
 Backup manifest v2 thêm `knowledge_exports`, giữ file mapping, preference và
 version; vẫn xác minh/restore được manifest v1 (14 collection). OAuth/session vẫn

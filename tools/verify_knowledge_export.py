@@ -103,7 +103,14 @@ def main():
     parser.add_argument("--exercise", action="store_true")
     parser.add_argument("--timeout", type=int, default=180)
     parser.add_argument("--runtime-source", type=Path)
+    parser.add_argument(
+        "--preview",
+        type=Path,
+        help="Only write a private local preview; no Drive calls or opt-in",
+    )
     args = parser.parse_args()
+    if args.preview and args.exercise:
+        parser.error("Preview and exercise must be separate actions")
     import django
 
     django.setup()
@@ -133,6 +140,35 @@ def main():
         item = Item.objects.get(
             pk=args.item, owner__username=args.owner, deleted_at__isnull=True
         )
+        if args.preview:
+            from processing.knowledge import snapshot as knowledge_snapshot
+
+            preview = args.preview.resolve()
+            if preview == ROOT or ROOT in preview.parents:
+                raise ValueError("Private preview must remain outside Git")
+            body = knowledge_snapshot(item.pk)
+            preview.write_bytes(body.body)
+            report.update(
+                status="PREVIEW_ONLY",
+                stage="local_preview",
+                bytes=len(body.body),
+                blocked=body.blocked,
+                notes_present=bool(item.note),
+                groups_count=item.itemtopic_set.count()
+                + item.itemproject_set.count()
+                + item.itemtag_set.count(),
+                derived_count=item.derived_content.filter(status="active").count(),
+                capture_events=item.captures.count(),
+                assets=item.assets.count(),
+                source_urls=item.sources.count(),
+                drive_calls=0,
+                opted_in=False,
+            )
+            args.output.write_text(
+                json.dumps(report, indent=2) + "\n", encoding="utf-8"
+            )
+            print("Private local preview ready; no export enabled or Drive calls made.")
+            return 0
         before = capture_snapshot(item)
         originals = list(
             item.assets.order_by("id").values(

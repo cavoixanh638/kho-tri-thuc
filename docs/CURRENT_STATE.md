@@ -152,8 +152,20 @@ panel từng Item và backup manifest v2 có mapping KnowledgeExport, đọc v1.
 178 PASS/1 skip FFmpeg do PATH; đã chạy lại riêng 11 thumbnail test với FFmpeg
 đúng đường dẫn, tất cả PASS. Backup v2/compat v1/roundtrip 11 test PASS. Migration
 0003/0004 xuôi/ngược/áp lại, check migration và lint/format module mới PASS.
-**IN_PROGRESS/CI_PENDING**: chưa PR/merge/deploy/live export. Không có bản xuất
-tri thức nào được tạo trên Drive. [Hợp đồng và cách tiếp tục](operations/KNOWLEDGE_EXPORT.md).
+**DEPLOYED/LIVE_ACCEPTANCE_PENDING**: [PR #22](https://github.com/cavoixanh638/kho-tri-thuc/pull/22)
+head `b4d1a656cb6aef6be9926560b655dfd7c4690d04` đã [CI #44508674959](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44508674959)
+PASS và merge. Windows đã chạy `843642e4046ac741f0aa5b5ecb1fd217dcfe11b3`:
+backup riêng trước migration, storage 0003/0004, build/restart/check đều PASS;
+API/bundle mới 200. [Báo cáo Windows](operations/knowledge-windows-results.json).
+
+Lượt live export bị automatic approval review từ chối trước khi thực thi vì cần
+xác nhận riêng payload và đích ChatGPT_Index. Đã tạo preview **chỉ cục bộ** 929
+byte cho Reel người dùng giao (0 note/nhóm/DerivedContent), gửi xác nhận xuất một
+mục sang tài khoản Drive runtime. Chưa có opt-in hoặc bản xuất Drive ở mốc này.
+Runner `tools/verify_knowledge_export.py` có `--preview` không gọi Drive và
+`--exercise` chỉ chạy sau xác nhận; kiểm MD/TXT/MD, full readback, unique file,
+thu hồi/bật lại cùng ID và giữ CaptureEvent/Item/original. Toàn văn preview,
+credential, backup và ID riêng không đưa lên Git. [Hợp đồng](operations/KNOWLEDGE_EXPORT.md).
 
 **Việc tiếp theo:** tích hợp từng nhánh khi có mã/test/bằng chứng, giữ các cổng chưa đạt có trạng thái rõ. Chất lượng nhóm cần tập thực và người dùng đánh giá, không thay bằng fixture tự soạn. Upload Reel người dùng đã giao hoàn tất, không cần gửi lại liên kết.
 
@@ -212,8 +224,8 @@ tri thức nào được tạo trên Drive. [Hợp đồng và cách tiếp tụ
   MP4 tải lại khớp SHA. Private Windows copy đã kiểm 12 file dưới thư mục backups.
   Không restore lên production. Dữ liệu live chưa có nhóm/note không rỗng và
   chưa kiểm client/project khác, không suy fixture thành live.
-- KT-202E tại `codex/kt-202e-knowledge-pilot` vẫn WIP, chưa merge/deploy/export.
-  Các agent hết workspace credits; mã và checkpoint hiện tại được lưu ở GitHub.
+- KT-202E đã merge/deploy theo PR #22; nghiệm thu live và connector vẫn còn mở
+  theo đoạn trên. Mã/checkpoint và các báo cáo khử riêng tư lưu trên GitHub.
 
 - Mỗi lần hoàn tất task ghi **ID, SHA commit, branch/PR, test thực sự đã chạy + kết quả, điều chưa test, blocker và một bước kế tiếp**. Không tự thăng trạng thái thành PASS khi chưa có bằng chứng.
 - Kiểm tra lại GitHub `main` và diff hiện hành trước mỗi lần ghi. Nếu nhiều AI làm song song, phân file/branch không chồng chéo. Không cần dựng workboard/dispatcher nếu chưa thực sự có nhiều đầu việc đồng thời.
