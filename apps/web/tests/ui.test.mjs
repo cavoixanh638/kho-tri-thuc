@@ -218,6 +218,16 @@ function itemRoutes(current) {
   };
 }
 
+test('a text article reads as knowledge without misleading missing-extraction status or repeated title', async () => {
+  globalThis.fetch = itemRoutes(() => item({ kind: 'text', title: 'Bài tri thức', note: '# Bài tri thức\n\nNội dung **đã có**.', original_url: '', source_fetch: 'not_applicable', asset_storage: 'not_applicable' }));
+  await render(ui.ItemScreen, { id: 'fixture-item', csrf: 'fixture-csrf' });
+  assert.equal(container.querySelector('h1').textContent, 'Bài tri thức');
+  assert.equal(container.querySelector('.knowledge-text strong').textContent, 'đã có');
+  assert.equal(container.querySelector('.knowledge-text h3'), null);
+  assert.equal(container.querySelector('#extracted-content'), null);
+  assert.ok(!container.textContent.includes('Chưa có nội dung'));
+});
+
 test('item status and attachment update without erasing a draft under editing', async () => {
   let calls = 0;
   globalThis.fetch = itemRoutes(() => ++calls === 1 ? item() : item({

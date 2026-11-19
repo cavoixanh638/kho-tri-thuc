@@ -55,6 +55,7 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
   const [assetError, setAssetError] = useState<string>();
   const [confirmation, setConfirmation] = useState('');
   const sourceUrl = externalHttpUrl(item.original_url);
+  const hasSourceContent = item.kind !== 'text' || item.assets.length > 0;
   const evidenceRevision = [item.updated_at, item.source_fetch, item.content_extract, item.classification_status].join(':');
 
   async function update(patch: Partial<Pick<Item, 'title' | 'description' | 'note' | 'favorite' | 'deleted'>>) {
@@ -139,7 +140,7 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
             </div>
           </form> : <>
             {item.note ? <>
-              <KnowledgeText text={item.note} />
+              <KnowledgeText text={item.note} title={itemTitle(item)} />
               <details className="raw-knowledge"><summary>Xem Markdown gốc</summary><pre>{item.note}</pre></details>
             </> : <Empty>Chưa có bài tri thức được biên soạn. Bạn có thể chỉnh sửa để thêm nội dung; văn bản trích từ nguồn nằm bên dưới.</Empty>}
             {(item.original_url || item.description) && <details className="source-description"><summary>Nguồn và mô tả</summary>
@@ -148,7 +149,7 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
             </details>}
           </>}
         </section>
-        {!item.deleted && <ExtractedContent id={item.item_id} refreshKey={evidenceRevision} />}
+        {!item.deleted && hasSourceContent && <ExtractedContent id={item.item_id} refreshKey={evidenceRevision} />}
         {item.assets.length > 0 && <section className="panel assets" aria-labelledby="item-media">
             <h2 id="item-media">Media và tài liệu nguồn</h2>
             <AssetPreview assets={item.assets} />
@@ -174,9 +175,11 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
             <div><dt>Loại</dt><dd>{kindLabels[item.kind]}</dd></div>
             <div><dt>Nhận lần đầu</dt><dd><ServerTime value={item.saved_at} /></dd></div>
             <div><dt>Ngày nguồn đăng</dt><dd>{item.published_at ? <ServerTime value={item.published_at} /> : '—'}</dd></div>
-            <div><dt>Thu thập nguồn</dt><dd>{stateText(item.source_fetch, fetchStates)}</dd></div>
-            <div><dt>Lưu tệp</dt><dd>{stateText(item.asset_storage, storageStates)}</dd></div>
-            <div><dt>Trích nội dung</dt><dd>{stateText(item.content_extract, extractStates)}</dd></div>
+            {hasSourceContent && <>
+              <div><dt>Thu thập nguồn</dt><dd>{stateText(item.source_fetch, fetchStates)}</dd></div>
+              <div><dt>Lưu tệp</dt><dd>{stateText(item.asset_storage, storageStates)}</dd></div>
+              <div><dt>Trích nội dung</dt><dd>{stateText(item.content_extract, extractStates)}</dd></div>
+            </>}
             <div><dt>Phân loại</dt><dd>{stateText(item.classification_status, organizationStates)}</dd></div>
           </dl>
           {refreshError ? <ErrorNotice retry={onRefresh}>Chưa cập nhật được trạng thái mới. Dữ liệu đang hiển thị là lần kiểm tra trước.</ErrorNotice>
