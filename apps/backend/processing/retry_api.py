@@ -1,13 +1,12 @@
 from uuid import UUID
 
+from catalog.models import Item
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from jobs.models import Job
 from ninja import Router, Schema
 from ninja.security import django_auth
-
-from catalog.models import Item
-from jobs.models import Job
 
 router = Router(auth=django_auth, tags=["Processing"])
 
@@ -27,7 +26,7 @@ def retry_item(request, item_id: UUID):
         )
         queued = Job.objects.filter(
             item=item,
-            kind__in=["fetch_source", "upload_asset"],
+            kind__in=["fetch_source", "download_video", "upload_asset"],
             state__in=[Job.State.FAILED, Job.State.DONE],
         ).update(
             state=Job.State.RETRY,

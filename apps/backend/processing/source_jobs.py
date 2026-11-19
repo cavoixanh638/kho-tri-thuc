@@ -3,11 +3,10 @@ from hashlib import sha256
 from urllib.parse import urlsplit
 from uuid import UUID
 
+from catalog.models import Item, Source
 from django.db import transaction
 from django.db.models.functions import Now
 from django.utils.dateparse import parse_datetime
-
-from catalog.models import Item, Source
 from ingestion.models import CaptureEvent
 from jobs.handlers import JobFailure
 from jobs.models import Job
@@ -139,6 +138,24 @@ def _item_states(item, result, has_previous_text, video_page):
         item.content_extract = "not_available"
     if not item.assets.filter(role="original").exists():
         item.asset_storage = "not_applicable"
+    media = item.assets.filter(role="original", mime="video/mp4").exclude(sha256="")
+    if media.exists():
+        item.source_fetch = "done"
+        if media.filter(
+            locations__status="verified", locations__provider="google_drive"
+        ).exists():
+            item.asset_storage = "verified"
+    elif item.jobs.filter(kind="download_video").exists():
+        downloading = item.jobs.filter(
+            kind="download_video",
+            state__in=[
+                Job.State.QUEUED,
+                Job.State.RUNNING,
+                Job.State.RETRY,
+            ],
+        ).exists()
+        item.source_fetch = "pending" if downloading else "failed"
+        item.asset_storage = "pending" if downloading else "failed"
 
 
 @transaction.atomic
@@ -215,7 +232,10 @@ def _persist(job, source, capture_id, result):
 
 
 def fetch_source_job(job: Job) -> None:
+    from .video_jobs import enqueue_video
+
     source, capture_id = _scope(job)
+    enqueue_video(job, source, capture_id)
     result: SourceResult = fetch_source(source.original_url.strip())
     _persist(job, source, capture_id, result)
     if result.status in FAILED_STATUSES:
