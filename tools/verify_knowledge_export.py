@@ -9,6 +9,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -82,6 +83,7 @@ def verify(item, record):
 
 
 def wait(item, desired, timeout):
+    from jobs.models import Job
     from storage.models import KnowledgeExport
 
     deadline = time.monotonic() + timeout
@@ -89,7 +91,14 @@ def wait(item, desired, timeout):
         record = KnowledgeExport.objects.get(item=item)
         if record.status == desired:
             return record
-        if record.status == "failed":
+        if (
+            record.status == "failed"
+            and not Job.objects.filter(
+                item=item,
+                kind="export_knowledge",
+                state__in=["queued", "retry", "running"],
+            ).exists()
+        ):
             raise RuntimeError("Export worker failed: " + record.last_error)
         time.sleep(1)
     raise TimeoutError("Export worker did not settle")
@@ -225,6 +234,11 @@ def main():
         report["status"], report["stage"] = "PASS", "complete"
     except Exception as error:  # noqa: BLE001 - never export private exception strings
         report["error_type"] = type(error).__name__
+        code = getattr(error, "code", "")
+        if isinstance(code, str) and re.fullmatch(
+            r"(?:drive|knowledge)_[a-z_]{1,50}", code
+        ):
+            report["error_code"] = code
     args.output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print("Knowledge live verification", report["status"])
     return 0 if report["status"] == "PASS" else 1
