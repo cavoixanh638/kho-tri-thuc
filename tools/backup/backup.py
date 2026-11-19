@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[2]
 DUMP = "database.dump"
 MANIFEST = "manifest.json"
 CHECKSUMS = "SHA256SUMS"
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 PG_MAJOR = 18
 
 # The projection is part of the versioned format. Keep credential tables and
@@ -74,6 +74,11 @@ COLLECTIONS = {
         "jobs_job",
         "id, item_id, kind, idempotency_key, state, attempt, retry_at, "
         "lease_until, error_code, created_at, completed_at",
+    ),
+    "knowledge_exports": (
+        "storage_knowledgeexport",
+        "id, item_id, enabled, format, provider, provider_file_id, source_version, "
+        "exported_version, content_sha256, status, truncated, last_error, last_synced_at",
     ),
 }
 
@@ -165,9 +170,11 @@ class Postgres:
             raise BackupError(f"{tool} failed (exit {returncode}). Check the local database logs.")
 
 
-def manifest_query():
+def manifest_query(names=None):
     parts = []
     for name, (table, columns) in COLLECTIONS.items():
+        if names is not None and name not in names:
+            continue
         parts.append(
             f"'{name}', (SELECT COALESCE(json_agg(r ORDER BY r.id), '[]'::json) "
             f"FROM (SELECT {columns} FROM public.{table}) r)"
@@ -227,14 +234,14 @@ def verify_bundle(directory):
     if (
         not isinstance(manifest, dict)
         or type(manifest.get("schema_version")) is not int
-        or manifest["schema_version"] != SCHEMA_VERSION
+        or manifest["schema_version"] not in (1, SCHEMA_VERSION)
         or manifest.get("postgres_major") != PG_MAJOR
     ):
         raise BackupError("Unsupported backup manifest format.")
     collections = manifest.get("collections")
     if (
         not isinstance(collections, dict)
-        or collections.keys() != COLLECTIONS.keys()
+        or set(collections) != (set(COLLECTIONS) if manifest["schema_version"] == 2 else set(COLLECTIONS) - {"knowledge_exports"})
         or any(not isinstance(rows, list) for rows in collections.values())
     ):
         raise BackupError("Missing or invalid manifest collections.")
@@ -278,9 +285,9 @@ def restore(pg, directory, target):
             stdin=archive, output=subprocess.DEVNULL,
         )
 
-    actual = json.loads(pg.psql(TRANSACTION + manifest_query(), target))
+    actual = json.loads(pg.psql(TRANSACTION + manifest_query(expected), target))
     if actual != expected:
-        mismatches = ", ".join(name for name in COLLECTIONS if actual[name] != expected[name])
+        mismatches = ", ".join(name for name in expected if actual[name] != expected[name])
         raise BackupError(f"Restore contents differ from the manifest in: {mismatches}.")
 
 

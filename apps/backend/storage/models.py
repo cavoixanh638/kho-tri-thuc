@@ -66,6 +66,7 @@ class DriveAccount(models.Model):
     google_user_id = models.CharField(max_length=255)
     display_name = models.CharField(max_length=255, blank=True)
     root_folder_id = models.CharField(max_length=255, blank=True)
+    knowledge_folder_id = models.CharField(max_length=255, blank=True)
     refresh_token_ciphertext = models.TextField(blank=True)
     state = models.CharField(
         max_length=16, choices=State.choices, default=State.PENDING

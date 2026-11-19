@@ -101,6 +101,16 @@ class DriveBundleTests(unittest.TestCase):
         )
         self.archive = self.root / "backup.zip"
 
+    def test_v1_manifest_remains_readable_without_knowledge_collection(self):
+        manifest = json.loads((self.bundle / backup.MANIFEST).read_text(encoding="utf-8"))
+        manifest['schema_version'] = 1
+        del manifest['collections']['knowledge_exports']
+        (self.bundle / backup.MANIFEST).write_text(json.dumps(manifest), encoding='utf-8')
+        (self.bundle / backup.CHECKSUMS).write_text(backup.checksum_lines(self.bundle), encoding='ascii')
+        rows = backup.verify_bundle(self.bundle)
+        self.assertEqual(len(rows), 14)
+        self.assertNotIn(b'storage_knowledgeexport', backup.manifest_query(rows))
+
     def test_deterministic_pack_and_verified_unpack(self):
         first = drive_bundle.pack(self.bundle, self.archive)
         second = self.root / "second.zip"

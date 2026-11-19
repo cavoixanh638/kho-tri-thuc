@@ -146,9 +146,14 @@ KT-202E có model KnowledgeExport, migration `storage.0003`, snapshot renderer v
 6 test PostgreSQL tạm **PASS** (ghi chú/giờ bất biến, version, active/stale,
 phân quyền nhóm, transcript rỗng, cắt có cảnh báo và chặn credential-like input).
 `makemigrations --check` PASS. Snapshot không opt-in hoặc ghi Drive khi được đọc.
-Chưa export adapter/job/API/UI; **WIP**, không merge/deploy branch ở trạng thái
-hiện tại. Không có bản xuất tri thức nào được tạo trên Drive. Tiếp tục exporter
-idempotent và cập nhật backup mapping trước pilot.
+Đã bổ sung adapter TXT/Markdown, worker lease/idempotence, API opt-in/owner/CSRF,
+panel từng Item và backup manifest v2 có mapping KnowledgeExport, đọc v1.
+13 backend pilot test và 14 frontend JSDOM test/build PASS. Full backend 179 test:
+178 PASS/1 skip FFmpeg do PATH; đã chạy lại riêng 11 thumbnail test với FFmpeg
+đúng đường dẫn, tất cả PASS. Backup v2/compat v1/roundtrip 11 test PASS. Migration
+0003/0004 xuôi/ngược/áp lại, check migration và lint/format module mới PASS.
+**IN_PROGRESS/CI_PENDING**: chưa PR/merge/deploy/live export. Không có bản xuất
+tri thức nào được tạo trên Drive. [Hợp đồng và cách tiếp tục](operations/KNOWLEDGE_EXPORT.md).
 
 **Việc tiếp theo:** tích hợp từng nhánh khi có mã/test/bằng chứng, giữ các cổng chưa đạt có trạng thái rõ. Chất lượng nhóm cần tập thực và người dùng đánh giá, không thay bằng fixture tự soạn. Upload Reel người dùng đã giao hoàn tất, không cần gửi lại liên kết.
 

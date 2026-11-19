@@ -165,7 +165,8 @@ def audit(args, report):
                     "Restored database contains excluded identity rows."
                 )
             report.update(
-                all_14_collections_exact=True,
+                all_manifest_collections_exact=True,
+                manifest_collection_count=len(collections),
                 oauth_rows_restored=0,
                 sessions_restored=0,
             )

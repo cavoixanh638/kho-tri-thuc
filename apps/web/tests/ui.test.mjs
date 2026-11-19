@@ -261,3 +261,40 @@ for (const width of [390, 768, 1440]) {
     assert.equal(window.location.search, '');
   });
 }
+
+test('knowledge export requires opt in, sends CSRF and polls until the Drive revision is ready', async () => {
+  const base = { enabled: false, format: 'markdown', status: 'disabled', stale: false,
+    source_version: '', exported_version: '', truncated: false, last_error: '', last_synced_at: null, url: null };
+  let phase = 'disabled', pendingReads = 0, write;
+  globalThis.fetch = async (path, options) => {
+    assert.equal(path, '/api/v1/items/fixture-item/knowledge-export');
+    if (options.method === 'POST') {
+      write = { body: JSON.parse(options.body), csrf: options.headers.get('X-CSRFToken') };
+      phase = 'pending';
+      return response({ ...base, enabled: true, status: 'pending', stale: true });
+    }
+    if (phase === 'pending' && ++pendingReads >= 2) phase = 'synced';
+    return response(phase === 'disabled' ? base : { ...base, enabled: true, status: phase,
+      stale: phase !== 'synced', url: phase === 'synced' ? 'https://drive.google.com/open?id=fixture-export' : null });
+  };
+  await render(ui.KnowledgeExportPanel, { id: 'fixture-item', csrf: 'fixture-csrf', deleted: false, refreshKey: '1' });
+  assert.equal(write, undefined);
+  assert.ok(container.textContent.includes('Đang tắt'));
+  await click('Bật xuất tri thức');
+  assert.deepEqual(write, { body: { enabled: true, format: 'markdown' }, csrf: 'fixture-csrf' });
+  assert.ok(container.textContent.includes('Đang chờ đồng bộ'));
+  await clock.advance(2_500);
+  assert.ok(container.textContent.includes('Đã đồng bộ'));
+  assert.equal(container.querySelector('a').href, 'https://drive.google.com/open?id=fixture-export');
+});
+
+test('knowledge export explains blocked or stale content and never opens a blocked file', async () => {
+  globalThis.fetch = async () => response({ enabled: true, format: 'text', status: 'failed', stale: true,
+    source_version: 'new', exported_version: 'old', truncated: true, last_error: 'knowledge_sensitive_input',
+    last_synced_at: null, url: null });
+  await render(ui.KnowledgeExportPanel, { id: 'fixture-item', csrf: 'fixture-csrf', deleted: false, refreshKey: '1' });
+  assert.ok(container.textContent.includes('Đã chặn xuất'));
+  assert.ok(container.textContent.includes('chưa theo kịp dữ liệu nguồn'));
+  assert.ok(container.textContent.includes('bản xuất có giới hạn'));
+  assert.equal(container.querySelector('a'), null);
+});

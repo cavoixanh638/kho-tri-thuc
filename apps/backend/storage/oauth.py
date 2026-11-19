@@ -120,7 +120,7 @@ def finish_connection(request, state, code):
         )
         Job.objects.filter(
             item__owner=request.user,
-            kind="upload_asset",
+            kind__in=["upload_asset", "export_knowledge"],
             state=Job.State.FAILED,
             error_code__in=[
                 "drive_not_connected",
