@@ -49,8 +49,17 @@ frontend có 14 JSDOM test PASS và production build PASS. Full regression Windo
 179 test, 178 PASS/1 skip FFmpeg do PATH; đã chạy riêng 11 thumbnail test với
 FFmpeg rõ đường dẫn, PASS không skip. Backup v2 roundtrip/archive/compat v1 có
 11 test PASS. Migration 0003/0004 xuôi/ngược/áp lại và makemigrations check PASS.
-Chưa deploy phần xuất tri thức ở mốc này, chờ CI đúng head.
-Browser tương tác/connector thật còn chặn bởi phiên CUA không đọc được giao diện.
+PR #22 head `b4d1a65` đã CI #44508674959 PASS và merge; Windows đã triển khai
+`843642e` sau backup riêng trước migration. Check/build/restart/API/bundle mới
+PASS. [Báo cáo triển khai](knowledge-windows-results.json). Sau xác nhận cụ thể
+của người dùng cho Reel đã gửi và ChatGPT_Index, live verifier `151b4d5` đã PASS:
+MD 929 byte/TXT 909 byte/MD đọc lại đúng SHA-256, một file, cùng ID khi đổi format
+và thu hồi/bật lại, version khớp, CaptureEvent và original catalog nguyên vẹn.
+[Báo cáo live](knowledge-export-live-results.json). Mục này giữ bật Markdown.
+Backup Drive sau thử giữ đúng một KnowledgeExport và đủ 15 collection khi restore
+vào DB mới, OAuth/session rỗng; [báo cáo](knowledge-backup-live-results.json).
+Đây chưa phải nghiệm thu 5–10 Item hoặc khả năng ChatGPT tìm/đọc. Connector vẫn
+không đọc được chính file đã xác minh; đang xử lý tài khoản Primary trên UI.
 
 Backup manifest v2 thêm `knowledge_exports`, giữ file mapping, preference và
 version; vẫn xác minh/restore được manifest v1 (14 collection). OAuth/session vẫn

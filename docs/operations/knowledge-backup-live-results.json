@@ -1,0 +1,48 @@
+{
+  "checked_at": "2026-11-19T12:05:06.978604+00:00",
+  "status": "PASS",
+  "stage": "complete",
+  "consistent_snapshot": true,
+  "independent_local_copy_verified": true,
+  "local_copy_scope": "same Windows machine, outside Drive sync",
+  "archive_sha256": "91a65272ef993ca75f4e96f591eea54000206c79ce857125e4d5c177f1161757",
+  "archive_bytes": 101976,
+  "dump_sha256": "309ee1132a8ab5c01969b18dbe00c5366f7702f4e1f31641dff4f1ca0793d70a",
+  "manifest_sha256": "fef613f30d094b7739c87fea66d6398bc6a0b5f94af16776ab67a180f8a19677",
+  "collection_counts": {
+    "items": 1,
+    "capture_events": 1,
+    "sources": 1,
+    "topics": 0,
+    "projects": 0,
+    "tags": 0,
+    "item_topics": 0,
+    "item_projects": 0,
+    "item_tags": 0,
+    "assets": 1,
+    "storage_locations": 1,
+    "derived_contents": 0,
+    "related_items": 0,
+    "jobs": 9,
+    "knowledge_exports": 1
+  },
+  "backup_retry_same_file": true,
+  "drive_backup_exact_readback": true,
+  "all_manifest_collections_exact": true,
+  "manifest_collection_count": 15,
+  "oauth_rows_restored": 0,
+  "sessions_restored": 0,
+  "restored_originals": [
+    {
+      "bytes": 18394669,
+      "sha256": "3fd6884f8d6fdfd6099c9378b70878c6ba7f7fceb4f4da989b2840587a1d6ca5",
+      "exact_readback": true,
+      "adapter_open": true
+    }
+  ],
+  "live_nonempty_group_assignments": false,
+  "live_nonempty_notes": false,
+  "production_database_read_only": true,
+  "same_oauth_client_and_project": true,
+  "different_client_project_tested": false
+}

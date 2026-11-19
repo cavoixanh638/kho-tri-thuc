@@ -1,0 +1,37 @@
+{
+  "checked_date": "2026-11-19",
+  "deployment_status": "PASS",
+  "deployed_sha": "843642e4046ac741f0aa5b5ecb1fd217dcfe11b3",
+  "tested_pr_head": "b4d1a656cb6aef6be9926560b655dfd7c4690d04",
+  "pull_request": "https://github.com/cavoixanh638/kho-tri-thuc/pull/22",
+  "ci": "https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44508674959",
+  "checks": {
+    "pre_migration_consistent_private_backup": "PASS",
+    "backup_checksum_verification": "PASS",
+    "migrations_storage_0003_0004": "PASS",
+    "django_check": "PASS",
+    "makemigrations_check": "PASS",
+    "frontend_build": "PASS",
+    "restart_own_processes": "PASS",
+    "api_status": 200,
+    "postgresql": "running",
+    "served_bundle": "/assets/index-BN7dD1Aq.js",
+    "bundle_status": 200,
+    "knowledge_export_panel_in_bundle": true
+  },
+  "live_export": {
+    "status": "PASS",
+    "executed": true,
+    "user_approved_exact_payload_and_destination": true,
+    "report": "knowledge-export-live-results.json",
+    "private_local_preview_bytes": 929,
+    "preview_notes_present": false,
+    "preview_groups": 0,
+    "preview_active_derived_parts": 0,
+    "preview_capture_events": 1,
+    "preview_assets": 1,
+    "preview_source_urls": 1
+  },
+  "connector_application_folder_read": "NOT_VERIFIED",
+  "pilot_5_to_10_items": "NOT_RUN"
+}
