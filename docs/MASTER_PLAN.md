@@ -1,7 +1,7 @@
 # KHO TRI THỨC — KẾ HOẠCH TỔNG THỂ V4.7 (TIẾP NHẬN VÀ TỰ TỔ CHỨC)
 ## Nhỏ khi vận hành, sẵn đường nâng cấp dài hạn
 
-**Ngày:** 18/11/2026 · **Thay thế v4.6** · **Trạng thái:** thiết kế, chưa có mã nguồn ứng dụng.  
+**Ngày baseline:** 18/11/2026 · **Thay thế v4.6** · **Trạng thái tại thời điểm lập v4.7:** thiết kế chưa có mã nguồn; **đến 20/11/2026 đã có mã và các nghiệm thu giới hạn** như [CURRENT_STATE.md](CURRENT_STATE.md), không được hiểu dòng lịch sử này là hiện trạng.  
 **Nguồn quyết định:** người dùng muốn **Google Drive là kho file chính**, sử dụng cá nhân, tự sắp xếp theo lĩnh vực/dự án/xem theo ngày, có thể kết nối ChatGPT và mở rộng AI trong tương lai. Tránh cả overengineering lẫn làm quá sơ sài dẫn đến viết lại hệ thống.
 
 ## 1. Mục tiêu của bản đầu
@@ -119,7 +119,7 @@ Trước khi thông báo PASS từng mốc, phải có kiểm thử file Drive t
 
 **Quy ước tài liệu:** `MASTER_PLAN.md` quản lý mục tiêu/phạm vi, `ARCHITECTURE_AND_DATA.md` giải thích kỹ thuật và so sánh phương án, `ROADMAP_AND_TESTS.md` là backlog và nghiệm thu, `AGENTS.md` là quy tắc Codex. Không bổ sung 17 file tài liệu thiết kế.
 
-**Trạng thái khi cập nhật:** V4.6 là **baseline giao Codex** cho phát triển, không khẳng định đây là kết quả triển khai. Chỉ có tài liệu; chưa tạo frontend/backend, chưa thử Google Drive API với tài khoản của người dùng, chưa có production.
+**Chú thích lịch sử:** V4.6 từng là **baseline giao Codex** lúc chưa có frontend/backend hoặc Drive live. Trạng thái này đã lỗi thời tại 20/11/2026; dùng [CURRENT_STATE.md](CURRENT_STATE.md) để biết code, nghiệm thu Windows/Drive và các mục NOT_RUN.
 
 
 ## 8a. Hợp đồng sử dụng đã chốt ngày 18/11/2026
@@ -144,3 +144,15 @@ Trước khi thông báo PASS từng mốc, phải có kiểm thử file Drive t
 | PostgreSQL tiếng Việt | Migration `kt_vi`/unaccent/pg_trgm; **hai expression GIN index riêng** cho Item và DerivedContent, `SearchService` gộp item ID, bỏ bản text stale và giữ provenance. | Không tạo expression index JOIN xuyên bảng; không dồn PDF/transcript dài vào một `Item.search_vector`, không tự gắn `IMMUTABLE` cho hàm thiếu căn cứ. |
 
 Các công việc và mã kiểm thử chi tiết nằm trong `docs/ROADMAP_AND_TESTS.md`; giải pháp kỹ thuật chi tiết nằm trong `docs/ARCHITECTURE_AND_DATA.md`. Không thêm nhà cung cấp cloud/Redis/ASR/AI sâu trong bản đầu.
+
+## 10. Bổ sung định hướng sau 17 nghiên cứu ứng dụng ghi chú — 20/11/2026
+
+**Phạm vi, không đổi lựa chọn nền tảng đã chốt:** Khảo sát G01–G17 cho thấy có nhiều UX đáng học ở Obsidian, Notion, Heptabase, OneNote, Capacities, Lark, v.v. nhưng **chưa có chứng cứ** sản phẩm nào thay được hợp đồng dữ liệu CaptureEvent/Item/Asset/Drive, khôi phục và tự tổ chức hiện có. Tiếp tục **Django + PostgreSQL + Google Drive**, không fork nguyên hệ thống ghi chú bên thứ ba. [PR #47 — G00 thẩm định lần hai](https://github.com/cavoixanh638/kho-tri-thuc/pull/47) là tài liệu nghiên cứu **chưa merge**, không phải trạng thái chạy thật.
+
+**Thứ tự giá trị người dùng:**
+1. **Cổng an toàn trước khi phổ biến/nhập quy mô:** giữ file gốc và hash/restore, chống trùng Event, xử lý nguồn FB/TikTok/YT an toàn, Android thực, đo 10.000 Item/khối lượng media đại diện. Không suy pilot nhỏ thành xác nhận hàng trăm GB.
+2. **UX ưu tiên PoC:** soạn/đọc văn bản Markdown Live Preview; mở trích dẫn về đúng trang/timestamp có chứng cứ; gửi nhanh PWA/Android, không mất nội dung.
+3. **UX sau gate:** panel backlinks/related có lý do, Table/Card/Timeline dùng chung Item ID, thẻ nguồn; AI suggestions có diff/accept **chỉ khi được cho phép**; template theo loại tài liệu tùy chọn.
+4. **Hoãn:** Canvas/whiteboard lớn, tích hợp Mem/Superpowered làm lõi, fork Obsidian/AFFiNE, graph DB, xây MCP/AI trả phí/ASR hàng loạt hoặc đổi Drive chỉ vì ý tưởng nghiên cứu.
+
+**Không tự triển khai tất cả:** Danh sách trên là **định hướng đề xuất** để người dùng giao từng mã KT-114–KT-121; nhiệm vụ, giới hạn quyền sửa và test acceptance ở [INDEX triển khai](workstreams/notes-ux-20261120/INDEX.md); chi tiết mã/cổng PASS thuộc [ROADMAP_AND_TESTS.md](ROADMAP_AND_TESTS.md), kết quả chạy thật thuộc CURRENT_STATE. Các ghi nhận phát hành cần tính theo mốc thời gian; Capacities **đã có ghi âm/phiên âm/tóm tắt ở Pro từ 11/2026** và Reflect Open Windows/Linux mới chỉ là build thử nghiệm chưa ký.
