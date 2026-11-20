@@ -18,7 +18,8 @@ export type LocatorState = 'AVAILABLE' | 'MISSING_LOCATOR' | 'MISSING_ASSET' | '
 export type SourceViewer = {
   assetId: string; version: string; assetVersion: number; url: string;
 } & ({ kind: 'pdf'; pageNavigationVerified: true } | { kind: 'media'; rangeVerified: true });
-export type LocatorResolution = { state: LocatorState; locator?: Locator; label: string; reason: string; viewer?: SourceViewer };
+export type LocatorResolution = { state: LocatorState; locator?: Locator; label: string; reason: string; viewer?: SourceViewer;
+  association: { assetId: string | null; sourceId: number | null; version: string | null; processorVersion: string | null } };
 
 const finite = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value) && value >= 0;
 export function parseLocator(raw: Record<string, unknown>): Locator | undefined {
@@ -38,6 +39,7 @@ export function parseLocator(raw: Record<string, unknown>): Locator | undefined 
   return undefined;
 }
 export function transcriptSegments(raw: Record<string, unknown>): { text: string; locator: Record<string, unknown> }[] {
+  if (raw.schema_version != null && raw.schema_version !== 1) return [];
   if (!Array.isArray(raw.segments) || raw.segments.length > 1000) return [];
   const rows: { text: string; locator: Record<string, unknown> }[] = [];
   let last = 0;
@@ -61,7 +63,7 @@ export function locatorLabel(locator?: Locator): string {
 }
 export function privateViewerUrl(value: string): string | undefined {
   // Relative, same-origin cookie-authenticated endpoints only; no query credentials or remote redirects by construction.
-  if (!/^\/api\/v1\/assets\/[^/?#]+\/(bytes|stream|content)$/.test(value)) return undefined;
+  if (!/^\/api\/v1\/assets\/[A-Za-z0-9_-]{1,128}\/(bytes|stream|content)$/.test(value)) return undefined;
   return value;
 }
 export function safeOriginalUrl(value: string): string | undefined {
@@ -69,23 +71,25 @@ export function safeOriginalUrl(value: string): string | undefined {
     const url = new URL(value);
     if (!['https:', 'http:'].includes(url.protocol) || url.username || url.password) return undefined;
     // Never propagate bearer credentials, signed URLs or OAuth data to another tab/referrer.
-    if (/[?&#](?:[^=&#]*(?:token|secret|signature|credential|authorization)[^=&#]*)=/i.test(value)) return undefined;
+    for (const parameters of [url.searchParams, new URLSearchParams(url.hash.slice(1))]) {
+      for (const key of parameters.keys()) if (/token|secret|signature|credential|authorization|api.?key|bearer/i.test(key)) return undefined;
+    }
     return url.href;
   } catch { return undefined; }
 }
 export function resolveLocator(part: SourcePart, viewer?: SourceViewer): LocatorResolution {
   const locator = parseLocator(part.locator);
-  const base = { locator, label: locatorLabel(locator) };
+  const base = { locator, label: locatorLabel(locator), association: { assetId: part.asset_id, sourceId: part.source?.source_id ?? null, version: part.source?.version ?? null, processorVersion: part.processor_version ?? null } };
   if (part.source?.state === 'stale') return { ...base, state: 'STALE_SOURCE', reason: 'Nguồn đã đổi phiên bản. Cần trích lại trước khi định vị.' };
   if (part.source?.state === 'missing' || (!part.asset_id && !part.source?.source_id)) return { ...base, state: 'MISSING_ASSET', reason: 'Không còn nguồn đã xác minh cho phần trích này.' };
   if (!locator) return { ...base, state: 'MISSING_LOCATOR', reason: 'Chưa có vị trí tin cậy; có thể mở nguồn gốc.' };
   if (!part.source || part.source.state !== 'current' || !part.source.version) return { ...base, state: 'NOT_SUPPORTED', reason: 'Chưa xác minh phiên bản nguồn; không thể định vị.' };
   if (viewer && (viewer.assetId !== part.asset_id || viewer.version !== part.source.version || viewer.assetVersion !== part.source.asset_version)) {
-    return { ...base, state: 'STALE_SOURCE', reason: 'Viewer không khớp đúng asset và phiên bản của phần trích.' };
+    return { ...base, state: 'STALE_SOURCE', reason: 'Tệp đang mở không khớp phiên bản đã trích. Cần tải lại nguồn.' };
   }
   const supports = viewer && privateViewerUrl(viewer.url) && viewer.url.split('/')[4] === encodeURIComponent(part.asset_id ?? '') && ((locator.kind === 'page' && viewer.kind === 'pdf' && viewer.pageNavigationVerified && part.source.mime === 'application/pdf')
     || (locator.kind === 'time' && viewer.kind === 'media' && viewer.rangeVerified && /^(audio|video)\//.test(part.source.mime ?? '')));
-  if (!supports) return { ...base, state: 'NOT_SUPPORTED', reason: locator.kind === 'section' ? 'Tên đoạn chưa có điểm neo đã kiểm chứng; chỉ mở nguồn gốc.' : 'Chưa có viewer/luồng byte đã kiểm chứng cho vị trí này; chỉ mở file gốc.' };
+  if (!supports) return { ...base, state: 'NOT_SUPPORTED', reason: locator.kind === 'section' ? 'Chưa xác định được đoạn này trên trang gốc. Có thể mở website nguồn.' : 'Chưa thể mở đúng vị trí trong nguồn này. Có thể mở file gốc.' };
   return { ...base, state: 'AVAILABLE', reason: 'Mở vị trí trên nguồn đã xác minh.', viewer };
 }
 const stateText: Record<LocatorState, string> = {
