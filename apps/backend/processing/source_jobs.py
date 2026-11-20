@@ -1,4 +1,4 @@
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from hashlib import sha256
 from urllib.parse import urlsplit
 from uuid import UUID
@@ -13,6 +13,7 @@ from jobs.models import Job
 from jobs.repository import JobRepository
 
 from .models import DerivedContent
+from .source_cleaning import source_metadata, source_text
 from .source_fetch import SourceResult, SourceStatus, fetch_source
 
 WEB_TEXT = "web_text"
@@ -32,7 +33,7 @@ def _scope(job):
         if type(source_id) is not int or source_id < 1:
             raise ValueError("Invalid source ID")
         source = Source.objects.select_related("item").get(
-            pk=source_id, item_id=job.item_id, item__kind=Item.Kind.LINK
+            pk=source_id, item_id=job.item_id
         )
         CaptureEvent.objects.only("pk").get(
             pk=capture_id,
@@ -72,9 +73,10 @@ def _current_text(source):
 
 
 def _store_text(source, current, result, provenance):
-    if not result.text or not result.text.strip():
+    cleaned = source_text(result.text)
+    if not cleaned or not cleaned.strip():
         return False
-    digest = sha256(result.text.encode("utf-8")).hexdigest()
+    digest = sha256(cleaned.encode("utf-8")).hexdigest()
     processor = result.provenance.processor
     processor_version = result.provenance.processor_version
     if current.filter(
@@ -86,7 +88,7 @@ def _store_text(source, current, result, provenance):
     DerivedContent.objects.create(
         item_id=source.item_id,
         kind=WEB_TEXT,
-        text=result.text,
+        text=cleaned,
         source_locator={"source_id": source.pk, **provenance},
         processor=processor,
         processor_version=processor_version,
@@ -103,6 +105,8 @@ def _store_metadata(item, metadata, result):
         return False
     changed = False
     for field, value in asdict(result.metadata).items():
+        if isinstance(value, str):
+            value = source_text(value)
         if not value:
             continue
         previous = metadata.get(field, "")
@@ -175,7 +179,7 @@ def _persist(job, source, capture_id, result):
 
     item = Item.objects.select_for_update().get(pk=source.item_id)
     source = Source.objects.select_for_update().get(pk=source.pk, item=item)
-    metadata = dict(source.metadata)
+    metadata = source_metadata(dict(source.metadata))
     last_attempted_at = (
         metadata.get("fetch", {}).get("provenance", {}).get("attempted_at")
     )
@@ -237,6 +241,7 @@ def fetch_source_job(job: Job) -> None:
     source, capture_id = _scope(job)
     enqueue_video(job, source, capture_id)
     result: SourceResult = fetch_source(source.original_url.strip())
+    result = replace(result, text=source_text(result.text))
     _persist(job, source, capture_id, result)
     if result.status in FAILED_STATUSES:
         status = result.provenance.http_status

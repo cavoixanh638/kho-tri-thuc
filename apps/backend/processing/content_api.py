@@ -1,12 +1,12 @@
 from uuid import UUID
 
+from catalog.models import Item
 from django.shortcuts import get_object_or_404
 from ninja import Router, Schema, Status
 from ninja.security import django_auth
 
-from catalog.models import Item
-
 from .models import DerivedContent
+from .read_knowledge import ReadKnowledgeService
 
 router = Router(auth=django_auth, tags=["Content"])
 
@@ -28,6 +28,34 @@ class ContentPage(Schema):
 
 class Error(Schema):
     code: str
+
+
+class KnowledgePart(Schema):
+    id: int
+    kind: str
+    text: str
+    asset_id: UUID | None
+    locator: dict
+    processor: str
+    processor_version: str
+    format: str
+
+
+class Knowledge(Schema):
+    origin: str
+    text: str
+    format: str
+    parts: list[KnowledgePart]
+    truncated: bool
+    needs_review: bool
+
+
+@router.get("/items/{item_id}/knowledge", response=Knowledge)
+def read_knowledge(request, item_id: UUID):
+    item = get_object_or_404(
+        Item, pk=item_id, owner=request.user, deleted_at__isnull=True
+    )
+    return ReadKnowledgeService().read(item)
 
 
 @router.get("/items/{item_id}/content", response={200: ContentPage, 422: Error})

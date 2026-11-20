@@ -34,6 +34,7 @@ GroupId = Annotated[int, Field(ge=1, lt=2**63)]
 class Group(Schema):
     id: int
     name: str
+    path: str = ""
 
 
 class GroupLists(Schema):
@@ -87,7 +88,10 @@ def groups_for(model, owner):
 
 
 def summarize(item):
+    from .knowledge_tree import tree
+
     payload = {"status": item.classification_status}
+    topic_paths = {row["id"]: row["path"] for row in tree(item.owner_id)}
     for field, (key, model, assignments) in GROUPS.items():
         visible = groups_for(model, item.owner).values_list("pk", flat=True)
         rows = assignments.objects.filter(item=item, **{f"{field}_id__in": visible})
@@ -96,6 +100,9 @@ def summarize(item):
             {
                 "id": getattr(row, f"{field}_id"),
                 "name": getattr(row, field).name,
+                "path": topic_paths.get(getattr(row, field).pk, "")
+                if field == "topic"
+                else "",
                 "origin": row.origin,
                 "user_pinned": row.user_pinned,
             }
@@ -106,12 +113,19 @@ def summarize(item):
 
 @router.get("/groups", response=GroupLists)
 def list_groups(request):
-    return {
+    from .knowledge_tree import tree
+
+    payload = {
         key: list(
             groups_for(model, request.user).order_by("name", "id").values("id", "name")
         )
         for key, model, _ in GROUPS.values()
     }
+    payload["topics"] = [
+        {"id": row["id"], "name": row["name"], "path": row["path"]}
+        for row in tree(request.user.pk)
+    ]
+    return payload
 
 
 @router.post("/groups", response={200: Group, 201: Group, 422: Error})

@@ -21,6 +21,8 @@ from jobs.repository import JobRepository
 from storage.models import Asset, StorageLocation
 from storage.upload_job import staging_path
 
+from .source_cleaning import source_metadata, source_text
+
 VIDEO_KIND = "download_video"
 MAX_VIDEO_BYTES = 128 * 1024 * 1024
 
@@ -49,7 +51,6 @@ def _scope(job):
         source = Source.objects.select_related("item").get(
             pk=source_id,
             item_id=job.item_id,
-            item__kind=Item.Kind.LINK,
             item__deleted_at__isnull=True,
         )
         CaptureEvent.objects.only("pk").get(
@@ -283,7 +284,7 @@ def _persist(job, source, result, path, size, digest, media):
                 finally:
                     os.close(folder)
         _upload_job(asset)
-    metadata = dict(source.metadata)
+    metadata = source_metadata(dict(source.metadata))
     metadata["video"] = {
         "status": "downloaded",
         "asset_id": str(asset.pk),
@@ -300,9 +301,9 @@ def _persist(job, source, result, path, size, digest, media):
     if item.user_edit_version == 0:
         # Existing fetched/curated metadata remains authoritative.
         if not item.title:
-            item.title = str(result.title)[:512]
+            item.title = source_text(str(result.title))[:512]
         if not item.description:
-            item.description = str(result.description)[:20000]
+            item.description = source_text(str(result.description))[:20000]
     item.source_fetch = "done"
     item.asset_storage = "verified" if _verified(asset) else "pending"
     if item.content_extract == "pending":

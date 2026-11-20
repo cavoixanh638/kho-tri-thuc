@@ -1,0 +1,69 @@
+{
+  "status": "PASS",
+  "checked_at": "2026-11-20",
+  "scope": "Five existing opted-in production Markdown exports through connected Google Drive tools; no search-ranking or consumer ChatGPT UI claim.",
+  "cases": [
+    {
+      "index": 0,
+      "metadata_read": true,
+      "text_read": true,
+      "full_tree_path_present": true,
+      "authored_heading_count": 0,
+      "derived_heading_count": 1,
+      "asr_v2": true,
+      "automatic_review_warning": true,
+      "last_segment_bounded": true,
+      "engagement_counter_prefix_absent": true
+    },
+    {
+      "index": 1,
+      "metadata_read": true,
+      "text_read": true,
+      "full_tree_path_present": true,
+      "authored_heading_count": 1,
+      "derived_heading_count": 1,
+      "asr_v2": null,
+      "automatic_review_warning": null,
+      "last_segment_bounded": null,
+      "engagement_counter_prefix_absent": null
+    },
+    {
+      "index": 2,
+      "metadata_read": true,
+      "text_read": true,
+      "full_tree_path_present": true,
+      "authored_heading_count": 1,
+      "derived_heading_count": 1,
+      "asr_v2": null,
+      "automatic_review_warning": null,
+      "last_segment_bounded": null,
+      "engagement_counter_prefix_absent": null
+    },
+    {
+      "index": 3,
+      "metadata_read": true,
+      "text_read": true,
+      "full_tree_path_present": true,
+      "authored_heading_count": 1,
+      "derived_heading_count": 1,
+      "asr_v2": null,
+      "automatic_review_warning": null,
+      "last_segment_bounded": null,
+      "engagement_counter_prefix_absent": null
+    },
+    {
+      "index": 4,
+      "metadata_read": true,
+      "text_read": true,
+      "full_tree_path_present": true,
+      "authored_heading_count": 1,
+      "derived_heading_count": 1,
+      "asr_v2": null,
+      "automatic_review_warning": null,
+      "last_segment_bounded": null,
+      "engagement_counter_prefix_absent": null
+    }
+  ],
+  "all_same_managed_file_ids": true,
+  "application_full_readback_report": "hierarchy-live-results.json"
+}

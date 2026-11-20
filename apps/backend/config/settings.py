@@ -91,3 +91,4 @@ THUMBNAIL_CACHE_DIR = os.getenv(
 WEB_DIST = os.getenv("WEB_DIST", "")
 FFMPEG_BINARY = os.getenv("FFMPEG_BINARY", "ffmpeg")
 FFPROBE_BINARY = os.getenv("FFPROBE_BINARY", "ffprobe")
+LOCAL_ASR_MODEL_DIR = os.getenv("LOCAL_ASR_MODEL_DIR", "")

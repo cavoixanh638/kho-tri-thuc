@@ -2,19 +2,30 @@ from datetime import datetime
 from uuid import UUID
 
 from django.db import transaction
-from django.db.models import Prefetch
+from django.db.models import (
+    Case,
+    Exists,
+    IntegerField,
+    OuterRef,
+    Prefetch,
+    Q,
+    Subquery,
+    Value,
+    When,
+)
+from django.db.models.functions import Substr
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from jobs.repository import JobRepository
 from ninja import Router, Schema, Status
 from ninja.security import django_auth
+from processing.models import DerivedContent
 from pydantic import Field
-
-from jobs.repository import JobRepository
 from storage.drive import DriveError
 from storage.models import Asset, StorageLocation
 from storage.service import DRIVE_PROVIDER, storage_for_owner
 
-from .models import Item, Source
+from .models import Item, ItemProject, ItemTag, ItemTopic, Source
 
 router = Router(tags=["Library"], auth=django_auth)
 
@@ -43,6 +54,7 @@ class ItemSummary(Schema):
     asset_storage: str
     content_extract: str
     assets: list[AssetSummary]
+    knowledge_excerpt: str = ""
 
 
 class ItemPage(Schema):
@@ -74,29 +86,83 @@ def catalog(owner):
             to_attr="drive_locations",
         )
     )
-    return Item.objects.filter(owner=owner).prefetch_related(
-        Prefetch(
-            "sources", queryset=Source.objects.order_by("id"), to_attr="ordered_sources"
-        ),
-        Prefetch("assets", queryset=assets, to_attr="ordered_assets"),
+    excerpt = (
+        DerivedContent.objects.filter(item_id=OuterRef("pk"), status="active")
+        .annotate(
+            read_priority=Case(
+                When(
+                    kind__in=[
+                        "transcript",
+                        "video_transcript",
+                        "subtitle",
+                        "subtitles",
+                        "caption",
+                        "captions",
+                    ],
+                    then=Value(0),
+                ),
+                default=Value(1),
+                output_field=IntegerField(),
+            )
+        )
+        .order_by("read_priority", "created_at", "id")
+        .values("text")[:1]
+    )
+    return (
+        Item.objects.filter(owner=owner)
+        .annotate(
+            extracted_excerpt=Substr(Subquery(excerpt), 1, 512),
+            has_user_groups=Exists(
+                ItemTopic.objects.filter(
+                    item_id=OuterRef("pk"), topic__owner=owner, topic__archived=False
+                ).filter(Q(origin="user") | Q(user_pinned=True))
+            )
+            | Exists(
+                ItemProject.objects.filter(
+                    item_id=OuterRef("pk"),
+                    project__owner=owner,
+                    project__archived=False,
+                ).filter(Q(origin="user") | Q(user_pinned=True))
+            )
+            | Exists(
+                ItemTag.objects.filter(item_id=OuterRef("pk"), tag__owner=owner).filter(
+                    Q(origin="user") | Q(user_pinned=True)
+                )
+            ),
+        )
+        .prefetch_related(
+            Prefetch(
+                "sources",
+                queryset=Source.objects.order_by("id"),
+                to_attr="ordered_sources",
+            ),
+            Prefetch("assets", queryset=assets, to_attr="ordered_assets"),
+        )
     )
 
 
 def summarize(item):
     original_url = item.ordered_sources[0].original_url if item.ordered_sources else ""
-    note_only = item.kind == Item.Kind.TEXT
+    note_only = (
+        item.kind == Item.Kind.TEXT
+        and not item.ordered_sources
+        and not item.ordered_assets
+    )
     return {
         "item_id": item.pk,
         "kind": item.kind,
         "title": item.title,
         "description": item.description,
         "note": item.note,
+        "knowledge_excerpt": item.note[:512] or item.extracted_excerpt or "",
         "saved_at": item.saved_at,
         "published_at": item.published_at,
         "updated_at": item.updated_at,
         "favorite": item.favorite,
         "deleted": item.deleted_at is not None,
-        "classification_status": item.classification_status,
+        "classification_status": "user_assigned"
+        if item.has_user_groups
+        else item.classification_status,
         "original_url": original_url,
         "source_fetch": "not_applicable" if note_only else item.source_fetch,
         "asset_storage": "not_applicable" if note_only else item.asset_storage,
@@ -123,10 +189,26 @@ def list_items(
     deleted: bool = False,
     favorite: bool = False,
     unclassified: bool = False,
+    node_id: int | None = None,
+    unfiled: bool = False,
 ):
     if not 1 <= limit <= 100 or not 0 <= offset <= 1_000_000:
         return Status(422, {"code": "invalid_page"})
     items = catalog(request.user).filter(deleted_at__isnull=not deleted)
+    if node_id is not None or unfiled:
+        from .knowledge_tree import tree
+
+        nodes = tree(request.user.pk)
+        visible = {row["id"] for row in nodes}
+        if node_id is not None:
+            if node_id not in visible:
+                from django.http import Http404
+
+                raise Http404
+            ids = [row["id"] for row in nodes if node_id in row["path_ids"]]
+            items = items.filter(itemtopic__topic_id__in=ids).distinct()
+        elif unfiled:
+            items = items.exclude(itemtopic__topic_id__in=visible)
     if favorite:
         items = items.filter(favorite=True)
     if unclassified:

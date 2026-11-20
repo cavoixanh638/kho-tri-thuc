@@ -10,6 +10,7 @@ Trang điều hướng này chỉ **trỏ tới nguồn chuẩn**; không viết
 | KT-xxx, phụ thuộc, điều kiện PASS và U01–U23 | [ROADMAP_AND_TESTS.md](ROADMAP_AND_TESTS.md) |
 | **Trạng thái hiện tại, test thực sự chạy, blocker, việc kế tiếp** | [CURRENT_STATE.md](CURRENT_STATE.md) |
 | **Quy tắc đặt file và ranh giới Git/Drive/PostgreSQL/cache** | [REPOSITORY_LAYOUT.md](REPOSITORY_LAYOUT.md) |
+| Cây thư viện, bài văn bản, nguồn minh họa và chép lời Windows | [operations/KNOWLEDGE_TREE.md](operations/KNOWLEDGE_TREE.md) |
 | Quy tắc và thứ tự đọc cho Codex/AI | [../AGENTS.md](../AGENTS.md) |
 | Tổng quan cho người dùng | [../README.md](../README.md) |
 

@@ -1,4 +1,4 @@
-from catalog.models import Item, ItemTopic, Topic
+from catalog.models import Item, ItemTopic, Source, Topic
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.utils import timezone
@@ -96,6 +96,63 @@ class KnowledgeSnapshotTests(TestCase):
         part.text = "x" * (MAX_CHARS + 100) + "tail-two"
         part.save(update_fields=["text"])
         self.assertNotEqual(first.version, snapshot(self.item.pk).version)
+
+    def test_sixty_thousand_character_note_is_exported_once_with_source_and_capture_provenance(
+        self,
+    ):
+        note = "Nội dung tiếng Việt đã biên soạn. " * 1900
+        self.assertGreater(len(note), 60_000)
+        item = Item.objects.create(
+            owner=self.owner, kind="text", title="Bài dài", note=note
+        )
+        capture = CaptureEvent.objects.create(
+            owner=self.owner, item=item, raw_kind="text", raw_text=note
+        )
+        source_url = "https://example.com/reference-for-long-note"
+        Source.objects.create(
+            item=item,
+            original_url=source_url,
+            canonical_url=source_url,
+            identity_hash="c" * 64,
+        )
+        Asset.objects.create(
+            item=item,
+            mime="application/pdf",
+            original_filename="reference-document.pdf",
+            sha256="d" * 64,
+        )
+        for format in ("markdown", "text"):
+            with self.subTest(format=format):
+                result = snapshot(item.pk, format)
+                body = result.body.decode()
+                self.assertFalse(result.truncated)
+                self.assertEqual(body.count(note), 1)
+                self.assertEqual(body.count("Ghi chú người dùng"), 1)
+                self.assertEqual(body.count("Nội dung trích xuất hiện hành"), 1)
+                self.assertIn(source_url, body)
+                self.assertIn("reference-document.pdf", body)
+                self.assertIn(str(capture.server_received_at), body)
+                self.assertIn(
+                    "Nội dung trùng với ghi chú người dùng hiện hành ở trên.", body
+                )
+                self.assertLess(body.index(note), body.index("Tệp gốc"))
+        capture.refresh_from_db()
+        self.assertEqual(capture.raw_text, note)
+
+    def test_sixty_thousand_character_extraction_keeps_locator_once_before_media(self):
+        self.item.note = ""
+        self.item.save(update_fields=["note"])
+        part = self.part()
+        part.text = "Văn bản trích từ nguồn có dấu. " * 2100
+        self.assertGreater(len(part.text), 60_000)
+        part.save(update_fields=["text"])
+        result = snapshot(self.item.pk)
+        body = result.body.decode()
+        self.assertFalse(result.truncated)
+        self.assertEqual(body.count(part.text), 1)
+        self.assertEqual(body.count("## Nội dung trích xuất hiện hành"), 1)
+        self.assertIn('pdf_text — fixture 1 — {"page": 4}', body)
+        self.assertLess(body.index(part.text), body.index("## Tệp gốc"))
 
     def test_credential_like_input_is_blocked_and_deleted_item_is_tombstone(self):
         Item.objects.filter(pk=self.item.pk).update(

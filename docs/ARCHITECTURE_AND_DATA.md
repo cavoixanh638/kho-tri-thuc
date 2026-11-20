@@ -2,6 +2,35 @@
 
 ## Bổ sung ngày 19/11/2026 — văn bản là nội dung tri thức chính
 
+### Cây thư viện và text từ nguồn
+
+Dùng quan hệ `Topic.parent` hiện có làm cây kho con/lĩnh vực/bộ sách/sách/chương/
+nhánh, thêm `node_kind` và `sort_order`; không tạo một bảng riêng cho mỗi tầng.
+API cây kiểm owner, cycle, trùng tên cùng cha và độ sâu tối đa 64 để tránh vòng
+lặp/dữ liệu không hữu hạn. Nhánh cha lọc được toàn bộ bài trong nhánh con, count
+theo Item không trùng; ItemTopic many-to-many để một bài có nhiều đường dẫn.
+Project/Tag vẫn là chiều tổ chức bổ sung. Đổi tên/chuyển nhánh làm stale các bản
+xuất liên quan, giữ Item và Drive ID. Manifest backup v3 giữ loại/thứ tự nhánh,
+vẫn đọc/restore projection v1/v2; rollback schema cần backup và dữ liệu tương ứng.
+
+`ReadKnowledgeService` ưu tiên bài biên soạn, sau đó transcript/phụ đề hiện hành,
+rồi text nguồn khác. Nội dung nguồn có provenance không ghi đè bài người dùng.
+Gắn URL vào cùng Item tạo CaptureEvent mới sau commit và job trích nguồn; retry
+giữ Event cũ. Nguồn đã thuộc bài khác không âm thầm di chuyển/nhân bản.
+Chỉ số tương tác bị bỏ khi thu thập title/description/metadata/text nguồn; không
+xóa ghi chú gốc do người dùng viết hoặc media gốc. Không thu raw HTML lâu dài.
+
+ASR: đã đối chiếu [faster-whisper](https://github.com/SYSTRAN/faster-whisper),
+[OpenAI Whisper](https://github.com/openai/whisper) và [whisper.cpp](https://github.com/ggml-org/whisper.cpp).
+Chọn faster-whisper 1.2.1 / CTranslate2 CPU int8 cho Windows Python hiện có,
+tránh thêm PyTorch và toolchain C++ cho bản đầu. Các lựa chọn đều local, không
+có phí API, thay adapter được; package MIT, model public có revision/hash riêng.
+Model tải một lần vào runtime ngoài Git, inference offline trong child không
+credential, timeout 420s, tối đa media 128MiB/10 phút, 1000 đoạn/100k ký tự.
+Job lease-fenced, kiểm hash nguồn, timed transcript vào DerivedContent có version,
+không tự dịch hay suy thao tác không được nói. UI gắn nhãn tự động/cần rà soát,
+video mở từ liên kết minh họa; không cam kết độ chính xác mọi ngôn ngữ/video.
+
 - `Item.note` là văn bản/Markdown do người dùng biên soạn, giữ nguyên nội dung
   khi lưu; UI gọi là **Tri thức**. Không tạo Asset giả cho bài văn bản thuần.
 - `DerivedContent` giữ phần trích xuất có provenance/version, đọc được trong

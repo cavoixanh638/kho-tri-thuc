@@ -52,12 +52,24 @@ class Source(models.Model):
 
 
 class Topic(models.Model):
+    class Kind(models.TextChoices):
+        LIBRARY = "library", "Kho con"
+        FIELD = "field", "Lĩnh vực"
+        SERIES = "series", "Bộ sách"
+        BOOK = "book", "Sách"
+        CHAPTER = "chapter", "Chương"
+        FOLDER = "folder", "Nhánh"
+
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     name = models.CharField(max_length=120)
     parent = models.ForeignKey(
         "self", null=True, blank=True, on_delete=models.PROTECT, related_name="children"
     )
     archived = models.BooleanField(default=False)
+    node_kind = models.CharField(
+        max_length=16, choices=Kind.choices, default=Kind.FOLDER
+    )
+    sort_order = models.PositiveIntegerField(default=0)
 
     class Meta:
         constraints = [
@@ -65,6 +77,9 @@ class Topic(models.Model):
                 fields=["owner", "parent", "name"],
                 nulls_distinct=False,
                 name="topic_owner_parent_name_uniq",
+            ),
+            models.CheckConstraint(
+                condition=~Q(id=F("parent_id")), name="topic_not_own_parent"
             ),
         ]
 

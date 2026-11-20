@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "checked_at": "2026-11-20",
+  "candidate_sha": "8daa02bf7b8a45c41b65bfc2387d686beb27f5b8",
+  "surface": "Authenticated in-app browser against native Windows application on loopback",
+  "observations": {
+    "two_root_libraries_and_nineteen_nodes_visible": true,
+    "postgresql_branch_filters_one_descendant_article": true,
+    "breadcrumb_and_distinct_branch_count_visible": true,
+    "authored_article_keeps_markdown_main_content": true,
+    "attached_web_source_text_can_expand": true,
+    "automatic_transcript_is_main_reader_without_authored_note": true,
+    "last_timed_segment_displays_00_54_to_00_59": true,
+    "automatic_review_warning_visible": true,
+    "illustration_button_expands_media_section": true,
+    "manual_group_label_visible": true,
+    "drive_export_synced_visible": true
+  },
+  "screenshot": "Kept privately outside Git; final library view attached to task reply",
+  "not_tested": ["Android", "seek playback to transcript locator", "full viewport matrix", "tree mutations through live production UI"]
+}

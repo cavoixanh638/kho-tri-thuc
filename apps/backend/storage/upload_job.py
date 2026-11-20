@@ -62,6 +62,9 @@ def upload_asset(job):
 
     if path.is_file():
         extract_from_staging(asset, path)
+    from processing.transcript_job import enqueue_transcript
+
+    enqueue_transcript(asset)
     Item.objects.filter(pk=asset.item_id).update(asset_storage="verified")
     Item.objects.filter(pk=asset.item_id, kind=Item.Kind.FILE).update(
         source_fetch="not_applicable"

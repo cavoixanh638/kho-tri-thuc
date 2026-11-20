@@ -59,7 +59,7 @@ class SourceProvenance:
     content_type: str | None = None
     body_sha256: str | None = None
     processor: str = "public_web"
-    processor_version: str = "1"
+    processor_version: str = "public-web-text-v2"
 
 
 @dataclass(frozen=True)
@@ -80,11 +80,48 @@ class SourceResult:
         return tuple(materials)
 
 
-_IGNORED_TAGS = {"script", "style", "template", "noscript", "svg", "iframe"}
+_IGNORED_TAGS = {
+    "script",
+    "style",
+    "template",
+    "noscript",
+    "svg",
+    "iframe",
+    "nav",
+    "aside",
+    "footer",
+    "form",
+}
 _BLOCK_TAGS = {
-    "article", "aside", "blockquote", "br", "dd", "div", "dl", "dt", "figcaption",
-    "footer", "h1", "h2", "h3", "h4", "h5", "h6", "header", "hr", "li", "main",
-    "nav", "ol", "p", "pre", "section", "table", "td", "tr", "ul",
+    "article",
+    "aside",
+    "blockquote",
+    "br",
+    "dd",
+    "div",
+    "dl",
+    "dt",
+    "figcaption",
+    "footer",
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6",
+    "header",
+    "hr",
+    "li",
+    "main",
+    "nav",
+    "ol",
+    "p",
+    "pre",
+    "section",
+    "table",
+    "td",
+    "tr",
+    "ul",
 }
 
 
@@ -93,11 +130,18 @@ class _PageParser(HTMLParser):
         super().__init__()
         self.title_parts: list[str] = []
         self.text_parts: list[str] = []
+        self.primary_parts: list[str] = []
+        self.primary_depth = 0
         self.meta: dict[str, str] = {}
         self.in_head = False
         self.in_title = False
         self.ignored_tag: str | None = None
         self.ignored_depth = 0
+
+    def append_text(self, value):
+        self.text_parts.append(value)
+        if self.primary_depth:
+            self.primary_parts.append(value)
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         if self.ignored_tag:
@@ -121,7 +165,9 @@ class _PageParser(HTMLParser):
             if name in {"og:title", "og:description", "description"} and value:
                 self.meta.setdefault(name, " ".join(value.split())[:2048])
         elif tag in _BLOCK_TAGS:
-            self.text_parts.append("\n")
+            if tag in {"main", "article"}:
+                self.primary_depth += 1
+            self.append_text("\n")
 
     def handle_endtag(self, tag: str) -> None:
         if self.ignored_tag:
@@ -136,7 +182,9 @@ class _PageParser(HTMLParser):
         elif tag == "title":
             self.in_title = False
         elif tag in _BLOCK_TAGS:
-            self.text_parts.append("\n")
+            self.append_text("\n")
+            if tag in {"main", "article"}:
+                self.primary_depth = max(0, self.primary_depth - 1)
 
     def handle_data(self, data: str) -> None:
         if self.ignored_tag:
@@ -144,14 +192,23 @@ class _PageParser(HTMLParser):
         if self.in_title:
             self.title_parts.append(data)
         elif not self.in_head:
-            self.text_parts.append(data)
+            self.append_text(data)
 
     def result(self) -> tuple[SourceMetadata | None, str | None]:
         title = self.meta.get("og:title") or " ".join("".join(self.title_parts).split())
-        description = self.meta.get("og:description") or self.meta.get("description", "")
-        lines = (" ".join(line.split()) for line in "".join(self.text_parts).splitlines())
+        description = self.meta.get("og:description") or self.meta.get(
+            "description", ""
+        )
+        selected = (
+            self.primary_parts
+            if "".join(self.primary_parts).strip()
+            else self.text_parts
+        )
+        lines = (" ".join(line.split()) for line in "".join(selected).splitlines())
         text = "\n".join(line for line in lines if line)
-        metadata = SourceMetadata(title[:512], description) if title or description else None
+        metadata = (
+            SourceMetadata(title[:512], description) if title or description else None
+        )
         return metadata, text or None
 
 
@@ -230,7 +287,8 @@ def fetch_source(
     except FetchError as error:
         code = str(error)
         status = (
-            SourceStatus.BLOCKED if code in {"blocked_address", "invalid_url"}
+            SourceStatus.BLOCKED
+            if code in {"blocked_address", "invalid_url"}
             else SourceStatus.FAILED
         )
         return failed(status, code)
@@ -253,7 +311,8 @@ def fetch_source(
         return failed(SourceStatus.FAILED, "http_status")
     if response.error_code:
         status = (
-            SourceStatus.UNSUPPORTED if response.error_code == "unsupported_content_encoding"
+            SourceStatus.UNSUPPORTED
+            if response.error_code == "unsupported_content_encoding"
             else SourceStatus.FAILED
         )
         return failed(status, response.error_code)
@@ -264,7 +323,9 @@ def fetch_source(
     if len(response.body) > max_body_bytes:
         return failed(SourceStatus.FAILED, "body_too_large")
 
-    provenance = replace(provenance, body_sha256=hashlib.sha256(response.body).hexdigest())
+    provenance = replace(
+        provenance, body_sha256=hashlib.sha256(response.body).hexdigest()
+    )
     decoded = _decode(response.body, response.charset)
     if response.media_type in HTML_TYPES:
         parser = _PageParser()

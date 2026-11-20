@@ -64,6 +64,16 @@
 
 ## 4. Mốc C — Tích hợp ChatGPT (KHÔNG xây mặc định)
 
+### KT-113 — cây kho tri thức và nguồn minh họa (19/11/2026)
+
+Kiểm cây nhiều tầng, đổi tên/chuyển nhánh, cycle/owner/CSRF, count và lọc toàn
+nhánh không nhân Item. Gán một bài vào nhiều nhánh, bảo toàn pinned; đường dẫn
+đi theo bản xuất và backup/restore. Gắn URL vào bài giữ note/giờ gốc; nguồn được
+trích text vào phần đọc, lỗi phải hiện rõ. Bỏ chỉ số tương tác từ dữ liệu nguồn.
+Video có lời nói chuyển thành transcript timed cục bộ, hash/version/idempotency/
+lease và lỗi/timeout được kiểm; có nhãn tự động cần rà soát. Nghiệm thu bằng
+Reel đã giao và bài công khai, không suy fixture thành chất lượng ngữ nghĩa.
+
 ### KT-112 — văn bản/Markdown là nội dung chính (người dùng chốt 19/11/2026)
 
 Nhận bài Markdown trong luồng text hoặc file, hiển thị có cấu trúc ngay trong

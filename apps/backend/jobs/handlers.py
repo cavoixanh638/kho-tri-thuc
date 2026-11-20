@@ -36,12 +36,19 @@ def export_knowledge(job: Job) -> None:
     synchronize(job)
 
 
+def transcribe(job: Job) -> None:
+    from processing.transcript_job import transcribe_media
+
+    transcribe_media(job)
+
+
 HANDLERS: dict[str, Callable[[Job], None]] = {
     "upload_asset": upload_original,
     "fetch_source": retrieve_source,
     "organize": organize,
     "download_video": retrieve_video,
     "export_knowledge": export_knowledge,
+    "transcribe_media": transcribe,
 }
 
 
