@@ -1,6 +1,8 @@
 # KT-119 checkpoint — 20/11/2026
 
-**Code SHA / Tested SHA:** `334a1e3363e8cdea30662fd50b3da66ca1bf763c`.
+**Code SHA / Tested SHA:** `218da95bb37d9782991915d5e67c9e77293c02fb`.
+Frontend/browser was validated at `334a1e3363e8cdea30662fd50b3da66ca1bf763c`;
+the final backend-only nested-markup hardening reran all 34 catalog tests.
 Branch `codex/kt-119-related`, base `7044b4a0f50a7c831a391f27b1f90cc4aaa21d8b`.
 This checkpoint update changes documentation only. No merge or deploy.
 
@@ -98,7 +100,8 @@ the existing ItemScreen slot without restyling that screen.
 
 - Backlink recognition is a conservative adapter, not a complete Markdown parser.
   It omits reference-style links, images, HTML/comments, code, blockquotes, link
-  titles, absolute URLs and Source URL inverse backlinks. The UI says other types
+  titles, absolute URLs, mixed/nested markup lines and Source URL inverse backlinks.
+  A supported link starts at a line/whitespace boundary. The UI says other types
   are unsupported. Derived lexical matches never become backlinks. Note edits
   are read directly, so removing a supported link removes its backlink next read.
 - Existing KnowledgeText forward rendering sanitizes relative hash links. This
