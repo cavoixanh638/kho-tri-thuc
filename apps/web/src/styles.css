@@ -152,7 +152,7 @@ time { font-variant-numeric: tabular-nums; }
   .compact .capture-entry time { grid-area: time; }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 1100px) {
   .header-inner { gap: 12px; }
   .desktop-nav, .account { display: none; }
   .mobile-nav { display: block; }

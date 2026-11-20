@@ -63,7 +63,7 @@ export function ItemSuggestionPanel({ item, csrf, editing, draftDirty, onUpdated
   }
 
   if (!capabilities?.enabled || capabilities.mode !== 'manual_review_poc' || item.deleted) return null;
-  return <details className="panel">
+  return <details className="panel item-suggestion-panel">
     <summary>So sánh đề xuất thủ công (thử nghiệm)</summary>
     <div className="form-stack">
       <p>Nhập một bản văn bản thay thế để xem khác biệt trước khi duyệt. Chưa kết nối AI; nội dung không được gửi đến nhà cung cấp bên ngoài.</p>
