@@ -33,7 +33,9 @@ def source_evidence(part, item, sources):
         evidence.update(mime=asset.mime, asset_version=asset.content_version)
         if part.input_hash and asset.sha256 and part.input_hash != asset.sha256:
             evidence["state"] = "stale"
-        elif not any(location.status == "verified" for location in asset.locations.all()):
+        elif not any(
+            location.status == "verified" for location in asset.locations.all()
+        ):
             evidence["state"] = "missing"
         elif part.input_hash and asset.sha256:
             evidence["state"] = "current"
@@ -45,6 +47,23 @@ def source_evidence(part, item, sources):
             evidence.update(
                 state="current", source_id=source.pk, source_url=source.original_url
             )
+            metadata = source.metadata if isinstance(source.metadata, dict) else {}
+            fetch = metadata.get("fetch", {})
+            fetch = fetch if isinstance(fetch, dict) else {}
+            provenance = fetch.get("provenance", {})
+            provenance = provenance if isinstance(provenance, dict) else {}
+            previous_hash = locator.get("body_sha256")
+            current_hash = provenance.get("body_sha256")
+            if locator.get(
+                "source_url", source.original_url
+            ) != source.original_url or (
+                previous_hash and current_hash and previous_hash != current_hash
+            ):
+                evidence["state"] = "stale"
+            elif fetch.get("status") in {"not_found", "access_denied", "blocked"}:
+                evidence["state"] = "missing"
+            elif fetch.get("status") == "failed" or not part.input_hash:
+                evidence["state"] = "unverified"
         else:
             evidence["state"] = "missing"
     return evidence
