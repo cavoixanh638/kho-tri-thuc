@@ -43,16 +43,23 @@ class NotesUxIntegrationTests(TestCase):
         item = Item.objects.get(pk=receipt["item_id"])
         event = CaptureEvent.objects.values().get(pk=receipt["capture_id"])
         topic = Topic.objects.create(owner=self.owner, name="Kho / Lĩnh vực")
-        ItemTopic.objects.create(item=item, topic=topic, user_pinned=True, origin="user")
+        ItemTopic.objects.create(
+            item=item, topic=topic, user_pinned=True, origin="user"
+        )
         # An attachment is distinct from the note; pending is deliberately not Drive PASS.
         asset = Asset.objects.create(
-            item=item, original_filename="synthetic.pdf", mime="application/pdf",
-            size=12, sha256="a" * 64,
+            item=item,
+            original_filename="synthetic.pdf",
+            mime="application/pdf",
+            size=12,
+            sha256="a" * 64,
         )
         asset_before = Asset.objects.values().get(pk=asset.pk)
         groups_before = list(ItemTopic.objects.values())
         peer = Item.objects.create(owner=self.owner, kind="text", note="Bài tham khảo")
-        edited = raw + f"\r\n# Bài học\r\n\r\n## Ý chính\r\n[Đối chiếu](#/muc/{peer.pk})\r\n"
+        edited = (
+            raw + f"\r\n# Bài học\r\n\r\n## Ý chính\r\n[Đối chiếu](#/muc/{peer.pk})\r\n"
+        )
         saved = self.patch(item, {"note": edited, "expected_edit_version": 0})
         self.assertEqual(saved.status_code, 200, saved.content)
         self.assertEqual(saved.json()["item_id"], receipt["item_id"])
@@ -76,23 +83,25 @@ class NotesUxIntegrationTests(TestCase):
             self.patch(item, {"note": edited, "expected_edit_version": 1}).status_code,
             409,
         )
-        undone = self.post(
-            path + "undo", {"receipt": accepted.json()["undo_receipt"]}
-        )
+        undone = self.post(path + "undo", {"receipt": accepted.json()["undo_receipt"]})
         self.assertEqual(undone.status_code, 200, undone.content)
         self.assertEqual(undone.json()["edit_version"], 3)
         self.assertEqual(Item.objects.get(pk=item.pk).note.encode(), edited.encode())
         knowledge = self.client.get(f"/api/v1/items/{item.pk}/knowledge").json()
         self.assertEqual(knowledge["text"].encode(), edited.encode())
         backlinks = self.client.get(f"/api/v1/items/{peer.pk}/related").json()
-        self.assertEqual([hit["item_id"] for hit in backlinks["backlinks"]], [str(item.pk)])
+        self.assertEqual(
+            [hit["item_id"] for hit in backlinks["backlinks"]], [str(item.pk)]
+        )
         for format in ("markdown", "text"):
             exported = snapshot(item.pk, format)
             self.assertFalse(exported.blocked)
             self.assertIn(str(item.pk).encode(), exported.body)
             self.assertIn("Đối chiếu".encode(), exported.body)
         self.assertEqual(CaptureEvent.objects.count(), 1)
-        self.assertEqual(CaptureEvent.objects.values().get(pk=receipt["capture_id"]), event)
+        self.assertEqual(
+            CaptureEvent.objects.values().get(pk=receipt["capture_id"]), event
+        )
         self.assertEqual(Asset.objects.values().get(pk=asset.pk), asset_before)
         self.assertEqual(list(ItemTopic.objects.values()), groups_before)
         self.assertEqual(Item.objects.count(), 2)

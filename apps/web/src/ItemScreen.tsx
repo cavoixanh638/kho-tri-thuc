@@ -155,7 +155,7 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
     if (!item.assets.some((asset) => asset.asset_id === assetId)) return;
     if (mediaDetails.current) mediaDetails.current.open = true;
     const target = document.getElementById(`item-asset-${assetId}`);
-    target?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'nearest' });
+    target?.scrollIntoView?.({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'nearest' });
     target?.focus({ preventScroll: true });
   }
 

@@ -117,7 +117,7 @@ try {
     await page.eval((href) => { location.hash = href; }, href);
     await click('Chỉnh sửa'); await click('Soạn + Xem trước');
     assert.equal(await page.eval(() => document.documentElement.scrollWidth > innerWidth), false);
-    await page.screenshot(resolve(out, 'editor-' + width + '.png'));
+    await page.screenshot({ path: resolve(out, 'editor-' + width + '.png'), format: 'png' });
     await click('Hủy');
     report.viewports.push({ width, four_views_same_two_ids: true, page_overflow: false, editor_split: true });
   }
