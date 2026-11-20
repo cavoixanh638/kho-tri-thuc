@@ -15,9 +15,7 @@ class QuickCaptureCorpusTests(TestCase):
     def test_thirty_raw_receipts_retry_and_deliberate_resend(self):
         owner = get_user_model().objects.create_user(username="kt117-corpus")
         self.client.force_login(owner)
-        corpus_path = (
-            Path(__file__).resolve().parents[2] / "web/tests/kt117-fixtures.json"
-        )
+        corpus_path = Path(__file__).resolve().parent / "fixtures/kt117-fixtures.json"
         fixtures = json.loads(corpus_path.read_text(encoding="utf-8"))
         self.assertEqual(len(fixtures), 30)
         for index, fixture in enumerate(fixtures):
