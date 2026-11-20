@@ -5,7 +5,7 @@ import { setImmediate as settle } from 'node:timers/promises';
 import { createServer } from 'vite';
 import { JSDOM, VirtualConsole } from 'jsdom';
 
-const fixtures = JSON.parse(await readFile(new URL('./kt117-fixtures.json', import.meta.url), 'utf8'));
+const fixtures = JSON.parse(await readFile(new URL('../../backend/ingestion/fixtures/kt117-fixtures.json', import.meta.url), 'utf8'));
 let server, ui, dom, root, container;
 const originalFetch = globalThis.fetch;
 const originalNow = Date.now;
