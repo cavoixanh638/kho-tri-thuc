@@ -45,6 +45,7 @@ try {
   await fill('input[autocomplete="current-password"]', process.env.KT_UX_BROWSER_PASSWORD);
   await click('Đăng nhập');
   await wait(() => !!document.querySelector('.capture-compose textarea'));
+  assert.equal((await api('/items')).data.results.length, 0, 'Use a new empty synthetic QA account');
   const raw = '# Kiến thức tổng hợp\n\nTiếng Việt nguyên văn; media chỉ minh họa.\n';
   await fill('.capture-compose textarea', raw);
   await click('Gửi vào kho');
@@ -108,6 +109,7 @@ try {
     for (const mode of ['list', 'table', 'card', 'timeline']) {
       await page.eval((mode) => { const select = document.querySelector('[aria-label="Cách xem thư viện"]'); select.value = mode; select.dispatchEvent(new Event('change', { bubbles: true })); }, mode);
       await wait((mode) => new URLSearchParams(location.hash.split('?')[1]).get('view') === (mode === 'list' ? null : mode), mode);
+      await wait(() => new Set([...document.querySelectorAll('main a[href^="#/muc/"]')].map((node) => node.getAttribute('href'))).size === 2);
       const ids = await page.eval(() => [...new Set([...document.querySelectorAll('main a[href^="#/muc/"]')].map((node) => node.getAttribute('href')))].sort());
       assert.equal(ids.length, 2); baselineIds ??= ids; assert.deepEqual(ids, baselineIds);
       assert.equal(await page.eval(() => document.documentElement.scrollWidth > innerWidth), false);
