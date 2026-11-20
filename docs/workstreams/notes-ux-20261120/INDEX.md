@@ -13,7 +13,7 @@
 1. `AGENTS.md`, `docs/CURRENT_STATE.md`, `docs/REPOSITORY_LAYOUT.md`.
 2. `docs/MASTER_PLAN.md` (mục tiêu/phạm vi), `docs/CAPTURE_AND_ORGANIZE.md` (nghiệp vụ), `docs/ARCHITECTURE_AND_DATA.md` (schema/thiết kế), `docs/ROADMAP_AND_TESTS.md` (mã KT/tiêu chí nghiệm thu).
 3. **Đúng một file task** KT-114–KT-121 cùng thư mục. Mở mã nguồn `main` mới nhất và test hiện hành, **không tin mô tả lịch sử “chưa có code”**.
-4. Nguồn phân tích độc lập: [PR #47 — G00 thẩm định và so sánh sau lần rà soát thứ hai](https://github.com/cavoixanh638/kho-tri-thuc/pull/47) (hai file `G00-INDEPENDENT-AUDIT.md`, `G00-CROSS-APP-DECISION.md` nằm trên branch PR); báo cáo G01–G17 tại [PR #30–#46](https://github.com/cavoixanh638/kho-tri-thuc/pulls). **Không yêu cầu merge các PR nghiên cứu để làm việc.**
+4. **Bản tổng hợp nằm ngay trên main:** [RESEARCH_DECISIONS.md](RESEARCH_DECISIONS.md) (ma trận 17 sản phẩm, các sửa sai G00, nguồn chính thức, ánh xạ vào KT-114–121). Báo cáo chi tiết vẫn ở [PR #47 — G00 thẩm định hai lần](https://github.com/cavoixanh638/kho-tri-thuc/pull/47) và G01–G17 tại [PR #30–#46](https://github.com/cavoixanh638/kho-tri-thuc/pulls), **chưa merge**. Đọc bản tổng hợp trước; khi cần claim riêng thì mở PR nguồn theo đúng luồng.
 5. Quyết định tại tài liệu này là **đề xuất ưu tiên**, không được tự suy rằng đã có lệnh cho phép cài thư viện, bật AI trả phí, thay DB/Drive hay deploy.
 
 ## 3. Hiện trạng bắt buộc tôn trọng
