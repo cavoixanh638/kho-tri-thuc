@@ -195,3 +195,21 @@ thử riêng không thay bước này. Bản xuất Drive vẫn một Item/một
 Người dùng yêu cầu **tổ chức folder như Obsidian và mối quan hệ cha–con của cả thư mục lẫn nội dung**. Đây là khoảng trống mà KT-114–121/PR #57 chưa khép lại: cây `Topic.parent` lưu folder→folder, `ItemTopic` lưu folder→note, nhưng UI `KnowledgeTree` **chỉ render folder**; `RelatedItem` là gợi ý tương đồng (undirected unique pair), chưa có **note→note directed parent**. Trong PR #57, LibraryViews list/table/card/timeline chỉ thay cách xem danh sách, không phải explorer hỗn hợp. Task [KT-122](workstreams/notes-ux-20261120/KT-122-FOLDER-EXPLORER.md) giải quyết file explorer, [KT-123](workstreams/notes-ux-20261120/KT-123-NOTE-HIERARCHY.md) giải quyết cấu trúc bài. Hai mã này **SPEC_READY/IMPLEMENTATION_NOT_RUN**; không được gắn PASS từ CI #57.
 
 **Ưu tiên:** giải quyết KT-122/123 trước khi tuyên bố UI tổ chức tri thức đạt yêu cầu người dùng, nhưng **không tự chặn** mọi kiểm thử dữ liệu độc lập và không thay thế gate Drive/Android. Codex chạy branch riêng từ HEAD `codex/notes-ux-integration`, tạo PR target branch integration để G00 review, **không merge/deploy**. Số liệu test, migration/backup, tham chiếu UUID và không mất dữ liệu gốc đều phải được kiểm chứng thực.
+
+## 11. G00 kiểm toán toàn diện 17 ứng dụng — 20/11/2026
+
+**Sửa lỗi phạm vi:** 17 nghiên cứu chưa được chuyển đầy đủ thành backlog có truy vết, vì vậy những chức năng cốt lõi như folder+note explorer, note cha–con, wiki links, smart collections, Ctrl+K, clipping, portable Markdown vault đã bị sót. **[Ma trận kiểm toán 38 nhóm năng lực](workstreams/notes-ux-20261120/G00-FEATURE-TRACEABILITY.md)** đối chiếu G01–G17, source main/PR57, trạng thái và task/hoãn có lý do.
+
+| Mã | Tính năng | Kiểm thử yêu cầu | Trạng thái |
+| --- | --- | --- | --- |
+| KT-124 | [Wiki links, backlinks, heading TOC, command palette](workstreams/notes-ux-20261120/KT-124-NAVIGATION-LINKING.md) | 100 notes/200 links, rename, keyboard/IME | SPEC_READY / IMPLEMENTATION_NOT_RUN |
+| KT-125 | [Smart collections, saved filters và thuộc tính dạng nhẹ](workstreams/notes-ux-20261120/KT-125-SMART-COLLECTIONS.md) | 5 saved filters, 10k Item, count distinct, AND/OR | SPEC_READY / IMPLEMENTATION_NOT_RUN |
+| KT-126 | [Web clipping/selection + source quote anchored](workstreams/notes-ux-20261120/KT-126-CLIPPER-HIGHLIGHTS.md) | 30 quotes, stale locator, 10 gửi vào note cũ | SPEC_READY / IMPLEMENTATION_NOT_RUN |
+| KT-127 | [Markdown vault export/import portable](workstreams/notes-ux-20261120/KT-127-PORTABLE-VAULT.md) | 100 notes, 200 links, folder/edge round-trip | SPEC_READY / IMPLEMENTATION_NOT_RUN |
+| KT-128 | [Browser acceptance qua hành trình người dùng](workstreams/notes-ux-20261120/KT-128-USER-JOURNEY-ACCEPTANCE.md) | Folder→note→link→clip→search→export; Windows/Android | SPEC_READY / IMPLEMENTATION_NOT_RUN |
+| KT-129 | [Evidence triage cho auto-group](workstreams/notes-ux-20261120/KT-129-ORGANIZATION-REVIEW.md) | 50 Item VN, đúng precision/coverage, giữ pinned | SPEC_READY / IMPLEMENTATION_NOT_RUN |
+| KT-130 | [Sổ tính năng deferred/conditional](workstreams/notes-ux-20261120/KT-130-DEFERRED-RESEARCH.md) | Mỗi mục có nguồn, điều kiện mở, lý do hoãn | SPEC_READY / IMPLEMENTATION_NOT_RUN |
+
+**Đã có dưới dạng code candidate ở PR #57, CHƯA merge:** KT-114–121 (một phần editor/related/multi-view/receipt/AI manual POC); không gọi là hoàn thành trải nghiệm Obsidian/Notion/Coda. **Chưa có code** cho KT-122–130. Source chính xác phải kiểm HEAD PR57. KT-128 là gate UX hội tụ: click qua hành trình thực, chụp bằng chứng, nêu SHA/viewport/thiết bị/DB; unit CI green không thay browser UAT.
+
+**Gate an toàn:** bảo toàn Source/Asset/Item UUID/CaptureEvent/Drive, scoped owner, rollback, backup, K12/Android/Drive real NOT_RUN nếu không có. Những đề xuất không cần thiết/chi phí lớn (Canvas, semantic, OCR, voice, full offline sync, AI provider) giữ ở KT-130 với lý do và điều kiện mở lại, KHÔNG xóa khỏi tri thức nghiên cứu. Các PR task mới base nhánh integration của PR57, không merge/deploy khi chưa được giao.
