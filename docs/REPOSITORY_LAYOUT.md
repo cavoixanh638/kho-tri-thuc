@@ -141,3 +141,10 @@ Không suy diễn `CaptureEvent đã nhận` = `video đã download` = `Drive đ
 - Khi KT-008 backup/restore chạy thật: viết `docs/operations/BACKUP_RESTORE.md`, không tự tuyên bố đã có backup từ kế hoạch.
 
 **Ranh giới áp dụng từ QLVB:** học tính rõ ràng, truy nguyên và phân vai; **không** bê cơ chế 6 worker, Node ingestion, pgvector/BGE, orchestrator, workboard khổng lồ hay đường dẫn legacy của QLVB sang Kho Tri Thức.
+
+## 9. Bố trí file cho 17 nghiên cứu và việc giao AI mới (20/11/2026)
+
+- **Kết quả khảo sát/bằng chứng:** `docs/research/notes-apps-20261120/`; hồ sơ 17 sản phẩm ở main, báo cáo độc lập ở PR #30–#46 và báo cáo G00 ở PR #47 (chưa merge). Không trộn báo cáo nghiên cứu vào `apps/` hay mặc định chấp nhận kết luận marketing làm yêu cầu kỹ thuật.
+- **File nhiệm vụ triển khai KT-114–KT-121:** `docs/workstreams/notes-ux-20261120/INDEX.md` và file `KT-*.md` cùng thư mục. Đây là **entrypoint giao AI**, không phải nguồn của truth trạng thái (CURRENT_STATE), kiến trúc (ARCHITECTURE) hay hợp đồng nghiệp vụ (CAPTURE_AND_ORGANIZE).
+- **QA fixture/harness:** `tools/readiness/`, `evals/readiness/` và test unit trong `apps/web/tests/ktXXX-*.test.mjs` / Django `test_*.py`; không tạo corpus 10.000 Item trên production, không đưa file/media/token vào Git. Test runner frontend cũ chỉ chạy `ui.test.mjs`, nên file mới phải chạy riêng và báo bằng chứng.
+- **Đa luồng:** AGENTS/roadmap/README/docs/architecture/`CURRENT_STATE.md` là tài liệu chung; agent thực thi chỉ sửa file thuộc task và PR riêng. G00 cập nhật current state sau merge; không tự thay sự thật ở nhiều file hay di chuyển thư mục để “dọn” trong PR UI.
