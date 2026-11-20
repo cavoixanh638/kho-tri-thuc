@@ -13,6 +13,22 @@ from . import suggestions
 router = Router(auth=django_auth, tags=["Suggestion review PoC"])
 
 
+@router.get(
+    "/items/{item_id}/suggestions/capabilities", response={200: dict, 404: dict}
+)
+def capabilities(request, item_id: UUID):
+    try:
+        suggestions.owner_item(request.user.pk, item_id)
+    except suggestions.SuggestionError:
+        return Status(404, {"code": "suggestion_item_unavailable"})
+    return {
+        "enabled": bool(getattr(settings, "SUGGESTION_REVIEW_POC_ENABLED", False)),
+        "provider_configured": False,
+        "mode": "manual_review_poc",
+        "receipt_ttl_seconds": suggestions.RECEIPT_TTL,
+    }
+
+
 class Preview(Schema):
     proposed_note: str = Field(max_length=100_000)
 
