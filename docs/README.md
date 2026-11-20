@@ -8,6 +8,8 @@ Trang điều hướng này chỉ **trỏ tới nguồn chuẩn**; không viết
 | **Tiếp nhận URL/ghi chú, lịch sử bất biến, tự phân nhóm và mục liên quan** | **[CAPTURE_AND_ORGANIZE.md](CAPTURE_AND_ORGANIZE.md)** |
 | Mô hình dữ liệu, Drive/PostgreSQL/API/search, cách mở rộng | [ARCHITECTURE_AND_DATA.md](ARCHITECTURE_AND_DATA.md) |
 | KT-xxx, phụ thuộc, điều kiện PASS và U01–U23 | [ROADMAP_AND_TESTS.md](ROADMAP_AND_TESTS.md) |
+| **Giao AI sau nghiên cứu 17 ứng dụng (KT-114–KT-121), ranh giới file, prompt ngắn** | **[workstreams/notes-ux-20261120/INDEX.md](workstreams/notes-ux-20261120/INDEX.md)** |
+| **Nguồn thẩm định và các sửa sai của G00** | [PR #47 — báo cáo thẩm định và tổng hợp, chưa merge](https://github.com/cavoixanh638/kho-tri-thuc/pull/47) |
 | **Trạng thái hiện tại, test thực sự chạy, blocker, việc kế tiếp** | [CURRENT_STATE.md](CURRENT_STATE.md) |
 | **Quy tắc đặt file và ranh giới Git/Drive/PostgreSQL/cache** | [REPOSITORY_LAYOUT.md](REPOSITORY_LAYOUT.md) |
 | Cây thư viện, bài văn bản, nguồn minh họa và chép lời Windows | [operations/KNOWLEDGE_TREE.md](operations/KNOWLEDGE_TREE.md) |
@@ -20,7 +22,7 @@ Trang điều hướng này chỉ **trỏ tới nguồn chuẩn**; không viết
 2. Đọc `CURRENT_STATE.md` để không lẫn kế hoạch với kết quả chạy thật.
 3. Đọc `MASTER_PLAN.md`, **`CAPTURE_AND_ORGANIZE.md`** khi làm tiếp nhận/phân nhóm/tương tự, rồi phần liên quan của `ARCHITECTURE_AND_DATA.md`.
 4. Trước khi tạo/move file, đọc `REPOSITORY_LAYOUT.md`.
-5. Nhận đúng task và kiểm tiêu chí tại `ROADMAP_AND_TESTS.md`; đối chiếu code/test hiện có, rồi báo kết quả vào `CURRENT_STATE.md`.
+5. Nhận đúng task và kiểm tiêu chí tại `ROADMAP_AND_TESTS.md`; với KT-114–121, đi qua `workstreams/notes-ux-20261120/INDEX.md` và file task, đối chiếu code/test mới nhất. Mỗi AI ghi kết quả trong PR; G00 cập nhật `CURRENT_STATE.md` sau review/merge để tránh xung đột.
 
 ## Tài liệu sẽ bổ sung khi có bằng chứng
 
