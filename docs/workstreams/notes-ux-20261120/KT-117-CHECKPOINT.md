@@ -1,6 +1,13 @@
 # KT-117 checkpoint — 20/11/2026
 
-**Code SHA / Tested SHA:** `3b777a46f18cb0a8107d1f195a58936ea0421360`.
+**Code SHA / Tested SHA:** app `3b777a46f18cb0a8107d1f195a58936ea0421360`, fixture packaging fix `16925a09aaade25eb59ff2f04e6cb9bc2310cee3`.
+
+CI44711839148 tìm ra fixture JSON ở frontend không có trong backend Docker image.
+Root chuyển **một bản canonical** sang `apps/backend/ingestion/fixtures/`; cả
+frontend45 case và backend30-lượt corpus đọc đúng file này. Không đổi bytes của
+fixture hay mã ứng dụng. Chạy lại explicit frontend45 PASS, backend corpus1 test
+(30case) trên DB riêng PASS, Ruff/format/diff PASS; chờ CI latest head, không lấy
+run cũ FAIL làm kết luận cuối. Phần ứng dụng không cần deploy hoặc đổi schema.
 The checkpoint commit changes documentation only. Base: `7044b4a0f50a7c831a391f27b1f90cc4aaa21d8b`.
 Branch: `codex/kt-117-quick-capture`. No merge or deployment.
 
