@@ -421,3 +421,29 @@ ALTER TEXT SEARCH CONFIGURATION kt_vi
 `CaptureService` giữ transaction/ACK; `IngestionService` lấy nội dung nguồn sau commit; `OrganizationService` tìm nhóm đã có và tự gán/RelatedItem; `SearchService` trả ứng viên từ Postgres, `ClassificationPort` đánh giá rule/AI khi có quyền. **Không dùng một trạng thái DONE** cho tất cả các bước: source_fetch, asset_storage, content_extract, organization độc lập.
 
 **Không phát triển sớm:** Redis, semantic/pgvector, Meilisearch, OCR/ASR hàng loạt, phần mềm Android native hoặc MCP chỉ vì nghiệp vụ mới. Gate A là lưu ngay, Gate B mới yêu cầu tự nhóm có chứng cứ. Không cam kết chất lượng AI trước benchmark.
+
+## 15. Handoff thiết kế sau G01–G17 / G00 lần hai — 20/11/2026
+
+**Lưu ý về thẩm quyền:** đây là các **phương án kỹ thuật cho task được giao**, chưa chốt một editor mới, API AI, schema mới hay vendor mới; phải đọc [INDEX KT-114–121](workstreams/notes-ux-20261120/INDEX.md) trước khi sửa code. Nguồn thẩm định [PR #47](https://github.com/cavoixanh638/kho-tri-thuc/pull/47) vẫn đang mở và không được coi là đã merge.
+
+### 15.1. Cái đã có và cái không được tạo lại
+
+| Luồng | Schema/contract hiện tại | Bổ sung chỉ khi test xác nhận thiếu |
+| --- | --- | --- |
+| Editor | `Item.note` raw Markdown, `Item.user_edit_version`, API PATCH; UI `ItemScreen` dùng Textarea, `KnowledgeText` dùng react-markdown/remark-gfm | Editor `Edit / Edit+Preview / Read`, quản lý draft/concurrent edit; **không có split editor hiện tại**, không lưu HTML thay cho raw |
+| Nguồn | `Source` → `Item`, `Asset` và `StorageLocation`; `DerivedContent.source_locator` JSON/processor_version; `ReadKnowledgeService` trả parts/locator | Adapter validate locator có version, viewer page/time. **Không áp invariant 1 Source = 1 Asset** nếu model cho nhiều asset/version |
+| Android share | PWA manifest `share_target`, `sharedCapture`, `CaptureScreen`; `CaptureService` có idempotency | QA trên Android thật, trải nghiệm quick capture, lỗi mạng/retry. **Chưa có bằng chứng offline queue**, không báo ACK trước DB |
+| Nhóm/related | `Topic.parent`, `ItemTopic` M:N, `OrganizationService`, `RelatedItem` có reason/source_version, `user_pinned` | UI backlinks và multi-view chỉ là các **projection** cùng Item, không tự tạo graph DB |
+| AI review | Bản biên soạn và DerivedContent tách biệt, không tự overwrite | Nếu được duyệt: suggestion versioned, diff/accept/reject, không gọi model khi chưa có quyền/chi phí |
+
+### 15.2. Thứ tự cổng và nguyên tắc thử
+
+- **CORE (KT-114):** corpus 10.000 Item tổng hợp trong DB cô lập, SHA/restore/media nguồn theo phạm vi được phép; Windows acceptance đang có **không** thay cho Android/K12, 100GB thật **NOT_RUN** nếu chưa thử.
+- **UX-P0 (KT-115/116/117):** chọn editor sau so sánh ba hướng (Textarea+preview mới, CodeMirror 6, họ ProseMirror/Tiptap/Milkdown) theo license/IME/GFM; locator phải có asset/source/version thật và player có streaming/Range, không gán timestamps giả; share target hiện có chỉ cần hoàn thiện/test thật.
+- **UX-P1 (KT-118/119):** view/table/card/timeline cùng Item ID và filter; related/backlinks phân biệt explicit link, cùng nhóm, lexical suggestion; không phát biểu semantic hay “video đã hiểu” nếu chỉ có title/metadata.
+- **UX-P1 conditional/UX-P2 (KT-120/121):** AI diff/suggestion và metadata template không được tự bật; cần lệnh và kiểm quyền, version, chi phí. Không đổi PostgreSQL/Drive hay dùng code của Obsidian/AFFiNE mà chưa kiểm giấy phép chính xác.
+- Cột điểm sản phẩm trong nghiên cứu chỉ là đánh giá tài liệu, không dùng tính trung bình để chứng nhận hiệu năng. Các nguồn beta/preview phải có nhãn, không suy thành GA hoặc tương đương API toàn bộ.
+
+### 15.3. Quy tắc tích hợp nhiều agent
+
+Mỗi agent sửa đúng file thuộc task; API/type/stylesheet/runner và `CURRENT_STATE.md` là file chung cần G00 ghép sau. Nếu cần migrate model, phải có backfill, rollback và test DB mới/restored; không viết đè lịch sử Event hoặc user note. Báo cáo PR có Code SHA/Tested SHA và PASS/FAIL/NOT_RUN. Nghiệp vụ chuẩn ở CAPTURE_AND_ORGANIZE, tiến độ ở CURRENT_STATE, tiêu chí ở ROADMAP_AND_TESTS.
