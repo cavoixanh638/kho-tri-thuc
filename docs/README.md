@@ -24,10 +24,10 @@ Trang điều hướng này chỉ **trỏ tới nguồn chuẩn**; không viết
 4. Trước khi tạo/move file, đọc `REPOSITORY_LAYOUT.md`.
 5. Nhận đúng task và kiểm tiêu chí tại `ROADMAP_AND_TESTS.md`; với KT-114–121, đi qua `workstreams/notes-ux-20261120/INDEX.md` và file task, đối chiếu code/test mới nhất. Mỗi AI ghi kết quả trong PR; G00 cập nhật `CURRENT_STATE.md` sau review/merge để tránh xung đột.
 
-## Tài liệu sẽ bổ sung khi có bằng chứng
+## Tài liệu vận hành và các loại bằng chứng
 
-- `operations/LOCAL_SETUP.md`: chỉ lập sau khi KT-001 có lệnh cài/chạy/test thật trên máy đích.
-- `operations/BACKUP_RESTORE.md`: chỉ lập sau KT-008 khi backup và restore đã thực thi kiểm chứng.
+- [operations/LOCAL_SETUP.md](operations/LOCAL_SETUP.md) **đã có** từ KT-001; chỉ dùng các lệnh đã kiểm theo môi trường, đối chiếu với CURRENT_STATE trước khi chạy.
+- [operations/BACKUP_RESTORE.md](operations/BACKUP_RESTORE.md) **đã có** sau KT-008; kết quả chạy/giới hạn nằm trong CURRENT_STATE và `operations/*results.json`, không coi mọi môi trường đều khôi phục được.
 - `FEATURE_MAP.md`/`REPO_MAP.md`: chỉ khi mã nguồn đã đủ lớn khiến việc truy trách nhiệm khó; không tạo file trống.
 - `evals/`: chỉ khi thực sự có tập mẫu/runner/báo cáo chất lượng, phân biệt với `tests/`.
 
