@@ -1,25 +1,56 @@
 # HIỆN TRẠNG THỰC TẾ — KHO TRI THỨC
 
-**Ngày checkpoint:** 19/11/2026 (Asia/Ho_Chi_Minh).
-**Nguồn kiểm chứng:** `main`/runtime Windows tại `9d0bb50ca84b1944d9b3c5ae8fc08a3bcfc60088` trước pilot; runner chuẩn bị `6aedd4b`, cập nhật `356fb2f` trên nhánh `codex/kt-202-controlled-pilot`, [PR #27](https://github.com/cavoixanh638/kho-tri-thuc/pull/27). Tính năng ứng dụng từ PR #22 không đổi; xem GitHub và báo cáo bên dưới khi tiếp tục. Khảo sát [QLVB_System_new](https://github.com/cavoixanh638/QLVB_System_new) chỉ là tham khảo thiết kế.
+**Ngày checkpoint:** 20/11/2026 (Asia/Ho_Chi_Minh).
+**Nguồn kiểm chứng:** Windows đã chạy candidate `8daa02bf7b8a45c41b65bfc2387d686beb27f5b8` của [PR #29](https://github.com/cavoixanh638/kho-tri-thuc/pull/29), từ main `8828663`; [CI #44566379899](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44566379899) PASS. Kết quả live/restore/connector ở phần KT-113 dưới đây. Khi tiếp tục luôn kiểm GitHub head/merge/runtime thực tế, không coi SHA trong tài liệu là bất biến. Khảo sát [QLVB_System_new](https://github.com/cavoixanh638/QLVB_System_new) chỉ là tham khảo thiết kế.
 **Mục đích:** nơi duy nhất ghi **đã hoàn thành điều gì thật**. Roadmap là kế hoạch/điều kiện PASS, không là chứng cứ chạy thật.
 
 ## 1. Tình trạng tổng quát
 
-### Đang triển khai KT-113 — cây thư viện và text từ liên kết
+### KT-113 — cây thư viện và text từ liên kết, Windows LIVE_PASS
 
-Nhánh `codex/kt-113-knowledge-tree` từ main `8828663`: dùng Topic.parent làm cây
-linh hoạt có loại/thứ tự, CRUD cha-con/cycle/owner, lọc cả nhánh và đếm Item không
-trùng; tree UI và đường dẫn nhóm. ReadKnowledgeService đưa text nguồn/transcript
-lên phần đọc, gắn URL vào cùng bài giữ note. Bỏ chỉ số tương tác từ nguồn.
-ASR Windows cục bộ faster-whisper/base/int8 offline đã thử chỉ đọc Reel: 11 đoạn
-tiếng Anh trong 5,33 giây sau sửa pin PyAV 16.1.0; chưa ghi transcript production.
-Model/cache/media/transcript thử ở ngoài Git. Backup manifest v3 thêm loại/thứ
-tự nhánh, đọc v1/v2. Agent frontend, backend tests và ASR làm phạm vi riêng;
-root tích hợp/CI/deploy. 33 test ảnh hưởng và 9 test backup PASS; đã sửa hash key
-ASR vượt128, chạy lại **208 backend test PASS**, FFmpeg rõ đường dẫn không skip.
-Frontend **19 test PASS/build PASS**, gồm tree nav/create/move/CSRF, transcript
-ở phần đọc và liên kết mở minh họa. Chưa ghi LIVE_PASS trước deploy/backup.
+Nhánh `codex/kt-113-knowledge-tree`, candidate `8daa02b`: Topic.parent có loại và
+thứ tự, kiểm owner/chu trình, lọc cả nhánh và đếm bài duy nhất. Một bài thuộc
+nhiều nhánh mà không sao chép nội dung. Windows có **hai kho con, 19 nhánh,
+năm bài** đã xếp: bốn bài công khai trong Công nghệ và vận hành, Reel trong
+Thể thao/Golf. Nhãn Sách/Bộ sách là loại bộ sưu tập, không khẳng định xuất bản.
+Lệnh tổ chức chạy lại không thêm Item; note, giờ nhận, lịch sử gốc và hash MP4
+khớp backup trước đổi. [Kết quả live](operations/hierarchy-live-results.json).
+
+ReadKnowledgeService ưu tiên bài người dùng, nếu chưa có thì dùng text trích
+hiện hành. Đã gắn tài liệu Django vào bài có sẵn, trích 24.257 ký tự, retry giữ
+cùng Event và note không đổi. Nguồn/media nằm sau phần đọc; nút gạch chân mở
+minh họa. Bộ đếm tương tác bị loại khỏi Source.metadata và tiền tố title/description,
+giữ nguyên lịch sử đầu vào. Browser Windows đã kiểm đọc bài, text nguồn mở được,
+nhãn Đã xếp nhóm, mở minh họa và lọc nhánh PostgreSQL đúng một bài.
+[Kết quả UI](operations/hierarchy-ui-results.json).
+
+ASR **cục bộ/offline**, faster-whisper/base/int8 + PyAV16.1.0: Reel có 11 đoạn
+tiếng Anh tự động, tìm được bằng text, nhãn cần rà soát. Processor v2 giới hạn
+mốc cuối 59,542 giây trong clip gốc; không tự dịch/biên tập thành kiến thức đã
+kiểm chứng. Model/cache/raw transcript ngoài Git. Giới hạn 128MiB/600s, suy luận
+420s; giữ text cũ khi kết quả rỗng/lỗi. Chưa đo chất lượng tiếng Việt hay nhiều
+video. Bản xuất schema3 bỏ body lặp; Drive full readback SHA/version **5/5 PASS**,
+cùng năm ID và file duy nhất, connector metadata/fetch **5/5 PASS** có đường dẫn
+nhánh và transcript v2/cảnh báo. [Connector](operations/hierarchy-connector-results.json).
+
+Backup manifest v3 giữ loại/thứ tự/cha-con/quan hệ. Sao lưu thật lên Drive và
+bản sao Windows riêng, tải lại đúng hash, restore **15 collection** vào DB mới
+ở cluster kiểm thử, không restore đè production. Cây/note/quan hệ không rỗng,
+mapping MP4 đọc lại khớp hash, OAuth/session rỗng. Kiểm bổ sung restored JSON
+locators v2 và metadata không còn counter PASS.
+[Backup](operations/hierarchy-backup-live-results.json),
+[chi tiết restore](operations/hierarchy-restored-details-results.json).
+Tool nhận v1/v2; chưa thử một lượt restore v2 thật rồi migrate lên v3.
+
+**211 backend test PASS**, FFmpeg rõ đường dẫn không skip; **19 frontend test
+PASS/build PASS**, migration check/lint/diff PASS. Chín backup unit test PASS,
+ba ca integration trong discovery Windows skip theo môi trường; CI đã chạy
+backup/restore thật trên Compose. Các agent rà soát độc lập tree, UI, export,
+ASR; root tích hợp/triển khai. [Hướng dẫn](operations/KNOWLEDGE_TREE.md).
+Rollback ưu tiên revert mã UI/worker và giữ schema mở rộng; không migrate ngược
+production làm mất loại/thứ tự nhánh. Backup trước đổi giữ riêng trên Windows.
+Android, playback seek theo đoạn, chất lượng phân nhóm tự động trên corpus cá
+nhân và ASR đa nguồn chưa nghiệm thu; không gọi toàn hệ thống DONE.
 
 ### KT-112 — văn bản là nội dung chính, Windows LIVE_PASS
 

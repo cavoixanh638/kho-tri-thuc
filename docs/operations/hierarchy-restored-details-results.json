@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "checked_at": "2026-11-20T00:05:55.887774+00:00",
+  "read_only_transaction": true,
+  "tree": {
+    "node_count": 19,
+    "expected_19_nodes": true,
+    "root_count": 2,
+    "valid_kinds_order_parent_owners_and_no_cycles": true,
+    "assignment_owner_mismatches": 0
+  },
+  "transcript": {
+    "active_transcripts": 1,
+    "segments": 11,
+    "v2_nonempty_automatic_and_timings_within_original": true
+  },
+  "source_metadata": {
+    "source_count": 2,
+    "engagement_counter_keys_absent": true
+  },
+  "excluded_identity_rows": {
+    "oauth": 0,
+    "sessions": 0
+  },
+  "excluded_identity_rows_absent": true
+}

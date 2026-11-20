@@ -1,0 +1,105 @@
+{
+  "status": "PASS",
+  "candidate_sha": "8daa02bf7b8a45c41b65bfc2387d686beb27f5b8",
+  "stage": "complete",
+  "tree": {
+    "nodes": 19,
+    "root_count": 2,
+    "max_depth": 4,
+    "root_item_counts": {
+      "Công nghệ và vận hành": 4,
+      "Thể thao": 1
+    },
+    "all_five_items_have_tree_path": true
+  },
+  "transcript": {
+    "processor": "faster-whisper",
+    "processor_version": "faster-whisper-1.2.1-base-int8-v2",
+    "segments": 11,
+    "language": "en",
+    "text_characters": 834,
+    "text_sha256": "6e9295a19dcce46c4e37a552602a28a4a808933d2ef665511d9939c0fe8fd417",
+    "automatic_review_label": true,
+    "knowledge_origin": "extracted",
+    "timings_bounded_by_clip": true,
+    "last_segment_end": 59.542,
+    "local_offline_inference": true,
+    "search_hit": true
+  },
+  "preservation": {
+    "authored_notes_unchanged": true,
+    "item_ids_and_saved_times_unchanged": true,
+    "original_capture_events_unchanged": true,
+    "original_capture_times_unchanged": true,
+    "original_asset_hash_unchanged": true,
+    "title_social_counters_removed": true
+  },
+  "web_text": {
+    "same_authored_item": true,
+    "text_characters": 24257,
+    "text_sha256": "e20855bb3dc2e79ecbc42c4baa1d45c0d5ee4b38fa666e96d942c1be6c193c64",
+    "authored_note_preserved": true,
+    "source_attachment_replay_same_event": true
+  },
+  "exports": [
+    {
+      "format": "markdown",
+      "mime": "text/markdown",
+      "bytes": 1919,
+      "sha256": "18a4a2e721754a9aa5c87ff0cb503ba9244bb098e992e5d6d516ec37db56c160",
+      "exact_readback": true,
+      "unique_active_file": true,
+      "versions_match": true,
+      "truncated": false,
+      "video_transcript_warning": false
+    },
+    {
+      "format": "markdown",
+      "mime": "text/markdown",
+      "bytes": 1913,
+      "sha256": "8131a528ec8692a1c7315922ce26defe77d5c1e4e7c1704097f0d95d26213fc2",
+      "exact_readback": true,
+      "unique_active_file": true,
+      "versions_match": true,
+      "truncated": false,
+      "video_transcript_warning": false
+    },
+    {
+      "format": "markdown",
+      "mime": "text/markdown",
+      "bytes": 26474,
+      "sha256": "705764f10210cb5157b750caf85ca6f6793a4366660c73a75c3577c9b2f78037",
+      "exact_readback": true,
+      "unique_active_file": true,
+      "versions_match": true,
+      "truncated": false,
+      "video_transcript_warning": false
+    },
+    {
+      "format": "markdown",
+      "mime": "text/markdown",
+      "bytes": 1933,
+      "sha256": "4a781a2f4c9e38d38ffd013a910d94c635ee9054ab1e05790bae05ff3cf366af",
+      "exact_readback": true,
+      "unique_active_file": true,
+      "versions_match": true,
+      "truncated": false,
+      "video_transcript_warning": false
+    },
+    {
+      "format": "markdown",
+      "mime": "text/markdown",
+      "bytes": 1819,
+      "sha256": "dac0281013b8eff557b0b6cf27a56f12f439fa50ec916dabc32462bfc5a25818",
+      "exact_readback": true,
+      "unique_active_file": true,
+      "versions_match": true,
+      "truncated": false,
+      "video_transcript_warning": false
+    }
+  ],
+  "exports_keep_same_ids": true,
+  "active_items": 5,
+  "health": "ready",
+  "checked_at": "2026-11-20T00:04:05.468203+00:00"
+}
