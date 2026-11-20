@@ -101,3 +101,14 @@ Ghi chú **chỉ là chữ**: lưu nguyên văn Unicode/ngắt dòng trong Item.
 
 Tải video/trích trang chỉ thực hiện khi được phép và công cụ hỗ trợ; không vượt giới hạn riêng tư/DRM. Kiểm tra URL/redirect/SSRF, giới hạn dung lượng/thời gian, không làm lộ token trong log. Nguồn gốc và dữ liệu người dùng không bị AI tự ghi đè. Karakeep là **sản phẩm tham khảo**, không chứng minh Kho Tri Thức đã có tính năng này và không thay thế lựa chọn Django/PostgreSQL/Google Drive đã chốt.
 
+## 9. UX tiếp nhận sau khảo sát 17 ứng dụng — chỉ mở rộng giao diện, giữ hợp đồng
+
+**Nguồn triển khai:** [KT-117 Quick Capture](workstreams/notes-ux-20261120/KT-117-QUICK-CAPTURE.md), [KT-116 locator](workstreams/notes-ux-20261120/KT-116-LOCATORS.md). Đây là tiêu chí **chưa nghiệm thu Android thực**, không thay hành vi giao dịch các mục 1–8.
+
+1. Android Share Target/PWA hiện có manifest `share_target` và parser `sharedCapture`; phải kiểm tình huống title/text/url tiếng Việt, URL trùng, URL sai và trạng thái sau login/cài PWA. Đề xuất giảm thao tác không có nghĩa thêm API/backend tiếp nhận thứ hai.
+2. Quick Capture vẫn trả **receipt sau commit**; click gửi mới khác retry cùng key. HTTP 401/403, mất mạng, timeout hoặc offline không được ghi “Đã lưu” khi chưa nhận ACK. Không nhập dữ liệu giả vào production để test.
+3. Với item có PDF/audio/video: trích dẫn chỉ nhảy đúng page/second khi DerivedContent locator + Asset/Source version được xác minh và viewer/player hỗ trợ stream/seek. Thumbnail/metadata/YouTube transcript không chứng minh toàn bộ MP4 đã tải hoặc được hiểu.
+4. Ghi chú người dùng là nội dung chính, tách DerivedContent trích từ nguồn và bản gợi ý AI; AI chỉ được đề xuất chỉnh sửa khi có quyền/chi phí rõ ràng, phải có diff/accept, không tự PATCH `Item.note`.
+5. Các thao tác liên quan/đa view phải truy cập **cùng Item ID** trên nhiều nhánh, không tự nhân bản file hoặc thay `CaptureEvent.server_received_at`. Source có thể có nhiều Asset hoặc phiên bản; không ép quan hệ 1–1 từ ý tưởng giao diện.
+
+Công việc và test thực thi KT-114–KT-121 trong INDEX; **không báo PASS từ kế hoạch này**.
