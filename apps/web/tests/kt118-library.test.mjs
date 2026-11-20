@@ -3,6 +3,7 @@ import { after, before, test } from 'node:test';
 import { setImmediate as settle } from 'node:timers/promises';
 import { createServer } from 'vite';
 import { JSDOM, VirtualConsole } from 'jsdom';
+import { readFileSync } from 'node:fs';
 
 let server, ui, dom;
 const originalFetch = globalThis.fetch;
@@ -22,14 +23,16 @@ after(async()=>{globalThis.fetch=originalFetch;await server?.close();dom?.window
 const item=(i)=>({item_id:`00000000-0000-4000-8000-${String(i).padStart(12,'0')}`,kind:'text',title:`Bài tiếng Việt ${i}`,note:`Nội dung Đ/đ e\u0302\u0301 ${i}`,description:'',saved_at:'2026-11-19T23:00:00Z',published_at:i%2?'2020-01-01T00:00:00Z':null,updated_at:'2026-11-20T00:00:00Z',favorite:i%7===0,deleted:false,classification_status:'user_assigned',original_url:'',source_fetch:'not_applicable',asset_storage:'not_applicable',content_extract:'not_available',assets:[]});
 const ids=(html)=>[...html.matchAll(/data-library-item="([^"]+)"/g)].map(m=>m[1]);
 
-test('all 10000 IDs remain equal across four modes after every page, including equal timestamps',()=>{
-  const corpus=Array.from({length:10000},(_,i)=>Object.freeze(item(10000-i)));
+test('all 10000+ IDs remain equal across four modes after every page, including equal timestamps',()=>{
+  const databasePages = process.env.KT118_DB_FIXTURE ? JSON.parse(readFileSync(process.env.KT118_DB_FIXTURE,'utf8')).pages : null;
+  const corpus=databasePages ? databasePages.flat().map(Object.freeze) : Array.from({length:10000},(_,i)=>Object.freeze(item(10000-i)));
+  assert.ok(corpus.length>=10000);
   const original=JSON.stringify(corpus);
   const sets={};
   for (const mode of ['list','table','card','timeline']) {
     const collected=[];
     for(let offset=0;offset<corpus.length;offset+=50) collected.push(...ids(ui.renderToStaticMarkup(ui.createElement(ui.LibraryViews,{items:corpus.slice(offset,offset+50),mode}))));
-    assert.equal(collected.length,10000); assert.equal(new Set(collected).size,10000);
+    assert.equal(collected.length,corpus.length); assert.equal(new Set(collected).size,corpus.length);
     assert.deepEqual(collected,corpus.map(r=>r.item_id)); sets[mode]=new Set(collected);
   }
   assert.deepEqual(sets.list,sets.table);assert.deepEqual(sets.list,sets.card);assert.deepEqual(sets.list,sets.timeline);
