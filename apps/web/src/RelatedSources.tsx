@@ -38,6 +38,7 @@ export function SourceEvidence({ evidence, onOpenAsset }: { evidence: NonNullabl
   const byId = new Map(assets.map((asset) => [asset.asset_id, asset]));
   return <section className="related-sources" aria-label="Bằng chứng nguồn và tệp">
     <h3>Nguồn và phiên bản tệp</h3>
+    <details className="related-disclosure"><summary>Xem nguồn và tệp ({evidence.sources.length} nguồn, {assets.length} tệp)</summary>
     {!evidence.sources.length && !assets.length && !evidence.unassociated_parts.length && <Empty>Chưa có nguồn hoặc tệp đính kèm.</Empty>}
     {evidence.sources.map((source) => {
       const url = externalHttpUrl(source.original_url);
@@ -62,6 +63,7 @@ export function SourceEvidence({ evidence, onOpenAsset }: { evidence: NonNullabl
       <ul className="related-part-list">{evidence.unassociated_parts.map((part) => <PartEvidence part={{ ...part, locator: {} }} key={part.id} />)}</ul>
     </details>}
     {evidence.truncated && <p className="notice">Danh sách nguồn đang được giới hạn; đây chưa phải toàn bộ bằng chứng.</p>}
+    </details>
   </section>;
 }
 
@@ -75,26 +77,26 @@ function ConnectionsContent({ id, data, onOpenAsset }: { id: string; data: Conne
     <section className="related-section" aria-labelledby="item-related-title">
       <h2 id="item-related-title">Liên quan đến bài này ({data.counts?.related ?? related.length})</h2>
       <p className="list-meta">Gợi ý liên quan có lý do; không phải liên kết ngược hay kết luận hai bài là một.</p>
-      {shown.length ? <ul className="search-list related-items">{shown.map((entry) => <li className="search-result" key={entry.item_id}>
+      {shown.length ? <details className="related-disclosure"><summary>Xem gợi ý liên quan</summary><ul className="search-list related-items">{shown.map((entry) => <li className="search-result" key={entry.item_id}>
         <h3><a href={itemHref(entry.item_id)}>{entry.title || 'Mở bài liên quan'}</a></h3>
         <p>{entry.reason || 'Chưa ghi lý do'}</p>
         <p className="list-meta">{entry.relation_type === 'similar' ? 'Gợi ý tương đồng' : `Quan hệ: ${entry.relation_type || 'chưa ghi'}`} · phương pháp {entry.method_version || 'chưa ghi'} · nguồn {entry.source_version || 'chưa ghi'}</p>
         {entry.confidence != null && Number.isFinite(entry.confidence) && <p className="list-meta">Điểm {entry.confidence.toLocaleString('vi-VN', { maximumFractionDigits: 3 })}; không phải xác suất đã kiểm chứng.</p>}
         {entry.relation_type === 'similar' && <Button type="button" variant="subtle" size="compact-sm" onClick={() => setHidden((old) => new Set(old).add(entry.item_id))}>Ẩn gợi ý trong lần xem này</Button>}
-      </li>)}</ul> : <Empty>Chưa có gợi ý liên quan đang hiển thị.</Empty>}
+      </li>)}</ul></details> : <Empty>Chưa có gợi ý liên quan đang hiển thị.</Empty>}
       {!!hidden.size && <div role="status"><p>Đã ẩn {hidden.size} gợi ý trong lần xem này. Dữ liệu và nhóm đã cố định vẫn được giữ.</p><Button type="button" variant="subtle" onClick={() => setHidden(new Set())}>Hiện lại gợi ý</Button></div>}
       {data.counts && data.counts.related > related.length && <p className="list-meta">Đang hiển thị tối đa {related.length} trong {data.counts.related} mục.</p>}
     </section>
     <section className="related-section" aria-labelledby="item-backlinks-title">
       <h2 id="item-backlinks-title">Bài này được nhắc từ ({data.counts?.backlinks ?? backlinks.length})</h2>
       <p className="list-meta">Hiện nhận liên kết trực tiếp trong Markdown. Liên kết tham chiếu, HTML và các kiểu liên kết khác chưa được hỗ trợ.</p>
-      {backlinks.length ? <ul className="related-link-list">{backlinks.map((entry) => <li key={entry.item_id}><a href={itemHref(entry.item_id)}>{entry.title || 'Mở bài nhắc đến mục này'}</a><span className="list-meta">Liên kết Markdown trực tiếp · {entry.source_version}</span></li>)}</ul> : <Empty>Chưa tìm thấy liên kết trực tiếp được hỗ trợ.</Empty>}
+      {backlinks.length ? <details className="related-disclosure"><summary>Xem bài nhắc đến mục này</summary><ul className="related-link-list">{backlinks.map((entry) => <li key={entry.item_id}><a href={itemHref(entry.item_id)}>{entry.title || 'Mở bài nhắc đến mục này'}</a><span className="list-meta">Liên kết Markdown trực tiếp · {entry.source_version}</span></li>)}</ul></details> : <Empty>Chưa tìm thấy liên kết trực tiếp được hỗ trợ.</Empty>}
       {data.counts && data.counts.backlinks > backlinks.length && <p className="list-meta">Đang hiển thị {backlinks.length} trong {data.counts.backlinks} bài.</p>}
     </section>
     <section className="related-section" aria-labelledby="item-samegroup-title">
       <h2 id="item-samegroup-title">Cùng nhóm ({data.counts?.same_group ?? sameGroup.length})</h2>
       <p className="list-meta">Chung nhóm đang có; chưa xác nhận tương đồng nội dung.</p>
-      {sameGroup.length ? <ul className="related-link-list">{sameGroup.map((entry) => <li key={entry.item_id}><a href={itemHref(entry.item_id)}>{entry.title || 'Mở bài cùng nhóm'}</a><span className="list-meta">{entry.groups.map((group) => group.name).join(' · ')}</span></li>)}</ul> : <Empty>Chưa có bài cùng nhóm.</Empty>}
+      {sameGroup.length ? <details className="related-disclosure"><summary>Xem bài cùng nhóm</summary><ul className="related-link-list">{sameGroup.map((entry) => <li key={entry.item_id}><a href={itemHref(entry.item_id)}>{entry.title || 'Mở bài cùng nhóm'}</a><span className="list-meta">{entry.groups.map((group) => group.name).join(' · ')}</span></li>)}</ul></details> : <Empty>Chưa có bài cùng nhóm.</Empty>}
       {data.counts && data.counts.same_group > sameGroup.length && <p className="list-meta">Đang hiển thị {sameGroup.length} trong {data.counts.same_group} bài.</p>}
     </section>
     {data.evidence ? <SourceEvidence evidence={data.evidence} onOpenAsset={onOpenAsset} /> : <p className="list-meta">Chưa tải được bằng chứng nguồn/phiên bản từ API này.</p>}

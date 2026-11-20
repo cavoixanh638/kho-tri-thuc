@@ -9,7 +9,7 @@ from jobs.models import Job
 from processing.models import DerivedContent
 from storage.models import Asset, StorageLocation
 
-from .groups_api import _inline_item_links
+from .groups_api import _inline_item_links, _safe_locator
 from .models import Item, ItemTopic, RelatedItem, Source, Topic
 
 CORPUS = json.loads(
@@ -114,6 +114,8 @@ class RelatedConnectionsTests(TestCase):
             f"[suffix]({destination}-extra)",
             f"[masked]`code`({destination})",
             f"> ```\n> [quote-code]({destination})\n> ```",
+            f"<!--\n\n[comment]({destination})\n-->",
+            f"<script>\n\n[script]({destination})\n</script>",
         ]
         for text in cases:
             with self.subTest(text=text):
@@ -343,3 +345,52 @@ class RelatedConnectionsTests(TestCase):
             data["counts"], {"related": 0, "backlinks": 0, "same_group": 0}
         )
         self.assertNotIn("accuracy", data)
+
+    def test_lists_are_bounded_but_counts_are_not_silently_truncated(self):
+        topic = Topic.objects.get(name="Nhóm đã cố định")
+        for index in range(31):
+            peer = Item.objects.create(
+                owner=self.owner,
+                kind="text",
+                title=f"Extra {index}",
+                note=f"[explicit](#/muc/{self.target.pk})",
+            )
+            first, second = sorted([self.target, peer], key=lambda item: item.pk)
+            RelatedItem.objects.create(
+                item_a=first,
+                item_b=second,
+                reason="Fixture only",
+                method_version="fixture",
+                source_version="fixture",
+            )
+            ItemTopic.objects.create(item=peer, topic=topic)
+        data = self.client.get(self.url).json()
+        self.assertEqual(
+            data["counts"], {"backlinks": 46, "related": 41, "same_group": 36}
+        )
+        for key in ("backlinks", "results", "same_group"):
+            self.assertEqual(len(data[key]), 30)
+
+    def test_existing_asr_segments_normalize_only_finite_nonnegative_ordered_times(
+        self,
+    ):
+        raw = {
+            "segments": [
+                {"start": 0, "end": 4, "text": "Một"},
+                {"start": 4, "end": 9.5, "text": "Hai"},
+            ]
+        }
+        self.assertEqual(
+            _safe_locator(raw, True), {"start_seconds": 0, "end_seconds": 9.5}
+        )
+        self.assertEqual(_safe_locator(raw, False), {})
+        for segments in [
+            [],
+            [{"start": -1, "end": 4}],
+            [{"start": True, "end": 4}],
+            [{"start": 0, "end": float("inf")}],
+            [{"start": 4, "end": 5}, {"start": 2, "end": 3}],
+            ["bad"],
+        ]:
+            with self.subTest(segments=segments):
+                self.assertEqual(_safe_locator({"segments": segments}, True), {})
