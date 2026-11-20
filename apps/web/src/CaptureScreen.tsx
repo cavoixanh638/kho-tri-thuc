@@ -70,7 +70,7 @@ export function CaptureScreen({ csrf }: { csrf: string }) {
     saveCaptureFile(ownerRef.current, fileAttempt.current);
   }
 
-  useEffect(keepDraft, [owner, kind, url, note, annotation, shared.shared]);
+  useEffect(keepDraft, [owner, kind, url, note, annotation, file, shared.shared]);
 
   function clearAttempt() {
     dirty.current = true;
@@ -230,10 +230,9 @@ export function CaptureScreen({ csrf }: { csrf: string }) {
             onChange={(event) => { clearAttempt(); setNote(event.currentTarget.value); }} />
             : <FileInput label="Tệp gửi vào kho" description="Tối đa 128 MiB" placeholder="Chọn tệp" value={file} disabled={saving}
               clearable clearButtonProps={{ 'aria-label': 'Bỏ chọn tệp' }} onChange={(value) => {
-                if (value !== file) fileAttempt.current = null;
+                clearAttempt();
+                if (value !== file) fileAttempt.current = value ? { file: value, key: requestKey() } : null;
                 setFile(value);
-                setUploadReceipt(undefined);
-                setError(undefined);
               }} />}
           {error && <ErrorNotice>{error}</ErrorNotice>}
           <div className="form-actions">

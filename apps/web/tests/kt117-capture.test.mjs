@@ -210,6 +210,23 @@ test('file retry retains File/key through remount and ACK never claims verified 
   assert.ok(container.textContent.includes('Chưa xác nhận tệp đã được lưu và kiểm tra trên Drive'));
 });
 
+test('an unsent file selection survives leaving and returning to the capture screen', async () => {
+  await render();
+  await ui.act(async () => { container.querySelector('input[value="file"]').click(); await settle(); });
+  const file = new File(['fixture'], 'unsent-fixture.txt', { type: 'text/plain' });
+  const picker = container.querySelector('input[type="file"]');
+  assert.ok(picker);
+  Object.defineProperty(picker, 'files', { value: [file], configurable: true });
+  await ui.act(async () => { picker.dispatchEvent(new window.Event('change', { bubbles: true })); await settle(); });
+  const saved = ui.readCaptureFile('kt117-alice');
+  assert.equal(saved.file, file); assert.ok(saved.key);
+  await remount();
+  assert.ok(container.textContent.includes('unsent-fixture.txt'));
+  assert.equal(ui.readCaptureFile('kt117-alice').key, saved.key);
+  await click('Xóa bản nháp');
+  assert.equal(ui.readCaptureFile('kt117-alice'), undefined);
+});
+
 test('manifest retains existing GET share target without privileged permission changes', async () => {
   const manifest = JSON.parse(await readFile(new URL('../public/manifest.webmanifest', import.meta.url), 'utf8'));
   assert.deepEqual(manifest.share_target, { action: '/', method: 'GET', params: { title: 'shared_title', text: 'shared_text', url: 'shared_url' } });
