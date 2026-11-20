@@ -75,7 +75,7 @@ def _validated_identity(submission):
     return None
 
 
-def submit_capture(owner, submission):
+def submit_capture(owner, submission, *, on_created=None):
     identity = _validated_identity(submission)
 
     with transaction.atomic(durable=True):
@@ -180,4 +180,6 @@ def submit_capture(owner, submission):
                 input_ref=input_ref,
             )
 
+        if on_created is not None:
+            on_created(event)
         return event, True
