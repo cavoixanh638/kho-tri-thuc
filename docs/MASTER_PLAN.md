@@ -156,3 +156,14 @@ Các công việc và mã kiểm thử chi tiết nằm trong `docs/ROADMAP_AND_
 4. **Hoãn:** Canvas/whiteboard lớn, tích hợp Mem/Superpowered làm lõi, fork Obsidian/AFFiNE, graph DB, xây MCP/AI trả phí/ASR hàng loạt hoặc đổi Drive chỉ vì ý tưởng nghiên cứu.
 
 **Không tự triển khai tất cả:** Danh sách trên là **định hướng đề xuất** để người dùng giao từng mã KT-114–KT-121; nhiệm vụ, giới hạn quyền sửa và test acceptance ở [INDEX triển khai](workstreams/notes-ux-20261120/INDEX.md); chi tiết mã/cổng PASS thuộc [ROADMAP_AND_TESTS.md](ROADMAP_AND_TESTS.md), kết quả chạy thật thuộc CURRENT_STATE. Các ghi nhận phát hành cần tính theo mốc thời gian; Capacities **đã có ghi âm/phiên âm/tóm tắt ở Pro từ 11/2026** và Reflect Open Windows/Linux mới chỉ là build thử nghiệm chưa ký.
+
+## 11. Khôi phục yêu cầu còn thiếu: File Explorer và quan hệ cha–con giữa bài (20/11/2026)
+
+**Chỉnh thiếu sót phạm vi:** Người dùng yêu cầu rõ cách sắp xếp **thư mục như Obsidian**, gồm “thư mục chứa thư mục/ghi chú”, và quan hệ **cha–con giữa nội dung**. KT-113 mới có `Topic.parent` + `ItemTopic` trong DB, giao diện `KnowledgeTree` chỉ chứa nhánh; KT-118 (trong PR #57 chưa merge) chỉ thêm List/Table/Card/Timeline. Không được coi các nhiệm vụ này đã tạo được mixed explorer hoặc note→note hierarchy.
+
+**Thứ tự mục tiêu chính thức để giao code, không thay core:** 
+1. **KT-122** — Cây chung folder/note (nhiều cấp, tạo/chuyển/đổi tên, shortcut qua M:N, folder home rõ ràng) và thao tác desktop/mobile không cần mở từng Item để “Chỉnh nhóm”. Thư mục ảo PostgreSQL, Drive vẫn chứa file gốc theo UUID/Asset, không di chuyển khi phân loại.
+2. **KT-123** — Quan hệ **bài cha→bài con** có hướng để biểu diễn Sách (bài)→Chương (bài)→Bài nhỏ; có mục lục H1–H6 trong từng bài, liên kết chéo và backlink là quan hệ khác, RelatedItem tương đồng không được giả làm cha–con.
+3. Sau khi hai task được **code + test + browser QA** mới nhận xét UX tổ chức tri thức theo hướng Obsidian đã hoàn thiện; không được gán PASS vì PR #57 có cây Topic hoặc panel RelatedItem. Giữ 10.000 Item, không duplicate, portable backup/export; không triển khai graph DB hay thay nền tảng.
+
+**Nhiệm vụ chi tiết:** [KT-122](workstreams/notes-ux-20261120/KT-122-FOLDER-EXPLORER.md), [KT-123](workstreams/notes-ux-20261120/KT-123-NOTE-HIERARCHY.md). **Trạng thái:** SPEC_READY/IMPLEMENTATION_NOT_RUN, branch code dựa trên `codex/notes-ux-integration` PR #57 vẫn open, không merge/deploy khi chưa có quyền.
