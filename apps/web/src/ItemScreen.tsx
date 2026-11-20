@@ -13,6 +13,7 @@ import { MarkdownEditor } from './MarkdownEditor';
 import { useMarkdownDraft } from './MarkdownEditorDraft';
 import { NoteTemplatePicker } from './NoteTemplatePicker';
 import { acceptNoteTemplate } from './NoteTemplateConfig';
+import { ItemSuggestionPanel } from './ItemSuggestionPanel';
 import { CaptureList, Empty, ErrorNotice, itemTitle, kindLabels, Loading, PageControls, PageTitle, ServerTime, useResource } from './views';
 
 const fetchStates: Record<string, string> = {
@@ -59,6 +60,7 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
   draftRef.current = draft;
   const [discarding, setDiscarding] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [reviewBusy, setReviewBusy] = useState(false);
   const inFlight = useRef(false);
   const [openingAsset, setOpeningAsset] = useState<string>();
   const [error, setError] = useState<string>();
@@ -70,7 +72,7 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
   const evidenceRevision = [item.updated_at, item.source_fetch, item.content_extract, item.classification_status].join(':');
 
   async function update(patch: Partial<Pick<Item, 'title' | 'description' | 'note' | 'favorite' | 'deleted'>>) {
-    if (inFlight.current) return;
+    if (inFlight.current || reviewBusy) return;
     inFlight.current = true;
     setError(undefined);
     setConfirmation('');
@@ -165,7 +167,7 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
         <section className="panel" aria-labelledby="item-content">
           <div className="panel-heading">
             <h2 id="item-content">Tri thức</h2>
-            {!editing && <Button variant="default" onClick={start} disabled={busy || item.deleted}>Chỉnh sửa</Button>}
+            {!editing && <Button variant="default" onClick={start} disabled={busy || reviewBusy || item.deleted}>Chỉnh sửa</Button>}
           </div>
           {editing ? <form className="form-stack" onSubmit={saveNotes}
             onCompositionStartCapture={() => { composing.current = true; }} onCompositionEndCapture={() => { composing.current = false; }}>
@@ -207,6 +209,8 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
             </details>}
           </>}
         </section>
+        <ItemSuggestionPanel key={item.item_id} item={item} csrf={csrf} editing={editing || busy} draftDirty={dirty}
+          onUpdated={onUpdated} onBusyChange={setReviewBusy} />
         {!item.deleted && <SourceLinks id={item.item_id} csrf={csrf} deleted={item.deleted} onSaved={() => { setConfirmation('Đã gắn nguồn, đang trích văn bản vào bài.'); onRefresh(); }} />}
         {!item.deleted && hasSourceContent && <details className="source-evidence"><summary>Các phần trích và bằng chứng nguồn</summary><ExtractedContent id={item.item_id} refreshKey={evidenceRevision} /></details>}
         {item.assets.length > 0 && <details ref={mediaDetails} className="panel assets" id="item-media">
@@ -250,8 +254,8 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
             {!item.deleted && (item.source_fetch === 'failed' || item.source_fetch === 'partial' || item.asset_storage === 'failed' || item.content_extract === 'failed' || (hasSourceContent && item.content_extract === 'not_available')) && <Button variant="default" disabled={busy} onClick={() => void retryProcessing()}>Thử xử lý lại</Button>}
             {item.deleted ? <Button variant="default" disabled={busy} onClick={() => void update({ deleted: false })}>Khôi phục</Button>
               : <>
-                <Button variant="default" disabled={busy} onClick={() => void update({ favorite: !item.favorite })}>{item.favorite ? 'Bỏ yêu thích' : 'Thêm yêu thích'}</Button>
-                <Button variant="outline" color="red.8" disabled={busy || editing} onClick={() => void update({ deleted: true })}>Chuyển vào thùng rác</Button>
+                <Button variant="default" disabled={busy || reviewBusy} onClick={() => void update({ favorite: !item.favorite })}>{item.favorite ? 'Bỏ yêu thích' : 'Thêm yêu thích'}</Button>
+                <Button variant="outline" color="red.8" disabled={busy || reviewBusy || editing} onClick={() => void update({ deleted: true })}>Chuyển vào thùng rác</Button>
               </>}
           </div>
         </section>
