@@ -10,7 +10,7 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "test": "node --test tests/ui.test.mjs"
+    "test": "node tests/run-unit-tests.mjs"
   },
   "dependencies": {
     "@mantine/core": "9.8.1",

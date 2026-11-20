@@ -15,6 +15,7 @@ x-django-environment: &django-environment
   GOOGLE_DRIVE_CLIENT_SECRET: ${GOOGLE_DRIVE_CLIENT_SECRET:-}
   GOOGLE_DRIVE_REDIRECT_URI: ${GOOGLE_DRIVE_REDIRECT_URI:-}
   GOOGLE_DRIVE_TOKEN_KEY: ${GOOGLE_DRIVE_TOKEN_KEY:-}
+  SUGGESTION_REVIEW_POC_ENABLED: ${SUGGESTION_REVIEW_POC_ENABLED:-0}
 
 services:
   db:
@@ -68,7 +69,9 @@ services:
         condition: service_healthy
 
   web:
-    build: ./apps/web
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
     environment:
       API_PROXY_TARGET: http://api:8000
     depends_on:
