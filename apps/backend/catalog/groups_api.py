@@ -277,6 +277,13 @@ def _inline_item_links(markdown):
     images, plain URLs, code and derived lexical matches are not backlinks.
     Unsupported constructs may be omitted; they must not create false links.
     """
+    markdown = re.sub(r"<!--[\s\S]*?(?:-->|$)", " ", markdown)
+    markdown = re.sub(
+        r"<(script|pre|style|textarea)\b[^>]*>[\s\S]*?(?:</\1\s*>|$)",
+        " ",
+        markdown,
+        flags=re.IGNORECASE,
+    )
     lines, fence, html = [], None, False
     for line in markdown.splitlines():
         marker = re.match(r"^ {0,3}(`{3,}|~{3,})", line)
@@ -385,6 +392,26 @@ def _safe_locator(raw, current_asset):
     if type(page) is int and 1 <= page <= 1_000_000:
         locator["page"] = page
     start, end = raw.get("start_seconds"), raw.get("end_seconds")
+    segments = raw.get("segments")
+    if start is None and isinstance(segments, list) and 1 <= len(segments) <= 10_000:
+        previous, valid = -1, True
+        for segment in segments:
+            if not isinstance(segment, dict):
+                valid = False
+                break
+            left, right = segment.get("start"), segment.get("end")
+            if not (
+                type(left) in (int, float)
+                and type(right) in (int, float)
+                and math.isfinite(left)
+                and math.isfinite(right)
+                and previous <= left <= right <= 10**8
+            ):
+                valid = False
+                break
+            previous = left
+        if valid:
+            start, end = segments[0]["start"], segments[-1]["end"]
     if type(start) in (int, float) and math.isfinite(start) and 0 <= start <= 10**8:
         locator["start_seconds"] = start
         if type(end) in (int, float) and math.isfinite(end) and start <= end <= 10**8:
