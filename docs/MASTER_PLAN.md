@@ -167,3 +167,18 @@ Các công việc và mã kiểm thử chi tiết nằm trong `docs/ROADMAP_AND_
 3. Sau khi hai task được **code + test + browser QA** mới nhận xét UX tổ chức tri thức theo hướng Obsidian đã hoàn thiện; không được gán PASS vì PR #57 có cây Topic hoặc panel RelatedItem. Giữ 10.000 Item, không duplicate, portable backup/export; không triển khai graph DB hay thay nền tảng.
 
 **Nhiệm vụ chi tiết:** [KT-122](workstreams/notes-ux-20261120/KT-122-FOLDER-EXPLORER.md), [KT-123](workstreams/notes-ux-20261120/KT-123-NOTE-HIERARCHY.md). **Trạng thái:** SPEC_READY/IMPLEMENTATION_NOT_RUN, branch code dựa trên `codex/notes-ux-integration` PR #57 vẫn open, không merge/deploy khi chưa có quyền.
+
+## 12. Rà soát lại toàn bộ giá trị học từ 17 phần mềm — trách nhiệm G00 (20/11/2026)
+
+**Không thể coi nghiên cứu 17 phần mềm thành công khi chỉ có 8 task UX và phải chờ người dùng nhắc về folder.** Lần ba G00 kiểm kê **38 nhóm năng lực** trong [sổ truy vết](workstreams/notes-ux-20261120/G00-FEATURE-TRACEABILITY.md), phân biệt code MAIN, candidate PR #57, đã có một phần, thiếu, và có điều kiện/hoãn. Báo cáo gốc ở PR #30–46 và thẩm định chi tiết PR #47 vẫn chưa merge. Không được suy 38 dòng = 38 tính năng native đã được thử hay phải lập trình hết.
+
+**Các hành trình cốt lõi để dùng kho thật:**
+1. **Tổ chức:** folder+ghi chú chung cây, bài cha/con, note nhiều nhánh cùng UUID, backlinks/wiki links, unlinked mentions, mục lục Markdown, Ctrl+K và breadcrumbs.
+2. **Tìm lại và tổng hợp:** saved smart collections, filter động, view table/card/timeline trên cùng một ID, metadata/source status; không phải chỉ có nút chọn view.
+3. **Thu thập và đọc nguồn:** nhanh từ web/Android, clip selected text hoặc article, gắn quote vào bài đã có, trích dẫn có provenance/locator tới PDF/time, bản user viết không bị chép đè.
+4. **Sở hữu dữ liệu:** export/import Markdown vault với folder/notes/links/manifest + restore; Drive và PostgreSQL vẫn là nguồn sự thật, không nhân file MP4 khi chuyển folder.
+5. **Bằng chứng thực:** QA hành trình giao diện 1920/1440/768/390 và Android thật khi có, corpus 10k, restore/hashing, đo tình trạng thiếu dữ liệu và xin quyền khi dùng tài khoản/dịch vụ thật.
+
+**Các task bổ sung không được bỏ:** [KT-122](workstreams/notes-ux-20261120/KT-122-FOLDER-EXPLORER.md), [KT-123](workstreams/notes-ux-20261120/KT-123-NOTE-HIERARCHY.md), [KT-124](workstreams/notes-ux-20261120/KT-124-NAVIGATION-LINKING.md), [KT-125](workstreams/notes-ux-20261120/KT-125-SMART-COLLECTIONS.md), [KT-126](workstreams/notes-ux-20261120/KT-126-CLIPPER-HIGHLIGHTS.md), [KT-127](workstreams/notes-ux-20261120/KT-127-PORTABLE-VAULT.md), [KT-128](workstreams/notes-ux-20261120/KT-128-USER-JOURNEY-ACCEPTANCE.md). [KT-129](workstreams/notes-ux-20261120/KT-129-ORGANIZATION-REVIEW.md) cần evidence/benchmark; [KT-130](workstreams/notes-ux-20261120/KT-130-DEFERRED-RESEARCH.md) giữ các ý tưởng chưa áp dụng (Canvas, OCR, AI scoped research, offline sync, voice, semantic) có lý do và trigger, thay vì để chúng biến mất.
+
+**Không đổi nền tảng đã chốt:** Django + PostgreSQL + Drive. **PR #57 là candidate OPEN/UNMERGED**, chưa chứng nhận các hành trình trên. Những task 122–130 mới ở trạng thái SPEC_READY / NOT_RUN. Chỉ tiến hành lập trình khi người dùng giao; test/CI phải báo rõ SHA và trạng thái thực.
