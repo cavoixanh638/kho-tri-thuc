@@ -1,6 +1,6 @@
 # QUY CHUẨN CẤU TRÚC REPOSITORY — KHO TRI THỨC
 
-**Trạng thái:** Đã thống nhất làm quy tắc bố trí tệp cho giai đoạn triển khai; hiện các thư mục ứng dụng trong sơ đồ bên dưới **chưa được tạo**.
+**Trạng thái:** Đây là quy tắc bố trí tệp gốc V4.7; **đến 20/11/2026 các thư mục ứng dụng/backend/frontend/tests đã tồn tại và có mã**, xem `CURRENT_STATE.md` cùng cây GitHub main. Sơ đồ mục tiêu bên dưới mang tính lịch sử/định hướng, không được hiểu là repo vẫn rỗng.
 **Phạm vi:** V4.7; một Django monolith, React PWA, PostgreSQL, Google Drive là kho file chính.
 **Nguồn tham khảo đã đọc:** [QLVB Repository Layout](https://github.com/cavoixanh638/QLVB_System_new/blob/main/docs/REPOSITORY_LAYOUT.md), [QLVB System](https://github.com/cavoixanh638/QLVB_System_new/blob/main/docs/SYSTEM.md), [QLVB docs routing](https://github.com/cavoixanh638/QLVB_System_new/blob/main/docs/README.md). Áp dụng nguyên tắc có chọn lọc, **không di chuyển/copy mã QLVB**.
 
