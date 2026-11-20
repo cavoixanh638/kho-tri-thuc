@@ -14,7 +14,14 @@ UI riêng AiSuggestionReview/Diff hiển thị before/after/chênh lệch Unicod
 reject/cancel/undo explicit, chặn draft khác và lỗi409 không overwrite. Không
 thay Markdown renderer và không renderHTMLnguồn.
 
-TEST_PENDING: 20fixtureVietnamese trước/sau/reject/accept/undo bảo toànItem/Event/
-Asset/pinned; CSRF/owner/tamper/expiry/sourceversion; npmnewtests/legacy/build.
-Tiếp chạytests+browserfixture, ghi evidence/commitpushPR khôngmerge. Cần tíchhợp
-callbackAPIvàItemScreen sau khi cácPRđược review; provider thật PROVIDER_NOT_RUN.
+Code đã push `0a9cc1b962b1a9bbbf5241a821da53ddb877fb71`; 20fixtureVietnamese
+preview/reject/accept/undo bảo toànItem/Event/Asset/pinned PASS. Backend215test
+PASS/0skip, newfrontend25PASS, legacy19PASS, build/Ruff/diff PASS. Test mới thêm
+late receipt và409/503; payload/semantics không đổi. BrowserNOT_RUN: IAB không
+khả dụng, nativeChrome minimized không lấy được binding; không dùng DOM làm
+browserPASS. [Bằng chứng](KT-120-EVIDENCE.md).
+
+Receipt stateless chỉ làPoC, không có durableaudit/revokereject; UI loại receipt,
+server vẫn chốngexpiry/version/replay. Không gọi là AIđãtíchhợp. Tiếp commit
+evidence/push/PR, theoCI; khôngmerge. Cần tíchhợp callbackAPIvàItemScreen sau khi
+cácPRđược review; provider thật PROVIDER_NOT_RUN.
