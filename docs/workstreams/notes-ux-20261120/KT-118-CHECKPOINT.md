@@ -12,11 +12,24 @@ KT114 [PR48](https://github.com/cavoixanh638/kho-tri-thuc/pull/48) có DB test10
 138 nhánh/221 paged reads/restore15collection; backend ở cùng baseline không đổi.
 Không đánh đồng frontend fixture với browser đọc trực tiếp toàn DB.
 
-Browser cô lập `tests/kt118-browser.html` tại loopback8118: đã nhìn Bảng 1920x1080,
-Thẻ 390x844. Đang chỉnh mục lục mobile thu gọn và type column. Chưa chốt browser
-PASS cho bản cuối; Android thiết bị thật NOT_RUN. Không đụng runtime production.
+Code/Tested SHA `a20072e46a4d4111c7355bb1007b66ab760732d2`. Đọc lại 201 page API
+từ DB KT114 sau thử capture: 10.001 Item, bốn mode cùng thứ tự/tập ID, 0 dòng
+trùng; objects note/source/asset không bị đổi. `KT118_DB_FIXTURE` trỏ JSON ngoài
+Git dùng cho new test; chạy thêm lần không có env dùng 10k fixture tied timestamp.
+`tests/kt118-export-db.py` có guard DB prefix/loopback62224/read-only transaction.
+Không sửa server pagination/sort hoặc tải 10k bài vào browser ứng dụng.
+
+Browser cô lập `tests/kt118-browser.html` tại loopback8118: Bảng/Thẻ/Danh sách/
+Theo ngày, chuyển page giữ mode và ID đúng, không tràn trang ở 1920x1080,
+768x1024, 390x844. Mục lục tablet/mobile mặc định gọn; bảng cuộn trong frame.
+Ảnh fixture đính kèm cùng thư mục, [báo cáo](KT-118-EVIDENCE.json).
+Android thiết bị thật và browser đọc toàn bộ 201 page DB là NOT_RUN; phép so tập
+DB chạy bằng renderer/DOM test. Không đụng runtime production.
 Style achromatic-ledger seed236088050, giữ palette/type/shell hiện hữu, không thêm
 brand/font/dependency; chữ và đường dẫn sách là dấu nhận diện.
 
-Tiếp: kiểm lại browser390/768/1920 và keyboard/paging; tests sau CSS/markup mới;
-commit/push và PR không merge. Shared runner/api/styles/CURRENT_STATE không đổi.
+Tái chạy: `npm test`, `node --test tests/kt118-library.test.mjs`, `npm run build`;
+muốn lặp DB, chạy export script với `--database` và `--output` ở ngoài Git rồi
+đặt env `KT118_DB_FIXTURE` đến file đó. Không gọi jsdom là thiết bị thật.
+Tiếp: push/tạo PR, theo dõi CI, **không merge/deploy**. Shared runner/api/styles/
+CURRENT_STATE không đổi; revert PR trả về list mặc định, không thay schema.
