@@ -447,3 +447,24 @@ ALTER TEXT SEARCH CONFIGURATION kt_vi
 ### 15.3. Quy tắc tích hợp nhiều agent
 
 Mỗi agent sửa đúng file thuộc task; API/type/stylesheet/runner và `CURRENT_STATE.md` là file chung cần G00 ghép sau. Nếu cần migrate model, phải có backfill, rollback và test DB mới/restored; không viết đè lịch sử Event hoặc user note. Báo cáo PR có Code SHA/Tested SHA và PASS/FAIL/NOT_RUN. Nghiệp vụ chuẩn ở CAPTURE_AND_ORGANIZE, tiến độ ở CURRENT_STATE, tiêu chí ở ROADMAP_AND_TESTS.
+
+## 16. Bổ sung bắt buộc: Thư mục và bài tri thức có cấu trúc cha–con (20/11/2026)
+
+**Phát hiện kiểm mã PR #57:** `Topic.parent` chỉ biểu diễn folder→folder; `ItemTopic` là quan hệ many-to-many folder→Item; `RelatedItem` là cặp tương quan không có hướng (`item_a < item_b`), **không phải** cha→con giữa bài. Cây `KnowledgeTree` đang chỉ render `Topic`, note được tải trong list bên phải; chế độ List/Table/Card/Timeline của KT-118 **không khắc phục khoảng trống này**. Chi tiết task [KT-122](workstreams/notes-ux-20261120/KT-122-FOLDER-EXPLORER.md) và [KT-123](workstreams/notes-ux-20261120/KT-123-NOTE-HIERARCHY.md).
+
+### 16.1. Ba quan hệ lưu khác nghĩa
+
+1. `Topic.parent`: **thư mục cha–thư mục con**, giữ giới hạn chu trình, owner, depth 64 và không trùng sibling name.
+2. `ItemTopic`: **ghi chú thuộc thư mục**, M:N **không duplicate Item UUID/Asset**, thêm quyết định “vị trí chính” sau khi so sánh các thiết kế dữ liệu và migrations. Folder trong Postgres là virtual; Drive file ID không chuyển theo folder mỗi lần người dùng kéo thả.
+3. **Directed Item hierarchy mới (design proposal):** `parent_item_id`→`child_item_id`, 1 cha cấu trúc trực tiếp/Item nếu chọn mô hình cây đơn giản, có `sort_order`, owner/cycle checks/transaction, version/audit; không tái sử dụng `RelatedItem(similar)` vì đảo chiều `item_a<item_b` là canonical pair, không biểu diễn quyền cha/con. Có thể thiết kế FK trong Item hoặc bảng ItemHierarchyEdge sau ADR, nhưng không được mặc định đã code.
+
+Liên kết Markdown A→B/backlink là **reference**, quan hệ `RelatedItem` là **similarity/candidate**; chỉ liên kết có user confirmation mới là structural parent. Heading H1..H6 tổ chức **mục lục bên trong cùng một Item**, không tạo Item con ẩn.
+
+### 16.2. Hợp đồng UX và các bất biến
+
+- Explorer trái **chung một cây thư mục và ghi chú**, tạo và mở ghi chú trực tiếp trong folder, kéo thả/move folder và note với thao tác bàn phím tương đương, breadcrumb, note outline, panel cha/con và backlink riêng. Từ chiều rộng <=1100px ở PR #57 cây đang ẩn ban đầu sau nút “Mở mục lục kho tri thức”: phải đưa trạng thái mở cây dễ tìm, nhớ khi chuyển view.
+- Một Item có thể ở nhiều thư mục; hiện “home” và shortcut bằng cùng UUID. Chuyển home không xóa các quan hệ nhánh phụ đã pinned, không thay `CaptureEvent`, `Asset`, `Source`, `StorageLocation` hoặc `Item.note`. Không thay label “Bộ sách/Chương” của `Topic` thành quan hệ Item parent giả.
+- API phân trang/lazy: 10.000 Item không tải toàn bộ note cho sidebar; count distinct theo ancestor, không double count multi-branch. Mọi thay đổi chốt qua DB transaction/CSRF/owner; bảo vệ concurrent rename/move, cycle, archived, deleted, rollback migration + backup/restore/export.
+- **Phạm vi triển khai:** KT-122 là folder mixed explorer, KT-123 là note→note; tách PR để có thể test độc lập. Base phát triển phải là **PR #57 `codex/notes-ux-integration` chưa merge**, tránh bỏ qua KT-118/119 và không double-apply #48–56. Đây là **spec**, code/test **NOT_RUN** cho hai task mới.
+
+**Nguyên tắc quản lý tài liệu:** Một ghi chú Markdown là Item có UUID trong PostgreSQL (không nhất thiết là tệp .md vật lý trong folder Drive). Obsidian là chuẩn UX tham khảo; không sao chép plugin/code, không khẳng định Vault/Filesystem đã được thay bằng Drive virtual folder. Nếu cần xuất Obsidian-compatible folder sau này, làm bằng portable export rõ version, mapping UUID→path và liên kết, không lấy folder path làm khóa nghiệp vụ.
