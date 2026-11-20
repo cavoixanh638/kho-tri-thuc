@@ -45,3 +45,24 @@ test('draft conflict blocks acceptance and injected HTML remains escaped',()=>{
   const html=ui.renderToStaticMarkup(ui.createElement(ui.AiSuggestionReview,{suggestion:s,csrf:'x',currentNote:'Người dùng đã sửa',onApplied(){},onClose(){}}));
   assert.doesNotMatch(html,/<img|<script/);assert.match(html,/Bản nháp đang khác/);assert.match(html,/disabled=""/);
 });
+test('late acceptance cannot update a newly selected suggestion',async()=>{
+  let resolve;const applied=[];const first=suggestion(0),second={...suggestion(1),receipt:'different-receipt'};
+  globalThis.fetch=async()=>new Promise(r=>{resolve=()=>r(new Response(JSON.stringify({note:first.after,edit_version:1,source_version:'source-v1',undo_receipt:'u'}),{status:200}));});
+  const element=document.createElement('div');document.body.append(element);const root=ui.createRoot(element);
+  const render=(s)=>ui.createElement(ui.AiSuggestionReview,{suggestion:s,csrf:'fixture',currentNote:s.before,onApplied:r=>applied.push(r),onClose(){}});
+  await ui.act(async()=>{root.render(render(first));await settle();});
+  await ui.act(async()=>{[...element.querySelectorAll('button')].find(b=>b.textContent==='Chấp nhận').click();await settle();});
+  await ui.act(async()=>{root.render(render(second));await settle();});
+  await ui.act(async()=>{resolve();await settle();});
+  assert.equal(applied.length,0);assert.match(element.textContent,/Bài 1/);
+  await ui.act(async()=>root.unmount());element.remove();
+});
+for(const status of [409,503])test(`failed review ${status} leaves the original untouched`,async()=>{
+  const s=suggestion(1);let applied=0;
+  globalThis.fetch=async()=>new Response('{}',{status});
+  const element=document.createElement('div');document.body.append(element);const root=ui.createRoot(element);
+  await ui.act(async()=>{root.render(ui.createElement(ui.AiSuggestionReview,{suggestion:s,csrf:'fixture',currentNote:s.before,onApplied:()=>applied++,onClose(){}}));await settle();});
+  await ui.act(async()=>{[...element.querySelectorAll('button')].find(b=>b.textContent==='Chấp nhận').click();await settle();});
+  assert.equal(applied,0);assert.ok(element.querySelector('[role="alert"]'));
+  await ui.act(async()=>root.unmount());element.remove();
+});
