@@ -1,6 +1,6 @@
 # KT-117 checkpoint — 20/11/2026
 
-**Code SHA / Tested SHA:** `0e7e75f3772cb4c82a82c2f8754d13ba45cf9b66`.
+**Code SHA / Tested SHA:** `3b777a46f18cb0a8107d1f195a58936ea0421360`.
 The checkpoint commit changes documentation only. Base: `7044b4a0f50a7c831a391f27b1f90cc4aaa21d8b`.
 Branch: `codex/kt-117-quick-capture`. No merge or deployment.
 
@@ -11,7 +11,8 @@ Branch: `codex/kt-117-quick-capture`. No merge or deployment.
   silently truncating. An explicit HTTP(S) URL becomes a link; prose/multiple URLs
   stay one note. Invalid/active/credential URLs are retained as inert note text.
 - Drafts and pending retry keys survive CaptureScreen unmount and the real App
-  401/login path, scoped by authenticated username. File objects stay in memory.
+  401/login path, scoped by authenticated username. Unsent file selections and
+  their retry keys also survive screen navigation. File objects stay in memory.
   No persistent storage, offline queue or automatic resubmission was added.
   Reloading/closing the tab loses drafts; the form says so. If the extra session
   identity check is unavailable, the existing form remains usable but account
@@ -33,7 +34,7 @@ fixtures only; no worker, public-site fetch, OAuth, Drive or production catalogu
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| `node --test tests/kt117-capture.test.mjs` in `apps/web` | PASS, 44/44 | 30 shared fixtures plus network, actual timeout abort, 401/403, double submit, auth unmount/relogin, account isolation, file retry, oversized input, exact payload/receipt and manifest checks |
+| `node --test tests/kt117-capture.test.mjs` in `apps/web` | PASS, 45/45 | 30 shared fixtures plus network, actual timeout abort, 401/403, double submit, auth unmount/relogin, account isolation, selected-file navigation/file retry, oversized input, exact payload/receipt and manifest checks |
 | `npm test` in `apps/web` | PASS, 19/19 | Existing UI suite; does **not** discover the new file, which was run explicitly |
 | `npm run build` in `apps/web` | PASS | TypeScript + Vite production output; existing >500 kB chunk warning remains |
 | `ingestion.test_kt117_capture` through Django test runner | PASS, 1 corpus test, 30/30 fixtures | Exact Event raw_kind/raw_text/original_url/annotation + receipt; 30 retries add zero Events; 30 deliberate resends add 30 Events; final 60 Events, zero Assets |
