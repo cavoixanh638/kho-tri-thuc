@@ -43,6 +43,7 @@ class ItemSummary(Schema):
     title: str
     description: str
     note: str
+    user_edit_version: int
     saved_at: datetime
     published_at: datetime | None
     updated_at: datetime
@@ -63,6 +64,7 @@ class ItemPage(Schema):
 
 
 class ItemPatch(Schema):
+    expected_edit_version: int | None = Field(default=None, ge=0, strict=True)
     title: str | None = Field(default=None, max_length=512)
     description: str | None = Field(default=None, max_length=20_000)
     note: str | None = Field(default=None, max_length=100_000)
@@ -158,6 +160,7 @@ def summarize(item):
         "saved_at": item.saved_at,
         "published_at": item.published_at,
         "updated_at": item.updated_at,
+        "user_edit_version": item.user_edit_version,
         "favorite": item.favorite,
         "deleted": item.deleted_at is not None,
         "classification_status": "user_assigned"
@@ -227,9 +230,10 @@ def get_item(request, item_id: UUID):
     return summarize(get_object_or_404(catalog(request.user), pk=item_id))
 
 
-@router.patch("/items/{item_id}", response={200: ItemSummary, 422: Error})
+@router.patch("/items/{item_id}", response={200: ItemSummary, 409: Error, 422: Error})
 def edit_item(request, item_id: UUID, patch: ItemPatch):
     changes = patch.model_dump(exclude_none=True)
+    expected_version = changes.pop("expected_edit_version", None)
     try:
         text_contains_nul = any(
             b"\x00" in value.encode("utf-8")
@@ -245,6 +249,11 @@ def edit_item(request, item_id: UUID, patch: ItemPatch):
         item = get_object_or_404(
             Item.objects.select_for_update(), pk=item_id, owner=request.user
         )
+        if expected_version is not None and (
+            expected_version != item.user_edit_version
+            or (item.deleted_at and changes.keys() & {"title", "description", "note"})
+        ):
+            return Status(409, {"code": "edit_conflict"})
         if "deleted" in changes:
             remove = changes.pop("deleted")
             changes["deleted_at"] = (

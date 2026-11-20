@@ -2,15 +2,17 @@ import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { externalHttpUrl } from './api';
 
+const internalItemHref = (url: string) => url.length === 42 && /^#\/muc\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(url);
+
 /** Source HTML is skipped; images require an explicit click. */
 export function KnowledgeText({ text, title }: { text: string; title?: string }) {
   const heading = /^#[ \t]+([^\r\n]+)(?:\r?\n|$)/.exec(text);
   const body = heading && heading[1].trim() === title?.trim() ? text.slice(heading[0].length) : text;
   return <div className="knowledge-text">
-    <Markdown skipHtml remarkPlugins={[remarkGfm]} urlTransform={(url) => externalHttpUrl(url) ?? ''}
+    <Markdown skipHtml remarkPlugins={[remarkGfm]} urlTransform={(url, key) => key === 'href' && internalItemHref(url) ? url : externalHttpUrl(url) ?? ''}
       components={{
         h1: ({ children }) => <h3>{children}</h3>, h2: ({ children }) => <h3>{children}</h3>, h3: ({ children }) => <h4>{children}</h4>,
-        a: ({ href, children }) => href ? <a href={href} target="_blank" rel="noopener noreferrer">{children}</a> : <span>{children}</span>,
+        a: ({ href, children }) => href ? internalItemHref(href) ? <a href={href}>{children}</a> : <a href={href} target="_blank" rel="noopener noreferrer">{children}</a> : <span>{children}</span>,
         img: ({ src, alt }) => typeof src === 'string' && src ? <a href={src} target="_blank" rel="noopener noreferrer">Ảnh minh họa: {alt || 'Mở ảnh'}</a> : <span>{alt}</span>,
         table: ({ children }) => <div className="knowledge-table"><table>{children}</table></div>,
       }}>{body}</Markdown>
