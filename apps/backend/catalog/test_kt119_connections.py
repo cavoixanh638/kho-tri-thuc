@@ -116,6 +116,9 @@ class RelatedConnectionsTests(TestCase):
             f"> ```\n> [quote-code]({destination})\n> ```",
             f"<!--\n\n[comment]({destination})\n-->",
             f"<script>\n\n[script]({destination})\n</script>",
+            f'[outer](https://example.invalid "title [inner]({destination})")',
+            f"https://example.invalid/[inner]({destination})",
+            f"[outer](https://example.invalid/[inner]({destination}))",
         ]
         for text in cases:
             with self.subTest(text=text):
@@ -126,6 +129,10 @@ class RelatedConnectionsTests(TestCase):
         )
         self.assertEqual(
             _inline_item_links(f"`code` then [ok]({destination})"), {self.target.pk}
+        )
+        self.assertEqual(
+            _inline_item_links(f"Văn bản [ok]({destination}) nguyên văn"),
+            {self.target.pk},
         )
 
     def test_owner_deleted_stale_and_unlinked_lexical_content_do_not_leak(self):

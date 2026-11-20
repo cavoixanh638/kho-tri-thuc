@@ -319,13 +319,20 @@ def _inline_item_links(markdown):
         cursor = len(text) if closing is None else opening.end() + closing.end()
     plain.append(text[cursor:])
     text = "".join(plain)
-    pattern = r"(?<![\\!])\[[^\]<>\\\n]*\]\(\s*(<)?#/muc/([a-fA-F0-9-]{36})(?(1)>)\s*\)"
+    pattern = re.compile(
+        r"(?<!\S)\[[^\[\]<>\\\n]*\]\([ \t]*(<)?#/muc/([a-fA-F0-9-]{36})(?(1)>)[ \t]*\)"
+    )
     ids = set()
-    for match in re.finditer(pattern, text):
-        try:
-            ids.add(UUID(match[2]))
-        except ValueError:
-            pass
+    for line in text.splitlines():
+        # Mixed/nested unparsed Markdown might place a candidate inside another
+        # link's destination/title. Omit that line rather than invent a backlink.
+        if re.search(r"[\[\]()]", pattern.sub(" ", line)):
+            continue
+        for match in pattern.finditer(line):
+            try:
+                ids.add(UUID(match[2]))
+            except ValueError:
+                pass
     return ids
 
 
