@@ -30,6 +30,15 @@ class Error(Schema):
     code: str
 
 
+class KnowledgeSource(Schema):
+    state: str
+    version: str
+    source_id: int | None
+    source_url: str | None
+    mime: str | None
+    asset_version: int | None
+
+
 class KnowledgePart(Schema):
     id: int
     kind: str
@@ -38,6 +47,7 @@ class KnowledgePart(Schema):
     locator: dict
     processor: str
     processor_version: str
+    source: KnowledgeSource
     format: str
 
 

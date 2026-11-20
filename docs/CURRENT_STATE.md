@@ -6,6 +6,20 @@
 
 ## 1. Tình trạng tổng quát
 
+### KT-114–121 — candidate tích hợp PR57, chưa merge/chưa deploy
+
+Nhánh codex/notes-ux-integration đã ghép mã PR48–56 và nối template/review/
+minh họa vào ItemScreen, private media Range và test runner chung. Mã hành vi
+đã thử04cd942; sửa giao diện tablet/tương phản đã thửec1cdd3. Đây là candidate
+QA cô lập, **không thay trạng thái Windows LIVE_PASS của KT-113** phía dưới.
+Frontend231 PASS; backend257 PASS và2 opt-in riêng đã chạy; Chrome thật qua
+Django/PostgreSQL kiểm capture/edit/template/review/undo/backlink/4views; gate
+10000Item và restore15collection PASS. Chi tiết, SHA, ảnh, lệnh và các giới hạn
+ở [bằng chứng tích hợp](workstreams/notes-ux-20261120/INTEGRATION-EVIDENCE.md).
+[PR57](https://github.com/cavoixanh638/kho-tri-thuc/pull/57) là nơi kiểm CI
+đúng HEAD mới nhất. Không merge, không triển khai Windows; Drive thật/PDF page
+jump/Android/AIprovider vẫn chưa được nghiệm thu trong đợt này.
+
 ### KT-113 — cây thư viện và text từ liên kết, Windows LIVE_PASS
 
 Nhánh `codex/kt-113-knowledge-tree`, candidate `8daa02b`: Topic.parent có loại và

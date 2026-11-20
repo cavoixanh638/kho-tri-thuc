@@ -92,3 +92,5 @@ WEB_DIST = os.getenv("WEB_DIST", "")
 FFMPEG_BINARY = os.getenv("FFMPEG_BINARY", "ffmpeg")
 FFPROBE_BINARY = os.getenv("FFPROBE_BINARY", "ffprobe")
 LOCAL_ASR_MODEL_DIR = os.getenv("LOCAL_ASR_MODEL_DIR", "")
+# Explicit development opt-in. This enables manual review only, never an AI provider.
+SUGGESTION_REVIEW_POC_ENABLED = os.getenv("SUGGESTION_REVIEW_POC_ENABLED", "0") == "1"

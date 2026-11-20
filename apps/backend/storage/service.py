@@ -33,6 +33,7 @@ class StoragePort(Protocol):
     def stat(self, asset: Asset) -> RemoteFile: ...
     def verify(self, asset: Asset) -> StorageLocation: ...
     def open(self, asset: Asset) -> str: ...
+    def read_range(self, asset: Asset, start: int, end: int) -> bytes: ...
 
 
 def fingerprint(stream):
@@ -175,6 +176,35 @@ class DriveStorage:
         return "https://drive.google.com/open?" + urlencode(
             {"id": location.provider_file_id}
         )
+
+    def read_range(self, asset, start, end):
+        """Fail closed if the verified original changes around a bounded read.
+
+        A provider's metadata version is monotonic, so a replacement during the
+        read cannot be accepted even if it later has the original bytes again.
+        No location/asset or verification timestamps are modified by viewing.
+        """
+        location = self._locate(asset)
+        if location.status != StorageLocation.Status.VERIFIED:
+            raise DriveError("storage_not_verified")
+        before = self._read(asset, location.provider_file_id)
+        if (
+            not asset.sha256
+            or not before.sha256
+            or not before.revision
+            or before.size != asset.size
+            or before.mime != asset.mime
+            or before.sha256 != asset.sha256
+            or before.revision != location.provider_revision
+        ):
+            raise DriveError("viewer_source_changed")
+        payload = self.client.read_blob_range(before.file_id, start, end, before.size)
+        after = self._read(asset, location.provider_file_id)
+        if after != before:
+            raise DriveError("viewer_source_changed")
+        if len(payload) != end - start + 1:
+            raise DriveError("viewer_range_size_mismatch")
+        return payload
 
 
 def storage_for_owner(owner_id) -> StoragePort:

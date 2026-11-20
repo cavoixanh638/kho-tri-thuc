@@ -1,0 +1,13 @@
+.source-locator { margin: 1rem 0; padding: .8rem 1rem; background: var(--raised, #eee); border-radius: 4px; overflow-wrap: anywhere; }
+.source-locator-line, .source-locator-actions { display: flex; align-items: baseline; flex-wrap: wrap; gap: .5rem 1rem; }
+.source-locator-line span, .source-locator small { color: var(--muted, #646464); }
+.source-locator p { margin: .4rem 0 .7rem; }
+.source-locator-actions button, .source-locator-viewer button { font: inherit; color: var(--text, #171717); background: var(--surface, white); border: 1px solid var(--control, #d4d4d4); border-radius: 4px; padding: .5rem .75rem; cursor: pointer; min-height: 44px; }
+.source-locator button:disabled { opacity: .6; cursor: wait; }
+.source-locator button:focus-visible, .source-locator a:focus-visible { outline: 3px solid var(--signal, #1d5fbf); outline-offset: 3px; }
+.source-locator small { display: block; margin-top: .7rem; }
+.source-locator-viewer { margin-top: 1rem; }
+.source-locator-viewer video, .source-locator-viewer audio, .source-locator-viewer iframe { width: 100%; max-width: 100%; }
+.source-locator-viewer iframe { height: 70vh; border: 0; }
+.source-locator[data-state="STALE_SOURCE"] { background: #fff0dc; }
+.source-locator [role="alert"] { color: #8b2525; }

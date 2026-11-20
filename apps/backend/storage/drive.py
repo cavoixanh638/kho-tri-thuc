@@ -5,8 +5,10 @@ from time import monotonic
 
 import google_auth_httplib2
 import httplib2
+import requests
 from django.conf import settings
 from google.auth.exceptions import RefreshError, TransportError
+from google.auth.transport.requests import Request as AuthRequest
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -79,6 +81,73 @@ class DriveClient:
         transport = google_auth_httplib2.AuthorizedHttp(credentials, http=http)
         self.api = build("drive", "v3", http=transport, cache_discovery=False)
         self.on_reauthorize = on_reauthorize
+        self.credentials = credentials
+
+    def read_blob_range(self, file_id, start, end, size):
+        """Read one bounded Drive blob range, never follow a remote redirect.
+
+        httplib2 eagerly buffers a response, including an accidental full-file
+        200. requests is already installed by the OAuth integration; streaming
+        lets us reject status/headers before reading any media bytes.
+        """
+        if not (0 <= start <= end < size and end - start < 4 * 1024 * 1024):
+            raise DriveError("viewer_range_invalid")
+        from urllib.parse import urlsplit
+
+        url = self.api.files().get_media(fileId=file_id).uri
+        target = urlsplit(url)
+        if target.scheme != "https" or target.netloc != "www.googleapis.com":
+            raise DriveError("viewer_transport_invalid")
+        headers = {"Range": f"bytes={start}-{end}", "Accept-Encoding": "identity"}
+
+        def read():
+            self.credentials.before_request(AuthRequest(), "GET", url, headers)
+            try:
+                with requests.get(
+                    url,
+                    headers=headers,
+                    stream=True,
+                    allow_redirects=False,
+                    timeout=(5, 15),
+                ) as response:
+                    if response.status_code == 401:
+                        if self.on_reauthorize:
+                            self.on_reauthorize()
+                        raise DriveError("drive_reauthorize", status=401)
+                    if response.status_code in (403, 404):
+                        raise DriveError(
+                            "viewer_source_unavailable", status=response.status_code
+                        )
+                    if response.status_code in (429, 500, 502, 503, 504):
+                        raise DriveError("drive_unavailable", retryable=True)
+                    expected = f"bytes {start}-{end}/{size}"
+                    length = end - start + 1
+                    if (
+                        response.status_code != 206
+                        or response.headers.get("Content-Range") != expected
+                        or response.headers.get("Content-Encoding", "identity")
+                        != "identity"
+                        or response.headers.get("Content-Length") != str(length)
+                    ):
+                        raise DriveError("viewer_range_not_supported")
+                    payload = bytearray()
+                    deadline = monotonic() + 30
+                    for chunk in response.iter_content(chunk_size=64 * 1024):
+                        if monotonic() >= deadline:
+                            raise DriveError("drive_unavailable", retryable=True)
+                        if len(payload) + len(chunk) > length:
+                            raise DriveError("viewer_range_size_mismatch")
+                        payload.extend(chunk)
+                    if len(payload) != length:
+                        raise DriveError("viewer_range_size_mismatch")
+                    return bytes(payload)
+            except (requests.RequestException, OSError) as error:
+                logger.warning(
+                    "drive_range_transport_error type=%s", type(error).__name__
+                )
+                raise DriveError("drive_unavailable", retryable=True) from None
+
+        return self.call(read)
 
     def call(self, action):
         try:

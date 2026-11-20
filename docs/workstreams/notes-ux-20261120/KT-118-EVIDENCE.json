@@ -1,0 +1,31 @@
+{
+  "status": "PASS_WITH_DEVICE_LIMITS",
+  "code_sha": "a20072e46a4d4111c7355bb1007b66ab760732d2",
+  "tested_sha": "a20072e46a4d4111c7355bb1007b66ab760732d2",
+  "tests": {"new_explicit": 4, "existing_npm_test": 19, "build": "PASS"},
+  "database_fixture": {
+    "source": "KT114 isolated synthetic PostgreSQL corpus, read-only API service export",
+    "items_after_capture_checks": 10001,
+    "pages": 201,
+    "modes": ["list", "table", "card", "timeline"],
+    "all_pages_id_sequence_equal": true,
+    "duplicate_ids": 0,
+    "raw_objects_after_all_renders_unchanged": true,
+    "additional_browser_fetch_on_mode_change": 0,
+    "database_gate_pr": "https://github.com/cavoixanh638/kho-tri-thuc/pull/48"
+  },
+  "browser": {
+    "surface": "Chromium in-app browser, isolated Vite fixture with 101 synthetic rows",
+    "viewports": ["1920x1080", "768x1024", "390x844"],
+    "four_modes_visible": true,
+    "no_page_horizontal_overflow": true,
+    "table_scrolls_inside_frame": true,
+    "mobile_tablet_tree_collapsible": true,
+    "next_page_keeps_mode_and_updates_id": true,
+    "timeline_uses_saved_at_vietnam_day": true,
+    "android_device": "NOT_RUN",
+    "browser_all_database_pages_e2e": "NOT_RUN; database pages were consumed by the server-render/DOM equivalence tests"
+  },
+  "styles": {"direction": "achromatic-ledger", "seed": 236088050, "kept": "existing product palette, type and shell", "new_dependency": false},
+  "data_safety": "No production/Drive/OAuth writes; raw QA page payload and backup remain outside Git"
+}

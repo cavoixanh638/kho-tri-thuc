@@ -2,11 +2,11 @@ import { Button, MultiSelect } from '@mantine/core';
 import { useRef, useState, type SubmitEvent } from 'react';
 import { request } from './api';
 import { groupKinds, groupSearchHref, type Group, type GroupField, type GroupKind, type Groups } from './groups';
-import { Empty, ErrorNotice, itemHref, Loading, useResource } from './views';
+import { Empty, ErrorNotice, Loading, useResource } from './views';
+import { RelatedSources } from './RelatedSources';
 
 type Assignment = Group & { origin: string; user_pinned: boolean };
 type Organization = { status: string } & Record<GroupField, Assignment[]>;
-type RelatedResult = { item_id: string; title: string; reason: string };
 type EditableGroups = Record<GroupField, string[]>;
 type GroupPatch = Partial<Record<`${GroupKind}_ids`, number[]>>;
 
@@ -121,18 +121,6 @@ export function ItemOrganization({ id, csrf, deleted, refreshKey, onSaved }: { i
   </section>;
 }
 
-export function RelatedItems({ id, refreshKey }: { id: string; refreshKey?: string }) {
-  const related = useResource<{ results: RelatedResult[] }>(`/items/${encodeURIComponent(id)}/related`, { refreshKey });
-
-  return <section className="panel" aria-labelledby="item-related-title">
-    <h2 id="item-related-title">Mục liên quan</h2>
-    {related.error ? <ErrorNotice retry={related.retry}>Chưa tải được các mục liên quan.</ErrorNotice>
-      : !related.data ? <Loading />
-        : related.data.results.length ? <ul className="search-list related-items">
-          {related.data.results.map((entry) => <li className="search-result" key={entry.item_id}>
-            <h3><a href={itemHref(entry.item_id)}>{entry.title || 'Mở mục liên quan'}</a></h3>
-            {entry.reason && <p>{entry.reason}</p>}
-          </li>)}
-        </ul> : <Empty>Chưa có mục liên quan.</Empty>}
-  </section>;
+export function RelatedItems({ id, refreshKey, onOpenAsset }: { id: string; refreshKey?: string; onOpenAsset?: (id: string) => void }) {
+  return <RelatedSources id={id} refreshKey={refreshKey} onOpenAsset={onOpenAsset} />;
 }

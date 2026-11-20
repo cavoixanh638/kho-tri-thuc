@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "code_sha": "d38287ed73f31dab9984fb508d10d111acdb67d1",
+  "environment": "Windows, PostgreSQL 18 isolated QA cluster 62224, distinct test_kt114 database, explicit FFmpeg path",
+  "backend_tests": 211,
+  "backend_failed": 0,
+  "backend_skipped": 0,
+  "duration_seconds": 22.834,
+  "harness_safety_tests": 3,
+  "faults_covered": [
+    {"probe": "timeout after remote commit and retry same file", "module": "storage.test_drive_storage", "evidence_type": "UNIT_FAKE_TRANSPORT"},
+    {"probe": "429 retryable, 403/404 inaccessible, pending not verified", "module": "storage.test_reconcile", "evidence_type": "UNIT_FAKE_TRANSPORT"},
+    {"probe": "network timeout, upload lease boundaries", "module": "storage.test_drive_transport", "evidence_type": "UNIT_FAKE_TRANSPORT"},
+    {"probe": "metadata-only, missing video/subtitle, failed source retains URL", "module": "processing.test_video_jobs and processing.test_source_jobs", "evidence_type": "UNIT_MOCKED_NETWORK"},
+    {"probe": "no knowledge inference without transcript", "module": "processing.test_read_knowledge", "evidence_type": "UNIT_DATABASE"}
+  ],
+  "live_external_calls": false,
+  "release_gate": "PARTIAL_EXTERNAL_GATES_NOT_RUN"
+}

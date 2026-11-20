@@ -28,8 +28,11 @@ jobs:
           docker compose config --quiet
           docker compose up --detach --build --wait --wait-timeout 120
 
-      - name: Test frontend resource lifecycle and capture
+      - name: Test all frontend DOM and unit suites (native browser harnesses are separate)
         run: docker compose exec -T web npm test
+
+      - name: Test readiness harness isolation without touching any database
+        run: python3 -m unittest discover -s tools/readiness -p test_safety.py -v
 
       - name: Test immutable backup archive and Drive retry behavior
         run: |

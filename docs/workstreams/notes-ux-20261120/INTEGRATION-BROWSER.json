@@ -1,0 +1,31 @@
+{
+  "code_sha": "04cd9427ff48ed912b2606ef4a55afca82741943",
+  "transport": "Real built React app, Django session+CSRF HTTP and isolated PostgreSQL; no worker/Drive/provider",
+  "checks": [
+    "Real login/CSRF, capture ACK, template preview/no-write, explicit append, save/reload, native Vietnamese edit and Ctrl+Enter PASS",
+    "Manual review preview/no-write, accept+undo exact note/version, immutable CaptureEvent and actual explicit backlink PASS",
+    "Actual API-backed list/table/card/timeline same Item IDs; editor split + no horizontal page overflow at1440/768/390 PASS"
+  ],
+  "viewports": [
+    {
+      "width": 1440,
+      "four_views_same_two_ids": true,
+      "page_overflow": false,
+      "editor_split": true
+    },
+    {
+      "width": 768,
+      "four_views_same_two_ids": true,
+      "page_overflow": false,
+      "editor_split": true
+    },
+    {
+      "width": 390,
+      "four_views_same_two_ids": true,
+      "page_overflow": false,
+      "editor_split": true
+    }
+  ],
+  "item_id": "d6b423db-c865-4554-a104-6b3f683f03ef",
+  "status": "PASS"
+}

@@ -1,0 +1,147 @@
+{
+  "status": "PASS",
+  "stage": "complete",
+  "checked_at": "2026-11-20T15:25:02.101566+00:00",
+  "code_sha": "04cd9427ff48ed912b2606ef4a55afca82741943",
+  "run_id": "20261120152502_646bf272",
+  "corpus": {
+    "initial_items": 10000,
+    "synthetic": true,
+    "seed": "kt114-v1"
+  },
+  "checks": {
+    "initial_unique_items": 10000,
+    "tree_nodes": 138,
+    "tree_ms": 75.06,
+    "all_node_counts_match": true,
+    "pagination": [
+      {
+        "scope": "all",
+        "expected_unique": 10000,
+        "displayed_unique": 10000,
+        "difference": 0,
+        "pages": 100,
+        "duplicate_rows": 0
+      },
+      {
+        "scope": "favorite",
+        "expected_unique": 1429,
+        "displayed_unique": 1429,
+        "difference": 0,
+        "pages": 15,
+        "duplicate_rows": 0
+      },
+      {
+        "scope": "root_0",
+        "expected_unique": 5258,
+        "displayed_unique": 5258,
+        "difference": 0,
+        "pages": 53,
+        "duplicate_rows": 0
+      },
+      {
+        "scope": "root_1",
+        "expected_unique": 5242,
+        "displayed_unique": 5242,
+        "difference": 0,
+        "pages": 53,
+        "duplicate_rows": 0
+      }
+    ],
+    "page_latency_ms": {
+      "median": 70.07,
+      "p95": 116.36,
+      "max": 158.14,
+      "scope": "local synthetic corpus, view service calls, no network/browser"
+    },
+    "pinned_relations_unchanged": true,
+    "new_sends_event_delta": 2,
+    "same_key_retry_delta": 0,
+    "same_source_item_preserved": true,
+    "post_capture_item_count": 10001,
+    "item_and_derived_search_hits": true
+  },
+  "restoration": {
+    "all_full_row_hashes_match": true,
+    "includes_opaque_locators_metadata": true,
+    "collections": {
+      "items": {
+        "rows": 10001,
+        "sha256": "dbb8d3885ab925f45929c8fa2f56e85602b3aab4ba98ab2fb9bac8d18447f14e"
+      },
+      "capture_events": {
+        "rows": 10002,
+        "sha256": "192e517ddb6a6df4847b8d8e09141c975040579e7da264a85569494a37fed8bb"
+      },
+      "sources": {
+        "rows": 5001,
+        "sha256": "7217b2b3c08a282fc97db4e89924fc77e833a6f62cda6b1b3a6b06972479b270"
+      },
+      "topics": {
+        "rows": 138,
+        "sha256": "0ef37b742f00a13cd0eafe8f42f8da68c5c52907757409333ad5d1b247b62599"
+      },
+      "projects": {
+        "rows": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "tags": {
+        "rows": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "item_topics": {
+        "rows": 11000,
+        "sha256": "cbdc098e3572b171fcb14a477542abf8a7b91377e796d7bb24427c38d6b0fbb2"
+      },
+      "item_projects": {
+        "rows": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "item_tags": {
+        "rows": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "assets": {
+        "rows": 100,
+        "sha256": "d5564d5d434921b906cd662c22501d9365a39267538cf82ca3a1cadc35e4b77d"
+      },
+      "storage_locations": {
+        "rows": 100,
+        "sha256": "f59e5dbd7a9eb4fdc87c8b993befe7e3d7df8252de01f2472e66a7bdca8b536d"
+      },
+      "derived_contents": {
+        "rows": 5500,
+        "sha256": "7ec103583a7bbe7e13d3fbabebea8708a97e82d3249082e3e5649ebfa031bcec"
+      },
+      "related_items": {
+        "rows": 100,
+        "sha256": "053bf58d920b5bef77e634f2076557abbacb26248c428e0a69fdf485d06f7424"
+      },
+      "jobs": {
+        "rows": 1,
+        "sha256": "cbaef1a05b3c410b48ce43059cee9706f2a5ee63f0178c8d6697ca64e2509cca"
+      },
+      "knowledge_exports": {
+        "rows": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  },
+  "synthetic_original": {
+    "local_bytes_readback": true,
+    "bytes": 42,
+    "sha256": "baade74d19d0b934a55013d9b40f6fb6682ba59707968af211b3d5112db6eec9",
+    "remote_readback": "NOT_RUN"
+  },
+  "external_gates": {
+    "hundred_gb_media": "NOT_RUN",
+    "drive_large_file_quota": "NOT_RUN",
+    "oauth_host_client_project_change": "NOT_RUN",
+    "android_device": "NOT_RUN",
+    "live_facebook_tiktok_youtube": "NOT_RUN",
+    "native_mp4_playback": "NOT_RUN",
+    "semantic_auto_group_precision": "NOT_RUN_NO_LABELLED_CORPUS"
+  },
+  "scope": "Synthetic PostgreSQL integrity/restore only; external gates remain open",
+  "retained_databases": true
+}
