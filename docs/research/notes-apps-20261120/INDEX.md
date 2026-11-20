@@ -1,8 +1,8 @@
 # Bộ giao việc nghiên cứu độc lập các ứng dụng ghi chú/tri thức — 20/11/2026
 
-**Trạng thái:** đã tạo yêu cầu giao việc, **chưa khởi chạy các chat độc lập**. Một chat ChatGPT không thể tự tạo điều khiển 17 chat khác. Người dùng mở nhiều chat, dán prompt khởi chạy và cho chạy đồng thời. Các báo cáo chỉ được coi là hoàn tất khi có bằng chứng nguồn và/hoặc PR của từng luồng.
+**Trạng thái cập nhật 20/11/2026:** **17/17 luồng đã nộp báo cáo vào PR #30–#46**, nhánh riêng, mỗi PR chỉ sửa tệp report được giao; **chưa merge**. G00 đã thẩm định lần hai và đính chính trong [PR #47](https://github.com/cavoixanh638/kho-tri-thuc/pull/47) (**chưa merge**). Việc giao nghiên cứu đã kết thúc ở cấp báo cáo, không phải 17 sản phẩm đã được tích hợp/kiểm thử thực tế. **Giao AI triển khai mới:** [KT-114–KT-121](../../workstreams/notes-ux-20261120/INDEX.md) trên main. Một chat ChatGPT không tự mở 17 chat khác; các luồng ban đầu do người dùng khởi chạy.
 
-**Cách khởi chạy một luồng:** Mở một chat riêng, dán: `Bạn là luồng Gxx nghiên cứu sản phẩm. Đọc tài liệu tại https://github.com/cavoixanh638/kho-tri-thuc/blob/main/docs/research/notes-apps-20261120/Gxx-SLUG.md và G00-PROTOCOL.md cùng thư mục; chủ động tra cứu website chính thức và GitHub, lập báo cáo độc lập theo yêu cầu, không xem báo cáo các luồng khác. Nếu được phép, commit vào đúng report/branch riêng và tạo PR, không merge, không sửa code.` Đổi Gxx-SLUG theo dòng bên dưới.
+**Prompt lịch sử nếu cần tái nghiên cứu một luồng (KHÔNG phải lệnh triển khai):** Mở một chat riêng, dán: `Bạn là luồng Gxx nghiên cứu sản phẩm. Đọc tài liệu tại https://github.com/cavoixanh638/kho-tri-thuc/blob/main/docs/research/notes-apps-20261120/Gxx-SLUG.md và G00-PROTOCOL.md cùng thư mục; chủ động tra cứu website chính thức và GitHub, lập báo cáo độc lập theo yêu cầu, không xem báo cáo các luồng khác. Nếu được phép, commit vào đúng report/branch riêng và tạo PR, không merge, không sửa code.` Đổi Gxx-SLUG theo dòng bên dưới.
 
 **Quy trình chung:** [G00-PROTOCOL.md](G00-PROTOCOL.md). Bảng nguồn sơ bộ **chỉ G00 đọc sau khi nghiên cứu độc lập nộp báo cáo**: [G00-INITIAL-SOURCES.md](G00-INITIAL-SOURCES.md).
 
@@ -25,6 +25,9 @@
 | G15 | Granola | [G15-GRANOLA.md](G15-GRANOLA.md) | Mở rộng |
 | G16 | Heptabase | [G16-HEPTABASE.md](G16-HEPTABASE.md) | Mở rộng |
 | G17 | Obsidian (đối chứng) | [G17-OBSIDIAN.md](G17-OBSIDIAN.md) | Mở rộng |
+
+
+**Các nguồn báo cáo chưa merge:** [Danh sách PR G01–G17](https://github.com/cavoixanh638/kho-tri-thuc/pulls?q=is%3Apr+is%3Aopen+research%2Fnotes-20261120), [PR G00 #47](https://github.com/cavoixanh638/kho-tri-thuc/pull/47). Luồng triển khai đọc source thực + `docs/CURRENT_STATE.md`, không lấy điểm product 17 báo cáo làm benchmark chạy được. **Cập nhật chính xác:** Capacities audio Pro đã có (11/2026); Reflect Open có Windows/Linux experimental unsigned, Android chưa hỗ trợ; G00 đã sửa các nhận định này tại PR #47.
 
 ## Quy tắc báo cáo
 - G01–G17 làm độc lập, không đọc báo cáo khác cho tới khi nộp. Mọi nhánh chỉ sửa `reports/Gxx-...md`; G00 không làm thay kết luận của luồng khác.
