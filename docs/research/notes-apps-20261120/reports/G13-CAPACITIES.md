@@ -161,7 +161,7 @@ Các URL sau được dùng trực tiếp trong nghiên cứu; tài liệu Capac
 - **[S16]** [Related Content](https://docs.capacities.io/reference/related-content) — Pro suggested related items.
 - **[S17]** [Official migration from Mem](https://docs.capacities.io/migration/switching-from-mem) — hãng nêu rõ không auto-organize trong nền.
 - **[S18]** [Offline Support](https://docs.capacities.io/misc/offline-support) — local cache, version conflict/selection, không phải direct Markdown files.
-- **[S19]** [API rate limits & creation quota](https://developers.capacities.io/api/overview/rate-limiting) — hard 10k API object creations, +500/tháng, 429.
+- **[S19]** [API rate limits & creation quota](https://developers.capacities.io/api/overview/rate-limiting) — hard 5.000 API object creations, +100/tháng, 429.
 - **[S20]** [API concurrency](https://developers.capacities.io/api/overview/concurrency) — stateless, last-write-wins, không transaction đa request.
 - **[S21]** [Export Markdown/frontmatter/CSV/media](https://docs.capacities.io/reference/export) — export tự động khi app đang mở.
 - **[S22]** [Can I restore or clone a space from export?](https://docs.capacities.io/faq/account/restore-space-from-export) — **No**, không đầy đủ.
