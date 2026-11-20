@@ -121,6 +121,6 @@ export function ItemOrganization({ id, csrf, deleted, refreshKey, onSaved }: { i
   </section>;
 }
 
-export function RelatedItems({ id, refreshKey }: { id: string; refreshKey?: string }) {
-  return <RelatedSources id={id} refreshKey={refreshKey} />;
+export function RelatedItems({ id, refreshKey, onOpenAsset }: { id: string; refreshKey?: string; onOpenAsset?: (id: string) => void }) {
+  return <RelatedSources id={id} refreshKey={refreshKey} onOpenAsset={onOpenAsset} />;
 }

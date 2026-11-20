@@ -11,6 +11,8 @@ import { KnowledgeReading } from './KnowledgeReading';
 import { SourceLinks } from './SourceLinks';
 import { MarkdownEditor } from './MarkdownEditor';
 import { useMarkdownDraft } from './MarkdownEditorDraft';
+import { NoteTemplatePicker } from './NoteTemplatePicker';
+import { acceptNoteTemplate } from './NoteTemplateConfig';
 import { CaptureList, Empty, ErrorNotice, itemTitle, kindLabels, Loading, PageControls, PageTitle, ServerTime, useResource } from './views';
 
 const fetchStates: Record<string, string> = {
@@ -53,6 +55,8 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
 }) {
   const { draft, setDraft, base, editing, dirty, recovered, storageError, start, finish } = useMarkdownDraft(item);
   const composing = useRef(false);
+  const draftRef = useRef(draft);
+  draftRef.current = draft;
   const [discarding, setDiscarding] = useState(false);
   const [busy, setBusy] = useState(false);
   const inFlight = useRef(false);
@@ -145,6 +149,14 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
     void update(patch);
   }
 
+  function showIllustration(assetId: string) {
+    if (!item.assets.some((asset) => asset.asset_id === assetId)) return;
+    if (mediaDetails.current) mediaDetails.current.open = true;
+    const target = document.getElementById(`item-asset-${assetId}`);
+    target?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'nearest' });
+    target?.focus({ preventScroll: true });
+  }
+
   return <>
     <a className="back-link" href="#/thu-vien">‹ Thư viện</a>
     <PageTitle title={itemTitle(item)} />
@@ -163,6 +175,16 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
             <Textarea label="Mô tả" value={draft.description} minRows={3} autosize disabled={busy} onChange={(event) => setDraft({ ...draft, description: event.currentTarget.value })} />
             <MarkdownEditor value={draft.note} title={draft.title} disabled={busy} onChange={(note) => setDraft((current) => ({ ...current, note }))}
               onSave={saveDraft} onCompositionChange={(value) => { composing.current = value; }} />
+            <details className="raw-knowledge"><summary>Thêm mẫu ghi chú</summary>
+              <NoteTemplatePicker note={draft.note} disabled={busy} onApply={(proposal) => {
+                const note = acceptNoteTemplate(draftRef.current.note, proposal);
+                if (note === undefined || composing.current || inFlight.current) return false;
+                const next = { ...draftRef.current, note };
+                draftRef.current = next;
+                setDraft(next);
+                return true;
+              }} />
+            </details>
             <p role="status">{dirty ? 'Bản nháp chưa lưu lên máy chủ.' : 'Chưa có thay đổi.'}</p>
             <div className="form-actions">
               <Button type="submit" loading={busy} disabled={!dirty}>Lưu thay đổi</Button>
@@ -178,9 +200,7 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
             {item.note ? <>
               <KnowledgeText text={item.note} title={itemTitle(item)} />
               <details className="raw-knowledge"><summary>Xem Markdown gốc</summary><pre>{item.note}</pre></details>
-            </> : !item.deleted ? <KnowledgeReading id={item.item_id} refreshKey={evidenceRevision} onIllustration={() => {
-              if (mediaDetails.current) { mediaDetails.current.open = true; mediaDetails.current.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-            }} /> : <Empty>Bài đang ở thùng rác.</Empty>}
+            </> : !item.deleted ? <KnowledgeReading id={item.item_id} refreshKey={evidenceRevision} onIllustration={showIllustration} /> : <Empty>Bài đang ở thùng rác.</Empty>}
             {(item.original_url || item.description) && <details className="source-description"><summary>Nguồn và mô tả</summary>
               {item.original_url && <p className="detail-source">{sourceUrl ? <a href={sourceUrl} target="_blank" rel="noopener noreferrer">{item.original_url}</a> : item.original_url}</p>}
               {item.description && <p className="prose-text">{item.description}</p>}
@@ -193,7 +213,7 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
             <summary>Video, media và tài liệu minh họa ({item.assets.length})</summary>
             <AssetPreview assets={item.assets} />
             <ul>
-              {item.assets.map((asset) => <li key={asset.asset_id}>
+              {item.assets.map((asset) => <li key={asset.asset_id} id={`item-asset-${asset.asset_id}`} tabIndex={-1}>
                 <span>
                   <span className="asset-name">{asset.filename}</span>
                   <span className="list-meta">{stateText(asset.status, storageStates)}</span>
@@ -205,7 +225,7 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
             {assetError && <ErrorNotice>{assetError}</ErrorNotice>}
           </details>}
         <ItemHistory id={item.item_id} />
-        <RelatedItems id={item.item_id} refreshKey={evidenceRevision} />
+        <RelatedItems id={item.item_id} refreshKey={evidenceRevision} onOpenAsset={showIllustration} />
       </div>
       <div className="panel-stack">
         <section className="panel" aria-labelledby="item-status">
