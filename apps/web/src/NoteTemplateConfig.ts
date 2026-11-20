@@ -25,7 +25,7 @@ export function proposeNoteTemplate(note: string, templateId: NoteTemplateId, me
   const { author = '', sourceDate = '', sourceUrl = '' } = metadata;
   if (author.length > 200 || /[\r\n\u0000]/.test(author)) throw new Error('Tên tác giả cần nằm trên một dòng, tối đa 200 ký tự.');
   if (sourceDate && (!/^\d{4}-\d{2}-\d{2}$/.test(sourceDate) || Number.isNaN(new Date(sourceDate).getTime()) || new Date(sourceDate).toISOString().slice(0, 10) !== sourceDate)) throw new Error('Ngày nguồn chưa hợp lệ.');
-  if (sourceUrl && (sourceUrl.length > 4096 || !externalHttpUrl(sourceUrl))) throw new Error('Liên kết nguồn cần là HTTP hoặc HTTPS hợp lệ.');
+  if (sourceUrl && (sourceUrl.length > 4096 || /[\r\n\u0000]/.test(sourceUrl) || !externalHttpUrl(sourceUrl))) throw new Error('Liên kết nguồn cần là HTTP hoặc HTTPS hợp lệ.');
   const fields = [author && `Tác giả: ${inline(author)}`, sourceDate && `Ngày nguồn: ${sourceDate}`, sourceUrl && `Liên kết nguồn: ${inline(sourceUrl)}`].filter(Boolean);
   const [heading, ...body] = template.markdown.split('\n');
   const content = [heading, ...(fields.length ? ['', ...fields] : []), ...body].join('\n');

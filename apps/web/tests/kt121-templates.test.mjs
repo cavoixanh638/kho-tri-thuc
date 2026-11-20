@@ -88,6 +88,7 @@ test('invalid or active metadata URL is rejected, while Markdown punctuation rem
   assert.throws(() => ui.proposeNoteTemplate('', 'lesson', { sourceDate: '2026-13-01' }), /Ngày nguồn/);
   assert.throws(() => ui.proposeNoteTemplate('', 'lesson', { sourceDate: '2026-02-30' }), /Ngày nguồn/);
   assert.throws(() => ui.proposeNoteTemplate('', 'lesson', { author: 'a\n# injection' }), /một dòng/);
+  assert.throws(() => ui.proposeNoteTemplate('', 'lesson', { sourceUrl: 'https://example.org\n# injection' }), /HTTP hoặc HTTPS/);
   assert.match(ui.proposeNoteTemplate('', 'lesson', { author: '<script>**Việt**' }).nextNote, /\\<script\\>\\\*\\\*Việt/);
 });
 test('disabled and oversized drafts are preserved', async () => {

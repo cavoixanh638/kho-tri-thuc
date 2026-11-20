@@ -1,0 +1,5 @@
+.kt121-fixture-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.kt121-fixture-draft { display: grid; gap: 12px; }
+.kt121-fixture-draft textarea { width: 100%; box-sizing: border-box; min-width: 0; padding: 12px; border: 1px solid var(--control); border-radius: 6px; font: inherit; font-size: 16px; line-height: 1.6; resize: vertical; }
+.kt121-fixture-draft button { justify-self: start; min-height: 44px; }
+@media (max-width: 850px) { .kt121-fixture-grid { grid-template-columns: minmax(0, 1fr); } }
