@@ -2,7 +2,7 @@
 
 ## Cổng giao AI triển khai sau 17 nghiên cứu (20/11/2026)
 
-**Entrypoint triển khai mới trên main:** [docs/workstreams/notes-ux-20261120/INDEX.md](docs/workstreams/notes-ux-20261120/INDEX.md). Từ đó chọn đúng **một** KT-114–KT-121. Đây là backlog **đề xuất có thể giao riêng**, không phải tự động phê duyệt tất cả, không thay thế các gate đã chốt. Nguồn nghiên cứu/phản biện G00 ở [PR #47](https://github.com/cavoixanh638/kho-tri-thuc/pull/47); PR G01–G17 #30–#46 chưa merge, đọc trực tiếp theo PR chứ không coi nội dung ở main.
+**Entrypoint triển khai mới trên main:** [docs/workstreams/notes-ux-20261120/INDEX.md](docs/workstreams/notes-ux-20261120/INDEX.md). Từ đó chọn đúng **một** KT-114–KT-123. Đây là backlog **đề xuất có thể giao riêng**, không phải tự động phê duyệt tất cả, không thay thế các gate đã chốt. Nguồn nghiên cứu/phản biện G00 ở [PR #47](https://github.com/cavoixanh638/kho-tri-thuc/pull/47); PR G01–G17 #30–#46 chưa merge, đọc trực tiếp theo PR chứ không coi nội dung ở main.
 
 - **Ưu tiên toàn hệ thống trước UX:** tính nguyên vẹn CaptureEvent/Drive và backup/restore, ingestion nhiều nguồn, Android thật và khả năng quy mô >10.000 Item là các **gate vận hành**, không để ưu tiên editor/whiteboard làm che lỗi mất nguồn. KT-114 kiểm chứng gate; KT-115/116 PoC văn bản/locator, KT-117 vừa Android gate vừa Quick Capture; KT-118/119 UX sau đó; KT-120/121 **HOLD** khi chưa có lệnh rõ và quyền riêng/chi phí.
 - **Sự thật mã nguồn:** `ItemScreen` đang có Textarea và renderer Markdown **chưa phải Live Preview editor**; share target PWA **đã có** nhưng Android thật chưa nghiệm thu; `source_locator` có trong DerivedContent nhưng chưa đủ UI seek page/time; không được áp quy tắc giả `1 Source = 1 Asset`.
@@ -10,12 +10,14 @@
 - **Đa AI:** mỗi luồng sở hữu file riêng ở INDEX, tạo branch/PR riêng, **không tự merge**, không thay file đang được luồng khác sửa, không sửa `CURRENT_STATE.md` đồng thời. Với tích hợp nhiều luồng, ghi checkpoint Code SHA/Tested SHA/PASS/FAIL/NOT_RUN trong PR; **G00 cập nhật CURRENT_STATE sau review/merge**. Những test frontend mới ngoài `tests/ui.test.mjs` phải chạy `node --test ...` rõ lệnh vì `npm test` chưa tự chạy mọi file.
 - **Không coi giao nghiên cứu là quyền triển khai:** Không tự cài plugin/công cụ thương mại, OCR/ASR hàng loạt, AI model trả phí, migrate Drive/DB, deploy hoặc nhập dữ liệu cá nhân thật khi chưa được phép.
 
+**Bổ sung G00 ngày 20/11/2026 (folder/notes):** KT-122/123 là **khoảng trống thiết kế HIGH**, không được tuyên bố PR #57 đã có file explorer hỗn hợp hoặc quan hệ cha–con của các `Item`. `Topic.parent` chỉ tổ chức folder, `ItemTopic` chỉ gán Item vào folder, `RelatedItem` giống/tương quan không phải directed parent. [KT-122](docs/workstreams/notes-ux-20261120/KT-122-FOLDER-EXPLORER.md) + [KT-123](docs/workstreams/notes-ux-20261120/KT-123-NOTE-HIERARCHY.md) yêu cầu giữ stable ID và M:N, folder ảo trong PostgreSQL (không đổi vật lý Drive), explorer có notes/folders chung cây và Note→Note tường minh. Vì #57 đang OPEN/UNMERGED, Codex thực thi KT-122/123 trên nhánh tách từ **HEAD `codex/notes-ux-integration`**, PR target branch đó; không merge, không deploy, không double-apply PR #48–56.
+
 ## Ngữ cảnh và thứ tự đọc
 1. Đọc `README.md` và `docs/README.md` để biết nguồn tài liệu chuẩn.
 2. Đọc `docs/CURRENT_STATE.md` để biết **sự thật hiện tại** và phần chưa test, không dựa vào lịch sử chat.
 3. Đọc `docs/MASTER_PLAN.md` cho phạm vi, **`docs/CAPTURE_AND_ORGANIZE.md` cho nghiệp vụ gửi/lịch sử/nhóm/liên quan**; `docs/ARCHITECTURE_AND_DATA.md` cho schema, API, thiết kế.
 4. **Trước khi tạo/move file**, đọc `docs/REPOSITORY_LAYOUT.md` và không tạo folder rỗng hoặc phân tầng quá mức.
-5. Đọc đúng task trong `docs/ROADMAP_AND_TESTS.md`; nếu mã KT-114–KT-121, đọc **file task tại `docs/workstreams/notes-ux-20261120/`** trước khi sửa source. Kiểm code/test hiện có, không giả định feature đã tồn tại.
+5. Đọc đúng task trong `docs/ROADMAP_AND_TESTS.md`; nếu mã KT-114–KT-123, đọc **file task tại `docs/workstreams/notes-ux-20261120/`** trước khi sửa source. Kiểm code/test hiện có, không giả định feature đã tồn tại.
 
 ## Nguyên tắc chọn công nghệ
 - Trước khi đề xuất hay thay framework/library/service, phải tìm và so sánh **2–3 phương án cạnh tranh tốt tại thời điểm quyết định**; phân tích phù hợp, tốc độ làm, chi phí, bảo mật, khả năng thay thế và nguồn chính thức; không tự chọn theo sở thích.
@@ -53,7 +55,7 @@
 - Không log nội dung file nhạy cảm hoặc khóa truy cập. Kiểm tra input ngoài, file lớn, URL độc hại, quyền.
 - Nhắc rõ điều kiện chưa thể kiểm thử (dịch vụ ngoài, quyền Google/ChatGPT, video bị chặn).
 - Nếu task thay đổi yêu cầu/tiêu chí nghiệm thu thì cập nhật `docs/ROADMAP_AND_TESTS.md`; nếu chỉ thay đổi **trạng thái thực thi** thì ghi vào `docs/CURRENT_STATE.md` (một nguồn chuẩn).
-- Sau khi KT-001 chạy thật mới viết `docs/operations/LOCAL_SETUP.md`; sau KT-008 backup và restore thật mới viết `docs/operations/BACKUP_RESTORE.md`. Với các luồng KT-114–121 song song, ghi test/evidence trong PR và để G00 cập nhật `CURRENT_STATE.md` khi tích hợp, không cùng sửa file này. Không soạn các lệnh giả định thành 'đã kiểm thử'.
+- Sau khi KT-001 chạy thật mới viết `docs/operations/LOCAL_SETUP.md`; sau KT-008 backup và restore thật mới viết `docs/operations/BACKUP_RESTORE.md`. Với các luồng KT-114–123 song song, ghi test/evidence trong PR và để G00 cập nhật `CURRENT_STATE.md` khi tích hợp, không cùng sửa file này. Không soạn các lệnh giả định thành 'đã kiểm thử'.
 
 ## Baseline thiết kế v4.7 (18/11/2026); tiến độ thực tế ở CURRENT_STATE
 Kế hoạch **v4.7 (baseline chốt để giao Codex)** lấy Google Drive làm kho file chính, **PostgreSQL đã chốt** làm danh mục; thử Google Drive ChatGPT app và bản xuất tri thức có version trước MCP; một worker bền vững, không Redis. **KT-102 so sánh 3 thư viện `pypdf`, `pypdfium2`, `PyMuPDF` trên 20–30 PDF tiếng Việt**, rà giấy phép, chỉ chốt extractor chữ sau benchmark. **KT-010 dùng `pypdfium2` làm renderer thumbnail** độc lập việc chọn extractor. Chỉ thiết kế đường nâng cấp OCR/ASR/vector/multi-storage chứ chưa triển khai. **Tại thời điểm rà soát 18/11/2026 chưa có ứng dụng, database hay deployment; phải đọc CURRENT_STATE để biết các thay đổi mới hơn**. Bằng chứng benchmark video nằm ở repo riêng, không phải PASS của phần mềm này.
