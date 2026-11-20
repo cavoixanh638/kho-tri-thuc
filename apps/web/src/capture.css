@@ -1,0 +1,3 @@
+.capture-compose .receipt { overflow-wrap: anywhere; }
+.capture-compose .receipt > a { display: block; margin-block: 8px; }
+.capture-compose small { color: var(--muted); line-height: 1.5; }
