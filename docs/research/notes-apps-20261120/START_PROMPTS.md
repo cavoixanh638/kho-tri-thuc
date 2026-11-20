@@ -2,11 +2,11 @@
 
 **Ngày:** 20/11/2026  
 **Dự án:** [Kho Tri Thức](https://github.com/cavoixanh638/kho-tri-thuc)  
-**Trạng thái:** prompt giao việc sẵn dùng; chưa hàm ý 17 luồng đã chạy hoặc đã có báo cáo.
+**Trạng thái:** tài liệu prompt **lưu trữ lịch sử**; 17/17 luồng đã nộp PR #30–#46, G00 kiểm chứng/đính chính tại [PR #47](https://github.com/cavoixanh638/kho-tri-thuc/pull/47), chưa merge. **Không dùng các prompt này để giao lập trình.** Muốn giao AI triển khai mới, đọc [INDEX KT-114–KT-121](../../workstreams/notes-ux-20261120/INDEX.md) trên main.
 
-## Hướng dẫn
+## Hướng dẫn lịch sử (chỉ khi tái nghiên cứu)
 
-Mở **17 cuộc trò chuyện ChatGPT riêng biệt**. Với mỗi cuộc, sao chép **nguyên văn một khối prompt** tương ứng ở dưới. Không đưa các báo cáo của luồng khác vào cuộc trò chuyện mới. Các luồng có thể làm đồng thời. Sau khi nộp, G00 kiểm chứng nguồn rồi mới tổng hợp quyết định; không tự merge hoặc sửa ứng dụng.
+Trước đây người dùng mở **17 cuộc trò chuyện ChatGPT riêng biệt**. Với mỗi cuộc, sao chép **nguyên văn một khối prompt** tương ứng ở dưới. Không đưa các báo cáo của luồng khác vào cuộc trò chuyện mới. Các luồng có thể làm đồng thời. Sau khi nộp, G00 kiểm chứng nguồn rồi mới tổng hợp quyết định; không tự merge hoặc sửa ứng dụng.
 
 **Mỗi luồng chỉ nghiên cứu đúng một sản phẩm / một họ sản phẩm liền mạch được nêu đích danh, không khảo sát thay cho luồng khác.** Chi tiết: [INDEX.md](https://github.com/cavoixanh638/kho-tri-thuc/blob/main/docs/research/notes-apps-20261120/INDEX.md) · [G00-PROTOCOL.md](https://github.com/cavoixanh638/kho-tri-thuc/blob/main/docs/research/notes-apps-20261120/G00-PROTOCOL.md).
 
