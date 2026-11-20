@@ -121,3 +121,12 @@ test('editing in middle preserves mixed newlines and decomposed Unicode around t
   assert.equal(ui.editRawMarkdown('Tiếng\r\nViệt', 'Tiếng\nViệt!'), 'Tiếng\r\nViệt!');
   assert.equal(ui.editRawMarkdown('a\r\nb', 'a\nb'), 'a\r\nb');
 });
+test('storage quota failure is visible and the live draft remains saveable', async () => {
+  const prototype = window.Storage.prototype, original = prototype.setItem;
+  prototype.setItem = () => { throw new window.DOMException('quota', 'QuotaExceededError'); };
+  try {
+    await render(); await click('Chỉnh sửa'); await input('Nháp còn trong bộ nhớ');
+    assert.match(container.querySelector('form').textContent, /Không lưu được bản nháp trong tab/);
+    await click('Lưu thay đổi'); assert.equal(saved.note, 'Nháp còn trong bộ nhớ');
+  } finally { prototype.setItem = original; }
+});

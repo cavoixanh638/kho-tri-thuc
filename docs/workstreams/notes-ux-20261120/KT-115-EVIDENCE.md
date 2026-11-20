@@ -51,12 +51,23 @@ untouched fields are not overwritten. No fake expected-version field is sent.
 
 - PASS: existing `npm test`, 19 tests.
 - PASS: `npm run build`; existing >500 kB chunk warning remains.
-- PASS: `node --test tests/kt115-editor.test.mjs`, 46 checks including 40/40
+- PASS: `node --test tests/kt115-editor.test.mjs`, 47 checks including 40/40
   independent fixture raw-byte/HTML round trips, `unexpected_changed_bytes = 0`.
   Transport is mocked: open → intentional edit → PATCH JSON → remount/reload;
   this does not prove PostgreSQL persistence.
 - PASS: design skill source lint, 0 FAIL/0 WARN.
-- Browser/visual QA: in progress at this checkpoint; final PR records result.
+- PASS: real installed Chromium (headless CDP) against a production-built
+  synthetic frontend fixture: native Unicode insert, arrow/backspace,
+  Ctrl+Z undo/Ctrl+Shift+Z redo, native copy/paste (Windows clipboard CRLF),
+  failed save, beforeunload accepted then actual same-tab reload/recovery,
+  Ctrl+Enter save with one PATCH and exact CRLF, Read mode/reduced motion.
+- PASS: real-browser responsive checks at 1920×1080, 1440, 768, 390; no page
+  overflow. These are emulated viewport widths, not Android hardware evidence.
+- Visual inspector: baseline 1 FAIL (disabled-button contrast), 1 WARN;
+  after 0 FAIL, 1 WARN (independent tablet sidebar/editor heights). Baseline and
+  after fold/whole-page screenshots at all four widths were opened and reviewed.
+  Screenshots and JSON remain local in `apps/web/tmp/kt115-before`,
+  `apps/web/tmp/kt115-inspect`, `apps/web/tmp/kt115-qa`; no private content.
 - NOT_RUN: native Unikey/EVKey, real Android, production writes, real DB
   editor round trips. Synthetic composition dispatch is not native IME proof.
 
@@ -66,12 +77,24 @@ production-built synthetic transport, no actual API access). Run
 design skill's `scripts/lib/cdp.mjs` and optional `KT115_BROWSER_URL`.
 The browser test skips explicitly if the CDP adapter is unavailable. It must be
 invoked separately; `npm test` only runs the shared legacy suite.
+Set `KT115_BUILD_ONLY=1` to rebuild the fixture without starting another server;
+`KT115_PORT` selects its loopback port. `KT115_BASELINE=1` builds the fixed
+baseline ItemScreen through a read-only `git show`, for before measurements.
 
 Design application: existing brand/type/palette kept, no direction redraw for a
 single component. Screen question: “Can I edit this note and inspect the result
 before saving?” The raw/preview pair carries that job. Synthetic Vietnamese note,
 table, link, code and quote are test-only, never production content. Tablet rail
 panels are independent sections, so they need not stretch to the editor height.
+
+Visual critique: the note and preview are the largest task surface and clearly
+name the active mode. Existing shell edges align, the product and Item title are
+visible, and there are no invented counters/chart data. Readable textarea type
+is 16px; preview/table/link/code remain readable and contained at 390px. Disabled
+controls now keep readable contrast. The phone shows stacked panes and wrapped
+mode controls; native Android keyboard/viewport behavior remains NOT_RUN. The
+tablet sidebar warning is accepted because these are independent metadata/export
+sections, and matching their bottoms would add empty space. No motion is added.
 
 Rollback: revert the editor change and keep Item.note/DB/Drive intact. Export or
 copy any dirty tab-local drafts before reverting; old UI cannot recover these

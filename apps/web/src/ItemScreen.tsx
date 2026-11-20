@@ -162,6 +162,7 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
               <Button type="submit" loading={busy} disabled={!dirty}>Lưu thay đổi</Button>
               <Button type="button" variant="default" disabled={busy} onClick={() => dirty ? setDiscarding(true) : finish()}>Hủy</Button>
             </div>
+            {error && <ErrorNotice>{error}</ErrorNotice>}
             {discarding && <div role="group" aria-label="Xác nhận bỏ bản nháp">
               <p>Bỏ các thay đổi chưa lưu?</p>
               <Button type="button" variant="default" onClick={() => setDiscarding(false)}>Tiếp tục soạn</Button>
@@ -231,7 +232,7 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
         <ItemOrganization id={item.item_id} csrf={csrf} deleted={item.deleted} refreshKey={evidenceRevision} onSaved={onRefresh} />
         <KnowledgeExportPanel id={item.item_id} csrf={csrf} deleted={item.deleted} refreshKey={evidenceRevision} />
         {confirmation && <div className="notice" role="status">{confirmation}</div>}
-        {error && <ErrorNotice>{error}</ErrorNotice>}
+        {error && !editing && <ErrorNotice>{error}</ErrorNotice>}
       </div>
     </div>
   </>;

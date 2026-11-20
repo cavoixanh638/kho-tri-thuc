@@ -28,6 +28,7 @@ createRoot(document.getElementById('root')!).render(<MantineProvider forceColorS
   <main className="shell canvas"><ItemScreen id={item.item_id} csrf="synthetic-fixture" /></main>
 </MantineProvider>);
 const openEditor = window.setInterval(() => {
+  if (document.querySelector('.markdown-editor')) { window.clearInterval(openEditor); return; }
   const edit = [...document.querySelectorAll('button')].find((button) => button.textContent === 'Chỉnh sửa');
   if (!edit) return;
   window.clearInterval(openEditor); edit.click();
