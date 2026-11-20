@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { externalHttpUrl } from './api';
 import { Empty, ErrorNotice, itemHref, Loading, useResource } from './views';
 import './related-sources.css';
+import { NoteLinkContext } from './NoteLinkContext';
 
 export type RelatedHit = { item_id: string; title: string; reason: string; relation_type: string; confidence: number | null; method_version: string; source_version: string };
 export type Backlink = { item_id: string; title: string; source_version: string };
@@ -106,6 +107,7 @@ function ConnectionsContent({ id, data, onOpenAsset }: { id: string; data: Conne
 export function RelatedSources({ id, refreshKey, onOpenAsset }: { id: string; refreshKey?: string; onOpenAsset?: (id: string) => void }) {
   const related = useResource<Connections>(`/items/${encodeURIComponent(id)}/related`, { refreshKey });
   return <section className="panel related-connections" aria-label="Liên hệ và bằng chứng nguồn">
+    <NoteLinkContext id={id} refreshKey={refreshKey} />
     {related.error ? <ErrorNotice retry={related.retry}>Chưa tải được liên hệ và bằng chứng nguồn.</ErrorNotice>
       : !related.data ? <Loading /> : <ConnectionsContent key={id} id={id} data={related.data} onOpenAsset={onOpenAsset} />}
   </section>;
