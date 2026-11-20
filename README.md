@@ -5,6 +5,12 @@
 
 Kho Tri Thức lấy **văn bản/Markdown làm nội dung chính** để đọc, tìm kiếm và tổ chức. Media và tài liệu nguồn đi kèm để minh họa và truy nguyên. Có thể viết/dán bài văn bản hoặc gửi URL/tệp → **lưu ngay nội dung và thời điểm nhận** → thu thập nội dung khả dụng → **tự xếp vào nhóm hiện có khi đủ tin cậy và tìm các mục liên quan**. File gốc lưu Google Drive, danh mục/lịch sử trong PostgreSQL. Gửi lại link tạo lượt tiếp nhận mới nhưng không nhân đôi file; HTTP retry cùng request key không tạo lượt mới. [Đọc và viết Markdown](docs/operations/TEXT_KNOWLEDGE.md), [quy trình](docs/CAPTURE_AND_ORGANIZE.md).
 
+## Giao AI tiếp tục sau nghiên cứu 17 sản phẩm (20/11/2026)
+
+**[Bộ giao việc KT-114–KT-121 trên GitHub main](docs/workstreams/notes-ux-20261120/INDEX.md)**: có prompt một dòng, nhiệm vụ riêng, quyền sửa file, test acceptance và các gate an toàn dữ liệu/Android/10.000 mục. Đây là **định hướng triển khai có thể giao cho AI**, không phải bằng chứng tính năng mới đã được code hay nghiệm thu. Báo cáo nghiên cứu 17 luồng và G00 được lưu tại PR #30–#47 **chưa merge**; xem [PR #47](https://github.com/cavoixanh638/kho-tri-thuc/pull/47) để đối chiếu nguồn và các đính chính.
+
+Không thay nền tảng Django/PostgreSQL/Google Drive chỉ vì Obsidian/Notion/Heptabase có UX tốt. Giữ nguyên nguồn gốc, CaptureEvent, Item UUID và quyền Drive. An toàn và phục hồi dữ liệu đi trước mở rộng editor, backlinks hoặc canvas.
+
 ## Công nghệ đã lựa chọn
 
 | Thành phần | Quyết định |
@@ -48,7 +54,7 @@ Kho Tri Thức lấy **văn bản/Markdown làm nội dung chính** để đọc
 - [CAPTURE_AND_ORGANIZE.md](docs/CAPTURE_AND_ORGANIZE.md) — quy trình nhận URL/chữ, mốc thời gian, duplicate, tự nhóm và related items.
 - [MASTER_PLAN.md](docs/MASTER_PLAN.md) — phạm vi, quyết định v4.7, ưu tiên.
 - [ARCHITECTURE_AND_DATA.md](docs/ARCHITECTURE_AND_DATA.md) — so sánh công nghệ, dữ liệu/API, thiết kế kỹ thuật và R2 phản biện.
-- [ROADMAP_AND_TESTS.md](docs/ROADMAP_AND_TESTS.md) — nhiệm vụ KT-xxx, các cổng PASS và kiểm thử U01–U18.
+- [ROADMAP_AND_TESTS.md](docs/ROADMAP_AND_TESTS.md) — nhiệm vụ KT-xxx, các cổng PASS và kiểm thử; [INDEX AI handoff](docs/workstreams/notes-ux-20261120/INDEX.md) — task triển khai mới.
 - [AGENTS.md](AGENTS.md) — quy tắc cho Codex và AI.
 - [README.md](README.md) — tổng quan này.
 
