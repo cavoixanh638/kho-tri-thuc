@@ -8,7 +8,7 @@ Nguồn thiếu text hiện rõ chưa có bài/văn bản, không dùng trạng 
 vì đổi định dạng. Nội dung thử giả giữ ngoài production; bài nguồn công khai được
 biên soạn thật có thể nhập vào kho đang dùng khi người dùng giao.
 
-**Ngày quyết định:** 18/11/2026. **Trạng thái:** đặc tả để giao Codex, chưa có runtime test PASS.
+**Ngày quyết định:** 18/11/2026. **Trạng thái tại thời điểm soạn:** đặc tả để giao Codex; **đến 20/11 đã có triển khai và test theo `CURRENT_STATE.md`**, không coi câu “chưa có runtime” lịch sử là trạng thái hiện tại.
 **Nguồn chuẩn:** tài liệu này mô tả nghiệp vụ; `MASTER_PLAN.md` giữ phạm vi, `ARCHITECTURE_AND_DATA.md` giữ schema/kiến trúc, `ROADMAP_AND_TESTS.md` giữ tiêu chí nghiệm thu; `CURRENT_STATE.md` giữ tiến độ thật.
 
 ## 1. Hành vi người dùng cần đạt
