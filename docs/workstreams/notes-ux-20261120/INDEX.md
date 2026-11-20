@@ -12,7 +12,7 @@
 
 1. `AGENTS.md`, `docs/CURRENT_STATE.md`, `docs/REPOSITORY_LAYOUT.md`.
 2. `docs/MASTER_PLAN.md` (mục tiêu/phạm vi), `docs/CAPTURE_AND_ORGANIZE.md` (nghiệp vụ), `docs/ARCHITECTURE_AND_DATA.md` (schema/thiết kế), `docs/ROADMAP_AND_TESTS.md` (mã KT/tiêu chí nghiệm thu).
-3. **Đúng một file task** KT-114–KT-121 cùng thư mục. Mở mã nguồn `main` mới nhất và test hiện hành, **không tin mô tả lịch sử “chưa có code”**.
+3. **Đúng một file task** trong KT-114–KT-123. **KT-122/123 phải đọc code của PR #57 `codex/notes-ux-integration`, không chỉ main** vì #57 đã ghép KT-114–121 nhưng chưa merge. Kiểm head PR/CI/test hiện hành, **không tin mô tả lịch sử “chưa có code”**.
 4. **Bản tổng hợp nằm ngay trên main:** [RESEARCH_DECISIONS.md](RESEARCH_DECISIONS.md) (ma trận 17 sản phẩm, các sửa sai G00, nguồn chính thức, ánh xạ vào KT-114–121). Báo cáo chi tiết vẫn ở [PR #47 — G00 thẩm định hai lần](https://github.com/cavoixanh638/kho-tri-thuc/pull/47) và G01–G17 tại [PR #30–#46](https://github.com/cavoixanh638/kho-tri-thuc/pulls), **chưa merge**. Đọc bản tổng hợp trước; khi cần claim riêng thì mở PR nguồn theo đúng luồng.
 5. Quyết định tại tài liệu này là **đề xuất ưu tiên**, không được tự suy rằng đã có lệnh cho phép cài thư viện, bật AI trả phí, thay DB/Drive hay deploy.
 
@@ -40,6 +40,10 @@
 | **KT-119** [Related/backlinks](KT-119-RELATED.md) | UX-P1 | `codex/kt-119-related` | `ItemOrganization.tsx`/related adapter, API related khi cần, tests KT-119 | READY_TO_ASSIGN / NOT_RUN |
 | **KT-120** [AI suggestions/review](KT-120-AI-REVIEW.md) | UX-P1 **CONDITIONAL** | `codex/kt-120-ai-review` | isolated suggestion API/UI; model+provider **chưa chốt** | HOLD until approved |
 | **KT-121** [Templates/type fields](KT-121-TEMPLATES.md) | UX-P2 **CONDITIONAL** | `codex/kt-121-templates` | template UI/config, không thay schema lõi | HOLD until approved |
+| **KT-122** [Folder Explorer: thư mục + ghi chú chung một cây](KT-122-FOLDER-EXPLORER.md) | **CORE UX / HIGH — phát hiện thiếu** | `codex/kt-122-folder-explorer` (base PR #57) | `KnowledgeExplorer*`, placement API, LibraryScreen/KnowledgeTree adapt, tests KT-122 | SPEC_READY / CODE_NOT_RUN |
+| **KT-123** [Note → Note cấu trúc cha–con](KT-123-NOTE-HIERARCHY.md) | **CORE UX / HIGH — phát hiện thiếu** | `codex/kt-123-note-hierarchy` (base PR #57; phụ thuộc KT-122 UI) | directed hierarchy model/service/API; note outline UI/relations; tests KT-123 | SPEC_READY / CODE_NOT_RUN |
+
+**Lỗ hổng phát hiện ngày 20/11/2026 sau PR #57:** hệ thống **đã có Topic.parent và ItemTopic**, nhưng `KnowledgeTree` chỉ hiển thị nhánh, ghi chú vẫn ở danh sách độc lập; `RelatedItem(similar)` không phải quan hệ cha–con giữa các Item. Trên chiều rộng <=1100px, cây đang mặc định thu gọn trong nút “Mở mục lục”. **KT-118 nhiều view không đồng nghĩa KT-122 mixed explorer.** Phải thực hiện KT-122/123 trước khi báo UX folder như Obsidian hoàn thành; không sửa PR #57 hoặc merge nếu chưa có quyền. Mã của KT-122/123 viết **trên nhánh từ PR #57** để không nhân đôi patch, PR target nhánh integration; G00 nối sau khi review.
 
 **Ngoài phạm vi / hoãn:** fork nguyên Obsidian/AFFiNE, Canvas/whiteboard lớn, graph DB, B2/R2 làm chính, Redis, bot meeting, OCR/ASR hàng loạt, dịch vụ SaaS notes làm database, MCP mới chỉ vì nghiên cứu. Không nhân đôi công cụ ghi họp độc lập.
 
