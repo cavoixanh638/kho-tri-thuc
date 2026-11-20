@@ -161,3 +161,29 @@ thử riêng không thay bước này. Bản xuất Drive vẫn một Item/một
 - **PostgreSQL là lựa chọn đã chốt**. Bản đầu không chạy SQLite thay thế; `KT-010` dùng `pypdfium2` render PDF và xử lý EXIF, `KT-102` chỉ quyết parser chữ sau benchmark 3 lựa chọn; `KT-104` dùng **hai GIN index riêng** qua `SearchService`. KT-202E chỉ là pilot, không cam kết toàn bộ Drive được ChatGPT lập chỉ mục.
 
 **Thứ tự ưu tiên:** **nhận URL/chữ và giữ giờ/đầu vào không mất** → Drive lưu file khi có → **tự nhóm và tìm Item liên quan** → ChatGPT nghiên cứu → nâng cấp.
+
+## 9. Các task giao AI sau khảo sát 17 ứng dụng — 20/11/2026
+
+**Nguồn chuẩn triển khai:** [INDEX KT-114–KT-121](workstreams/notes-ux-20261120/INDEX.md) — có prompt một dòng, phạm vi file/độc lập và evidence/PR G00. **Task chưa giao hoặc chưa chạy = NOT_RUN**, không suy khảo sát thị trường là đã implement. Ưu tiên **CORE GATE** của hệ thống khác với **UX-P0** trong riêng nhóm cải tiến giao diện.
+
+| Task | Chức năng/đầu ra chính | Thứ tự/điều kiện | Acceptance và nơi đo |
+| --- | --- | --- | --- |
+| **KT-114** [Core readiness](workstreams/notes-ux-20261120/KT-114-READINESS.md) | Script/fixture kiểm Drive integrity, restore, nguồn và quy mô Item; báo cáo giới hạn | **CORE, trước phát hành/nhập lớn**, có thể làm cùng PoC UI độc lập | 10.000 Item **fixture ở DB test**, count distinct, Event new vs retry, SHA/restore trong phạm vi được phép; 100GB/Android thật không chạy => NOT_RUN |
+| **KT-115** [Markdown editor](workstreams/notes-ux-20261120/KT-115-EDITOR.md) | Chọn phương án sau 3-way comparison; PoC Edit/Split/Read, giữ raw `Item.note` | UX-P0, không phá CORE | 40/40 Markdown Unicode/GFM sau save/reload, IME, undo, XSS; không chuyển toàn bộ sang HTML |
+| **KT-116** [Source locators](workstreams/notes-ux-20261120/KT-116-LOCATORS.md) | Citation → PDF page/web section/audio-video time khi có locator và byte stream | UX-P0; cần asset+permission+viewer thật | 30/30 mapping đúng; seek video sai lệch <=1 s với thiết bị/codec/HTTP Range có evidence; không đủ => NOT_RUN |
+| **KT-117** [Quick capture Android](workstreams/notes-ux-20261120/KT-117-QUICK-CAPTURE.md) | Hoàn thiện PWA share **đã có**, giữ draft/receipt, test Android | CORE Android + UX-P0 | 30/30 share text/link Unicode; gửi mới +1 Event/retry +0; thiết bị thật không có => ANDROID_NOT_RUN |
+| **KT-118** [Multi-view](workstreams/notes-ux-20261120/KT-118-LIBRARY-VIEWS.md) | List/Table/Card/Timeline là các projection cùng Item UUID và tree filter | UX-P1; sau data contract ổn | Các tập distinct Item ID theo view/filter giống nhau trên corpus có nhiều nhánh, paging ổn; đo với 10k fixture |
+| **KT-119** [Related/backlinks](workstreams/notes-ux-20261120/KT-119-RELATED.md) | Phân biệt explicit backlinks, RelatedItem có reason, same-group, source cards | UX-P1, không auto merge, không graph DB | Fixture 30 Item có link và reasons; 100% liên kết được đối chiếu có quyền/nguồn; thiếu nhãn → NOT_RUN |
+| **KT-120** [AI diff review](workstreams/notes-ux-20261120/KT-120-AI-REVIEW.md) | Suggestion versioned, diff/accept/reject, không tự PATCH note | **HOLD** tới khi người dùng giao và cho phép model/chi phí | 20/20 case reject không đổi note; provider thật chưa có => NOT_RUN |
+| **KT-121** [Templates](workstreams/notes-ux-20261120/KT-121-TEMPLATES.md) | Template Markdown/type metadata nhẹ | **HOLD**, UX-P2 | 3 mẫu × 10 Item, stable ID và restore raw note; không đòi schema graph |
+
+**Ràng buộc chung khi chấm PASS:**
+1. Có **Code SHA, Tested SHA, environment, command, expected vs actual, PASS/FAIL/NOT_RUN, rollback**, kiểm diff/branch/PR. Nếu chỉ có script/test mock, kết quả chỉ là MOCK_PASS trong phạm vi đó; thử Android thật, Drive thật hoặc 10.000 mục trên DB thật cần ghi riêng.
+2. `npm test` theo package tại ngày 20/11/2026 chỉ chạy `apps/web/tests/ui.test.mjs`. Agent thêm test `tests/ktXXX-*.test.mjs` phải **chạy tường minh** `node --test` và nói runner chung chưa bao gồm; G00 review tích hợp runner.
+3. Nhiều AI song song không cùng sửa `CURRENT_STATE.md`, `api.ts`, `styles.css`, test runner hay chung file của task khác; G00 tích hợp khi PR sẵn sàng. Không tự merge PR nghiên cứu.
+4. **Đo tỷ lệ cần mẫu số**: `precision = correct / audited`; `false_assignment_rate = wrong / audited_auto_assignments`; `seek_error_s = abs(actual-target)`; `result_count = COUNT(DISTINCT item_id)`. Nếu mẫu số 0, không tính 0% hay 100%, ghi **NOT_RUN** và nguyên nhân.
+5. **Giữ dữ liệu gốc**: file Drive và metadata, `CaptureEvent`, `Item.note`, `user_pinned`; không nhân bản Item theo view hoặc chuyển ASR/AI suggestion thành bản người viết.
+
+**Các điều chỉnh sau rà soát lần hai:** Capacities audio recording/transcribe/summary đã phát hành theo gói Pro (11/2026), Reflect Open có Windows/Linux experimental unsigned, Android chưa hỗ trợ; không sao chép thông tin cũ nói “audio coming soon” hay “Reflect không có Windows”. Các ghi nhận này chỉ là nguồn tham khảo UX, không phải lý do thay nền tảng hoặc mua license.
+
+**Trạng thái ban đầu toàn bộ KT-114–KT-121:** `DOCS_READY / IMPLEMENTATION_NOT_RUN`. Đến khi AI khác thực sự chạy, không ghi PASS vào [CURRENT_STATE.md](CURRENT_STATE.md).
