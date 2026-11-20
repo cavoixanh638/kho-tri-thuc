@@ -14,6 +14,7 @@ from processing.thumbnail_api import router as thumbnail_router
 from search.api import router as search_router
 from storage.api import router as drive_router
 from storage.uploads import router as upload_router
+from storage.viewer_api import router as asset_viewer_router
 
 from .health import check_database
 
@@ -30,6 +31,7 @@ api.add_router("", retry_router)
 api.add_router("", suggestion_router)
 api.add_router("", thumbnail_router)
 api.add_router("/uploads", upload_router)
+api.add_router("", asset_viewer_router)
 
 
 class HealthResponse(Schema):

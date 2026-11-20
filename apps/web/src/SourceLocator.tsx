@@ -63,7 +63,7 @@ export function locatorLabel(locator?: Locator): string {
 }
 export function privateViewerUrl(value: string): string | undefined {
   // Relative, same-origin cookie-authenticated endpoints only; no query credentials or remote redirects by construction.
-  if (!/^\/api\/v1\/assets\/[A-Za-z0-9_-]{1,128}\/(bytes|stream|content)$/.test(value)) return undefined;
+  if (!/^\/api\/v1\/assets\/[A-Za-z0-9_-]{1,128}\/(bytes|stream|content)(?:\/[1-9][0-9]{0,9}\/[a-f0-9]{64})?$/.test(value)) return undefined;
   return value;
 }
 export function safeOriginalUrl(value: string): string | undefined {
@@ -87,8 +87,11 @@ export function resolveLocator(part: SourcePart, viewer?: SourceViewer): Locator
   if (viewer && (viewer.assetId !== part.asset_id || viewer.version !== part.source.version || viewer.assetVersion !== part.source.asset_version)) {
     return { ...base, state: 'STALE_SOURCE', reason: 'Tệp đang mở không khớp phiên bản đã trích. Cần tải lại nguồn.' };
   }
+  if (viewer && viewer.url.split('/').length > 6 && viewer.url !== `/api/v1/assets/${part.asset_id}/content/${part.source.asset_version}/${part.source.version}`) {
+    return { ...base, state: 'STALE_SOURCE', reason: 'Đường dẫn tệp không khớp phiên bản đã trích. Cần tải lại nguồn.' };
+  }
   const supports = viewer && privateViewerUrl(viewer.url) && viewer.url.split('/')[4] === encodeURIComponent(part.asset_id ?? '') && ((locator.kind === 'page' && viewer.kind === 'pdf' && viewer.pageNavigationVerified && part.source.mime === 'application/pdf')
-    || (locator.kind === 'time' && viewer.kind === 'media' && viewer.rangeVerified && /^(audio|video)\//.test(part.source.mime ?? '')));
+    || (locator.kind === 'time' && viewer.kind === 'media' && viewer.rangeVerified === true && /^(audio|video)\//.test(part.source.mime ?? '')));
   if (!supports) return { ...base, state: 'NOT_SUPPORTED', reason: locator.kind === 'section' ? 'Chưa xác định được đoạn này trên trang gốc. Có thể mở website nguồn.' : 'Chưa thể mở đúng vị trí trong nguồn này. Có thể mở file gốc.' };
   return { ...base, state: 'AVAILABLE', reason: 'Mở vị trí trên nguồn đã xác minh.', viewer };
 }
@@ -123,7 +126,8 @@ function SourceLocatorMedia({ viewer, locator, mime }: { viewer: SourceViewer; l
   </div>;
 }
 export function SourceLocatorCitation({ part, viewer, onIllustration }: { part: SourcePart; viewer?: SourceViewer; onIllustration?: (assetId: string) => void }) {
-  const result = resolveLocator(part, viewer);
+  const [privateViewer, setPrivateViewer] = useState<SourceViewer>();
+  const result = resolveLocator(part, viewer ?? privateViewer);
   const [opened, setOpened] = useState(false);
   const [original, setOriginal] = useState<string>();
   const [busy, setBusy] = useState(false);
@@ -133,10 +137,25 @@ export function SourceLocatorCitation({ part, viewer, onIllustration }: { part: 
   const inFlight = useRef<AbortController | null>(null);
   currentRevision.current = revision;
   useEffect(() => {
-    setOpened(false); setOriginal(undefined); setError(''); setBusy(false);
+    setOpened(false); setPrivateViewer(undefined); setOriginal(undefined); setError(''); setBusy(false);
     return () => { inFlight.current?.abort(); currentRevision.current = ''; };
   }, [revision]);
   useEffect(() => { currentRevision.current = revision; }, [revision]);
+  const loadViewer = async () => {
+    if (!part.asset_id || busy) return;
+    const controller = new AbortController(); inFlight.current?.abort(); inFlight.current = controller;
+    const stillCurrent = () => !controller.signal.aborted && currentRevision.current === revision;
+    setBusy(true); setError('');
+    try {
+      const value = await request<SourceViewer>(`/assets/${encodeURIComponent(part.asset_id)}/viewer`, { signal: controller.signal });
+      if (value.url !== `/api/v1/assets/${part.asset_id}/content/${part.source?.asset_version}/${part.source?.version}`) throw new Error('unpinned_viewer');
+      const resolved = resolveLocator(part, value);
+      if (resolved.state !== 'AVAILABLE') throw new Error('not_supported');
+      if (stillCurrent()) { setPrivateViewer(value); setOpened(true); }
+    } catch {
+      if (stillCurrent()) setError('Chưa định vị được nguồn riêng tư. Tệp có thể đã thay đổi, không hỗ trợ phát hoặc chưa truy cập được Drive. Bạn vẫn có thể mở nguồn gốc.');
+    } finally { if (stillCurrent()) setBusy(false); }
+  };
   const loadOriginal = async () => {
     const controller = new AbortController(); inFlight.current?.abort(); inFlight.current = controller;
     const stillCurrent = () => !controller.signal.aborted && currentRevision.current === revision;
@@ -155,6 +174,8 @@ export function SourceLocatorCitation({ part, viewer, onIllustration }: { part: 
     <p>{result.reason}</p>
     <div className="source-locator-actions">
       {result.state === 'AVAILABLE' && <button type="button" onClick={() => setOpened(true)}>Đến vị trí nguồn</button>}
+      {result.state === 'NOT_SUPPORTED' && result.locator?.kind === 'time' && part.asset_id && part.source?.state === 'current'
+        && <button type="button" disabled={busy} onClick={() => void loadViewer()}>{busy ? 'Đang kiểm tra nguồn…' : 'Mở và định vị nguồn riêng tư'}</button>}
       {result.state !== 'MISSING_ASSET' && <button type="button" disabled={busy} onClick={() => void loadOriginal()}>{busy ? 'Đang tìm nguồn…' : 'Mở nguồn gốc'}</button>}
       {part.asset_id && onIllustration && <button type="button" onClick={() => onIllustration(part.asset_id!)}>Xem minh họa từ nguồn</button>}
       {original && <a href={original} target="_blank" rel="noopener noreferrer">Mở file/website gốc (không định vị)</a>}

@@ -117,3 +117,46 @@ test('reading multiple assets selects each viewer by asset ID even when host vie
   const frames = [...container.querySelectorAll('iframe')].map(frame => new URL(frame.src));
   assert.deepEqual(frames.map(frame => frame.pathname + frame.hash), ['/api/v1/assets/pdf-a/stream#page=1', '/api/v1/assets/pdf-b/stream#page=200']);
 });
+
+function privateMediaPart() {
+  return { id: 900, kind: 'transcript', asset_id: '11111111-1111-4111-8111-111111111111', locator: { start_seconds: 2.5 },
+    processor: 'fixture', source: { state: 'current', version: 'a'.repeat(64), asset_version: 3, mime: 'audio/wav', source_id: null, source_url: null } };
+}
+function privateMediaViewer(part) {
+  return { assetId: part.asset_id, version: part.source.version, assetVersion: 3,
+    url: `/api/v1/assets/${part.asset_id}/content/3/${part.source.version}`, kind: 'media', rangeVerified: true };
+}
+test('private viewer is loaded only on explicit action through cookie API and pinned source bytes', async () => {
+  const part = privateMediaPart(); let calls = 0;
+  globalThis.fetch = async (path, options) => {
+    calls++; assert.equal(path, `/api/v1/assets/${part.asset_id}/viewer`); assert.equal(options.credentials, 'same-origin');
+    return new Response(JSON.stringify(privateMediaViewer(part)));
+  };
+  await render(ui.SourceLocatorCitation, { part });
+  assert.equal(calls, 0); assert.equal(container.querySelector('audio'), null);
+  await click('Mở và định vị nguồn riêng tư');
+  assert.equal(calls, 1); assert.equal(container.querySelector('[data-state]').dataset.state, 'AVAILABLE');
+  assert.equal(new URL(container.querySelector('audio').src).pathname, privateMediaViewer(part).url);
+});
+test('private viewer rejects changed or hostile pinned paths and reports unavailable instead of loading media', async () => {
+  const part = privateMediaPart(), viewer = privateMediaViewer(part);
+  for (const changed of [{ ...viewer, url: viewer.url.replace('/content/3/', '/content/2/') },
+    { ...viewer, url: viewer.url + '?token=do-not-render' }, { ...viewer, version: 'b'.repeat(64) },
+    { ...viewer, rangeVerified: false }]) {
+    assert.notEqual(ui.resolveLocator(part, changed).state, 'AVAILABLE');
+  }
+  globalThis.fetch = async () => new Response('{}', { status: 409 });
+  await render(ui.SourceLocatorCitation, { part }); await click('Mở và định vị nguồn riêng tư');
+  assert.equal(container.querySelector('audio'), null); assert.ok(container.querySelector('[role="alert"]'));
+  assert.equal(container.querySelector('[data-state]').dataset.state, 'NOT_SUPPORTED');
+});
+test('late private descriptor cannot open an old asset after citation changes', async () => {
+  const part = privateMediaPart(); let resolveOld, signal;
+  globalThis.fetch = async (_path, options) => { signal = options.signal; return new Promise(resolve => { resolveOld = resolve; }); };
+  await render(ui.SourceLocatorCitation, { part }); await click('Mở và định vị nguồn riêng tư');
+  await ui.act(async () => { root.render(ui.createElement(ui.MantineProvider, { forceColorScheme: 'light' }, ui.createElement(ui.SourceLocatorCitation,
+    { part: { ...part, id: 901, asset_id: '22222222-2222-4222-8222-222222222222' } }))); await settle(); });
+  assert.equal(signal.aborted, true);
+  await ui.act(async () => { resolveOld(new Response(JSON.stringify(privateMediaViewer(part)))); await settle(); });
+  assert.equal(container.querySelector('audio'), null);
+});
