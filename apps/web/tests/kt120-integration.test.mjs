@@ -34,8 +34,8 @@ beforeEach(() => {
     if (behavior) { const response = await behavior(url, options); if (response) return response; }
     if (url.endsWith('/capabilities')) return json(capability());
     if (url.endsWith('/preview')) return json(proposal());
-    if (url.endsWith('/accept')) return json({ note: proposal().after, edit_version: 3, source_version: 'source-v1', undo_receipt: 'undo-signed' });
-    if (url.endsWith('/undo')) return json({ note: 'Bản gốc e\u0302\u0301\r\n', edit_version: 4, source_version: 'source-v1', undo_receipt: '' });
+    if (url.endsWith('/accept')) return json({ note: proposal().after, edit_version: 3, source_version: 'source-v1', undo_receipt: 'undo-signed', updated_at: '2026-11-20T12:00:01Z' });
+    if (url.endsWith('/undo')) return json({ note: 'Bản gốc e\u0302\u0301\r\n', edit_version: 4, source_version: 'source-v1', undo_receipt: '', updated_at: '2026-11-20T12:00:02Z' });
     return json({ state: 'rejected', writes: 0 });
   };
   container = document.createElement('div'); document.body.append(container); root = ui.createRoot(container);
@@ -70,9 +70,11 @@ test('manual preview sends only explicit text after click and leaves host unchan
 test('accept and undo ACK synchronize exact note/edit version without changing identity or assets', async () => {
   const original = { ...item }; await preview(); await click('Chấp nhận');
   assert.equal(updates.length, 1); assert.equal(item.note, 'Đề xuất e\u0302\u0301\r\n'); assert.equal(item.user_edit_version, 3);
+  assert.equal(item.updated_at, '2026-11-20T12:00:01Z');
   assert.equal(item.item_id, original.item_id); assert.deepEqual(item.assets, original.assets);
   await render(); await click('Hoàn tác đề xuất');
   assert.equal(item.note, original.note); assert.equal(item.user_edit_version, 4); assert.deepEqual(busyStates, [true, false, true, false]);
+  assert.equal(item.updated_at, '2026-11-20T12:00:02Z');
   assert.equal(calls.find((call) => call.url.endsWith('/undo')).body.receipt, 'undo-signed');
 });
 test('editing or dirty draft disables proposal acceptance and undo', async () => {

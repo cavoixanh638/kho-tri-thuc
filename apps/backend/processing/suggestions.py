@@ -119,6 +119,7 @@ class ReviewResult:
     edit_version: int
     source_version: str
     undo_receipt: str = ""
+    updated_at: str = ""
 
 
 def apply_note(item, note):
@@ -153,6 +154,7 @@ def accept(owner_id, item_id, token):
         item.user_edit_version,
         current_source,
         signing.dumps(undo, salt=SALT, compress=True),
+        item.updated_at.isoformat(),
     )
 
 
@@ -175,4 +177,9 @@ def undo(owner_id, item_id, token):
     ):
         raise SuggestionError("suggestion_version_conflict")
     apply_note(item, value["before"])
-    return ReviewResult(item.note, item.user_edit_version, current_source)
+    return ReviewResult(
+        item.note,
+        item.user_edit_version,
+        current_source,
+        updated_at=item.updated_at.isoformat(),
+    )

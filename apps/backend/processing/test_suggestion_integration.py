@@ -59,6 +59,10 @@ class SuggestionCapabilitiesTests(TestCase):
         )
         self.assertEqual(accepted.status_code, 200, accepted.content)
         version = accepted.json()["edit_version"]
+        self.item.refresh_from_db()
+        self.assertEqual(
+            accepted.json()["updated_at"], self.item.updated_at.isoformat()
+        )
         self.assertEqual(
             self.client.get(item_path).json()["user_edit_version"], version
         )

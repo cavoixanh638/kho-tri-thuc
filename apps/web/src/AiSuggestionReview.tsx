@@ -7,7 +7,7 @@ export type NoteSuggestion = {
   item_id: string; source_version: string; base_edit_version: number; before: string; after: string;
   receipt: string; expires_in: number; provenance: { provider: string; model: string; method: string; prompt_version: string };
 };
-export type AppliedSuggestion = { note: string; edit_version: number; source_version: string; undo_receipt: string };
+export type AppliedSuggestion = { note: string; edit_version: number; source_version: string; undo_receipt: string; updated_at?: string };
 
 export function AiSuggestionReview({ suggestion, csrf, currentNote, onApplied, onClose, disabled = false, onBusyChange }: {
   suggestion: NoteSuggestion; csrf: string; currentNote: string;

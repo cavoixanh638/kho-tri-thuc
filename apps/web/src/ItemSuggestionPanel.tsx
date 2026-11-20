@@ -57,7 +57,7 @@ export function ItemSuggestionPanel({ item, csrf, editing, draftDirty, onUpdated
     if (latest.item_id !== suggestion?.item_id || latest.deleted) return;
     // A newer poll or edit must not be replaced by a late acknowledgement.
     if ((latest.user_edit_version ?? -1) > result.edit_version) return;
-    const updated = { ...latest, note: result.note, user_edit_version: result.edit_version };
+    const updated = { ...latest, note: result.note, user_edit_version: result.edit_version, updated_at: result.updated_at || latest.updated_at };
     current.current = updated;
     onUpdated(updated);
   }
