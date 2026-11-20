@@ -2,7 +2,7 @@ import { ExtractedContent } from './ExtractedContent';
 import { AssetPreview } from './AssetPreview';
 import { Button, Textarea, TextInput } from '@mantine/core';
 import { useRef, useState, type SubmitEvent } from 'react';
-import { externalHttpUrl, request, type Capture, type Item, type Page } from './api';
+import { ApiError, externalHttpUrl, request, type Capture, type Item, type Page } from './api';
 import { ItemOrganization, RelatedItems } from './ItemOrganization';
 import { itemNeedsRefresh } from './itemProcessing';
 import { KnowledgeExportPanel } from './KnowledgeExportPanel';
@@ -73,22 +73,28 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
     setBusy(true);
     try {
       const textFields = (['title', 'description', 'note'] as const).filter((field) => patch[field] !== undefined);
+      let body: object = patch;
       if (textFields.length) {
         const latest = await request<Item>(`/items/${encodeURIComponent(item.item_id)}`);
         if (latest.deleted || textFields.some((field) => latest[field] !== base[field])) {
           setError('Nội dung đã thay đổi ở phiên khác. Bản nháp vẫn được giữ; sao chép phần cần giữ rồi tải lại để đối chiếu.');
           return;
         }
+        if (Number.isSafeInteger(latest.user_edit_version) && latest.user_edit_version! >= 0) {
+          body = { ...patch, expected_edit_version: latest.user_edit_version };
+        }
       }
-      const result = await request<Item>(`/items/${encodeURIComponent(item.item_id)}`, { method: 'PATCH', csrf, body: patch });
+      const result = await request<Item>(`/items/${encodeURIComponent(item.item_id)}`, { method: 'PATCH', csrf, body });
       onUpdated(result);
       if (textFields.length) finish();
       setConfirmation(patch.deleted === true ? 'Đã chuyển vào thùng rác.'
         : patch.deleted === false ? 'Đã khôi phục mục.'
           : patch.favorite === true ? 'Đã thêm vào yêu thích.'
             : patch.favorite === false ? 'Đã bỏ yêu thích.' : 'Đã lưu chỉnh sửa.');
-    } catch {
-      setError('Chưa lưu được thay đổi. Hãy thử lại.');
+    } catch (error) {
+      setError(error instanceof ApiError && error.status === 409
+        ? 'Nội dung đã thay đổi ở phiên khác. Bản nháp vẫn được giữ; sao chép phần cần giữ rồi tải lại để đối chiếu.'
+        : 'Chưa lưu được thay đổi. Hãy thử lại.');
     } finally {
       inFlight.current = false;
       setBusy(false);
