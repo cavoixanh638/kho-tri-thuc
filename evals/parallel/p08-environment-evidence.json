@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "task": "P08 / KT128",
+  "source_branch": "coord/notes-parallel-20261121-frozen",
+  "base_sha": "9716a6a876d6ec41e10b3c3dcbdc095ab4ddd84d",
+  "assessment": "test-harness-validation-only; NOT_BROWSER_UAT",
+  "environment": {
+    "node_version": "v22.16.0",
+    "chromium": "installed; headless CDP usable",
+    "docker_compose": "not available",
+    "postgresql_server": "not available",
+    "repository_git_clone": "not possible from local sandbox; github.com DNS unavailable",
+    "loopback_http_chromium": "net::ERR_BLOCKED_BY_ADMINISTRATOR"
+  },
+  "checks": [
+    { "name": "node --check knowledge_journeys.mjs", "status": "PASS" },
+    { "name": "node --check p08_cdp.mjs", "status": "PASS" },
+    { "name": "node --test p08_*.test.mjs", "status": "PASS", "passed": 6, "failed": 0 },
+    { "name": "real built App + Django/session/CSRF + isolated PostgreSQL", "status": "NOT_RUN", "reason": "No Docker/PostgreSQL; browser policy denies local HTTP navigation" },
+    { "name": "real 1920/1440/768/390 App screenshots", "status": "NOT_RUN", "reason": "App unavailable; no fabricated screenshots" },
+    { "name": "Google Drive / Android physical / 100GB media / PDF page seek", "status": "NOT_RUN", "reason": "No authorized native devices/assets" }
+  ],
+  "data_classification": "synthetic-only; no credentials or user content",
+  "note": "Browser CDP about:blank PNG was unit-test-only and must not be labeled a KT128 App screenshot."
+}
