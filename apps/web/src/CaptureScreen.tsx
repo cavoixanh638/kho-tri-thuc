@@ -7,7 +7,7 @@ import { CaptureList, Empty, ErrorNotice, itemHref, Loading, PageTitle, ServerTi
 import { ResearchClipper } from './ResearchClipper';
 import './capture.css';
 
-type PendingFile = { file: File; key: string; caption: string };
+type PendingFile = { file: File; key: string; caption?: string };
 type CompletedFile = { filename: string; itemId: string; assetId: string; state: string };
 type PreviousSend = { kind: 'link' | 'text'; url: string; text: string };
 
@@ -185,7 +185,7 @@ export function CaptureScreen({ csrf }: { csrf: string }) {
         const row = filesRef.current[0];
         const form = new FormData();
         form.append('file', row.file);
-        form.append('note', row.caption);
+        form.append('note', row.caption ?? text);
         let received: UploadReceipt;
         try {
           received = await request<UploadReceipt>('/uploads', {
