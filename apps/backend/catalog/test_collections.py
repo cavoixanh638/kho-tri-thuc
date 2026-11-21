@@ -3,6 +3,7 @@ import statistics
 from datetime import UTC, datetime
 from time import perf_counter
 
+from config.session import session_api
 from django.contrib.auth import get_user_model
 from django.db import connection
 from django.test import Client, TestCase, override_settings
@@ -10,14 +11,18 @@ from django.test.utils import CaptureQueriesContext
 from django.urls import path
 from ninja import NinjaAPI
 
+from .api import router as item_router
 from .collection_api import router
 from .collection_models import SavedCollection
 from .collection_service import CollectionQuery, matching_items
+from .groups_api import router as groups_router
 from .models import Item, ItemTag, ItemTopic, Tag, Topic
 
 test_api = NinjaAPI(urls_namespace="kt125-test")
 test_api.add_router("", router)
-urlpatterns = [path("api/v1/", test_api.urls)]
+test_api.add_router("", groups_router)
+test_api.add_router("", item_router)
+urlpatterns = [path("api/v1/session", session_api), path("api/v1/", test_api.urls)]
 
 
 @override_settings(ROOT_URLCONF=__name__)
@@ -249,6 +254,33 @@ class CollectionTests(TestCase):
             self.post({"query": {}}, "/collections/preview").status_code, 200
         )
         self.assertEqual(SavedCollection.objects.count(), before)
+
+    def test_source_status_matches_note_only_summary_and_published_nulls_last(self):
+        for key, status in (
+            ("source_fetch", "not_applicable"),
+            ("content_extract", "not_available"),
+        ):
+            self.assertEqual(
+                self.post({"query": {key: status}}, "/collections/preview").json()[
+                    "count"
+                ],
+                8,
+            )
+            self.assertEqual(
+                self.post({"query": {key: "done"}}, "/collections/preview").json()[
+                    "count"
+                ],
+                0,
+            )
+        row = self.rows[0]
+        row.published_at = None
+        row.save()
+        ordered = list(
+            matching_items(
+                self.owner, CollectionQuery(sort="published_desc")
+            ).values_list("id", flat=True)
+        )
+        self.assertEqual(ordered[-1], row.pk)
 
 
 @override_settings(ROOT_URLCONF=__name__)

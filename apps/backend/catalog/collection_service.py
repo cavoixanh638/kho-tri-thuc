@@ -5,7 +5,7 @@ from datetime import date, datetime, time, timedelta
 from typing import Literal
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-from django.db.models import Exists, OuterRef
+from django.db.models import Exists, F, OuterRef, Q
 from django.db.models.expressions import RawSQL
 from pydantic import (
     BaseModel,
@@ -15,9 +15,10 @@ from pydantic import (
     field_validator,
     model_validator,
 )
+from storage.models import Asset
 
 from .api import catalog, summarize
-from .models import ItemProject, ItemTag, ItemTopic, Project, Tag, Topic
+from .models import ItemProject, ItemTag, ItemTopic, Project, Source, Tag, Topic
 
 
 class GroupCondition(BaseModel):
@@ -159,14 +160,26 @@ def matching_items(owner, query):
             )
     if query.favorite is not None:
         items = items.filter(favorite=query.favorite)
+    # Match the same note-only presentation policy as catalog.api.summarize.
+    # An authored plain note has no source fetch/extraction claim.
+    note_only = (
+        Q(kind="text")
+        & ~Exists(Source.objects.filter(item_id=OuterRef("pk")))
+        & ~Exists(Asset.objects.filter(item_id=OuterRef("pk")))
+    )
     for field in ("source_fetch", "content_extract"):
         value = getattr(query, field)
         if value:
-            items = items.filter(**{field: value})
+            if (field == "source_fetch" and value == "not_applicable") or (
+                field == "content_extract" and value == "not_available"
+            ):
+                items = items.filter(Q(**{field: value}) | note_only)
+            else:
+                items = items.filter(~note_only, **{field: value})
     order = {
         "saved_desc": ("-saved_at", "id"),
         "saved_asc": ("saved_at", "id"),
-        "published_desc": ("-published_at", "id"),
+        "published_desc": (F("published_at").desc(nulls_last=True), "id"),
         "title": ("title", "id"),
     }[query.sort]
     return items.order_by(*order)
