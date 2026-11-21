@@ -182,7 +182,7 @@ const item = (patch = {}) => ({
 
 test('knowledge Markdown renders structure while HTML, active URLs and remote images stay inert', async () => {
   await render(ui.KnowledgeText, { text: '# Tri thức\n\n**Ý chính**\n\n| Cột | Giá trị |\n| --- | --- |\n| A | 42 |\n\n[nguồn](https://example.com/doc)\n\n[xấu](javascript:alert%281%29)\n\n![minh họa](https://example.com/pixel.png)\n\n<script>alert(1)</script><img src=x onerror=alert(1)>' });
-  assert.equal(container.querySelector('h3').textContent, 'Tri thức');
+  assert.equal(container.querySelector('.knowledge-text h2').textContent, 'Tri thức');
   assert.equal(container.querySelector('strong').textContent, 'Ý chính');
   assert.equal(container.querySelector('td').textContent, 'A');
   assert.equal(container.querySelector('a').rel, 'noopener noreferrer');
