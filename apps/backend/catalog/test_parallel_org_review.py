@@ -68,6 +68,12 @@ class OrgReviewTests(TestCase):
             decide(self.owner.pk, item.pk, first["receipt"], "accept")
         self.assertFalse(ItemTag.objects.filter(item=item).exists())
 
+    def test_metadata_only_does_not_guess_video_contents(self):
+        item = self.item(note="", title="Quản lý dự án", description="Hạ tầng số")
+        result = review(self.owner.pk, item.pk)
+        self.assertEqual(result["evidence_status"], "metadata_only")
+        self.assertEqual(result["proposals"], [])
+
     def test_owner_deleted_and_archived_groups_rejected(self):
         item = self.item()
         proposal = self.proposal(item)
