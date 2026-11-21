@@ -83,7 +83,7 @@ def manifest(parent, injection):
             if injection == "invalid_header":
                 (root / "video.mp4").write_bytes(b"<html>wrong bytes</html>")
             if injection == "valid_manifest":
-                (root / "video.mp4").write_bytes(b"\\x00\\x00\\x00\\x18ftypisomdata".decode("unicode_escape").encode("latin1"))
+                (root / "video.mp4").write_bytes(bytes([0, 0, 0, 24]) + b"ftypisomdata")
         try:
             parent._result(root)
             return "ok", False
@@ -158,7 +158,7 @@ if __name__ == "__main__":
     cli.add_argument("--output", type=Path)
     args = cli.parse_args()
     report = evaluate()
-    data = json.dumps(report, indent=2, ensure_ascii=False)+"\\n"
+    data = json.dumps(report, indent=2, ensure_ascii=False) + chr(10)
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(data, encoding="utf8")
