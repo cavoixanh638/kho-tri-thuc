@@ -1,5 +1,20 @@
 # HIỆN TRẠNG THỰC TẾ — KHO TRI THỨC
 
+## Checkpoint mới — Candidate Kho Tri Thức 21/11/2026 (chưa merge/deploy)
+
+**Phạm vi:** PR [#79](https://github.com/cavoixanh638/kho-tri-thuc/pull/79), nhánh `coord/notes-parallel-20261121-integrated`, chỉ QA độc lập và mã ứng viên, **không thay đổi phiên bản Windows đang chạy hoặc `main`**. Các PR #57–#62 và Pxx đã được ghép có kiểm soát; không merge chồng PR nguồn. P13 đã tích hợp từ PR #80. Android được người dùng yêu cầu **để sau**.
+
+- **CI thực chứng trước đợt sửa UI:** [Actions #44900611379](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44900611379) SUCCESS tại SHA `d165a76d91899eaed2b1dc90cc32433b679a08e8`: frontend, Django/PostgreSQL, migrations, worker, backup/restore, API P13 và kiểm tra URL nhạy cảm theo fixture. Những lần CI sau đó không được suy PASS từ SHA cũ.
+- **Giao diện thật đã được chụp:** [run #44900440593](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44900440593), artifact `kho-tri-thuc-actual-ui`, 7 PNG desktop/mobile/tablet từ **built React + Django + PostgreSQL CI** với tài khoản và nội dung thử nghiệm. Đây không phải ảnh mock hoặc deployment; screenshot SHA256 trong `preview-evidence.json`. Runner QA được xóa volume sau test.
+- **P08 trình duyệt thực:** ở [run #44900498799](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44900498799), AUTH và J7 (4 độ rộng, 4 chế độ thư viện, không tràn ngang) PASS; J1 chuyển thư mục FAIL, 7 ca phụ thuộc BLOCKED, J6B/J8/J9 NOT_RUN. Trên code tiếp theo đã thêm diagnostic và tìm thấy bảng cấu trúc bị remount khi `updated_at` đổi. Fix tại `ItemScreen.tsx`, chỉnh bộ thử select; **không nâng trạng thái J1 thành PASS trước khi kết quả Chromium mới xác nhận**.
+- **P15 trình duyệt thực:** báo cáo của [run #44901254396](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44901254396) có 84 hành động bàn phím, 72 PASS / 12 FAIL, 8 BLOCKED, 4 độ rộng không tràn ngang. Đã bổ sung skip link, nhãn lựa chọn tiếng Việt, heading Markdown phân cấp và sửa trả focus của dialog Esc; **trạng thái nghiệm thu P15 vẫn mở** đến khi kiểm lại.
+- **Điều chỉnh UI chờ nghiệm thu tại HEAD mới:** cây thư mục mặc định thu gọn ở màn hình hẹp (trừ người dùng đã chọn lưu), đổi cả khi resize; định vị Ctrl+K gần tiêu đề; screenshot pipeline seed 3 ghi chú Markdown mẫu. Mã source và test mới đã push; **CI của HEAD mới cần đọc riêng**. Chưa triển khai lên Windows/thật.
+- **Các cổng còn mở ngoài Android:** Drive thật với tài khoản người dùng, MP4 seek/PDF page thực, tải 100 GB/tập video >10.000 thực, kiểm thử bảo mật thực hành và trợ năng công nghệ hỗ trợ. Mock/synthetic không thay thế bằng chứng thật. Không đưa video/token/mật khẩu cá nhân lên Git.
+- **Phục hồi:** bỏ PR #79 khỏi kế hoạch merge hoặc revert các commit của candidate; không rollback schema trên hệ thống người dùng khi chưa có backup/đánh giá ảnh hưởng.
+
+Đây là trạng thái **ứng viên thử nghiệm**; các phần KT-113/Windows LIVE_PASS phía dưới phản ánh phiên bản đã chạy trước đó, không xác nhận ứng viên PR79 đã được deploy.
+
+
 **Ngày checkpoint:** 20/11/2026 (Asia/Ho_Chi_Minh).
 **Nguồn kiểm chứng:** Windows đã chạy candidate `8daa02bf7b8a45c41b65bfc2387d686beb27f5b8` của [PR #29](https://github.com/cavoixanh638/kho-tri-thuc/pull/29), từ main `8828663`; [CI #44566379899](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44566379899) PASS. Kết quả live/restore/connector ở phần KT-113 dưới đây. Khi tiếp tục luôn kiểm GitHub head/merge/runtime thực tế, không coi SHA trong tài liệu là bất biến. Khảo sát [QLVB_System_new](https://github.com/cavoixanh638/QLVB_System_new) chỉ là tham khảo thiết kế.
 **Mục đích:** nơi duy nhất ghi **đã hoàn thành điều gì thật**. Roadmap là kế hoạch/điều kiện PASS, không là chứng cứ chạy thật.
