@@ -391,6 +391,9 @@ export function CaptureScreen({ csrf }: { csrf: string }) {
               : <Empty>Lượt gửi đầu tiên sẽ xuất hiện ở đây.</Empty>}
       </section>
     </div>
-    <ResearchClipper csrf={csrf} />
+    <details className="capture-advanced-tools">
+      <summary>Công cụ nâng cao: thu thập nguồn và trích dẫn vào ghi chú hiện có</summary>
+      <ResearchClipper csrf={csrf} />
+    </details>
   </>;
 }
