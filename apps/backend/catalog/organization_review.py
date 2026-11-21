@@ -130,6 +130,9 @@ def _match(kind, phrase, note, parts, rules):
     if kind == "project" or " " not in phrase:
         return None
     for part in parts:
+        # Metadata alone cannot certify the contents of a captured link/media.
+        if part.field not in ("ghi chú", "nội dung trích xuất"):
+            continue
         if " " + phrase + " " not in " " + normalize_phrase(part.text) + " ":
             continue
         excerpt = _quote(part.text, phrase)
