@@ -81,6 +81,15 @@ def anchor(text, quote, start=None, end=None):
 
 
 def preview(owner, payload):
+    # Reject invalid selection before any outbound fetch or expensive parsing.
+    if len(payload.quote) > MAX_TEXT or "\0" in payload.quote:
+        raise ClipError("invalid_quote")
+    try:
+        payload.quote.encode("utf-8")
+    except UnicodeEncodeError:
+        raise ClipError("invalid_quote") from None
+    if payload.mode == "selection" and not payload.quote:
+        raise ClipError("quote_required")
     target = owner_item(owner, payload.target_item_id)
     data = {
         "owner_id": owner.pk,
