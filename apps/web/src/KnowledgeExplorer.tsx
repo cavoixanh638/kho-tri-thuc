@@ -145,19 +145,21 @@ export function KnowledgeExplorer({ data, error, onRetry, selectedId, unfiled, c
     catch(error){setFailure(failure(error));}finally{setBusy(false);}
   }
   function keyboard(event: KeyboardEvent) {
+    if(event.nativeEvent.isComposing || event.keyCode===229)return;
     if(event.target instanceof HTMLElement && event.target.matches('input,textarea,select,button,summary'))return;
     const row=(event.target as HTMLElement).closest<HTMLElement>('[role="treeitem"]');if(!row)return;
     const rows=[...event.currentTarget.querySelectorAll<HTMLElement>('[role="treeitem"]')];
     const index=rows.indexOf(row);
     if(event.key==='ArrowDown'||event.key==='ArrowUp'){event.preventDefault();rows[Math.max(0,Math.min(rows.length-1,index+(event.key==='ArrowDown'?1:-1)))]?.focus();}
     if(event.key==='ArrowRight'||event.key==='ArrowLeft'){const expanded=row.getAttribute('aria-expanded');if(expanded!==null&&((event.key==='ArrowRight')!==(expanded==='true'))){event.preventDefault();row.querySelector<HTMLButtonElement>('.explorer-row > button')?.click();}}
+    if(event.key===' '&&row.hasAttribute('aria-expanded')){event.preventDefault();row.querySelector<HTMLButtonElement>('.explorer-row > button')?.click();}
     if(event.key==='Enter'){event.preventDefault();row.querySelector<HTMLAnchorElement>('.explorer-row > a')?.click();}
   }
   return <aside className="knowledge-tree-column knowledge-explorer" aria-label="Thư mục và ghi chú">
     <section className="panel knowledge-tree-panel">
       <div className="panel-heading"><h2>Thư mục và ghi chú</h2><Button size="compact-sm" variant="default" onClick={()=>setEditor({parentId:null})}>Thêm kho con</Button></div>
       <a className="knowledge-tree-root" href="#/thu-vien">Toàn bộ tri thức</a><a className="knowledge-tree-root" href="#/thu-vien?unfiled=1">Chưa xếp thư mục</a>
-      <div className="explorer-actions"><Button size="compact-sm" variant="default" onClick={()=>context.create({folder:selectedId,label:selected?.name??'Chưa xếp thư mục'})}>Thêm ghi chú tại đây</Button>{selected && <><Button size="compact-sm" variant="default" onClick={()=>setEditor({parentId:selected.id})}>Thêm thư mục con</Button><Button size="compact-sm" variant="subtle" onClick={()=>setEditor({node:selected,parentId:selected.parent_id})}>Đổi tên / chuyển nhánh</Button><Button size="compact-sm" variant="subtle" disabled={busy} onClick={()=>void archive()}>Ẩn thư mục và nhánh con</Button></>}</div>
+      <div className="explorer-actions"><Button size="compact-sm" variant="default" onClick={()=>context.create({folder:selectedId,label:selected?.name??'Chưa xếp thư mục'})}>Thêm ghi chú tại đây</Button>{selected && <><Button size="compact-sm" variant="default" onClick={()=>setEditor({parentId:selected.id})}>Thêm nhánh con</Button><Button size="compact-sm" variant="subtle" onClick={()=>setEditor({node:selected,parentId:selected.parent_id})}>Đổi tên / chuyển nhánh</Button><Button size="compact-sm" variant="subtle" disabled={busy} onClick={()=>void archive()}>Ẩn thư mục và nhánh con</Button></>}</div>
       <p className="list-meta">Kéo bài vào thư mục để chuyển vị trí chính; giữ Ctrl để thêm lối tắt. Menu Thao tác có các lựa chọn tương đương.</p>
       {error?<ErrorNotice retry={onRetry}>Chưa tải được mục lục.</ErrorNotice>:!data?<Loading/>:<nav aria-label="Cây thư mục và ghi chú" role="tree" onKeyDown={keyboard}><Branch context={context} unfiled={unfiled}/></nav>}
       {notice&&<p role="status">{notice}</p>}{failureText&&<ErrorNotice>{failureText}</ErrorNotice>}
