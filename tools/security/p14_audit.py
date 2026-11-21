@@ -68,6 +68,7 @@ class SecurityAbuseTests(unittest.TestCase):
             }
             cls.check_url = staticmethod(isolated(cls.wip_vault, "check_url", ns))
             cls.safe_path = staticmethod(isolated(cls.wip_vault, "safe_path", ns))
+            ns["safe_path"] = cls.safe_path
             cls.parse_vault = staticmethod(isolated(cls.wip_vault, "parse_vault", ns))
             cls.vault_ns = ns
 
