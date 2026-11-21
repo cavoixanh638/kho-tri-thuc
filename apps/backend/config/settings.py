@@ -94,3 +94,12 @@ FFPROBE_BINARY = os.getenv("FFPROBE_BINARY", "ffprobe")
 LOCAL_ASR_MODEL_DIR = os.getenv("LOCAL_ASR_MODEL_DIR", "")
 # Explicit development opt-in. This enables manual review only, never an AI provider.
 SUGGESTION_REVIEW_POC_ENABLED = os.getenv("SUGGESTION_REVIEW_POC_ENABLED", "0") == "1"
+
+# Provider credentials live only on the server. Discovery is read-only.
+# Future OCR requests MUST be opt-in with an explicit cost/usage policy.
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+GEMINI_ALLOW_PREMIUM_MODELS = os.getenv("GEMINI_ALLOW_PREMIUM_MODELS", "0") == "1"
+GEMINI_OCR_ENABLED = os.getenv("GEMINI_OCR_ENABLED", "0") == "1"
+GEMINI_MAX_LOCAL_REQUESTS_PER_DAY = max(
+    0, min(100_000, int(os.getenv("GEMINI_MAX_LOCAL_REQUESTS_PER_DAY", "80")))
+)

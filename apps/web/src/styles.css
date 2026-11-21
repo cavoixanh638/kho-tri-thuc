@@ -275,3 +275,24 @@ time { font-variant-numeric: tabular-nums; }
 }
 .skip-link:focus-visible { transform: translateY(0); }
 #main-content { scroll-margin-top: 12px; }
+
+
+/* Gemini model chooser: one stable compact control in Settings. */
+.gemini-choice { display: grid; gap: 9px; margin-block: 18px; }
+.gemini-choice label { font-weight: 600; font-size: 13px; }
+.gemini-choice select {
+  display: block;
+  min-height: 38px;
+  width: 100%;
+  max-width: 100%;
+  padding: 6px 9px;
+  border: 1px solid var(--control);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+.gemini-settings details { margin-top: 16px; overflow-wrap: anywhere; }
+.gemini-settings details summary { cursor: pointer; font-weight: 600; }
+.gemini-settings details ul { padding-inline-start: 20px; font-size: 12px; }
+.gemini-settings .section-note { line-height: 1.6; }
