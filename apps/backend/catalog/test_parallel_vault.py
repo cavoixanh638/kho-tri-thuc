@@ -156,8 +156,12 @@ class ParallelVaultTests(TestCase):
     def test_rejects_path_traversal_unknown_version_and_tampered_metadata(self):
         self.seed(items=1, topics=1, media=0)
         archive = export_vault(self.owner)
+        bad = io.BytesIO()
+        with zipfile.ZipFile(io.BytesIO(archive)) as source, zipfile.ZipFile(bad, "w") as output:
+            for info in source.infolist():
+                output.writestr("../evil.md" if info.filename.endswith(".md") else info.filename, source.read(info))
         with self.assertRaisesRegex(VaultError, "unsafe_archive_path"):
-            parse_vault(edit_zip(archive, {"../evil.md": b"outside"}))
+            parse_vault(bad.getvalue())
         with zipfile.ZipFile(io.BytesIO(archive)) as reader:
             manifest = json.loads(reader.read(MANIFEST))
         manifest["schema_version"] = 99
@@ -181,7 +185,20 @@ class ParallelVaultTests(TestCase):
     def test_foreign_asset_collision_rollback_atomic(self):
         self.seed(items=1, topics=1, media=1)
         archive = export_vault(self.owner)
-        Item.objects.filter(owner=self.owner).delete()
-        # No safe delete of an Item with CaptureEvent PROTECT; delete receipts first.
-        # This guard is included separately in the large roundtrip fixture.
-        self.assertIsNotNone(archive)
+        foreign = Item.objects.create(owner=self.other, kind="text", title="Foreign")
+        with zipfile.ZipFile(io.BytesIO(archive)) as reader:
+            manifest = json.loads(reader.read(MANIFEST))
+        Asset.objects.filter(item__owner=self.owner).delete()
+        foreign_asset = Asset.objects.create(
+            item=foreign, mime="video/mp4", original_filename="external.mp4",
+            sha256=manifest["assets"][0]["sha256"], size=1,
+            id=manifest["assets"][0]["id"],
+        )
+        # Existing item is unchanged; force an author-edited Markdown update.
+        item = Item.objects.get(owner=self.owner)
+        Item.objects.filter(pk=item.pk).update(note="Mới", user_edit_version=0)
+        preview = preview_import(self.owner, archive)
+        with self.assertRaisesRegex(VaultError, "vault_asset_identity_conflict"):
+            apply_import(self.owner, archive, preview["receipt"], ["*"])
+        self.assertEqual(Item.objects.get(pk=item.pk).note, "Mới")
+        self.assertEqual(Asset.objects.get(pk=foreign_asset.pk).item_id, foreign.pk)
