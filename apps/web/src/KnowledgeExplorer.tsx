@@ -14,6 +14,7 @@ type Context = { csrf: string; nodes: KnowledgeNode[]; selected: number | null; 
 const failure = (error: unknown) => error instanceof ApiError && error.status === 409 ? 'Cấu trúc đã đổi ở phiên khác. Tải lại cây rồi thử lại.' : 'Chưa thực hiện được. Kiểm tra quyền, vị trí hoặc chu trình; nội dung vẫn được giữ.';
 
 function NoteMenu({ note, context }: { note: ExplorerNote; context: Context }) {
+  const [menuOpen, setMenuOpen] = useState(false);
   const [folder, setFolder] = useState('');
   const [title, setTitle] = useState(note.title);
   const [busy, setBusy] = useState(false);
@@ -33,7 +34,7 @@ function NoteMenu({ note, context }: { note: ExplorerNote; context: Context }) {
       context.onChanged();
     } catch(error) { setError(failure(error)); } finally { setBusy(false); }
   }
-  return <details><summary aria-label={'Thao tác ghi chú ' + note.title}>Thao tác</summary><div className="explorer-menu">
+  return <details onToggle={(event)=>setMenuOpen(event.currentTarget.open)}><summary aria-label={'Thao tác ghi chú ' + note.title}>Thao tác</summary>{menuOpen && <div className="explorer-menu">
     <a href={itemHref(note.item_id)}>Mở ghi chú</a>
     <label>Đổi tên ghi chú<input value={title} maxLength={512} disabled={busy} onChange={(event)=>setTitle(event.currentTarget.value)}/></label>
     <Button size="compact-sm" variant="default" disabled={busy || !title.trim()} onClick={()=>void rename()}>Lưu tên</Button>
@@ -44,7 +45,7 @@ function NoteMenu({ note, context }: { note: ExplorerNote; context: Context }) {
     <Button size="compact-sm" variant="default" disabled={busy} onClick={()=>context.create({folder:note.home_topic_id,parent:note.item_id,label:note.title})}>Tạo ghi chú con</Button>
     <StructureParentEditor id={note.item_id} version={note.structure_version} currentParent={note.parent_item_id} csrf={context.csrf} onSaved={context.onChanged}/>
     {error && <ErrorNotice>{error}</ErrorNotice>}
-  </div></details>;
+  </div>}</details>;
 }
 
 function Branch({ context, folder, parent, unfiled = false }: { context: Context; folder?: number | null; parent?: string; unfiled?: boolean }) {
@@ -61,6 +62,7 @@ function Branch({ context, folder, parent, unfiled = false }: { context: Context
     if(unfiled) query.set('unfiled','true');
     try {
       const next = await request<Page>('/explorer/children?' + query, {signal});
+      if(!Array.isArray(next.folders)||!Array.isArray(next.notes))throw Error('invalid_explorer_page');
       if(run === current.current) setPage((previous)=>offset && previous ? {folders:[...previous.folders,...next.folders],notes:[...previous.notes,...next.notes],next_offset:next.next_offset} : next);
     } catch(error) { if(!signal?.aborted && run === current.current) setError(failure(error)); }
     finally { if(run === current.current) setBusy(false); }
