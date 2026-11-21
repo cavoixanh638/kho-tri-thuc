@@ -13,7 +13,11 @@ authenticated App; action create/move/attach/day. Mount catalog.navigation_api
 router at API root. Existing MarkdownEditor/KnowledgeText/RelatedSources are
 connected automatically. Root retains structural parent/child host integration.
 
-PASS initial TypeScript/Vite build. Unit/API/native-browser acceptance NOT_RUN
-at this checkpoint. Next:100-note/200-link owner/rename/restore contracts,
-30 Markdown AST fixtures,20 palette actions and actual Chromium acceptance,
-push tests/evidence and create PR targeting codex/notes-ux-integration.
+PASS TypeScript/Vite build;81 targeted frontend tests (34 KT124 +47 editor),
+including30 Markdown AST fixtures and20 palette actions. PostgreSQL3 tests
+PASS with100 notes/200 UUID links, rename, duplicate titles, ownership/deletion,
+pagination and exact-microsecond JSON roundtrip. No new relations on mentions.
+Native Chromium actualAPI acceptance IN_PROGRESS; earlier invocation was blocked
+by automatic approval usage limit, resumed21/11. Harness initialURL404 corrected.
+Next: finish four-width native acceptance, full frontend suite/lint, final
+evidence/PR targeting codex/notes-ux-integration. Production/Android NOT_RUN.
