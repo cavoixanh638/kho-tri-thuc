@@ -1,3 +1,5 @@
+import math
+import re
 import unicodedata
 from typing import Annotated, Literal
 from uuid import UUID
@@ -72,10 +74,29 @@ class RelatedHit(Schema):
     reason: str
     relation_type: str
     confidence: float | None
+    method_version: str
+    source_version: str
+
+
+class ExplicitHit(Schema):
+    item_id: UUID
+    title: str
+    source_version: str
+
+
+class SameGroupHit(Schema):
+    item_id: UUID
+    title: str
+    groups: list[dict]
 
 
 class RelatedPage(Schema):
     results: list[RelatedHit]
+    backlinks: list[ExplicitHit]
+    same_group: list[SameGroupHit]
+    counts: dict[str, int]
+    backlinks_scope: str
+    evidence: dict
 
 
 class Error(Schema):
@@ -217,10 +238,10 @@ def related(request, item_id: UUID):
             item_b__deleted_at__isnull=True,
         )
         .select_related("item_a", "item_b")
-        .order_by(F("confidence").desc(nulls_last=True), "id")[:30]
+        .order_by(F("confidence").desc(nulls_last=True), "id")
     )
     results = []
-    for relation in links:
+    for relation in links[:30]:
         peer = relation.item_b if relation.item_a_id == item.pk else relation.item_a
         results.append(
             {
@@ -229,6 +250,261 @@ def related(request, item_id: UUID):
                 "reason": relation.reason,
                 "relation_type": relation.relation_type,
                 "confidence": relation.confidence,
+                "method_version": relation.method_version,
+                "source_version": relation.source_version,
             }
         )
-    return {"results": results}
+    backlinks, backlink_count = _backlinks(item)
+    same_group, group_count = _same_group(item)
+    return {
+        "results": results,
+        "backlinks": backlinks,
+        "same_group": same_group,
+        "counts": {
+            "related": links.count(),
+            "backlinks": backlink_count,
+            "same_group": group_count,
+        },
+        "backlinks_scope": "inline_markdown_only",
+        "evidence": _source_evidence(item),
+    }
+
+
+def _inline_item_links(markdown):
+    """Conservative inline Markdown adapter, not a complete Markdown parser.
+
+    Only authored [label](#/muc/UUID) destinations count. References, HTML,
+    images, plain URLs, code and derived lexical matches are not backlinks.
+    Unsupported constructs may be omitted; they must not create false links.
+    """
+    markdown = re.sub(r"<!--[\s\S]*?(?:-->|$)", " ", markdown)
+    markdown = re.sub(
+        r"<(script|pre|style|textarea)\b[^>]*>[\s\S]*?(?:</\1\s*>|$)",
+        " ",
+        markdown,
+        flags=re.IGNORECASE,
+    )
+    lines, fence, html = [], None, False
+    for line in markdown.splitlines():
+        marker = re.match(r"^ {0,3}(`{3,}|~{3,})", line)
+        if fence:
+            if marker and marker[1][0] == fence[0] and len(marker[1]) >= len(fence):
+                fence = None
+            continue
+        if marker:
+            fence = marker[1]
+            continue
+        if not line.strip():
+            html = False
+        if re.search(r"</?[A-Za-z!]", line):
+            html = True
+        if (
+            html
+            or "![" in line
+            or line.startswith(("    ", "\t"))
+            or line.lstrip().startswith(">")
+        ):
+            continue
+        lines.append(line)
+    text = "\n".join(lines)
+    # Inline backtick runs can cross line boundaries. Mask an unmatched run's
+    # remainder too: conservative omission is safer than treating code as a link.
+    cursor, plain = 0, []
+    for opening in re.finditer(r"`+", text):
+        if opening.start() < cursor:
+            continue
+        plain.append(text[cursor : opening.start()])
+        plain.append(" ")
+        closing = re.search(r"(?<!`)" + opening[0] + r"(?!`)", text[opening.end() :])
+        cursor = len(text) if closing is None else opening.end() + closing.end()
+    plain.append(text[cursor:])
+    text = "".join(plain)
+    pattern = re.compile(
+        r"(?<!\S)\[[^\[\]<>\\\n]*\]\([ \t]*(<)?#/muc/([a-fA-F0-9-]{36})(?(1)>)[ \t]*\)"
+    )
+    ids = set()
+    for line in text.splitlines():
+        # Mixed/nested unparsed Markdown might place a candidate inside another
+        # link's destination/title. Omit that line rather than invent a backlink.
+        if re.search(r"[\[\]()]", pattern.sub(" ", line)):
+            continue
+        for match in pattern.finditer(line):
+            try:
+                ids.add(UUID(match[2]))
+            except ValueError:
+                pass
+    return ids
+
+
+def _backlinks(item):
+    peers = (
+        Item.objects.filter(
+            owner_id=item.owner_id,
+            deleted_at__isnull=True,
+            note__icontains=f"#/muc/{item.pk}",
+        )
+        .exclude(pk=item.pk)
+        .only("id", "title", "note", "user_edit_version")
+    )
+    hits, count = [], 0
+    for peer in peers.order_by("title", "id").iterator(chunk_size=100):
+        if item.pk in _inline_item_links(peer.note):
+            count += 1
+            if len(hits) < 30:
+                hits.append(
+                    {
+                        "item_id": peer.pk,
+                        "title": peer.title,
+                        "source_version": f"note-edit:{peer.user_edit_version}",
+                    }
+                )
+    return hits, count
+
+
+def _same_group(item):
+    peers = {}
+    for kind, (_, model, assignments) in GROUPS.items():
+        visible = groups_for(model, item.owner)
+        ids = assignments.objects.filter(
+            item=item, **{f"{kind}__in": visible}
+        ).values_list(f"{kind}_id", flat=True)
+        rows = (
+            assignments.objects.filter(
+                item__owner_id=item.owner_id,
+                item__deleted_at__isnull=True,
+                **{f"{kind}_id__in": ids},
+            )
+            .exclude(item=item)
+            .select_related("item", kind)
+            .order_by("item__title", "item_id")
+        )
+        for row in rows:
+            peer = peers.setdefault(
+                row.item_id,
+                {"item_id": row.item_id, "title": row.item.title, "groups": []},
+            )
+            group = getattr(row, kind)
+            peer["groups"].append({"kind": kind, "id": group.pk, "name": group.name})
+    ordered = sorted(
+        peers.values(), key=lambda peer: (peer["title"], str(peer["item_id"]))
+    )
+    return ordered[:30], len(ordered)
+
+
+def _safe_locator(raw, current_asset):
+    if not isinstance(raw, dict) or current_asset is False:
+        return {}
+    locator = {}
+    page = raw.get("page")
+    if type(page) is int and 1 <= page <= 1_000_000:
+        locator["page"] = page
+    start, end = raw.get("start_seconds"), raw.get("end_seconds")
+    segments = raw.get("segments")
+    if start is None and isinstance(segments, list) and 1 <= len(segments) <= 10_000:
+        previous, valid = -1, True
+        for segment in segments:
+            if not isinstance(segment, dict):
+                valid = False
+                break
+            left, right = segment.get("start"), segment.get("end")
+            if not (
+                type(left) in (int, float)
+                and type(right) in (int, float)
+                and math.isfinite(left)
+                and math.isfinite(right)
+                and previous <= left <= right <= 10**8
+            ):
+                valid = False
+                break
+            previous = left
+        if valid:
+            start, end = segments[0]["start"], segments[-1]["end"]
+    if type(start) in (int, float) and math.isfinite(start) and 0 <= start <= 10**8:
+        locator["start_seconds"] = start
+        if type(end) in (int, float) and math.isfinite(end) and start <= end <= 10**8:
+            locator["end_seconds"] = end
+    return locator
+
+
+def _source_evidence(item):
+    from processing.models import DerivedContent
+    from storage.models import StorageLocation
+
+    source_rows = list(item.sources.order_by("id")[:101])
+    asset_rows = list(item.assets.order_by("id").prefetch_related("locations")[:101])
+    sources = {
+        source.pk: {
+            "source_id": source.pk,
+            "original_url": source.original_url,
+            "asset_ids": [],
+            "parts": [],
+        }
+        for source in source_rows[:100]
+    }
+    assets = {}
+    for asset in asset_rows[:100]:
+        drive = next(
+            (
+                location
+                for location in asset.locations.all()
+                if location.provider == "google_drive"
+            ),
+            None,
+        )
+        assets[str(asset.pk)] = {
+            "asset_id": str(asset.pk),
+            "filename": asset.original_filename,
+            "mime": asset.mime,
+            "content_version": asset.content_version,
+            "status": drive.status if drive else StorageLocation.Status.PENDING,
+            "parts": [],
+            "sha256": asset.sha256,
+        }
+    parts = list(DerivedContent.objects.filter(item=item).order_by("id")[:1001])
+    unassociated = []
+    for part in parts[:1000]:
+        raw = part.source_locator if isinstance(part.source_locator, dict) else {}
+        source_id = raw.get("source_id")
+        source_id = (
+            source_id if type(source_id) is int and source_id in sources else None
+        )
+        asset = assets.get(str(part.asset_id)) if part.asset_id else None
+        # A corrupt/cross-item FK must not leak file metadata or imply association.
+        current = (
+            bool(asset["sha256"] and part.input_hash == asset["sha256"])
+            if asset
+            else None
+        )
+        evidence = {
+            "id": part.pk,
+            "kind": part.kind,
+            "status": part.status,
+            "processor": part.processor,
+            "processor_version": part.processor_version,
+            "input_hash": part.input_hash,
+            "has_text": bool(part.text.strip()),
+            "asset_id": asset["asset_id"] if asset else None,
+            "source_id": source_id,
+            "matches_current_asset": current,
+            "locator": _safe_locator(raw, current) if part.status == "active" else {},
+        }
+        if asset:
+            asset["parts"].append(evidence)
+            if source_id and asset["asset_id"] not in sources[source_id]["asset_ids"]:
+                sources[source_id]["asset_ids"].append(asset["asset_id"])
+        elif source_id and not part.asset_id:
+            sources[source_id]["parts"].append(evidence)
+        else:
+            # Unknown source/asset association stays explicit rather than guessed.
+            evidence["locator"] = {}
+            unassociated.append(evidence)
+    for asset in assets.values():
+        asset.pop("sha256")
+    return {
+        "sources": list(sources.values()),
+        "assets": list(assets.values()),
+        "unassociated_parts": unassociated,
+        "truncated": len(source_rows) > 100
+        or len(asset_rows) > 100
+        or len(parts) > 1000,
+    }
