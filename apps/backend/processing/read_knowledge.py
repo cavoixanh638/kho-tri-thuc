@@ -71,24 +71,26 @@ def source_evidence(part, item, sources):
 
 class ReadKnowledgeService:
     def read(self, item):
-        if item.note.strip():
-            return {
-                "origin": "authored",
-                "text": item.note,
-                "format": "markdown",
-                "parts": [],
-                "truncated": False,
-                "needs_review": False,
-            }
+        # Authored Markdown is always authoritative. Source citations are a
+        # separate, versioned layer; they must not disappear when a note exists.
+        authored = bool(item.note.strip())
         query = DerivedContent.objects.filter(item=item, status="active").exclude(
             text=""
         )
-        if query.filter(kind__in=TRANSCRIPTS).exists():
+        # Preserve the transcript-first reading policy only for unedited items.
+        # An authored item needs evidence from *all* its PDF/ASR/web sources.
+        if not authored and query.filter(kind__in=TRANSCRIPTS).exists():
             query = query.filter(kind__in=TRANSCRIPTS)
         sources = {source.pk: source for source in Source.objects.filter(item=item)}
         parts, used, truncated = [], 0, False
         query = query.select_related("asset").prefetch_related("asset__locations")
         for part in query.order_by("asset_id", "created_at", "id")[:1001]:
+            locator = part.source_locator if isinstance(part.source_locator, dict) else {}
+            # An unlinked extraction cannot substantiate an authored note.
+            # Keep broken *linked* sources visible, with a missing/stale warning,
+            # but do not mislabel an orphaned metadata row as a citation.
+            if authored and not part.asset_id and type(locator.get("source_id")) is not int:
+                continue
             if len(parts) >= 1000 or used >= MAX_TEXT:
                 truncated = True
                 break
@@ -116,12 +118,14 @@ class ReadKnowledgeService:
                     }
                 )
         return {
-            "origin": "extracted" if parts else "missing",
-            "text": "",
-            "format": "text",
+            "origin": "authored" if authored else ("extracted" if parts else "missing"),
+            "text": item.note if authored else "",
+            "format": "markdown" if authored else "text",
             "parts": parts,
             "truncated": truncated,
-            "needs_review": any(
+            # The curated note has already been authored. ASR citations still
+            # carry their individual processor provenance for review in the UI.
+            "needs_review": not authored and any(
                 part["processor"] == "faster-whisper" for part in parts
             ),
         }
