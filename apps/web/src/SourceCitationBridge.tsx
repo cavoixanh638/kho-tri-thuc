@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ErrorNotice, Loading, useResource } from './views';
-import { resolveLocator, SourceLocatorCitation, type SourcePart, type SourceViewer } from './SourceLocator';
+import { resolveLocator, SourceLocatorCitation, transcriptSegments, type SourcePart, type SourceViewer } from './SourceLocator';
 
 export type CitationPart = SourcePart & { text: string; format: string };
 type Knowledge = { origin: string; text: string; parts: CitationPart[]; truncated: boolean; needs_review: boolean };
@@ -29,6 +29,26 @@ function sourceName(part: CitationPart): string {
   return 'Tài liệu nguồn';
 }
 
+function TranscriptCitationSegments({ part, viewer, onIllustration }: {
+  part: CitationPart; viewer?: SourceViewer; onIllustration?: (assetId: string) => void;
+}) {
+  const segments = transcriptSegments(part.locator);
+  const [shown, setShown] = useState(10);
+  return <div className="source-citation-segments">
+    <p>Các mốc bản chép lời có vị trí do bộ trích xuất cung cấp:</p>
+    <ol>
+      {segments.slice(0, shown).map((segment, index) => <li key={index}>
+        <p className="prose-text">{segment.text}</p>
+        <SourceLocatorCitation part={{ ...part, locator: segment.locator }} viewer={viewer} onIllustration={onIllustration} />
+      </li>)}
+    </ol>
+    {shown < segments.length && <button className="source-citations-more" type="button"
+      onClick={() => setShown((count) => Math.min(count + 10, segments.length))}>
+      Xem thêm mốc nguồn ({segments.length - shown} còn lại)
+    </button>}
+  </div>;
+}
+
 export function SourceCitationList({ parts, sourceViewers = [], onIllustration, truncated = false }: CitationProps) {
   const [visible, setVisible] = useState(20);
   if (!parts.length) return null;
@@ -43,7 +63,8 @@ export function SourceCitationList({ parts, sourceViewers = [], onIllustration, 
           <p>{part.text.slice(0, 320)}{part.text.length > 320 ? '…' : ''}</p>
         </details>
         {part.processor === 'faster-whisper' && <p className="notice">Bản chép lời tự động; cần đối chiếu với âm thanh gốc.</p>}
-        <SourceLocatorCitation part={part} viewer={viewer} onIllustration={onIllustration} />
+        {transcriptSegments(part.locator).length ? <TranscriptCitationSegments part={part} viewer={viewer} onIllustration={onIllustration} />
+          : <SourceLocatorCitation part={part} viewer={viewer} onIllustration={onIllustration} />}
       </li>)}
     </ol>
     {visible < entries.length && <button className="source-citations-more" type="button" onClick={() => setVisible((count) => Math.min(count + 20, entries.length))}>Xem thêm dẫn chứng ({entries.length - visible} còn lại)</button>}
