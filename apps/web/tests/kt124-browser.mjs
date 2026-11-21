@@ -63,6 +63,7 @@ try {
       await wait(() => !document.querySelector('dialog').open);
     }
     assert.equal(await page.eval(() => document.documentElement.scrollWidth > innerWidth), false);
+    assert.ok(await page.eval(() => parseFloat(getComputedStyle(document.querySelector('.knowledge-text h6')).fontSize) >= 11));
     await page.screenshot({ path: path.join(out, 'navigation-' + width + '.png'), format: 'png' });
     report.widths.push({ width, no_overflow: true, commands: 5 });
   }
