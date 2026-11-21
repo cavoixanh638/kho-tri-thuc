@@ -148,7 +148,7 @@ class ParallelVaultTests(TestCase):
         archive = export_vault(self.owner)
         receipt = preview_import(self.owner, archive)["receipt"]
         Item.objects.filter(pk=item.pk).update(note="Đổi ngay", user_edit_version=1)
-        with self.assertRaisesRegex(VaultError, "preview_database_changed"):
+        with self.assertRaisesRegex(VaultError, "vault_import_conflict"):
             apply_import(self.owner, archive, receipt, ["*"])
         with self.assertRaisesRegex(VaultError, "scope_mismatch"):
             apply_import(self.other, archive, receipt, ["*"])
