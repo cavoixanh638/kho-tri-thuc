@@ -14,6 +14,7 @@ from ninja import NinjaAPI, Schema, Status
 from processing.clip_api import router as clip_router
 from processing.content_api import router as content_router
 from processing.knowledge_api import router as knowledge_router
+from processing.gemini_api import router as gemini_router
 from processing.retry_api import router as retry_router
 from processing.suggestion_api import router as suggestion_router
 from processing.thumbnail_api import router as thumbnail_router
@@ -42,6 +43,7 @@ api.add_router("", knowledge_router)
 api.add_router("", retry_router)
 api.add_router("", suggestion_router)
 api.add_router("", thumbnail_router)
+api.add_router("", gemini_router)
 api.add_router("/uploads", upload_router)
 api.add_router("", asset_viewer_router)
 
