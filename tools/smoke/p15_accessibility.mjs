@@ -29,11 +29,11 @@ function staticAudit() {
     'LibraryViews.css', 'SavedCollections.css', 'NoteNavigation.css'];
   const src = Object.fromEntries(files.map(f => [f, readFileSync(resolve(root, 'apps/web/src', f), 'utf8')]));
   const specs = [
-    ['S01', 'App.tsx', /<main className="shell canvas">/, 'present', 'Semantic main landmark'],
-    ['S02', 'App.tsx', /skip[- ]link|Bỏ qua.*(?:điều hướng|nội dung)|href=["']#(?:main|content|main-content)["']/i, 'absent', 'No skip-to-main link in App'],
+    ['S01', 'App.tsx', /<main id="main-content" className="shell canvas" tabIndex=\{-1\}>/, 'present', 'Semantic named main landmark'],
+    ['S02', 'App.tsx', /skip[- ]link|Bỏ qua.*(?:điều hướng|nội dung)|href=["']#(?:main|content|main-content)["']/i, 'present', 'Skip-to-main keyboard link implemented'],
     ['S03', 'KnowledgeExplorer.tsx', /<li key=\{key\} role="treeitem"[^>]*tabIndex=\{0\}/g, 'multiple', 'Two treeitem templates tabIndex=0; no roving Tab index'],
-    ['S04', 'SavedCollections.tsx', /<select multiple aria-label=\{kind \+ '-' \+ operator\}/, 'present', 'Technical English aria labels override visible Vietnamese labels'],
-    ['S05', 'KnowledgeText.tsx', /h1:.*<h3.*h2:.*<h3/, 'present', 'Markdown H1 and H2 both render as H3'],
+    ['S04', 'SavedCollections.tsx', /<select multiple aria-label=\{kind \+ '-' \+ operator\}/, 'absent', 'Vietnamese multi-select labels replace technical English'],
+    ['S05', 'KnowledgeText.tsx', /h1:.*<h3.*h2:.*<h3/, 'absent', 'Markdown H1 and H2 no longer flatten together'],
     ['S06', 'KnowledgeCommandPalette.tsx', /<dialog[^>]*aria-labelledby/, 'present', 'Named native dialog'],
     ['S07', 'KnowledgeCommandPalette.tsx', /role="listbox"[^>]*aria-label/, 'present', 'Named listbox'],
     ['S08', 'KnowledgeCommandPalette.tsx', /<button key=\{choice.id\}[^>]*role="option"/, 'present', 'Focusability of options warrants keyboard review'],
@@ -50,7 +50,7 @@ function staticAudit() {
     const found = seen > 0;
     const pass = expected === 'absent' ? !found : expected === 'multiple' ? seen >= 2 : found;
     const line = found ? s.slice(0, matches[0].index).split('\n').length : null;
-    const kind = ['S02', 'S03', 'S04', 'S05'].includes(id) ? 'SOURCE_FINDING'
+    const kind = ['S03'].includes(id) ? 'SOURCE_FINDING'
       : ['S08', 'S10', 'S11'].includes(id) ? 'NEEDS_BROWSER_CONFIRMATION' : 'POSITIVE_SOURCE_EVIDENCE';
     return { id, file: 'apps/web/src/' + f, line, matches: seen, expected, matched: pass,
       status: pass ? kind : 'SOURCE_PATTERN_CHANGED', note };
