@@ -13,7 +13,6 @@ from django.db import close_old_connections, connection
 from django.test import Client, TransactionTestCase
 from django.test.utils import CaptureQueriesContext
 from django.utils import timezone
-
 from ingestion.models import CaptureEvent
 from jobs.models import Job
 from storage.models import Asset

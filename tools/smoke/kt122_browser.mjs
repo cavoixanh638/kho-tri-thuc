@@ -48,6 +48,13 @@ try{
  assert.equal(placement.home_topic_id,folder);assert.equal(placement.memberships.length,2);
  assert.deepEqual((await api('/items/'+parentId+'/captures')).data.results,before);
  report.checks.push('Actual menu adds shortcut without movinghome/changing ItemUUID/CaptureEvent PASS');
+ const target=await page.eval(home=>{const link=document.querySelector('.knowledge-explorer a[href="#/thu-vien?node='+home+'"]');const r=link.closest('.explorer-row').getBoundingClientRect();return{x:r.x+r.width/2,y:r.y+r.height/2};},home);
+ for(const type of ['dragEnter','dragOver','drop'])await page.send('Input.dispatchDragEvent',{type,x:target.x,y:target.y,data:{items:[{mimeType:'application/x-kho-tri-thuc',data:JSON.stringify({kind:'note',id:parentId,version:placement.structure_version})}],dragOperationsMask:1}});
+ let afterDrop;
+ for(let i=0;i<50;i++){afterDrop=(await api('/items/'+parentId+'/placement')).data;if(afterDrop.home_topic_id===home)break;await new Promise(r=>setTimeout(r,100));}
+ assert.equal(afterDrop.home_topic_id,home);assert.equal(afterDrop.memberships.length,2);
+ assert.deepEqual((await api('/items/'+parentId+'/captures')).data.results,before);
+ report.checks.push('Native Chromium drag delivery performs actual versioned move without newEvent or duplicateItem PASS');
  for(const width of [1920,1440,768,390]){
   await page.setViewport({width,height:width===1920?1080:900});
   await page.eval(folder=>location.hash='#/thu-vien?node='+folder,folder);
