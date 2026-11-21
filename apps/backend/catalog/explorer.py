@@ -2,8 +2,8 @@
 
 from django.contrib.auth import get_user_model
 from django.db import transaction
-from django.db.models import Count, Exists, OuterRef, Q
-from django.db.models.functions import Substr
+from django.db.models import Count, Exists, IntegerField, OuterRef, Q, Subquery
+from django.db.models.functions import Coalesce, Substr
 from ingestion.services import CaptureSubmission, submit_capture
 
 from .models import Item, ItemTopic, Topic
@@ -46,7 +46,7 @@ def title(item):
     )
 
 
-def summarize(item, folder_id=None):
+def summarize(item, folder_id=None, *, unfiled=False):
     live_parent = bool(item.parent_item_id and getattr(item, "parent_active", False))
     return {
         "item_id": str(item.pk),
@@ -58,7 +58,8 @@ def summarize(item, folder_id=None):
         "structure_version": item.structure_version,
         "child_count": getattr(item, "child_count", 0),
         "shortcut": bool(
-            folder_id is not None and (live_parent or item.home_topic_id != folder_id)
+            (folder_id is not None and (live_parent or item.home_topic_id != folder_id))
+            or (unfiled and live_parent)
         ),
         "source_fetch": item.source_fetch,
         "asset_storage": item.asset_storage,
@@ -97,9 +98,32 @@ def item_query(owner_id):
     )
 
 
+
+def without_visible_folder(query, owner_id):
+    """A note is unfiled only when it has no visible Topic placement.
+
+    Structural note parents do not implicitly supply a folder. Archived
+    memberships/home folders are invisible; active shortcuts still count.
+    """
+    placements = ItemTopic.objects.filter(
+        item_id=OuterRef("pk"), topic__owner_id=owner_id, topic__archived=False
+    )
+    return (
+        query.alias(_has_visible_placement=Exists(placements))
+        .filter(_has_visible_placement=False)
+        .exclude(home_topic__owner_id=owner_id, home_topic__archived=False)
+    )
+
+
 def children(
     owner_id, *, folder_id=None, parent_item_id=None, unfiled=False, offset=0, limit=50
 ):
+    """One bounded folder-first stream; next_offset is across both node types."""
+    if (parent_item_id is not None and (folder_id is not None or unfiled)) or (
+        folder_id is not None and unfiled
+    ):
+        raise ExplorerError("invalid_scope")
+
     if parent_item_id is not None:
         parent = active_item(owner_id, parent_item_id)
         notes = item_query(owner_id).filter(parent_item_id=parent.pk)
@@ -111,31 +135,45 @@ def children(
         )
         notes = item_query(owner_id)
         if folder_id is not None:
-            notes = notes.filter(itemtopic__topic_id=folder_id)
-        else:
-            # Root is the canonical home for never-placed or archived-home notes.
+            # A valid primary home must remain reachable even when a legacy
+            # ItemTopic row is missing. Other memberships are shortcuts.
             notes = notes.filter(
-                Q(home_topic_id__isnull=True) | Q(home_topic__archived=True)
-            ).filter(parent_active=False)
-        if unfiled:
-            folders = Topic.objects.none()
-            notes = (
-                item_query(owner_id)
-                .filter(Q(home_topic_id__isnull=True) | Q(home_topic__archived=True))
-                .filter(parent_active=False)
+                Q(itemtopic__topic_id=folder_id) | Q(home_topic_id=folder_id)
             )
+        elif unfiled:
+            folders = Topic.objects.none()
+            notes = without_visible_folder(notes, owner_id)
+        else:
+            # Root contains canonical placements not under a live note parent.
+            notes = notes.exclude(
+                home_topic__owner_id=owner_id, home_topic__archived=False
+            ).filter(parent_active=False)
+
+    # Home-only legacy records and M:N shortcuts are counted once per Item.
+    # The correlated count never loads bodies/Assets and is bounded by the
+    # returned folder slice, not all children of the account.
+    direct_items = (
+        Item.objects.filter(owner_id=owner_id, deleted_at__isnull=True)
+        .filter(
+            Q(home_topic_id=OuterRef("pk"))
+            | Q(itemtopic__topic_id=OuterRef("pk"))
+        )
+        .order_by()
+        .values("owner_id")
+        .annotate(total=Count("pk", distinct=True))
+        .values("total")[:1]
+    )
     folders = folders.annotate(
-        direct_count=Count(
-            "itemtopic__item",
-            filter=Q(
-                itemtopic__item__owner_id=owner_id,
-                itemtopic__item__deleted_at__isnull=True,
-            ),
-            distinct=True,
+        direct_count=Coalesce(
+            Subquery(direct_items, output_field=IntegerField()),
+            0,
+            output_field=IntegerField(),
         )
     ).order_by("sort_order", "name", "id")
-    # Folder metadata is bounded separately; no note body or Asset filename is loaded.
-    page_folders = list(folders[offset : offset + limit + 1])
+
+    folder_total = folders.count()
+    folder_end = min(offset + limit, folder_total)
+    page_folders = list(folders[min(offset, folder_total) : folder_end])
     folder_rows = [
         {
             "id": row.pk,
@@ -145,18 +183,33 @@ def children(
             "sort_order": row.sort_order,
             "direct_count": row.direct_count,
         }
-        for row in page_folders[:limit]
+        for row in page_folders
     ]
-    rows = list(
-        notes.distinct().order_by("outline_order", "id")[offset : offset + limit + 1]
-    )
+
+    remaining = limit - len(folder_rows)
+    more_folders = folder_total > offset + len(folder_rows)
+    rows = []
+    more_notes = False
+    if remaining:
+        note_offset = max(0, offset - folder_total)
+        rows = list(
+            notes.distinct().order_by("outline_order", "id")[
+                note_offset : note_offset + remaining + 1
+            ]
+        )
+        more_notes = len(rows) > remaining
+        rows = rows[:remaining]
+    elif not more_folders:
+        # A page ending exactly on the final folder still needs a cursor when
+        # notes follow it; do not issue a phantom empty page otherwise.
+        more_notes = notes.exists()
+
+    returned = len(folder_rows) + len(rows)
     return {
         "folders": folder_rows,
-        "folders_truncated": len(page_folders) > limit,
-        "notes": [summarize(row, folder_id) for row in rows[:limit]],
-        "next_offset": offset + limit
-        if len(rows) > limit or len(page_folders) > limit
-        else None,
+        "folders_truncated": more_folders,
+        "notes": [summarize(row, folder_id, unfiled=unfiled) for row in rows],
+        "next_offset": offset + returned if more_folders or more_notes else None,
     }
 
 
