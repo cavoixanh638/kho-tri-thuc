@@ -1,6 +1,6 @@
 // Synthetic public fixtures. HTML expectations are independent of the renderer.
 export const fixtures = [
-  ['heading', '# Tiếng Việt', 'h3', 'Tiếng Việt'],
+  ['heading', '# Tiếng Việt', 'h2', 'Tiếng Việt'],
   ['heading2', '## Ghi nhớ', 'h3', 'Ghi nhớ'],
   ['heading3', '### Phân tích', 'h4', 'Phân tích'],
   ['paragraph', 'Một bài viết tiếng Việt.', 'p', 'Một bài viết tiếng Việt.'],
@@ -25,7 +25,7 @@ export const fixtures = [
   ['soft-break', 'Dòng một\nDòng hai', 'p', 'Dòng một\nDòng hai'],
   ['blank-lines', '\n\nĐoạn một\n\n\nĐoạn hai\n\n', 'p', 'Đoạn một'],
   ['spaces', '  giữ khoảng trắng  ', 'p', 'giữ khoảng trắng'],
-  ['crlf', '# Đầu\r\n\r\nMột\r\nHai\r\n', 'h3', 'Đầu'],
+  ['crlf', '# Đầu\r\n\r\nMột\r\nHai\r\n', 'h2', 'Đầu'],
   ['cr', '## Đầu\r\rĐoạn sau\r', 'h3', 'Đầu'],
   ['mixed-endings', 'Đầu\r\nGiữa\nCuối\r', 'p', 'Đầu\r\nGiữa\nCuối'],
   ['nfd', 'Tiếng Việt', 'p', 'Tiếng Việt'],
