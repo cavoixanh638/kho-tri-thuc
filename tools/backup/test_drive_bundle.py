@@ -91,7 +91,7 @@ class DriveBundleTests(unittest.TestCase):
                 {
                     "schema_version": backup.SCHEMA_VERSION,
                     "postgres_major": backup.PG_MAJOR,
-                    "collections": {name: [] for name in backup.COLLECTIONS},
+                    "collections": {name: [] for name in backup.collections_for_version(backup.SCHEMA_VERSION)},
                 }
             ),
             encoding="utf-8",
@@ -106,7 +106,7 @@ class DriveBundleTests(unittest.TestCase):
             (self.bundle / backup.MANIFEST).read_text(encoding="utf-8")
         )
         manifest["schema_version"] = 1
-        del manifest["collections"]["knowledge_exports"]
+        manifest["collections"] = {name: [] for name in backup.collections_for_version(1)}
         (self.bundle / backup.MANIFEST).write_text(
             json.dumps(manifest), encoding="utf-8"
         )
@@ -122,6 +122,7 @@ class DriveBundleTests(unittest.TestCase):
             (self.bundle / backup.MANIFEST).read_text(encoding="utf-8")
         )
         manifest["schema_version"] = 2
+        manifest["collections"] = {name: [] for name in backup.collections_for_version(2)}
         (self.bundle / backup.MANIFEST).write_text(
             json.dumps(manifest), encoding="utf-8"
         )
