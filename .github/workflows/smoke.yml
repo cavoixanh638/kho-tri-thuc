@@ -82,6 +82,29 @@ jobs:
           P13_QA_PASSWORD: kt-smoke-fixture-only
         run: node tools/smoke/p13_share_api.mjs
 
+      - name: Capture real built-App UI screenshots on synthetic CI data
+        env:
+          KT_PREVIEW_ISOLATED: 'YES'
+          KT_PREVIEW_URL: http://127.0.0.1:5173
+          KT_PREVIEW_USER: kt-smoke
+          KT_PREVIEW_PASSWORD: kt-smoke-fixture-only
+        run: |
+          browser="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || true)"
+          if [ -z "$browser" ]; then
+            echo "Chromium/Chrome unavailable on CI runner"; exit 1
+          fi
+          export KT_JOURNEY_CHROMIUM="$browser"
+          node tools/smoke/preview_capture.mjs
+
+      - name: Upload real-App screenshots and SHA evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: kho-tri-thuc-actual-ui
+          path: tmp/kt-preview-ui/
+          if-no-files-found: warn
+          retention-days: 14
+
       - name: Verify Compose backup and restore to a fresh database
         run: |
           bundle="$RUNNER_TEMP/kho-tri-thuc-backup"
