@@ -27,7 +27,13 @@ export function KnowledgeCommandPalette({ currentItemId, onAction }: { currentIt
     ] as [KnowledgeCommand, string][]).filter(([, label]) => !query || label.toLocaleLowerCase('vi').includes(query.toLocaleLowerCase('vi')))
       .map(([action, label]) => ({ id: 'command-' + action, label, action })),
   ];
-  function close() { setOpen(false); trigger.current?.focus(); }
+  function close() {
+    // Restore focus only after leaving the modal top layer. Chromium otherwise
+    // refuses to focus the trigger while <dialog> is still open.
+    dialog.current?.close();
+    setOpen(false);
+    trigger.current?.focus();
+  }
   function choose(choice: Choice) {
     close();
     if (choice.href) window.location.hash = choice.href;
