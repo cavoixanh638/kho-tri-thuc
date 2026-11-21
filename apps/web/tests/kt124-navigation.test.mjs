@@ -51,6 +51,12 @@ for (let index = 0; index < 30; index++) test('Markdown AST outline preserves Un
   await render(ui.KnowledgeText, { text: raw });
   const links = [...container.querySelectorAll('.note-outline a')];
   assert.equal(links.length, 6);
+  assert.deepEqual(
+    [...container.querySelectorAll('.knowledge-text h2,.knowledge-text h3,.knowledge-text h4,.knowledge-text h5,.knowledge-text h6')]
+      .map((node) => node.tagName),
+    ['H2', 'H3', 'H4', 'H4', 'H5', 'H6'],
+    'Markdown H1 must remain distinguishable from H2 under the page title',
+  );
   assert.equal(new Set(links.map((node) => node.getAttribute('href'))).size, 6);
   assert.equal(container.querySelectorAll('script').length, 0);
   assert.equal(raw, copy);
@@ -92,7 +98,10 @@ test('palette opens visibly and keyboard triggers 20 commands without stealing I
   assert.equal(container.querySelector('dialog').open, false); field.remove();
   await ui.act(async () => window.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'k', ctrlKey: true, bubbles: true })));
   assert.equal(container.querySelector('dialog').open, true);
-  await key('.knowledge-palette input', 'Escape'); assert.equal(container.querySelector('dialog').open, false);
+  await key('.knowledge-palette input', 'Escape');
+  assert.equal(container.querySelector('dialog').open, false);
+  assert.equal(document.activeElement, container.querySelector('.knowledge-palette-trigger'),
+    'Escape should return keyboard focus to the dialog opener');
 });
 test('link context keeps outgoing references separate from unlinked mention candidates', async () => {
   await render(ui.NoteLinkContext, { id: target.item_id });
