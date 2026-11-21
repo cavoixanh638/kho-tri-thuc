@@ -12,6 +12,7 @@ from django.db import transaction
 from django.http import Http404
 from ingestion.models import CaptureEvent
 from ingestion.services import CaptureSubmission, submit_capture
+from ingestion.source_identity import source_identity
 from jobs.repository import JobRepository
 
 from .models import ClipAnnotation, DerivedContent
@@ -95,6 +96,8 @@ def preview(owner, payload):
         "text": "",
         "verification": "link_only",
         "truncated": False,
+        "fetch_status": "not_requested",
+        "http_status": None,
     }
     if payload.derived_id is not None:
         part = (
@@ -140,7 +143,7 @@ def preview(owner, payload):
         for key in ("page", "start_seconds", "end_seconds"):
             if key in locator:
                 located[key] = locator[key]
-        data.update(locator=located, verification="current")
+        data.update(locator=located, verification="current", fetch_status="local_derived")
     else:
         data["url"] = safe_url(payload.url)
         if payload.mode != "link":
@@ -148,6 +151,9 @@ def preview(owner, payload):
                 payload.url, timeout_seconds=8, max_body_bytes=1024 * 1024
             )
             text = source_text(result.text or "") or ""
+            data["fetch_status"] = str(result.status)
+            provenance = getattr(result, "provenance", None)
+            data["http_status"] = getattr(provenance, "http_status", None)
             data["truncated"] = len(text) > MAX_TEXT
             if len(text) > MAX_TEXT:
                 text = text[:MAX_TEXT]
@@ -174,7 +180,7 @@ def preview(owner, payload):
     return {
         **{
             k: data[k]
-            for k in ("mode", "quote", "url", "page_title", "verification", "locator", "truncated")
+            for k in ("mode", "quote", "url", "page_title", "verification", "locator", "truncated", "fetch_status", "http_status")
         },
         "source_version": data["source_version"],
         "expires_in": 300,
@@ -195,10 +201,16 @@ def submit(owner, receipt, key):
 
     def persist(event):
         part = None
+        # Ingestion deduplicates by canonical identity, not the raw URL spelling.
+        # Reuse that same identity when attaching evidence to an existing Source.
+        identity = source_identity(data["url"]) if data["url"] else None
         source = (
-            Source.objects.filter(item=event.item, original_url=data["url"])
-            .order_by("pk")
-            .first()
+            Source.objects.filter(
+                item=event.item,
+                canonical_url=identity.canonical_url,
+                identity_hash=identity.identity_hash,
+            ).order_by("pk").first()
+            if identity else None
         )
         if data["part_id"] is not None:
             part = (
@@ -319,6 +331,21 @@ def submit(owner, receipt, key):
     annotation = ClipAnnotation.objects.filter(capture=event).first()
     if not annotation:
         raise ClipError("idempotency_key_used_for_another_capture")
+    # A retry may only replay the *same* signed clip. Ingestion intentionally
+    # deduplicates on key alone; without this comparison a different receipt
+    # could silently be acknowledged as the earlier quote/source.
+    if (
+        annotation.item_id != event.item_id
+        or annotation.mode != data["mode"]
+        or annotation.quote != data["quote"]
+        or annotation.source_url != data["url"]
+        or annotation.source_version != data["source_version"]
+        or annotation.processor_version != data["processor_version"]
+        or annotation.locator != data["locator"]
+        or annotation.verification != data["verification"]
+        or (data["part_id"] is not None and annotation.part_id != data["part_id"])
+    ):
+        raise ClipError("clip_idempotency_receipt_conflict")
     return {
         "capture_id": str(event.pk),
         "item_id": str(event.item_id),
