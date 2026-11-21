@@ -44,7 +44,8 @@ MAX_EVENTS = 50000
 MAX_ASSETS = 20000
 SENSITIVE = re.compile(
     r"(?:access[_-]?token|refresh[_-]?token|client[_-]?secret|api[_-]?key|"
-    r"authorization|x-goog-signature|x-amz-signature|signature|signed_url)"
+    r"authorization|cookie|password|private[_-]?key|session[_-]?token|"
+    r"drive[_-]?file[_-]?id|x-goog-signature|x-amz-signature|signature|signed_url)"
     r"\s*(?:=|:)", re.IGNORECASE,
 )
 INTERNAL = re.compile(r"^#/muc/([0-9a-fA-F-]{36})$")
@@ -63,7 +64,7 @@ ASSIGN_FIELDS = (
 )
 SOURCE_FIELDS = (
     "item_id", "original_url", "canonical_url", "identity_hash", "platform",
-    "platform_id", "captured_at", "published_at", "metadata",
+    "platform_id", "captured_at", "published_at",
 )
 ASSET_FIELDS = (
     "id", "item_id", "role", "mime", "size", "sha256", "original_filename",
@@ -357,8 +358,6 @@ def _validate(data):
         _safe_url(row.get("canonical_url"))
         _timestamp(row.get("captured_at"))
         _timestamp(row.get("published_at"), nullable=True)
-        if not isinstance(row.get("metadata"), dict):
-            raise VaultError("invalid_source")
         for field, limit in (("identity_hash", 64), ("platform", 24), ("platform_id", 255)):
             _safe_text(row.get(field), limit)
     assets = set()
@@ -411,6 +410,8 @@ def export_vault(owner) -> bytes:
     ids = [row["id"] for row in notes]
     topics = _plain(list(Topic.objects.filter(owner=owner).order_by("id").values(*TOPIC_FIELDS)))
     placements = _plain(list(ItemTopic.objects.filter(item_id__in=ids, topic__owner=owner).order_by("item_id", "topic_id").values(*ASSIGN_FIELDS)))
+    # Source.metadata is uncontrolled extractor JSON and may carry cookies or
+    # provider identifiers. Portable format exports only allowlisted safe fields.
     sources = _plain(list(Source.objects.filter(item_id__in=ids).order_by("item_id", "id").values(*SOURCE_FIELDS)))
     assets = _plain(list(Asset.objects.filter(item_id__in=ids).order_by("item_id", "id").values(*ASSET_FIELDS)))
     events = _plain(list(CaptureEvent.objects.filter(owner=owner, item_id__in=ids).order_by("item_id", "id").values(*EVENT_FIELDS)))
