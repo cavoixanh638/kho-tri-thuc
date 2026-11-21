@@ -121,6 +121,24 @@ if (prerequisitesReady) {
         else record(report, id, 'PASS', typeof outcome === 'string' ? outcome : 'Assertions passed', { durationMs: Math.round(performance.now() - started) });
       } catch (error) {
         const reason = cleanError(error);
+        if (id === 'J1' && context.child && page) {
+          try {
+            const ui = await page.eval(() => {
+              const panel = document.querySelector('[aria-label="Cấu trúc bài cha và bài con"]');
+              const select = panel?.querySelector('select');
+              const visible = panel?.textContent?.replace(/\\s+/g, ' ').slice(0, 600) || '';
+              return { selected_folder: select?.value ?? null,
+                selected_disabled: select?.disabled ?? null,
+                structure_text: visible,
+                error_labels: [...document.querySelectorAll('[role="alert"]')].map(x => x.textContent?.slice(0, 140)) };
+            });
+            const actual = await api('/items/' + context.child + '/placement');
+            report.j1_diagnostic = { ui, placement_http: actual.status,
+              home_topic_id: actual.data?.home_topic_id ?? null,
+              structure_version: actual.data?.structure_version ?? null,
+              memberships: actual.data?.memberships?.map(m => ({ folder_id: m.folder_id, shortcut: m.shortcut })) ?? [] };
+          } catch { /* diagnostic is best effort, never substitutes for failed acceptance */ }
+        }
         const blockedPolicy = id === 'AUTH' && /ERR_BLOCKED_BY_ADMINISTRATOR/.test(reason);
         let evidence = [];
         if (page && !blockedPolicy) { try { evidence = [(await screenshot(`p08-fail-${id}.png`)).filename]; } catch { /* cannot capture */ } }
