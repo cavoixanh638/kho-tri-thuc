@@ -31,6 +31,9 @@ jobs:
       - name: Test all frontend DOM and unit suites (native browser harnesses are separate)
         run: docker compose exec -T web npm test
 
+      - name: Check P13 share-target and Vietnamese IME source contracts
+        run: node tools/smoke/p13_share_contract.mjs
+
       - name: Test readiness harness isolation without touching any database
         run: python3 -m unittest discover -s tools/readiness -p test_safety.py -v
 
@@ -71,6 +74,13 @@ jobs:
         run: |
           docker compose exec -T -e DJANGO_SUPERUSER_PASSWORD=kt-smoke-fixture-only api python manage.py createsuperuser --noinput --username kt-smoke --email kt-smoke@example.invalid
           python3 tools/smoke/capture.py
+
+      - name: Test P13 idempotent Android share through isolated QA PostgreSQL
+        env:
+          P13_QA_ISOLATED: 'YES'
+          P13_QA_USER: kt-smoke
+          P13_QA_PASSWORD: kt-smoke-fixture-only
+        run: node tools/smoke/p13_share_api.mjs
 
       - name: Verify Compose backup and restore to a fresh database
         run: |
