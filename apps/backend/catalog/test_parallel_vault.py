@@ -21,9 +21,14 @@ from .vault import (
 def edit_zip(data, replacements):
     result = io.BytesIO()
     with zipfile.ZipFile(io.BytesIO(data)) as reader, zipfile.ZipFile(result, "w") as writer:
+        existing = set()
         for entry in reader.infolist():
+            existing.add(entry.filename)
             raw = replacements.get(entry.filename, reader.read(entry))
             writer.writestr(entry.filename, raw)
+        for name, raw in replacements.items():
+            if name not in existing:
+                writer.writestr(name, raw)
     return result.getvalue()
 
 
