@@ -77,3 +77,69 @@ class ClipAnnotation(models.Model):
                 fields=["item", "-created_at", "id"], name="clip_item_created_idx"
             )
         ]
+
+
+class GeminiModelCatalog(models.Model):
+    """Untrusted discovery metadata; 'reviewed' does not mean quota is available."""
+
+    model_id = models.CharField(max_length=128, primary_key=True)
+    label = models.CharField(max_length=128)
+    description = models.CharField(max_length=512, blank=True)
+    generation_methods = models.JSONField(default=list)
+    input_token_limit = models.PositiveIntegerField(default=0)
+    output_token_limit = models.PositiveIntegerField(default=0)
+    active = models.BooleanField(default=True)
+    reviewed = models.BooleanField(default=False)
+    first_seen_at = models.DateTimeField(auto_now_add=True)
+    last_seen_at = models.DateTimeField()
+    missing_sync_count = models.PositiveSmallIntegerField(default=0)
+
+
+class GeminiCatalogState(models.Model):
+    """Singleton scheduler lease; failure never clears the last good catalog."""
+
+    id = models.PositiveSmallIntegerField(primary_key=True, default=1)
+    last_attempt_at = models.DateTimeField(null=True, blank=True)
+    last_success_at = models.DateTimeField(null=True, blank=True)
+    next_refresh_at = models.DateTimeField(null=True, blank=True)
+    last_error_code = models.CharField(max_length=48, blank=True)
+    discovered_count = models.PositiveIntegerField(default=0)
+    newly_discovered = models.PositiveIntegerField(default=0)
+
+
+class GeminiPreference(models.Model):
+    class Mode(models.TextChoices):
+        ECONOMY = "economy", "Tiết kiệm"
+        BALANCED = "balanced", "Tự động - cân bằng"
+        QUALITY = "quality", "Chất lượng cao"
+        MANUAL = "manual", "Chọn thủ công"
+
+    owner = models.OneToOneField(
+        "auth.User", on_delete=models.CASCADE, related_name="gemini_preference"
+    )
+    mode = models.CharField(max_length=16, choices=Mode.choices, default=Mode.BALANCED)
+    manual_model_id = models.CharField(max_length=128, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class GeminiUsageEvent(models.Model):
+    """Local observation only. Never call this the provider's remaining quota."""
+
+    owner = models.ForeignKey(
+        "auth.User", on_delete=models.CASCADE, related_name="gemini_usage"
+    )
+    model_id = models.CharField(max_length=128)
+    task = models.CharField(max_length=24)
+    status = models.CharField(max_length=24)
+    input_tokens = models.PositiveIntegerField(default=0)
+    output_tokens = models.PositiveIntegerField(default=0)
+    provider_error_code = models.CharField(max_length=40, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [
+            models.Index(
+                fields=["model_id", "-created_at"],
+                name="gemini_usage_model_idx",
+            )
+        ]
