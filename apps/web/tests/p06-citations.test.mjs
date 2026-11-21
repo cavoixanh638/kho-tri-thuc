@@ -156,3 +156,21 @@ test('pagination never drops late citations and does not mutate the source list'
   assert.equal(rows.length, 45);
   assert.match(container.textContent, /rút gọn/);
 });
+
+
+test('authored ASR evidence expands timed segments without inferring time from section strings', async () => {
+  const { part } = materialize(locatorCases[14], 14);
+  const withSegments = {
+    ...part, text: 'Bản gốc không thay thế ghi chú', format: 'text',
+    locator: { section: '00:01-00:04', segments: [
+      { start: 0.125, end: 0.75, text: 'Đầu đoạn' },
+      { start: 2.5, end: 3.25, text: 'Sau đoạn' },
+    ] },
+  };
+  await render(ui.SourceCitationList, { parts: [withSegments] });
+  const states = [...container.querySelectorAll('.source-citation-segments .source-locator')].map(node => node.dataset.state);
+  assert.deepEqual(states, ['NOT_SUPPORTED', 'NOT_SUPPORTED']);
+  assert.match(container.textContent, /0:00.125/);
+  assert.match(container.textContent, /0:02.5/);
+  assert.ok(!container.textContent.includes('00:01-00:04Đến vị trí nguồn'));
+});
