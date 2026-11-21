@@ -77,7 +77,7 @@ function eventData(k) {
 }
 async function browserAudit() {
   const origin = process.env.P15_QA_URL || 'http://127.0.0.1:62315';
-  assert.equal(origin, 'http://127.0.0.1:62315', 'P15 must use the fixed isolated QA port');
+  assert.ok(['http://127.0.0.1:62315', 'http://127.0.0.1:62310'].includes(origin), 'P15 must use a fixed isolated loopback QA port');
   assert.equal(process.env.P15_SYNTHETIC_QA, '1', 'A private synthetic QA account only');
   assert.ok(process.env.P15_CDP_MODULE, 'Absolute path to existing CDP Browser helper required');
   assert.ok(process.env.P15_QA_USER && process.env.P15_QA_PASSWORD, 'QA credentials are required');
@@ -174,6 +174,10 @@ async function browserAudit() {
       await record('clipper-tab', 'Tab', visibleFocus);
       await shot('clipper');
       await route('#/thu-vien', '.knowledge-explorer');
+      await page.eval(() => {
+        const toggle=document.querySelector('.library-tree-toggle');
+        if(toggle && getComputedStyle(toggle).display !== 'none' && toggle.getAttribute('aria-expanded')==='false') toggle.click();
+      });
       const nodes = await page.eval(() => document.querySelectorAll('.knowledge-explorer [role="treeitem"]').length);
       if (nodes >= 2) {
         await focus('.knowledge-explorer [role="treeitem"]');
@@ -186,8 +190,14 @@ async function browserAudit() {
         await record('tree-expand', 'ArrowRight', () => page.eval(() => document.activeElement?.getAttribute('aria-expanded') === 'true'));
         await record('tree-collapse', 'ArrowLeft', () => page.eval(() => document.activeElement?.getAttribute('aria-expanded') === 'false'));
       } else report.blocked.push({ viewport: w, feature: 'tree expand/collapse', status: 'NOT_RUN', reason: 'Need expandable synthetic row' });
-      if (process.env.P15_QA_ITEM_ID && /^[0-9a-f-]{36}$/i.test(process.env.P15_QA_ITEM_ID)) {
-        await route('#/muc/' + process.env.P15_QA_ITEM_ID, '.markdown-item-detail');
+      const qaItemId = process.env.P15_QA_ITEM_ID || await page.eval(async () => {
+        const r=await fetch('/api/v1/items?limit=100', {credentials:'same-origin'});
+        if(!r.ok)return null;
+        const data=await r.json();
+        return data.results?.find(x => x.title === 'P08 Giáo trình')?.item_id || null;
+      });
+      if (qaItemId && /^[0-9a-f-]{36}$/i.test(qaItemId)) {
+        await route('#/muc/' + qaItemId, '.markdown-item-detail');
         await shot('note');
         if (await page.eval(() => !!document.querySelector('.note-outline a'))) {
           await focus('.note-outline a');
