@@ -1,0 +1,58 @@
+{
+  "scope": "Native Chrome + actual Django/PostgreSQL/CSRF; focused component host, no fake fetch",
+  "checks": [
+    "Native Vietnamese input/keyboard save, preview zero writes, actual persisted query/view PASS",
+    "Four saved modes retain exact Item IDs and table persists through actual reload PASS",
+    "Actual favorite mutation dynamically removes Item from saved query without copying or moving it PASS",
+    "Explicit delete removes only definition; backend tests independently assert unchanged Item/pinned memberships PASS"
+  ],
+  "sizes": [
+    {
+      "width": 1920,
+      "overflow": false,
+      "findings": [
+        {
+          "level": "WARN",
+          "id": "hero-void",
+          "width": 1920,
+          "message": "40% of the first screen is one empty block (1920×432px at 0,648).",
+          "fix": "Place the void on purpose or fill it: move the picture, the film or one fact into it, grow the headline to meet it, or shrink the screen to its content. A void reads as placed only when something closes it on the far side and it is the screen's one rest."
+        },
+        {
+          "level": "WARN",
+          "id": "ragged-row",
+          "width": 1920,
+          "message": "1 pair(s) of cards in one row end at different heights (by 256px).",
+          "fix": "Cards that share a row share a bottom edge: balance them by their content (the same number of rows, a block of similar height beside it), or stack them. In testing, ragged rows were marked down every time."
+        }
+      ]
+    },
+    {
+      "width": 1440,
+      "overflow": false,
+      "findings": [
+        {
+          "level": "WARN",
+          "id": "ragged-row",
+          "width": 1440,
+          "message": "1 pair(s) of cards in one row end at different heights (by 256px).",
+          "fix": "Cards that share a row share a bottom edge: balance them by their content (the same number of rows, a block of similar height beside it), or stack them. In testing, ragged rows were marked down every time."
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "overflow": false,
+      "findings": []
+    },
+    {
+      "width": 390,
+      "overflow": false,
+      "findings": []
+    }
+  ],
+  "production": "NOT_RUN",
+  "android": "NOT_RUN",
+  "browser": "Chrome/157.0.8103.79",
+  "status": "PASS"
+}

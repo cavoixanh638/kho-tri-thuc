@@ -1,11 +1,15 @@
 from typing import Literal
 
 from catalog.api import router as library_router
+from catalog.collection_api import router as collection_router
+from catalog.explorer_api import router as explorer_router
 from catalog.groups_api import router as groups_router
+from catalog.navigation_api import router as navigation_router
 from catalog.tree_api import router as tree_router
 from django.db import DatabaseError
 from ingestion.api import router as capture_router
 from ninja import NinjaAPI, Schema, Status
+from processing.clip_api import router as clip_router
 from processing.content_api import router as content_router
 from processing.knowledge_api import router as knowledge_router
 from processing.retry_api import router as retry_router
@@ -21,11 +25,15 @@ from .health import check_database
 api = NinjaAPI(title="Kho Tri Thức", version="1.0.0")
 api.add_router("/integrations/drive", drive_router)
 api.add_router("", library_router)
+api.add_router("", explorer_router)
 api.add_router("", groups_router)
 api.add_router("", tree_router)
+api.add_router("", navigation_router)
+api.add_router("", collection_router)
 api.add_router("", search_router)
 api.add_router("", capture_router)
 api.add_router("", content_router)
+api.add_router("", clip_router)
 api.add_router("", knowledge_router)
 api.add_router("", retry_router)
 api.add_router("", suggestion_router)

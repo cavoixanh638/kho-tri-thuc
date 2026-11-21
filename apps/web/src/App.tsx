@@ -7,6 +7,7 @@ import { ItemScreen } from './ItemScreen';
 import { LibraryScreen } from './LibraryScreen';
 import { SearchScreen } from './SearchScreen';
 import { SettingsScreen } from './SettingsScreen';
+import { KnowledgeCommandPalette } from './KnowledgeCommandPalette';
 import { ErrorNotice, Loading, PageTitle } from './views';
 
 const links = [
@@ -165,6 +166,14 @@ export function App() {
   return <>
     <Header path={path} username={session?.username} onLogout={authenticated ? () => void logout() : undefined} signingOut={signingOut} />
     <main className="shell canvas">
+      {authenticated && <KnowledgeCommandPalette currentItemId={itemId} onAction={(action) => {
+        if (action === 'day') window.location.hash = '#/thu-vien?view=timeline';
+        else if (action === 'create') {
+          if (path.startsWith('#/thu-vien')) window.dispatchEvent(new CustomEvent('knowledge-command', { detail: { action } }));
+          else window.location.hash = '#/gui';
+        } else if (itemId) window.dispatchEvent(new CustomEvent('knowledge-command', { detail: { action, itemId } }));
+        else window.location.hash = '#/thu-vien';
+      }} />}
       {logoutError && <ErrorNotice retry={() => void logout()}>Chưa đăng xuất được.</ErrorNotice>}
       {!session && <>
         <PageTitle title="Kho Tri Thức" />

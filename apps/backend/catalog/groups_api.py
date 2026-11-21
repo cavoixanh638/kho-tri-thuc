@@ -189,6 +189,9 @@ def organization(request, item_id: UUID):
 @router.patch("/items/{item_id}/organization", response={200: Organization, 422: Error})
 def change_assignments(request, item_id: UUID, patch: OrganizationPatch):
     with transaction.atomic():
+        # Same lock order as CaptureService/explorer: account, then Item.
+        from django.contrib.auth import get_user_model
+        get_user_model().objects.select_for_update().only("pk").get(pk=request.user.pk)
         item = get_object_or_404(
             Item.objects.select_for_update(), pk=item_id, owner=request.user
         )
@@ -203,6 +206,10 @@ def change_assignments(request, item_id: UUID, patch: OrganizationPatch):
             requested[field] = (assignments, ids)
 
         for field, (assignments, ids) in requested.items():
+            if field == "topic" and item.home_topic_id and item.home_topic_id not in ids:
+                item.home_topic = None
+                item.structure_version += 1
+                item.save(update_fields=["home_topic", "structure_version", "updated_at"])
             id_field = f"{field}_id"
             rows = assignments.objects.filter(item=item)
             rows.filter(Q(origin=Assignment.Origin.USER) | Q(user_pinned=True)).exclude(

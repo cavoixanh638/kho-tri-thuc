@@ -1,0 +1,7 @@
+.research-clipper { display:grid; gap:12px; }
+.research-clipper h2,.research-clipper h3 { margin:0; }
+.clip-preview { padding:16px; background:var(--ground,#f4f4f4); overflow-wrap:anywhere; }
+.clip-preview pre,.clip-source-text { white-space:pre-wrap; overflow-wrap:anywhere; max-height:360px; overflow:auto; font:inherit; line-height:1.6; }
+.clip-url { overflow-wrap:anywhere; }
+.clip-annotations article { padding-block:16px; border-top:1px solid var(--rule,#ddd); }
+.clip-annotations mark { background:#fff0b3; color:#262626; }

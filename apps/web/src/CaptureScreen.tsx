@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type SubmitEvent } from 'react';
 import { ApiError, request, type Capture, type Page, type Receipt, type Session, type UploadReceipt } from './api';
 import { CaptureList, Empty, ErrorNotice, itemHref, Loading, PageTitle, ServerTime, useResource } from './views';
 import './capture.css';
+import { ResearchClipper } from './ResearchClipper';
 
 type Kind = Capture['raw_kind'] | 'file';
 
@@ -270,5 +271,6 @@ export function CaptureScreen({ csrf }: { csrf: string }) {
               : <Empty>Lượt gửi đầu tiên sẽ xuất hiện ở đây.</Empty>}
       </section>
     </div>
+    <ResearchClipper csrf={csrf} />
   </>;
 }

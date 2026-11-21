@@ -1,0 +1,75 @@
+import assert from 'node:assert/strict';
+import {mkdirSync,writeFileSync} from 'node:fs';
+import {pathToFileURL} from 'node:url';
+import {execFileSync} from 'node:child_process';
+const base=process.env.KT122_BROWSER_URL;
+assert.equal(base,'http://127.0.0.1:62322');
+assert.ok(process.env.KT122_BROWSER_PASSWORD&&process.env.KT122_CDP_MODULE);
+const {Browser}=await import(pathToFileURL(process.env.KT122_CDP_MODULE));
+const browser=await Browser.launch({extraArgs:['--no-proxy-server']});
+const out='tmp/kt122-browser';mkdirSync(out,{recursive:true});
+const report={code_sha:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),scope:'Actual React build/Django/PostgreSQL QA; no mocked HTTP, Drive or worker',checks:[],viewports:[]};
+try{
+ const page=await browser.newPage({width:1920,height:1080,reducedMotion:true});
+ const wait=async(fn,arg)=>{for(let i=0;i<100;i++){if(await page.eval(fn,arg))return;await new Promise(r=>setTimeout(r,100));}throw Error('condition timeout '+fn.toString());};
+ const click=async(label)=>{await wait(label=>[...document.querySelectorAll('button,summary')].some(node=>!node.disabled&&(node.textContent===label||node.getAttribute('aria-label')===label)),label);await page.eval(label=>[...document.querySelectorAll('button,summary')].find(node=>node.textContent===label||node.getAttribute('aria-label')===label).click(),label);};
+ const fill=async(selector,text)=>{await wait(selector=>!!document.querySelector(selector),selector);await page.eval(selector=>{const field=document.querySelector(selector);field.focus();field.select();},selector);await page.send('Input.insertText',{text});};
+ const api=(path,method='GET',body)=>page.eval(async({path,method,body})=>{const s=await fetch('/api/v1/session').then(r=>r.json());const r=await fetch('/api/v1'+path,{method,headers:{'Content-Type':'application/json','X-CSRFToken':s.csrf_token},body:body&&JSON.stringify(body)});return{status:r.status,data:await r.json()};},{path,method,body});
+ await page.goto(base);
+ await fill('input[autocomplete=username]',process.env.KT122_BROWSER_USER??'kt122-browser');
+ await fill('input[autocomplete=current-password]',process.env.KT122_BROWSER_PASSWORD);
+ await click('Đăng nhập');await wait(()=>!!document.querySelector('.capture-compose'));
+ await page.eval(()=>location.hash='#/thu-vien');await click('Thêm kho con');
+ await fill('.knowledge-node-editor input','Kho thử KT122');await click('Lưu nhánh');
+ await wait(()=>new URLSearchParams(location.hash.split('?')[1]).has('node'));
+ const home=await page.eval(()=>Number(new URLSearchParams(location.hash.split('?')[1]).get('node')));
+ await click('Thêm nhánh con');await fill('.knowledge-node-editor input','Sách / Chương Việt');await click('Lưu nhánh');
+ await wait(home=>Number(new URLSearchParams(location.hash.split('?')[1]).get('node'))!==home,home);
+ const folder=await page.eval(()=>Number(new URLSearchParams(location.hash.split('?')[1]).get('node')));
+ await click('Thêm ghi chú tại đây');
+ await fill('.explorer-note-form input','Giáo trình Tiếng Việt');
+ const raw='# Giáo trình\n\nGiữ nguyên văn Tiếng Việt và UUID.\n';
+ await fill('.explorer-note-form textarea',raw);await click('Tạo ghi chú');await wait(()=>location.hash.startsWith('#/muc/'));
+ const parentId=await page.eval(()=>location.hash.split('/').at(-1));
+ assert.equal((await api('/items/'+parentId)).data.note,raw);assert.equal((await api('/items/'+parentId+'/placement')).data.home_topic_id,folder);
+ await page.eval(folder=>location.hash='#/thu-vien?node='+folder,folder);
+ await click('Thao tác ghi chú Giáo trình Tiếng Việt');await click('Tạo ghi chú con');
+ await fill('.explorer-note-form input','Chương một');await fill('.explorer-note-form textarea','# Chương một\n\nÝ chính có nguồn.\n');await click('Tạo ghi chú');await wait(()=>location.hash.startsWith('#/muc/'));
+ const childId=await page.eval(()=>location.hash.split('/').at(-1));
+ const structure=(await api('/items/'+childId+'/structure')).data;assert.equal(structure.parent_item_id,parentId);assert.equal(structure.ancestors[0].item_id,parentId);
+ const before=(await api('/items/'+parentId+'/captures')).data.results;
+ report.checks.push('Actual UI folder/subfolder + parent note + child note creation retainsraw and commits home/structure PASS');
+ await page.eval(folder=>location.hash='#/thu-vien?node='+folder,folder);
+ await click('Thao tác ghi chú Giáo trình Tiếng Việt');
+ await page.eval(home=>{const select=document.querySelector('.explorer-menu select');select.value=String(home);select.dispatchEvent(new Event('change',{bubbles:true}));},home);
+ await click('Thêm vào nhánh khác');
+ await wait(()=>!document.querySelector('.explorer-menu'));
+ const placement=(await api('/items/'+parentId+'/placement')).data;
+ assert.equal(placement.home_topic_id,folder);assert.equal(placement.memberships.length,2);
+ assert.deepEqual((await api('/items/'+parentId+'/captures')).data.results,before);
+ report.checks.push('Actual menu adds shortcut without movinghome/changing ItemUUID/CaptureEvent PASS');
+ const target=await page.eval(home=>{const link=document.querySelector('.knowledge-explorer a[href="#/thu-vien?node='+home+'"]');const r=link.closest('.explorer-row').getBoundingClientRect();return{x:r.x+r.width/2,y:r.y+r.height/2};},home);
+ for(const type of ['dragEnter','dragOver','drop'])await page.send('Input.dispatchDragEvent',{type,x:target.x,y:target.y,data:{items:[{mimeType:'application/x-kho-tri-thuc',data:JSON.stringify({kind:'note',id:parentId,version:placement.structure_version})}],dragOperationsMask:1}});
+ let afterDrop;
+ for(let i=0;i<50;i++){afterDrop=(await api('/items/'+parentId+'/placement')).data;if(afterDrop.home_topic_id===home)break;await new Promise(r=>setTimeout(r,100));}
+ assert.equal(afterDrop.home_topic_id,home);assert.equal(afterDrop.memberships.length,2);
+ assert.deepEqual((await api('/items/'+parentId+'/captures')).data.results,before);
+ report.checks.push('Native Chromium drag delivery performs actual versioned move without newEvent or duplicateItem PASS');
+ for(const width of [1920,1440,768,390]){
+  await page.setViewport({width,height:width===1920?1080:900});
+  await page.eval(folder=>location.hash='#/thu-vien?node='+folder,folder);
+  await wait(()=>!!document.querySelector('.knowledge-explorer a[href^="#/muc/"]'));
+  assert.equal(await page.eval(()=>document.documentElement.scrollWidth>innerWidth),false);
+  assert.equal(await page.eval(()=>getComputedStyle(document.querySelector('.library-tree-content')).display==='none'),false);
+  assert.ok(await page.eval(id=>!!document.querySelector('.knowledge-explorer a[href="#/muc/'+id+'"]'),parentId));
+  await page.screenshot({path:out+'/explorer-'+width+'.png',format:'png'});
+  report.viewports.push({width,tree_visible:true,overflow:false,same_uuid:parentId});
+ }
+ await page.eval(()=>{const row=document.querySelector('[role=treeitem]');row.focus();});
+ await page.send('Input.dispatchKeyEvent',{type:'keyDown',key:'ArrowDown',code:'ArrowDown',windowsVirtualKeyCode:40});
+ await page.send('Input.dispatchKeyEvent',{type:'keyUp',key:'ArrowDown',code:'ArrowDown',windowsVirtualKeyCode:40});
+ assert.equal(await page.eval(()=>document.activeElement.getAttribute('role')),'treeitem');
+ report.checks.push('Actual Chromium4widths nooverflow/treevisible/sameUUID + native keyboardarrow PASS');
+ report.status='PASS';report.parent_id=parentId;report.child_id=childId;
+}catch(error){report.status='FAIL';report.error=String(error.stack??error);throw error;}
+finally{writeFileSync(out+'/results.json',JSON.stringify(report,null,2)+'\n');await browser.close();}
