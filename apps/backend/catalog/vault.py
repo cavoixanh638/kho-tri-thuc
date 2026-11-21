@@ -315,8 +315,10 @@ def _validate(data):
             _uuid(row["parent_item_id"])
         if row.get("home_topic_id") is not None and type(row["home_topic_id"]) is not int:
             raise VaultError("invalid_home_topic")
-        for field in ("classification_status", "source_fetch", "asset_storage", "content_extract", "structure_origin"):
-            _safe_text(row.get(field), 24)
+        for field, limit in (("classification_status", 24), ("source_fetch", 16),
+                             ("asset_storage", 16), ("content_extract", 16),
+                             ("structure_origin", 12)):
+            _safe_text(row.get(field), limit)
     _check_tree(data["items"], "parent_item_id")
     folder_ids = set()
     for row in data["topics"]:
@@ -328,7 +330,8 @@ def _validate(data):
             raise VaultError("invalid_folder")
         if row.get("parent_id") is not None and type(row["parent_id"]) is not int:
             raise VaultError("invalid_folder")
-        if type(row.get("archived")) is not bool or type(row.get("sort_order")) is not int:
+        if (type(row.get("archived")) is not bool or type(row.get("sort_order")) is not int
+                or row["sort_order"] < 0 or row["sort_order"] > 2**31 - 1):
             raise VaultError("invalid_folder")
     if len(folder_ids) != len(data["topics"]):
         raise VaultError("duplicate_vault_identity")
@@ -344,8 +347,8 @@ def _validate(data):
         assigned.add(pair)
         if row.get("origin") not in ("user", "auto") or type(row.get("user_pinned")) is not bool:
             raise VaultError("invalid_item_membership")
-        for field in ("method_version", "source_version"):
-            _safe_text(row.get(field), 128)
+        _safe_text(row.get("method_version"), 64)
+        _safe_text(row.get("source_version"), 128)
         if row.get("confidence") is not None and (
             type(row["confidence"]) not in (int, float)
             or not 0 <= row["confidence"] <= 1
@@ -375,7 +378,8 @@ def _validate(data):
             type(row["size"]) is not int or not 0 <= row["size"] <= 2**63-1
         ):
             raise VaultError("invalid_asset")
-        if type(row.get("content_version")) is not int or row["content_version"] < 1:
+        if (type(row.get("content_version")) is not int
+                or not 1 <= row["content_version"] <= 2**31 - 1):
             raise VaultError("invalid_asset")
         _safe_text(row.get("role"), 24)
     events = set()
