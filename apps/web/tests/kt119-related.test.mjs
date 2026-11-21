@@ -46,7 +46,8 @@ test('30 Item fixture has separate 15 explicit backlinks / 10 related / 5 same-g
   }
   assert.ok(container.textContent.includes('lexical-v3')); assert.ok(container.textContent.includes('fixture-source-15'));
   assert.ok(container.textContent.includes('không phải xác suất đã kiểm chứng'));
-  assert.deepEqual(calls, [{ path: `/api/v1/items/${ui.corpus.target}/related`, method: 'GET' }]);
+  assert.equal(calls.filter((call) => call.path.endsWith('/related')).length, 1);
+  assert.ok(calls.every((call) => call.method === 'GET'), 'reference/context panels are read-only');
 });
 test('hiding a similar suggestion is reversible display-only; curated relation and pinned groups remain untouched', async () => {
   const snapshot = JSON.stringify(ui.connections);
@@ -58,7 +59,9 @@ test('hiding a similar suggestion is reversible display-only; curated relation a
   assert.ok(container.textContent.includes('Đã ẩn 1 gợi ý')); assert.match(container.querySelector('#item-related-title').textContent, /\(10\)/);
   assert.ok(container.textContent.includes('curated_reference'));
   await click('Hiện lại gợi ý'); assert.equal(container.querySelectorAll('.related-items > li').length, 10);
-  assert.equal(JSON.stringify(ui.connections), snapshot); assert.equal(calls.length, 1); assert.equal(calls[0].method, 'GET');
+  assert.equal(JSON.stringify(ui.connections), snapshot);
+  assert.equal(calls.filter((call) => call.path.endsWith('/related')).length, 1);
+  assert.ok(calls.every((call) => call.method === 'GET'), 'hiding does not mutate any reference or relation');
 });
 test('source cards deduplicate source/assets, show actual versions and verified/missing/pending states', async () => {
   await render();
