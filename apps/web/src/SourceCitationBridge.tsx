@@ -91,5 +91,8 @@ export function SourceCitationBridge({ id, refreshKey, onIllustration, sourceVie
   // Never render a second copy of the authored note, or conflate an
   // unauthored source reading with the saved Item.note.
   if (content.data.origin !== 'authored') return null;
+  if (!Array.isArray(content.data.parts)) {
+    return <ErrorNotice retry={content.retry}>Bản dẫn chứng nguồn không đúng định dạng; ghi chú gốc vẫn an toàn.</ErrorNotice>;
+  }
   return <SourceCitationList parts={content.data.parts} sourceViewers={sourceViewers} onIllustration={onIllustration} truncated={content.data.truncated} />;
 }

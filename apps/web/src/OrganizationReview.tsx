@@ -22,7 +22,17 @@ export function OrganizationReview({ id, csrf, refreshKey, onSaved }: { id: stri
     setLoading(true);
     try {
       const response = await request<ReviewPage>('/items/' + encodeURIComponent(id) + '/organization-review', { signal });
-      if (!signal?.aborted) { setPage(response); setError(''); }
+      if (!signal?.aborted) {
+        // Older/mocked servers may not implement the optional review contract.
+        // Never let malformed evidence hide the primary note/editor.
+        if (!response || !Array.isArray(response.current) || !Array.isArray(response.proposals)) {
+          setPage(undefined);
+          setError('Chưa có dữ liệu phân loại tương thích. Ghi chú vẫn được giữ nguyên.');
+        } else {
+          setPage(response);
+          setError('');
+        }
+      }
     } catch {
       if (!signal?.aborted) setError('Không tải được chứng cứ. Hãy thử lại.');
     } finally {
