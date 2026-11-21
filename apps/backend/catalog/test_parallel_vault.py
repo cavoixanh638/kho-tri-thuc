@@ -103,6 +103,9 @@ class ParallelVaultTests(TestCase):
         Asset.objects.filter(item__owner=self.owner).delete()
         ItemTopic.objects.filter(item__owner=self.owner).delete()
         Item.objects.filter(owner=self.owner).delete()
+        # Topic.parent uses PROTECT; unlink synthetic ancestors before clearing
+        # this disposable test database, never soften the production FK.
+        Topic.objects.filter(owner=self.owner).update(parent=None)
         Topic.objects.filter(owner=self.owner).delete()
         preview = preview_import(self.owner, archived)
         self.assertEqual(preview["counts"]["new"], 100)

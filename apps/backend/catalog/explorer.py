@@ -108,10 +108,16 @@ def without_visible_folder(query, owner_id):
     placements = ItemTopic.objects.filter(
         item_id=OuterRef("pk"), topic__owner_id=owner_id, topic__archived=False
     )
+    active_home = Topic.objects.filter(
+        pk=OuterRef("home_topic_id"), owner_id=owner_id, archived=False
+    )
+    # Two anti-EXISTS tests avoid nullable JOIN/NOT ambiguities when Item
+    # already has annotations and M:N membership. Archived folders are hidden.
     return (
-        query.alias(_has_visible_placement=Exists(placements))
-        .filter(_has_visible_placement=False)
-        .exclude(home_topic__owner_id=owner_id, home_topic__archived=False)
+        query.alias(
+            _has_visible_placement=Exists(placements),
+            _has_visible_home=Exists(active_home),
+        ).filter(_has_visible_placement=False, _has_visible_home=False)
     )
 
 

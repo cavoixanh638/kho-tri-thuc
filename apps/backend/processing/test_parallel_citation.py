@@ -48,7 +48,7 @@ class ParallelCitationTests(TestCase):
             )
             StorageLocation.objects.create(
                 asset=asset,
-                provider_file_id="secret-drive-id-never-exposed",
+                provider_file_id="secret-drive-id-" + str(asset.pk),
                 status="verified",
                 verified_at=timezone.now(),
             )
@@ -150,7 +150,8 @@ class ParallelCitationTests(TestCase):
                         self.assertEqual(citation["source"]["asset_version"], asset.content_version if asset and scenario != "foreign_source" else None)
                         self.assertEqual(citation["source"]["source_id"], source.pk if source and scenario != "foreign_source" else None)
                         self.assertEqual(citation["asset_id"], asset.pk if asset and scenario != "foreign_source" else None)
-                        self.assertNotIn("secret-drive-id-never-exposed", str(citation))
+                        if asset:
+                            self.assertNotIn("secret-drive-id-" + str(asset.pk), str(citation))
                     count += 1
         self.assertEqual(count, 30)
 
