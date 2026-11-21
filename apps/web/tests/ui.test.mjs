@@ -219,6 +219,101 @@ function itemRoutes(current) {
   };
 }
 
+test('P01: unavailable structure payload never hides the source note, editor or clipper', async () => {
+  const fallback = itemRoutes(() => item({ kind: 'text', title: 'Ghi chú có nguồn',
+    note: 'Nội dung **người dùng viết**', original_url: 'https://example.org/article' }));
+  let previewBody, previewCsrf;
+  globalThis.fetch = async (path, options) => {
+    if (path.endsWith('/clips/preview')) {
+      previewBody = JSON.parse(options.body);
+      previewCsrf = options.headers.get('X-CSRFToken');
+      return response({ receipt: 'preview-1', quote: '', url: previewBody.url,
+        page_title: 'Nguồn kiểm thử', verification: 'link_only', locator: {}, source_version: 'v1' });
+    }
+    // An older/mock server returns its ordinary empty page for unknown endpoints.
+    // This must not crash the whole item page when /structure is not yet available.
+    return fallback(path, options);
+  };
+  await render(ui.ItemScreen, { id: 'fixture-item', csrf: 'fixture-csrf' });
+  assert.equal(container.querySelector('h1').textContent, 'Ghi chú có nguồn');
+  assert.equal(container.querySelector('.knowledge-text strong').textContent, 'người dùng viết');
+  assert.ok(container.querySelector('.source-description a[href="https://example.org/article"]'));
+  assert.match(container.querySelector('[aria-label="Cấu trúc bài"]').textContent, /Chưa hiển thị được cấu trúc bài/);
+  assert.ok(container.querySelector('#item-clipper .research-clipper'), 'Clipper remains mounted');
+
+  const urlField = container.querySelector('#item-clipper input[type="url"]');
+  assert.ok(urlField);
+  await ui.act(async () => {
+    Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set.call(urlField, 'https://example.org/public');
+    urlField.dispatchEvent(new window.Event('input', { bubbles: true }));
+    await settle();
+  });
+  await click('Xem trước nguồn / đoạn trích');
+  assert.deepEqual(previewBody, { mode: 'link', url: 'https://example.org/public', quote: '', target_item_id: 'fixture-item' });
+  assert.equal(previewCsrf, 'fixture-csrf');
+  assert.ok(container.textContent.includes('Nguồn kiểm thử'));
+  await click('Chỉnh sửa');
+  assert.ok(container.querySelector('.markdown-item-detail form textarea'), 'Editable user note remains available');
+});
+
+test('P01: valid structure payload exposes children and accepts command-palette move action', async () => {
+  const fallback = itemRoutes(() => item({ kind: 'text', note: 'Bản văn giữ nguyên', original_url: '' }));
+  globalThis.fetch = async (path, options) => {
+    if (path.endsWith('/items/fixture-item/structure')) {
+      return response({ item_id: 'fixture-item', home_topic_id: 2, parent_item_id: null,
+        sort_order: 0, structure_version: 4, origin: 'user', ancestors: [],
+        children: [{ item_id: '22345678-1234-4567-89ab-123456789abc', title: 'Bài con có thật' }] });
+    }
+    if (path.endsWith('/knowledge-tree')) return response({ nodes: [{ id: 2, path: 'Sổ tay / Dự án' }] });
+    return fallback(path, options);
+  };
+  await render(ui.ItemScreen, { id: 'fixture-item', csrf: 'fixture-csrf' });
+  const panel = container.querySelector('[aria-label="Cấu trúc bài cha và bài con"]');
+  assert.ok(panel, 'Structure panel mounts when API is valid');
+  assert.match(panel.textContent, /Bài con \(1\)/);
+  assert.ok(panel.querySelector('a[href="#/muc/22345678-1234-4567-89ab-123456789abc"]'));
+  await ui.act(async () => {
+    window.dispatchEvent(new window.CustomEvent('knowledge-command', {
+      detail: { action: 'move', itemId: 'fixture-item' },
+    }));
+    await settle();
+  });
+  const controls = [...panel.querySelectorAll('details')].find((node) => node.textContent.includes('Chuyển thư mục / thêm lối tắt'));
+  assert.equal(controls?.open, true);
+  assert.ok(controls.querySelector('select'), 'Folder selector is attached to the command');
+});
+
+test('P01: authenticated App routes saved collections and folder explorer without losing navigation', async () => {
+  window.scrollTo = () => {};
+  window.history.replaceState(null, '', '/#/thu-vien?collection=new');
+  const paths = [];
+  const folder = { id: 2, parent_id: null, name: 'Thư mục kiểm thử', path: 'Thư mục kiểm thử',
+    path_ids: [2], depth: 0, node_kind: 'folder', sort_order: 0,
+    direct_count: 0, item_count: 0, child_count: 0 };
+  globalThis.fetch = async (path) => {
+    paths.push(String(path));
+    if (path.endsWith('/session')) return response({ authenticated: true, csrf_token: 'app-csrf', username: 'Người dùng thử' });
+    if (path.endsWith('/knowledge-tree')) return response({ nodes: [folder] });
+    if (path.includes('/explorer/children')) return response({ folders: [folder], notes: [], next_offset: null });
+    if (path.endsWith('/groups')) return response({ topics: [], projects: [], tags: [] });
+    if (path.endsWith('/collections')) return response({ results: [] });
+    if (path.includes('/items?')) return response({ results: [], next_offset: null });
+    throw new Error('Unexpected App API ' + path);
+  };
+  await render(ui.App);
+  assert.ok(container.querySelector('.saved-collection-form'), 'Saving search conditions is accessible at /thu-vien?collection=new');
+  assert.ok(container.querySelector('.library-tree-toggle'), 'Folder explorer is mounted in App');
+  assert.ok(container.textContent.includes('Thư mục kiểm thử'));
+  await ui.act(async () => {
+    window.location.hash = '#/thu-vien?node=2';
+    window.dispatchEvent(new window.Event('hashchange'));
+    await settle();
+  });
+  assert.ok(container.querySelector('[aria-label="Danh sách mục"]'));
+  assert.match(container.querySelector('[aria-label="Danh sách mục"]').textContent, /Thư mục kiểm thử/);
+  assert.ok(paths.some((path) => path.includes('/items?') && path.includes('node_id=2')), 'Folder selection reaches the item-list API');
+});
+
 test('a text article reads as knowledge without misleading missing-extraction status or repeated title', async () => {
   globalThis.fetch = itemRoutes(() => item({ kind: 'text', title: 'Bài tri thức', note: '# Bài tri thức\n\nNội dung **đã có**.', original_url: '', source_fetch: 'not_applicable', asset_storage: 'not_applicable' }));
   await render(ui.ItemScreen, { id: 'fixture-item', csrf: 'fixture-csrf' });
