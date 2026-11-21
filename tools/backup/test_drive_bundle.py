@@ -115,7 +115,7 @@ class DriveBundleTests(unittest.TestCase):
         )
         rows = backup.verify_bundle(self.bundle)
         self.assertEqual(len(rows), 14)
-        self.assertNotIn(b"storage_knowledgeexport", backup.manifest_query(rows))
+        self.assertNotIn(b"storage_knowledgeexport", backup.manifest_query(rows, schema_version=1))
 
     def test_v2_manifest_and_older_topic_projection_remain_supported(self):
         manifest = json.loads(
