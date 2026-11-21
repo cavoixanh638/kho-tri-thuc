@@ -10,12 +10,15 @@ export function detectInboxInput(raw: string, sharedUrl = ''): InboxDecision {
     return { kind: 'link', url: sharedUrl, text: raw, source: 'share' };
   }
   const rows = raw.split(/\r\n|\r|\n/);
-  const first = rows[0]?.trim() || '';
-  const remainder = rows.slice(1);
-  // Only a URL in the first line is an explicit link. A paragraph containing
-  // links stays verbatim text, and multiple URL lines are never silently split.
-  if (first && captureHttpUrl(first) && !remainder.some(row => captureHttpUrl(row.trim()))) {
-    return { kind: 'link', url: first, text: remainder.join('\n'), source: 'pasted-link' };
+  const firstNonEmpty = rows.findIndex(row => row.trim().length > 0);
+  const first = firstNonEmpty < 0 ? '' : rows[firstNonEmpty].trim();
+  // Only an initial URL is an explicit link. A paragraph containing multiple
+  // URLs stays verbatim text; never silently split or fetch a URL mid-paragraph.
+  if (first && firstNonEmpty >= 0 && rows.slice(0, firstNonEmpty).every(row => !row.trim()) &&
+    captureHttpUrl(first) && !rows.slice(firstNonEmpty + 1).some(row => captureHttpUrl(row.trim()))) {
+    const match = [...raw.matchAll(/\r\n|\r|\n/g)][firstNonEmpty];
+    const caption = match ? raw.slice(match.index! + match[0].length) : '';
+    return { kind: 'link', url: first, text: caption, source: 'pasted-link' };
   }
   return { kind: 'text', text: raw, source: 'authored-text' };
 }
