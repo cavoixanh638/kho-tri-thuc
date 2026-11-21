@@ -94,6 +94,7 @@ def preview(owner, payload):
         "part_id": None,
         "text": "",
         "verification": "link_only",
+        "truncated": False,
     }
     if payload.derived_id is not None:
         part = (
@@ -147,6 +148,7 @@ def preview(owner, payload):
                 payload.url, timeout_seconds=8, max_body_bytes=1024 * 1024
             )
             text = source_text(result.text or "") or ""
+            data["truncated"] = len(text) > MAX_TEXT
             if len(text) > MAX_TEXT:
                 text = text[:MAX_TEXT]
             data["page_title"] = (result.metadata.title if result.metadata else "")[
@@ -172,7 +174,7 @@ def preview(owner, payload):
     return {
         **{
             k: data[k]
-            for k in ("mode", "quote", "url", "page_title", "verification", "locator")
+            for k in ("mode", "quote", "url", "page_title", "verification", "locator", "truncated")
         },
         "source_version": data["source_version"],
         "expires_in": 300,

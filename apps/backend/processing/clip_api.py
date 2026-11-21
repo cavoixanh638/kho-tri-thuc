@@ -3,6 +3,7 @@ from uuid import UUID
 
 from catalog.models import Item
 from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
 from ninja import Router, Schema, Status
 from ninja.security import django_auth
 from pydantic import Field
@@ -63,7 +64,9 @@ def submit(request, body: Submit):
 
 
 @router.get("/items/{item_id}/clips")
-def list_clips(request, item_id: UUID, offset: int = Field(0, ge=0, le=100_000)):
+def list_clips(request, item_id: UUID, offset: int = 0):
+    if not 0 <= offset <= 100_000:
+        return JsonResponse({"code": "invalid_offset"}, status=422)
     item = get_object_or_404(
         Item, pk=item_id, owner=request.user, deleted_at__isnull=True
     )
@@ -101,7 +104,9 @@ def source_excerpt(request, annotation_id: UUID):
 
 
 @router.get("/items/{item_id}/clip-sources")
-def clip_sources(request, item_id: UUID, offset: int = Field(0, ge=0, le=100_000)):
+def clip_sources(request, item_id: UUID, offset: int = 0):
+    if not 0 <= offset <= 100_000:
+        return JsonResponse({"code": "invalid_offset"}, status=422)
     item = get_object_or_404(
         Item, pk=item_id, owner=request.user, deleted_at__isnull=True
     )

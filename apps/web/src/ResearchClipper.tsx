@@ -6,7 +6,7 @@ import { SourceLocatorCitation } from './SourceLocator';
 import './ResearchClipper.css';
 
 type Mode = 'link' | 'article' | 'selection';
-type Preview = { receipt: string; quote: string; url: string; page_title: string; verification: string; locator: Record<string, unknown>; source_version: string };
+type Preview = { receipt: string; quote: string; url: string; page_title: string; verification: string; locator: Record<string, unknown>; source_version: string; truncated?: boolean };
 type SourcePart = { id: number; kind: string; text: string; locator: Record<string, unknown> };
 type Clip = { id: string; quote: string; state: string; source_url: string; page_title: string; source_id: number | null;
   part_id: number | null; asset_id: string | null; asset_mime: string | null; asset_version: number | null;
@@ -83,6 +83,7 @@ export function ResearchClipper({ id, csrf, onSaved }: { id?: string; csrf: stri
       <p>{states[preview.verification] || preview.verification}</p>
       {preview.url && <p className="clip-url">{preview.url}</p>}
       {preview.quote && <pre>{preview.quote}</pre>}
+      {preview.truncated && <p role="status">Văn bản nguồn đã giới hạn ở 60.000 ký tự; đây chưa phải toàn bộ bài viết.</p>}
       <p>Chưa lưu lượt gửi. Bản xem trước hết hạn sau 5 phút; không ghi đè nội dung bài.</p>
       <Button disabled={busy} onClick={() => void act(async () => {
         if (attempt.current?.receipt !== preview.receipt) attempt.current = { receipt: preview.receipt, key: crypto.randomUUID() };

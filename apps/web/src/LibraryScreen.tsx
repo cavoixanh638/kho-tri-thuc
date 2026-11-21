@@ -1,6 +1,7 @@
 import { LibraryViews, libraryModes, libraryLocationHref, parseLibraryLocation, type LibraryLocation, type LibraryFilter } from './LibraryViews';
 import { knowledgeNodeHref, nodeKindLabels, type KnowledgeNode, type KnowledgeTreeData } from './KnowledgeTree';
 import { KnowledgeExplorer } from './KnowledgeExplorer';
+import { SavedCollectionsPanel, SavedCollectionScreen, collectionIdFromHash } from './SavedCollections';
 import { Button, SegmentedControl } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import type { Item, Page } from './api';
@@ -10,6 +11,7 @@ import { Empty, ErrorNotice, Loading, PageControls, PageTitle, useResource } fro
 export function LibraryScreen({ csrf = '' }: { csrf?: string }) {
   const [scope, setScope] = useState(() => parseLibraryLocation(window.location.hash));
   const { filter, offset, view } = scope;
+  const collectionId = collectionIdFromHash(window.location.hash);
   const [revision, setRevision] = useState(0);
   const [treeExpanded, setTreeExpanded] = useState(()=>{try{return sessionStorage.getItem('kt-explorer-visible')!=='0';}catch{return true;}});
   useEffect(() => {
@@ -53,9 +55,9 @@ export function LibraryScreen({ csrf = '' }: { csrf?: string }) {
     }}>
     <aside className={'library-tree-shell' + (treeExpanded ? ' is-open' : '')}>
       <button className="library-tree-toggle" type="button" aria-expanded={treeExpanded} aria-controls="library-tree-content" onClick={() => setTreeExpanded((value) => {try{sessionStorage.setItem('kt-explorer-visible',value?'0':'1');}catch{/* preference is optional */}return !value;})}>{treeExpanded ? 'Thu gọn thư mục và ghi chú' : 'Mở thư mục và ghi chú'}</button>
-      <div className="library-tree-content" id="library-tree-content"><KnowledgeExplorer data={tree.data} error={tree.error} onRetry={()=>{tree.retry();library.retry();}} selectedId={scope.id} unfiled={scope.unfiled} csrf={csrf} onSaved={saved} /></div>
+      <div className="library-tree-content" id="library-tree-content"><KnowledgeExplorer data={tree.data} error={tree.error} onRetry={()=>{tree.retry();library.retry();}} selectedId={scope.id} unfiled={scope.unfiled} csrf={csrf} onSaved={saved} /><SavedCollectionsPanel /></div>
     </aside>
-    <section className="panel knowledge-library-content" aria-label="Danh sách mục">
+    {collectionId ? <SavedCollectionScreen csrf={csrf} id={collectionId === 'new' ? undefined : collectionId} /> : <section className="panel knowledge-library-content" aria-label="Danh sách mục">
       <nav className="knowledge-breadcrumb" aria-label="Đường dẫn mục lục">
         <a href={knowledgeNodeHref()}>Kho Tri Thức</a>
         {ancestors.map((node) => <span key={node.id}><span aria-hidden="true"> / </span><a href={knowledgeNodeHref(node.id)} aria-current={node.id === scope.id ? 'page' : undefined}>{node.name}</a></span>)}
@@ -87,7 +89,7 @@ export function LibraryScreen({ csrf = '' }: { csrf?: string }) {
           : library.data.results.length ? <LibraryViews items={library.data.results} mode={view} />
             : <Empty>{filter === 'favorite' ? 'Chưa có mục yêu thích.' : filter === 'deleted' ? 'Thùng rác trống.' : <span>Chưa có mục nào. <a href="#/gui">Gửi vào kho</a></span>}</Empty>}
       {library.data && <PageControls offset={offset} nextOffset={library.data.next_offset} onChange={(value) => navigate({ offset: value })} />}
-    </section>
+    </section>}
     </div>
   </>;
 }
