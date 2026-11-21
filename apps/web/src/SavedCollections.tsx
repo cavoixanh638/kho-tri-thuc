@@ -93,7 +93,7 @@ function DefinitionForm({ initial, csrf, onSaved }: { initial?: SavedCollection;
     </details>
     {error && <ErrorNotice>{error}</ErrorNotice>}
     <div className="form-actions"><Button type="submit" disabled={busy || !name.trim()}>Lưu bộ sưu tập</Button><Button type="button" variant="default" disabled={busy} onClick={() => void showPreview()}>Xem trước kết quả</Button></div>
-    {preview && <section aria-label="Kết quả xem trước"><p role="status">{preview.count} bài khớp; đang hiển thị tối đa 50 bài.</p><LibraryViews items={preview.results} mode={view} /></section>}
+    {preview && <section aria-label="Kết quả xem trước"><p role="status">{preview.count} bài khớp; đang hiển thị tối đa 50 bài.</p><LibraryViews items={preview.results} mode={view} sort={query.sort} /></section>}
   </form>;
 }
 
@@ -127,7 +127,7 @@ export function SavedCollectionScreen({ csrf, id }: { csrf: string; id?: string 
       <p className="list-meta">Cách xem: {libraryModes.find((entry) => entry.value === value.view)?.label}. Đổi cách xem trong “Xem điều kiện / chỉnh sửa” rồi lưu.</p>
       {results.error ? <ErrorNotice retry={results.retry}>Chưa tải được kết quả.</ErrorNotice> : !results.data ? <Loading /> : <>
         <p role="status">{results.data.count} bài khớp điều kiện.</p>
-        {results.data.results.length ? <LibraryViews items={results.data.results} mode={value.view} /> : <Empty>Chưa có bài khớp điều kiện.</Empty>}
+        {results.data.results.length ? <LibraryViews items={results.data.results} mode={value.view} sort={value.query.sort} /> : <Empty>Chưa có bài khớp điều kiện.</Empty>}
         <PageControls offset={offset} nextOffset={results.data.next_offset} onChange={setOffset} />
       </>}
     </>}

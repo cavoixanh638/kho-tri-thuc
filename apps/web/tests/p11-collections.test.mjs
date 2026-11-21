@@ -79,10 +79,9 @@ test('HTML-looking collection Item fields stay escaped in four views', () => {
   }
 });
 
-test('timeline exposes non-contiguous grouping order divergence without losing IDs', () => {
+test('timeline preserves server order with non-contiguous day runs', () => {
   // Server published-desc order may interleave saved dates: A(20), B(21), C(20).
-  // The current Timeline groups all 20th rows into one section: A,C,B.
-  // This is an audit repro, not a request to change LibraryViews (owned by P01).
+  // Each contiguous day run is a section; page order must remain A,B,C.
   const rows = [
     row(0, { saved_at: '2026-11-20T00:00:00Z', published_at: '2026-11-22T00:00:00Z' }),
     row(1, { saved_at: '2026-11-21T00:00:00Z', published_at: '2026-11-21T00:00:00Z' }),
@@ -93,8 +92,7 @@ test('timeline exposes non-contiguous grouping order divergence without losing I
   const timeline = viewIds(rows, 'timeline');
   assert.deepEqual(table.ids, input);
   assert.deepEqual([...timeline.ids].sort(), [...input].sort());
-  assert.deepEqual(timeline.ids, [input[0], input[2], input[1]]);
-  assert.notDeepEqual(timeline.ids, input);
+  assert.deepEqual(timeline.ids, input);
   assert.match(table.document.querySelector('caption').textContent, /Thứ tự nhận lần đầu/);
 });
 

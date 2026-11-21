@@ -7,6 +7,7 @@ from django.contrib.auth import get_user_model
 from django.db import IntegrityError, transaction
 from django.shortcuts import get_object_or_404
 from ninja import Router, Schema, Status
+from pydantic import ValidationError
 from ninja.security import django_auth
 from pydantic import Field
 
@@ -139,6 +140,9 @@ def results(request, collection_id: UUID, offset: int = 0, limit: int = 50):
     value = get_object_or_404(SavedCollection, pk=collection_id, owner=request.user)
     if not 0 <= offset <= 1_000_000 or not 1 <= limit <= 100:
         return Status(422, {"code": "collection_page_invalid"})
-    return page(
-        request.user, CollectionQuery.model_validate(value.query), offset, limit
-    )
+    try:
+        query = CollectionQuery.model_validate(value.query)
+    except (ValidationError, ValueError, TypeError):
+        # Keep legacy definitions available to edit, but fail closed on query.
+        return Status(422, {"code": "collection_definition_invalid"})
+    return page(request.user, query, offset, limit)

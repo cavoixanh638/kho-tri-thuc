@@ -41,11 +41,14 @@ function EntryText({ item }: { item: Item }) {
   </span>;
 }
 
-export function LibraryViews({ items, mode }: { items: Item[]; mode: LibraryMode }) {
-  // All modes consume this server page in its original stable saved_at/id order.
-  // No additional fetch, browser sorting or mutation of Item/Asset is performed.
+export function LibraryViews({ items, mode, sort = 'saved_desc' }: { items: Item[]; mode: LibraryMode; sort?: string }) {
+  // Every view preserves the server page order, including saved collections with
+  // published/date/title sorts. Timeline groups only contiguous date runs.
+  const caption = sort === 'saved_asc' ? 'Thứ tự nhận lần đầu, cũ nhất trước'
+    : sort === 'published_desc' ? 'Thứ tự ngày nguồn mới nhất trước'
+      : sort === 'title' ? 'Thứ tự theo tiêu đề' : 'Thứ tự nhận lần đầu, mới nhất trước';
   if (mode === 'table') return <div className="library-table-frame" role="region" aria-label="Bảng tri thức" tabIndex={0}>
-    <table className="library-table"><caption>Thứ tự nhận lần đầu, mới nhất trước</caption>
+    <table className="library-table"><caption>{caption}</caption>
       <thead><tr><th scope="col">Bài tri thức</th><th scope="col">Loại</th><th scope="col">Nhận lần đầu</th><th scope="col">Ngày nguồn đăng</th><th scope="col" className="library-number">Tệp minh họa</th></tr></thead>
       <tbody>{items.map((item) => <tr key={item.item_id} data-library-item={item.item_id}>
         <td><a href={itemHref(item.item_id)}>{itemTitle(item)}</a><p>{knowledgePreview(item.note || item.knowledge_excerpt || '')}</p></td>
@@ -55,14 +58,15 @@ export function LibraryViews({ items, mode }: { items: Item[]; mode: LibraryMode
     </table>
   </div>;
   if (mode === 'timeline') {
-    const groups = new Map<string, Item[]>();
+    const groups: { day: string; rows: Item[] }[] = [];
     for (const item of items) {
       const day = new Intl.DateTimeFormat('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(item.saved_at));
-      const rows = groups.get(day) ?? [];
-      rows.push(item); groups.set(day, rows);
+      const last = groups[groups.length - 1];
+      if (last?.day === day) last.rows.push(item);
+      else groups.push({ day, rows: [item] });
     }
-    return <div className="library-timeline"><p className="list-meta">Theo ngày nhận lần đầu (giờ Việt Nam), chỉ các bài trên trang hiện tại.</p>
-      {[...groups].map(([day, rows]) => <section key={day} aria-label={'Nhận ngày ' + day}><h3>{day}</h3>
+    return <div className="library-timeline"><p className="list-meta">Theo ngày nhận lần đầu (giờ Việt Nam), giữ nguyên thứ tự đã chọn; một ngày có thể lặp lại nếu sắp xếp theo tiêu chí khác.</p>
+      {groups.map(({ day, rows }, index) => <section key={day + ':' + index} aria-label={'Nhận ngày ' + day}><h3>{day}</h3>
         <ul>{rows.map((item) => <li key={item.item_id} data-library-item={item.item_id}><a href={itemHref(item.item_id)} className="library-entry"><EntryText item={item} /><ServerTime value={item.saved_at} /></a></li>)}</ul>
       </section>)}
     </div>;

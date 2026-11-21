@@ -243,7 +243,7 @@ class ParallelCollectionRules(TestCase):
         client = Client(raise_request_exception=False)
         client.force_login(self.owner)
         response = client.get(API + "/" + str(stale.pk) + "/items")
-        self.assertIn(response.status_code, (422, 500))
+        self.assertEqual(response.status_code, 422)
         print("P11 legacy saved-query read HTTP status:", response.status_code)
 
 
