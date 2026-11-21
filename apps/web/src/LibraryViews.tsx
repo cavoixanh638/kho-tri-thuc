@@ -1,6 +1,6 @@
 import type { Item } from './api';
 import { knowledgePreview } from './KnowledgeText';
-import { itemHref, itemTitle, kindLabels, ServerTime } from './views';
+import { itemHref, itemTitle, itemKindLabel, ServerTime } from './views';
 import './LibraryViews.css';
 
 export type LibraryMode = 'list' | 'table' | 'card' | 'timeline';
@@ -34,7 +34,7 @@ export function libraryLocationHref(state: LibraryLocation) {
 
 function EntryText({ item }: { item: Item }) {
   return <span className="library-entry-text">
-    <span className="capture-kind">{kindLabels[item.kind]}</span>
+    <span className="capture-kind">{itemKindLabel(item)}</span>
     <span className="library-entry-title">{itemTitle(item)}</span>
     {(item.note || item.knowledge_excerpt) && <span className="library-knowledge-preview">{knowledgePreview(item.note || item.knowledge_excerpt || '')}</span>}
     {item.assets.length > 0 && <span className="list-meta">{item.assets.length} tệp nguồn / minh họa</span>}
@@ -52,7 +52,7 @@ export function LibraryViews({ items, mode, sort = 'saved_desc' }: { items: Item
       <thead><tr><th scope="col">Bài tri thức</th><th scope="col">Loại</th><th scope="col">Nhận lần đầu</th><th scope="col">Ngày nguồn đăng</th><th scope="col" className="library-number">Tệp minh họa</th></tr></thead>
       <tbody>{items.map((item) => <tr key={item.item_id} data-library-item={item.item_id}>
         <td><a href={itemHref(item.item_id)}>{itemTitle(item)}</a><p>{knowledgePreview(item.note || item.knowledge_excerpt || '')}</p></td>
-        <td>{kindLabels[item.kind]}</td><td><ServerTime value={item.saved_at} /></td>
+        <td>{itemKindLabel(item)}</td><td><ServerTime value={item.saved_at} /></td>
         <td>{item.published_at ? <ServerTime value={item.published_at} /> : '—'}</td><td className="library-number">{item.assets.length}</td>
       </tr>)}</tbody>
     </table>
