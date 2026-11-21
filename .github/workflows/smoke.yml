@@ -31,6 +31,9 @@ jobs:
       - name: Test all frontend DOM and unit suites (native browser harnesses are separate)
         run: docker compose exec -T web npm test
 
+      - name: Check P13 share-target and Vietnamese IME source contracts
+        run: node tools/smoke/p13_share_contract.mjs
+
       - name: Test readiness harness isolation without touching any database
         run: python3 -m unittest discover -s tools/readiness -p test_safety.py -v
 
@@ -72,6 +75,36 @@ jobs:
           docker compose exec -T -e DJANGO_SUPERUSER_PASSWORD=kt-smoke-fixture-only api python manage.py createsuperuser --noinput --username kt-smoke --email kt-smoke@example.invalid
           python3 tools/smoke/capture.py
 
+      - name: Test P13 idempotent Android share through isolated QA PostgreSQL
+        env:
+          P13_QA_ISOLATED: 'YES'
+          P13_QA_USER: kt-smoke
+          P13_QA_PASSWORD: kt-smoke-fixture-only
+        run: node tools/smoke/p13_share_api.mjs
+
+      - name: Capture real built-App UI screenshots on synthetic CI data
+        env:
+          KT_PREVIEW_ISOLATED: 'YES'
+          KT_PREVIEW_URL: http://127.0.0.1:5173
+          KT_PREVIEW_USER: kt-smoke
+          KT_PREVIEW_PASSWORD: kt-smoke-fixture-only
+        run: |
+          browser="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || true)"
+          if [ -z "$browser" ]; then
+            echo "Chromium/Chrome unavailable on CI runner"; exit 1
+          fi
+          export KT_JOURNEY_CHROMIUM="$browser"
+          node tools/smoke/preview_capture.mjs
+
+      - name: Upload real-App screenshots and SHA evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: kho-tri-thuc-actual-ui
+          path: tmp/kt-preview-ui/
+          if-no-files-found: warn
+          retention-days: 14
+
       - name: Verify Compose backup and restore to a fresh database
         run: |
           bundle="$RUNNER_TEMP/kho-tri-thuc-backup"
@@ -87,3 +120,96 @@ jobs:
       - name: Stop test services
         if: always()
         run: docker compose down --volumes
+
+  browser_acceptance:
+    name: Isolated P08 Chromium journeys (not production UAT)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Prepare independent disposable PostgreSQL/React/Django QA project
+        run: |
+          cat > "$RUNNER_TEMP/kt-p08.env" <<'ENV'
+          DJANGO_DEBUG=0
+          DJANGO_SECRET_KEY=django-insecure-p08-ci-disposable-only
+          DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,api
+          POSTGRES_DB=kt_p08_journeys
+          POSTGRES_USER=kt_p08
+          POSTGRES_PASSWORD=p08-only-ci-db-fixture
+          API_PORT=62311
+          WEB_PORT=62310
+          SUGGESTION_REVIEW_POC_ENABLED=1
+          GOOGLE_DRIVE_CLIENT_ID=
+          GOOGLE_DRIVE_CLIENT_SECRET=
+          GOOGLE_DRIVE_REDIRECT_URI=
+          GOOGLE_DRIVE_TOKEN_KEY=
+          ENV
+          chmod 600 "$RUNNER_TEMP/kt-p08.env"
+          docker compose -p kt-p08-ci --env-file "$RUNNER_TEMP/kt-p08.env" config --quiet
+          docker compose -p kt-p08-ci --env-file "$RUNNER_TEMP/kt-p08.env" up --detach --build --wait --wait-timeout 180 db api worker web
+          docker compose -p kt-p08-ci --env-file "$RUNNER_TEMP/kt-p08.env" exec -T -e DJANGO_SUPERUSER_PASSWORD=p08-only-ci-user-fixture api python manage.py createsuperuser --noinput --username p08-fixture --email p08@example.invalid
+
+      - name: Run real browser acceptance with truthful PASS/FAIL/NOT_RUN ledger
+        continue-on-error: true
+        env:
+          KT_JOURNEY_URL: http://127.0.0.1:62310
+          KT_JOURNEY_DB_NAME: kt_p08_journeys
+          KT_JOURNEY_ISOLATED: 'YES'
+          KT_JOURNEY_USER: p08-fixture
+          KT_JOURNEY_PASSWORD: p08-only-ci-user-fixture
+          KT_JOURNEY_OUT: tmp/p08-kt128
+        run: |
+          browser="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || true)"
+          if [ -z "$browser" ]; then echo "NO_BROWSER_BINARY"; exit 2; fi
+          export KT_JOURNEY_CHROMIUM="$browser"
+          node --check tools/smoke/knowledge_journeys.mjs
+          node --test tools/smoke/p08_*.test.mjs
+          node tools/smoke/knowledge_journeys.mjs
+
+      - name: Evaluate P15 real-browser keyboard and responsive behavior
+        continue-on-error: true
+        env:
+          P15_QA_URL: http://127.0.0.1:62310
+          P15_SYNTHETIC_QA: '1'
+          P15_QA_USER: p08-fixture
+          P15_QA_PASSWORD: p08-only-ci-user-fixture
+          P15_CDP_MODULE: tools/smoke/p08_cdp.mjs
+        run: |
+          browser="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || true)"
+          if [ -z "$browser" ]; then echo "NO_BROWSER_BINARY"; exit 2; fi
+          export KT_JOURNEY_CHROMIUM="$browser"
+          node tools/smoke/p15_accessibility.mjs --browser
+
+      - name: Publish P15 browser screenshots and keyboard findings
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: kt-p15-browser-accessibility
+          path: tmp/p15-accessibility/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Publish real-browser evidence (private artifact only)
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: kt-p08-real-browser-ledger
+          path: tmp/p08-kt128/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Shut down only P08 disposable containers and test volumes
+        if: always()
+        run: |
+          if [ -f "$RUNNER_TEMP/kt-p08.env" ]; then
+            docker compose -p kt-p08-ci --env-file "$RUNNER_TEMP/kt-p08.env" down --volumes --remove-orphans
+            rm -f "$RUNNER_TEMP/kt-p08.env"
+          fi

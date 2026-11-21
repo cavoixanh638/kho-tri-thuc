@@ -132,7 +132,7 @@ export function SourceLocatorCitation({ part, viewer, onIllustration }: { part: 
   const [original, setOriginal] = useState<string>();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
-  const revision = `${part.id}:${part.asset_id}:${part.source?.version}:${part.source?.state}:${JSON.stringify(part.locator)}`;
+  const revision = `${part.id}:${part.asset_id}:${part.source?.source_id}:${part.source?.version}:${part.source?.asset_version}:${part.source?.mime}:${part.source?.state}:${part.processor_version}:${JSON.stringify(part.locator)}`;
   const currentRevision = useRef(revision);
   const inFlight = useRef<AbortController | null>(null);
   currentRevision.current = revision;
@@ -174,8 +174,8 @@ export function SourceLocatorCitation({ part, viewer, onIllustration }: { part: 
     <p>{result.reason}</p>
     <div className="source-locator-actions">
       {result.state === 'AVAILABLE' && <button type="button" onClick={() => setOpened(true)}>Đến vị trí nguồn</button>}
-      {result.state === 'NOT_SUPPORTED' && result.locator?.kind === 'time' && part.asset_id && part.source?.state === 'current'
-        && <button type="button" disabled={busy} onClick={() => void loadViewer()}>{busy ? 'Đang kiểm tra nguồn…' : 'Mở và định vị nguồn riêng tư'}</button>}
+      {result.state === 'NOT_SUPPORTED' && (result.locator?.kind === 'time' || result.locator?.kind === 'page') && part.asset_id && part.source?.state === 'current'
+        && <button type="button" disabled={busy} onClick={() => void loadViewer()}>{busy ? 'Đang kiểm tra nguồn…' : result.locator.kind === 'page' ? 'Mở và định vị PDF riêng tư' : 'Mở và định vị nguồn riêng tư'}</button>}
       {result.state !== 'MISSING_ASSET' && <button type="button" disabled={busy} onClick={() => void loadOriginal()}>{busy ? 'Đang tìm nguồn…' : 'Mở nguồn gốc'}</button>}
       {part.asset_id && onIllustration && <button type="button" onClick={() => onIllustration(part.asset_id!)}>Xem minh họa từ nguồn</button>}
       {original && <a href={original} target="_blank" rel="noopener noreferrer">Mở file/website gốc (không định vị)</a>}

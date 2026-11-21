@@ -6,11 +6,19 @@ import { SourceLocatorCitation } from './SourceLocator';
 import './ResearchClipper.css';
 
 type Mode = 'link' | 'article' | 'selection';
-type Preview = { receipt: string; quote: string; url: string; page_title: string; verification: string; locator: Record<string, unknown>; source_version: string; truncated?: boolean };
+type Preview = { receipt: string; quote: string; url: string; page_title: string; verification: string; locator: Record<string, unknown>; source_version: string; truncated?: boolean; fetch_status?: string; http_status?: number | null };
 type SourcePart = { id: number; kind: string; text: string; locator: Record<string, unknown> };
 type Clip = { id: string; quote: string; state: string; source_url: string; page_title: string; source_id: number | null;
   part_id: number | null; asset_id: string | null; asset_mime: string | null; asset_version: number | null;
   source_version: string; processor_version: string; locator: Record<string, unknown>; inserted_edit_version: number | null };
+const fetchStates: Record<string, string> = {
+  access_denied: 'Máy chủ từ chối truy cập (401/403); không vượt quyền.',
+  failed: 'Không lấy được bài viết (có thể bị giới hạn 429, lỗi mạng hoặc quá dung lượng).',
+  blocked: 'Nguồn bị chặn vì lý do an toàn.',
+  unsupported: 'Định dạng hoặc mã hóa nguồn không được hỗ trợ.',
+  not_found: 'Nguồn không còn tồn tại (404/410).',
+  empty: 'Nguồn không có nội dung văn bản kiểm chứng được.',
+};
 const states: Record<string, string> = { current: 'Khớp văn bản nguồn đã trích', stale: 'Nguồn đã thay đổi', missing: 'Thiếu nguồn',
   unverified: 'Đoạn người dùng cung cấp, chưa xác minh trong nguồn', link_only: 'Chỉ có liên kết, chưa có văn bản' };
 
@@ -81,6 +89,7 @@ export function ResearchClipper({ id, csrf, onSaved }: { id?: string; csrf: stri
     {preview && <div className="clip-preview" aria-label="Xem trước trích dẫn">
       <h3>{preview.page_title || 'Bản xem trước nguồn'}</h3>
       <p>{states[preview.verification] || preview.verification}</p>
+      {preview.fetch_status && fetchStates[preview.fetch_status] && <p role="status">{fetchStates[preview.fetch_status]}{preview.http_status ? ` (HTTP ${preview.http_status})` : ''}</p>}
       {preview.url && <p className="clip-url">{preview.url}</p>}
       {preview.quote && <pre>{preview.quote}</pre>}
       {preview.truncated && <p role="status">Văn bản nguồn đã giới hạn ở 60.000 ký tự; đây chưa phải toàn bộ bài viết.</p>}

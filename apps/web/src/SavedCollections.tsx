@@ -77,7 +77,7 @@ function DefinitionForm({ initial, csrf, onSaved }: { initial?: SavedCollection;
       <p>Các loại điều kiện kết hợp bằng AND. Trong mỗi ô “Bất kỳ”, chọn một hoặc nhiều nhóm bằng Ctrl/⌘ hoặc Shift.</p>
       {groups.error && <ErrorNotice retry={groups.retry}>Chưa tải được nhóm.</ErrorNotice>}
       {(['topics', 'projects', 'tags'] as const).map((kind) => <fieldset key={kind}><legend>{({ topics: 'Chủ đề / thư mục', projects: 'Dự án', tags: 'Nhãn' })[kind]}</legend><div className="saved-collection-fields">
-        {(['any', 'all', 'exclude'] as const).map((operator) => <label key={operator}>{({ any: 'Bất kỳ', all: 'Tất cả', exclude: 'Loại trừ' })[operator]}<select multiple aria-label={kind + '-' + operator} value={query[kind][operator].map(String)} disabled={busy || !groups.data}
+        {(['any', 'all', 'exclude'] as const).map((operator) => <label key={operator}>{({ any: 'Bất kỳ', all: 'Tất cả', exclude: 'Loại trừ' })[operator]}<select multiple aria-label={({ topics: 'Chủ đề / thư mục', projects: 'Dự án', tags: 'Nhãn' })[kind] + ' — ' + ({ any: 'Bất kỳ', all: 'Tất cả', exclude: 'Loại trừ' })[operator]} value={query[kind][operator].map(String)} disabled={busy || !groups.data}
           onChange={(event) => change({ [kind]: { ...query[kind], [operator]: [...event.currentTarget.selectedOptions].map((option) => Number(option.value)) } })}>
           {groups.data?.[kind].map((entry) => <option key={entry.id} value={entry.id}>{entry.name}</option>)}
         </select></label>)}
@@ -93,7 +93,7 @@ function DefinitionForm({ initial, csrf, onSaved }: { initial?: SavedCollection;
     </details>
     {error && <ErrorNotice>{error}</ErrorNotice>}
     <div className="form-actions"><Button type="submit" disabled={busy || !name.trim()}>Lưu bộ sưu tập</Button><Button type="button" variant="default" disabled={busy} onClick={() => void showPreview()}>Xem trước kết quả</Button></div>
-    {preview && <section aria-label="Kết quả xem trước"><p role="status">{preview.count} bài khớp; đang hiển thị tối đa 50 bài.</p><LibraryViews items={preview.results} mode={view} /></section>}
+    {preview && <section aria-label="Kết quả xem trước"><p role="status">{preview.count} bài khớp; đang hiển thị tối đa 50 bài.</p><LibraryViews items={preview.results} mode={view} sort={query.sort} /></section>}
   </form>;
 }
 
@@ -127,7 +127,7 @@ export function SavedCollectionScreen({ csrf, id }: { csrf: string; id?: string 
       <p className="list-meta">Cách xem: {libraryModes.find((entry) => entry.value === value.view)?.label}. Đổi cách xem trong “Xem điều kiện / chỉnh sửa” rồi lưu.</p>
       {results.error ? <ErrorNotice retry={results.retry}>Chưa tải được kết quả.</ErrorNotice> : !results.data ? <Loading /> : <>
         <p role="status">{results.data.count} bài khớp điều kiện.</p>
-        {results.data.results.length ? <LibraryViews items={results.data.results} mode={value.view} /> : <Empty>Chưa có bài khớp điều kiện.</Empty>}
+        {results.data.results.length ? <LibraryViews items={results.data.results} mode={value.view} sort={value.query.sort} /> : <Empty>Chưa có bài khớp điều kiện.</Empty>}
         <PageControls offset={offset} nextOffset={results.data.next_offset} onChange={setOffset} />
       </>}
     </>}

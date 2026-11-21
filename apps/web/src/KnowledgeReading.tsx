@@ -1,6 +1,7 @@
 import { useResource, Empty, ErrorNotice, Loading } from './views';
 import { KnowledgeText } from './KnowledgeText';
 import { SourceLocatorCitation, transcriptSegments, type SourcePart, type SourceViewer } from './SourceLocator';
+import { SourceCitationList } from './SourceCitationBridge';
 
 type Part = SourcePart & { text: string; format: string };
 type Knowledge = { origin: string; text: string; parts: Part[]; truncated: boolean; needs_review: boolean };
@@ -11,6 +12,10 @@ export function KnowledgeReading({ id, refreshKey, onIllustration, sourceViewers
   if (!content.data) return <Loading label="Đang đọc văn bản tri thức" />;
   const data = content.data;
   if (data.origin === 'missing') return <Empty>Chưa lấy được văn bản nguồn. Video chỉ trở thành nội dung đọc được sau khi có phụ đề hoặc bản chép lời; bạn cũng có thể biên soạn trực tiếp.</Empty>;
+  if (data.origin === 'authored') return <div>
+    <KnowledgeText text={data.text} />
+    <SourceCitationList parts={data.parts} sourceViewers={sourceViewers} onIllustration={onIllustration} truncated={data.truncated} />
+  </div>;
   return <div>
     {data.needs_review && <p className="notice">Bản chép lời tự động trên Windows. Cần đối chiếu video trước khi dùng làm kiến thức đã biên soạn.</p>}
     {data.text && <KnowledgeText text={data.text} />}

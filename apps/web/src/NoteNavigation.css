@@ -25,3 +25,28 @@
 .note-link-context ul { padding-inline-start: 20px; }
 .note-link-context small { display: block; color: #555; overflow-wrap: anywhere; }
 @media (prefers-reduced-motion: reduce) { .note-outline { scroll-behavior: auto; } }
+
+/* Keep the command palette reachable without taking an extra row above every
+   page heading or covering the detail screen's back-to-library link. */
+.shell.canvas { position: relative; }
+.shell.canvas > .knowledge-palette-trigger {
+  position: absolute;
+  top: 30px;
+  inset-inline-end: 0;
+  margin: 0;
+  min-height: 34px;
+  padding: 6px 10px;
+  font-size: 12px;
+  border-color: var(--control, #d4d4d4);
+}
+.shell.canvas > .page-title { padding-inline-end: 200px; }
+@media (max-width: 640px) {
+  .shell.canvas > .knowledge-palette-trigger {
+    position: static;
+    display: inline-flex;
+    align-items: center;
+    margin: 0 0 10px;
+    min-height: 34px;
+  }
+  .shell.canvas > .page-title { padding-inline-end: 0; }
+}

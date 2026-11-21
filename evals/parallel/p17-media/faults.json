@@ -1,0 +1,390 @@
+[
+  {
+    "id": "M-01",
+    "kind": "manifest",
+    "injection": "video_timeout",
+    "expected_code": "video_timeout",
+    "expected_retryable": true,
+    "evidence_class": "production_download_manifest"
+  },
+  {
+    "id": "M-02",
+    "kind": "manifest",
+    "injection": "video_too_large",
+    "expected_code": "video_too_large",
+    "expected_retryable": false,
+    "evidence_class": "production_download_manifest"
+  },
+  {
+    "id": "M-03",
+    "kind": "manifest",
+    "injection": "video_network_blocked",
+    "expected_code": "video_network_blocked",
+    "expected_retryable": false,
+    "evidence_class": "production_download_manifest"
+  },
+  {
+    "id": "M-04",
+    "kind": "manifest",
+    "injection": "video_progressive_unavailable",
+    "expected_code": "video_progressive_unavailable",
+    "expected_retryable": false,
+    "evidence_class": "production_download_manifest"
+  },
+  {
+    "id": "M-05",
+    "kind": "manifest",
+    "injection": "video_unavailable",
+    "expected_code": "video_unavailable",
+    "expected_retryable": false,
+    "evidence_class": "production_download_manifest"
+  },
+  {
+    "id": "M-06",
+    "kind": "manifest",
+    "injection": "video_dependency_missing",
+    "expected_code": "video_dependency_missing",
+    "expected_retryable": false,
+    "evidence_class": "production_download_manifest"
+  },
+  {
+    "id": "M-07",
+    "kind": "manifest",
+    "injection": "video_403",
+    "expected_code": "video_download_failed",
+    "expected_retryable": false,
+    "evidence_class": "production_download_manifest"
+  },
+  {
+    "id": "M-08",
+    "kind": "manifest",
+    "injection": "video_429",
+    "expected_code": "video_download_failed",
+    "expected_retryable": false,
+    "evidence_class": "production_download_manifest"
+  },
+  {
+    "id": "M-09",
+    "kind": "manifest",
+    "injection": "manifest_missing",
+    "expected_code": "video_download_failed",
+    "expected_retryable": true,
+    "evidence_class": "production_download_manifest"
+  },
+  {
+    "id": "M-10",
+    "kind": "manifest",
+    "injection": "manifest_malformed",
+    "expected_code": "unhandled_jsondecodeerror",
+    "expected_retryable": false,
+    "evidence_class": "production_download_manifest"
+  },
+  {
+    "id": "M-11",
+    "kind": "manifest",
+    "injection": "manifest_oversize",
+    "expected_code": "video_download_failed",
+    "expected_retryable": true,
+    "evidence_class": "production_download_manifest"
+  },
+  {
+    "id": "M-12",
+    "kind": "manifest",
+    "injection": "invalid_header",
+    "expected_code": "video_invalid_output",
+    "expected_retryable": false,
+    "evidence_class": "production_download_manifest"
+  },
+  {
+    "id": "M-13",
+    "kind": "manifest",
+    "injection": "missing_video",
+    "expected_code": "video_invalid_output",
+    "expected_retryable": false,
+    "evidence_class": "production_download_manifest"
+  },
+  {
+    "id": "M-14",
+    "kind": "manifest",
+    "injection": "valid_manifest",
+    "expected_code": "ok",
+    "expected_retryable": false,
+    "evidence_class": "production_download_manifest"
+  },
+  {
+    "id": "R-01",
+    "kind": "readback_oracle",
+    "injection": "valid_full_readback",
+    "expected_code": "ok",
+    "expected_retryable": false,
+    "evidence_class": "oracle_only_not_real_drive"
+  },
+  {
+    "id": "R-02",
+    "kind": "readback_oracle",
+    "injection": "metadata_only",
+    "expected_code": "not_verified",
+    "expected_retryable": false,
+    "evidence_class": "oracle_only_not_real_drive"
+  },
+  {
+    "id": "R-03",
+    "kind": "readback_oracle",
+    "injection": "no_file_id",
+    "expected_code": "not_verified",
+    "expected_retryable": false,
+    "evidence_class": "oracle_only_not_real_drive"
+  },
+  {
+    "id": "R-04",
+    "kind": "readback_oracle",
+    "injection": "db_pending",
+    "expected_code": "not_verified",
+    "expected_retryable": false,
+    "evidence_class": "oracle_only_not_real_drive"
+  },
+  {
+    "id": "R-05",
+    "kind": "readback_oracle",
+    "injection": "unverified_upload",
+    "expected_code": "not_verified",
+    "expected_retryable": false,
+    "evidence_class": "oracle_only_not_real_drive"
+  },
+  {
+    "id": "R-06",
+    "kind": "readback_oracle",
+    "injection": "no_readback",
+    "expected_code": "not_verified",
+    "expected_retryable": false,
+    "evidence_class": "oracle_only_not_real_drive"
+  },
+  {
+    "id": "R-07",
+    "kind": "readback_oracle",
+    "injection": "partial_readback",
+    "expected_code": "not_verified",
+    "expected_retryable": false,
+    "evidence_class": "oracle_only_not_real_drive"
+  },
+  {
+    "id": "R-08",
+    "kind": "readback_oracle",
+    "injection": "readback_truncated_claim_complete",
+    "expected_code": "not_verified",
+    "expected_retryable": false,
+    "evidence_class": "oracle_only_not_real_drive"
+  },
+  {
+    "id": "R-09",
+    "kind": "readback_oracle",
+    "injection": "corrupt_readback",
+    "expected_code": "not_verified",
+    "expected_retryable": false,
+    "evidence_class": "oracle_only_not_real_drive"
+  },
+  {
+    "id": "R-10",
+    "kind": "readback_oracle",
+    "injection": "local_corruption",
+    "expected_code": "not_verified",
+    "expected_retryable": false,
+    "evidence_class": "oracle_only_not_real_drive"
+  },
+  {
+    "id": "R-11",
+    "kind": "readback_oracle",
+    "injection": "remote_sha_wrong",
+    "expected_code": "not_verified",
+    "expected_retryable": false,
+    "evidence_class": "oracle_only_not_real_drive"
+  },
+  {
+    "id": "R-12",
+    "kind": "readback_oracle",
+    "injection": "remote_sha_missing",
+    "expected_code": "not_verified",
+    "expected_retryable": false,
+    "evidence_class": "oracle_only_not_real_drive"
+  },
+  {
+    "id": "R-13",
+    "kind": "readback_oracle",
+    "injection": "remote_size_wrong",
+    "expected_code": "not_verified",
+    "expected_retryable": false,
+    "evidence_class": "oracle_only_not_real_drive"
+  },
+  {
+    "id": "R-14",
+    "kind": "readback_oracle",
+    "injection": "asset_size_wrong",
+    "expected_code": "not_verified",
+    "expected_retryable": false,
+    "evidence_class": "oracle_only_not_real_drive"
+  },
+  {
+    "id": "R-15",
+    "kind": "readback_oracle",
+    "injection": "asset_sha_wrong",
+    "expected_code": "not_verified",
+    "expected_retryable": false,
+    "evidence_class": "oracle_only_not_real_drive"
+  },
+  {
+    "id": "R-16",
+    "kind": "readback_oracle",
+    "injection": "owner_mismatch",
+    "expected_code": "not_verified",
+    "expected_retryable": false,
+    "evidence_class": "oracle_only_not_real_drive"
+  },
+  {
+    "id": "R-17",
+    "kind": "readback_oracle",
+    "injection": "item_mismatch",
+    "expected_code": "not_verified",
+    "expected_retryable": false,
+    "evidence_class": "oracle_only_not_real_drive"
+  },
+  {
+    "id": "R-18",
+    "kind": "readback_oracle",
+    "injection": "asset_mismatch",
+    "expected_code": "not_verified",
+    "expected_retryable": false,
+    "evidence_class": "oracle_only_not_real_drive"
+  },
+  {
+    "id": "R-19",
+    "kind": "readback_oracle",
+    "injection": "empty_local",
+    "expected_code": "not_verified",
+    "expected_retryable": false,
+    "evidence_class": "oracle_only_not_real_drive"
+  },
+  {
+    "id": "R-20",
+    "kind": "readback_oracle",
+    "injection": "empty_remote",
+    "expected_code": "not_verified",
+    "expected_retryable": false,
+    "evidence_class": "oracle_only_not_real_drive"
+  },
+  {
+    "id": "R-21",
+    "kind": "readback_oracle",
+    "injection": "range_only",
+    "expected_code": "not_verified",
+    "expected_retryable": false,
+    "evidence_class": "oracle_only_not_real_drive"
+  },
+  {
+    "id": "Q-01",
+    "kind": "retry_policy_mirror",
+    "injection": "drive_429",
+    "retryable": true,
+    "expected_code": "retry_then_failed",
+    "expected_retryable": true,
+    "evidence_class": "retry_policy_mirror_not_db_worker"
+  },
+  {
+    "id": "Q-02",
+    "kind": "retry_policy_mirror",
+    "injection": "drive_503",
+    "retryable": true,
+    "expected_code": "retry_then_failed",
+    "expected_retryable": true,
+    "evidence_class": "retry_policy_mirror_not_db_worker"
+  },
+  {
+    "id": "Q-03",
+    "kind": "retry_policy_mirror",
+    "injection": "drive_403_denied",
+    "retryable": false,
+    "expected_code": "failed_no_retry",
+    "expected_retryable": false,
+    "evidence_class": "retry_policy_mirror_not_db_worker"
+  },
+  {
+    "id": "Q-04",
+    "kind": "retry_policy_mirror",
+    "injection": "drive_403_rate_limit",
+    "retryable": true,
+    "expected_code": "retry_then_failed",
+    "expected_retryable": true,
+    "evidence_class": "retry_policy_mirror_not_db_worker"
+  },
+  {
+    "id": "Q-05",
+    "kind": "retry_policy_mirror",
+    "injection": "drive_quota",
+    "retryable": false,
+    "expected_code": "failed_no_retry",
+    "expected_retryable": false,
+    "evidence_class": "retry_policy_mirror_not_db_worker"
+  },
+  {
+    "id": "Q-06",
+    "kind": "retry_policy_mirror",
+    "injection": "source_429",
+    "retryable": true,
+    "expected_code": "retry_then_failed",
+    "expected_retryable": true,
+    "evidence_class": "retry_policy_mirror_not_db_worker"
+  },
+  {
+    "id": "Q-07",
+    "kind": "retry_policy_mirror",
+    "injection": "source_403",
+    "retryable": false,
+    "expected_code": "failed_no_retry",
+    "expected_retryable": false,
+    "evidence_class": "retry_policy_mirror_not_db_worker"
+  },
+  {
+    "id": "Q-08",
+    "kind": "retry_policy_mirror",
+    "injection": "source_timeout",
+    "retryable": true,
+    "expected_code": "retry_then_failed",
+    "expected_retryable": true,
+    "evidence_class": "retry_policy_mirror_not_db_worker"
+  },
+  {
+    "id": "Q-09",
+    "kind": "retry_policy_mirror",
+    "injection": "upload_timeout_after_commit",
+    "retryable": true,
+    "expected_code": "retry_then_failed",
+    "expected_retryable": true,
+    "evidence_class": "retry_policy_mirror_not_db_worker"
+  },
+  {
+    "id": "Q-10",
+    "kind": "retry_policy_mirror",
+    "injection": "file_too_large",
+    "retryable": false,
+    "expected_code": "failed_no_retry",
+    "expected_retryable": false,
+    "evidence_class": "retry_policy_mirror_not_db_worker"
+  },
+  {
+    "id": "Q-11",
+    "kind": "retry_policy_mirror",
+    "injection": "asr_model_missing",
+    "retryable": false,
+    "expected_code": "failed_no_retry",
+    "expected_retryable": false,
+    "evidence_class": "retry_policy_mirror_not_db_worker"
+  },
+  {
+    "id": "Q-12",
+    "kind": "retry_policy_mirror",
+    "injection": "thumbnail_decode_invalid",
+    "retryable": false,
+    "expected_code": "failed_no_retry",
+    "expected_retryable": false,
+    "evidence_class": "retry_policy_mirror_not_db_worker"
+  }
+]

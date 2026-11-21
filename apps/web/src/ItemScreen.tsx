@@ -1,13 +1,15 @@
 import { ExtractedContent } from './ExtractedContent';
 import { AssetPreview } from './AssetPreview';
 import { Button, Textarea, TextInput } from '@mantine/core';
-import { useEffect, useRef, useState, type SubmitEvent } from 'react';
+import { Component, useEffect, useRef, useState, type ReactNode, type SubmitEvent } from 'react';
 import { ApiError, externalHttpUrl, request, type Capture, type Item, type Page } from './api';
 import { ItemOrganization, RelatedItems } from './ItemOrganization';
 import { itemNeedsRefresh } from './itemProcessing';
 import { KnowledgeExportPanel } from './KnowledgeExportPanel';
 import { KnowledgeText } from './KnowledgeText';
 import { KnowledgeReading } from './KnowledgeReading';
+import { SourceCitationBridge } from './SourceCitationBridge';
+import { OrganizationReview } from './OrganizationReview';
 import { SourceLinks } from './SourceLinks';
 import { MarkdownEditor } from './MarkdownEditor';
 import { useMarkdownDraft } from './MarkdownEditorDraft';
@@ -38,6 +40,27 @@ const organizationStates: Record<string, string> = {
 
 function stateText(value: string | undefined, states: Record<string, string>) {
   return (value && Object.hasOwn(states, value) && states[value]) || '—';
+}
+
+// Structure is an optional module during rolling upgrades. A missing/malformed
+// /structure payload must never unmount the source note, editor or capture history.
+// Keep the fault boundary at this host; ItemStructurePanel is owned elsewhere.
+class OptionalStructureBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  render() {
+    if (this.state.failed) return <section className="panel" aria-label="Cấu trúc bài">
+      <h2>Cấu trúc bài</h2>
+      <ErrorNotice retry={() => this.setState({ failed: false })}>
+        Chưa hiển thị được cấu trúc bài. Kiểm tra phiên bản máy chủ hoặc thử lại; nội dung ghi chú vẫn được giữ.
+      </ErrorNotice>
+    </section>;
+    return this.props.children;
+  }
 }
 
 function ItemHistory({ id }: { id: string }) {
@@ -216,6 +239,7 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
           </form> : <>
             {item.note ? <>
               <KnowledgeText text={item.note} title={itemTitle(item)} />
+              {!item.deleted && <SourceCitationBridge id={item.item_id} refreshKey={evidenceRevision} onIllustration={showIllustration} />}
               <details className="raw-knowledge"><summary>Xem Markdown gốc</summary><pre>{item.note}</pre></details>
             </> : !item.deleted ? <KnowledgeReading id={item.item_id} refreshKey={evidenceRevision} onIllustration={showIllustration} /> : <Empty>Bài đang ở thùng rác.</Empty>}
             {(item.original_url || item.description) && <details className="source-description"><summary>Nguồn và mô tả</summary>
@@ -279,7 +303,10 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
           </div>
         </section>
         <ItemOrganization id={item.item_id} csrf={csrf} deleted={item.deleted} refreshKey={evidenceRevision} onSaved={onRefresh} />
-        {!item.deleted && <ItemStructurePanel id={item.item_id} csrf={csrf} refreshKey={evidenceRevision} onChanged={onRefresh} />}
+        {!item.deleted && <OrganizationReview id={item.item_id} csrf={csrf} refreshKey={evidenceRevision} onSaved={onRefresh} />}
+        {!item.deleted && <OptionalStructureBoundary key={item.item_id}>
+          <ItemStructurePanel id={item.item_id} csrf={csrf} refreshKey={evidenceRevision} onChanged={onRefresh} />
+        </OptionalStructureBoundary>}
         <KnowledgeExportPanel id={item.item_id} csrf={csrf} deleted={item.deleted} refreshKey={evidenceRevision} />
         {confirmation && <div className="notice" role="status">{confirmation}</div>}
         {error && !editing && <ErrorNotice>{error}</ErrorNotice>}

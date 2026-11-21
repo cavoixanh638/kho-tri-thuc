@@ -2,6 +2,7 @@ import { Button } from '@mantine/core';
 import { useState } from 'react';
 import { request, type DriveStatus } from './api';
 import { GroupsManager } from './GroupsManager';
+import { KnowledgeVaultPanel } from './KnowledgeVaultPanel';
 import { ErrorNotice, Loading, PageTitle, useResource } from './views';
 
 const driveStates: Record<string, string> = {
@@ -58,6 +59,10 @@ export function SettingsScreen({ csrf, driveResult, username }: { csrf: string; 
     <section className="settings-row" aria-labelledby="groups-title">
       <div><h2 id="groups-title">Nhóm trong thư viện</h2><p className="section-note">Tạo chủ đề, dự án hoặc nhãn để gắn vào các mục.</p></div>
       <GroupsManager csrf={csrf} />
+    </section>
+    <section className="settings-row" aria-label="Xuất nhập ghi chú Markdown">
+      <div><h2>Dữ liệu Markdown</h2><p className="section-note">Xuất và nhập ghi chú, thư mục, liên kết từ tệp ZIP có kiểm tra trước khi ghi. Không thay thế bản sao lưu Drive/PostgreSQL.</p></div>
+      <KnowledgeVaultPanel csrf={csrf} />
     </section>
     <section className="settings-row" aria-labelledby="account-title">
       <h2 id="account-title">Tài khoản</h2>

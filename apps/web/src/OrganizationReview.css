@@ -1,0 +1,11 @@
+.org-review { display: grid; gap: .65rem; }
+.org-review h3 { margin: .5rem 0 0; font-size: 1rem; }
+.org-review-list { list-style: none; margin: 0; padding: 0; display: grid; gap: .75rem; }
+.org-review-list > li { display: flex; align-items: start; justify-content: space-between; flex-wrap: wrap; gap: .75rem; border-block-start: 1px solid var(--mantine-color-default-border); padding-block-start: .7rem; min-width: 0; }
+.org-review-list > li > div:first-child { min-width: min(100%, 14rem); flex: 1 1 14rem; overflow-wrap: anywhere; }
+.org-review-list blockquote { margin: .4rem 0; padding-inline-start: .75rem; border-inline-start: 3px solid var(--mantine-primary-color-filled); white-space: pre-wrap; overflow-wrap: anywhere; }
+.org-review-meta { font-size: .82rem; opacity: .82; overflow-wrap: anywhere; margin-top: .3rem; }
+.org-review-actions { display: flex; gap: .45rem; flex-wrap: wrap; }
+.org-review-error { color: var(--mantine-color-error); }
+@media (max-width: 420px) { .org-review-actions { width: 100%; } .org-review-actions > button { flex: 1 1 auto; } }
+@media (prefers-reduced-motion: reduce) { .org-review * { animation: none !important; transition: none !important; } }

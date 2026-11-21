@@ -282,12 +282,13 @@ class ExplorerTests(TransactionTestCase):
         self.assertEqual(
             Topic.objects.filter(pk__in=[n.pk for n in nodes], archived=True).count(), 5
         )
-        self.assertEqual(
-            self.client.get("/api/v1/explorer/children?unfiled=true").json()["notes"][
-                0
-            ]["item_id"],
-            str(self.item.pk),
-        )
+        # Archiving one branch must preserve a live shortcut in another
+        # branch. A note is only unfiled when ALL visible placements disappear.
+        unfiled = self.client.get("/api/v1/explorer/children?unfiled=true").json()
+        self.assertNotIn(str(self.item.pk), [row["item_id"] for row in unfiled["notes"]])
+        ItemTopic.objects.filter(item=self.item, topic=self.folder).delete()
+        unfiled = self.client.get("/api/v1/explorer/children?unfiled=true").json()
+        self.assertIn(str(self.item.pk), [row["item_id"] for row in unfiled["notes"]])
 
     def test_two_parents_twenty_children_three_levels_and_separate_related(self):
         parents = [

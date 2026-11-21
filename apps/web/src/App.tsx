@@ -94,7 +94,7 @@ function Login({ csrf, onLogin }: { csrf: string; onLogin: (session: Session) =>
 }
 
 function activePath() {
-  return location.hash || '#/gui';
+  return window.location.hash || '#/gui';
 }
 
 export function App() {
@@ -164,8 +164,9 @@ export function App() {
   const authenticated = session?.authenticated === true;
 
   return <>
+    <a className="skip-link" href="#main-content">Bỏ qua điều hướng, đến nội dung chính</a>
     <Header path={path} username={session?.username} onLogout={authenticated ? () => void logout() : undefined} signingOut={signingOut} />
-    <main className="shell canvas">
+    <main id="main-content" className="shell canvas" tabIndex={-1}>
       {authenticated && <KnowledgeCommandPalette currentItemId={itemId} onAction={(action) => {
         if (action === 'day') window.location.hash = '#/thu-vien?view=timeline';
         else if (action === 'create') {

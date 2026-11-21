@@ -14,7 +14,8 @@ ROOT = Path(__file__).resolve().parents[2]
 DUMP = "database.dump"
 MANIFEST = "manifest.json"
 CHECKSUMS = "SHA256SUMS"
-SCHEMA_VERSION = 3
+SCHEMA_VERSION = 4
+SUPPORTED_SCHEMA_VERSIONS = (1, 2, 3, 4)
 PG_MAJOR = 18
 
 # The projection is part of the versioned format. Keep credential tables and
@@ -84,6 +85,43 @@ COLLECTIONS = {
         "exported_version, content_sha256, status, truncated, last_error, last_synced_at",
     ),
 }
+
+# v1–v3 are immutable wire formats. v4 adds Item's structural fields and two
+# separate tables; it does not change Asset, Source or CaptureEvent projections.
+V4_ITEM_FIELDS = (
+    COLLECTIONS["items"][0],
+    COLLECTIONS["items"][1]
+    + ", home_topic_id, parent_item_id, outline_order, structure_version, structure_origin",
+)
+V4_COLLECTIONS = {
+    "saved_collections": (
+        "catalog_savedcollection",
+        "id, owner_id, name, normalized_name, query, view, version, created_at, updated_at",
+    ),
+    "clip_annotations": (
+        "processing_clipannotation",
+        "id, item_id, capture_id, source_id, part_id, asset_id, mode, quote, "
+        "quote_hash, source_version, processor_version, locator, source_url, "
+        "page_title, verification, inserted_edit_version, created_at",
+    ),
+}
+
+
+def collections_for_version(schema_version):
+    if schema_version not in SUPPORTED_SCHEMA_VERSIONS:
+        raise BackupError("Unsupported backup manifest format.")
+    projection = dict(COLLECTIONS)
+    if schema_version == 1:
+        projection.pop("knowledge_exports")
+    if schema_version < 3:
+        projection["topics"] = (
+            "catalog_topic", "id, owner_id, name, parent_id, archived",
+        )
+    if schema_version >= 4:
+        projection["items"] = V4_ITEM_FIELDS
+        projection.update(V4_COLLECTIONS)
+    return projection
+
 
 TRANSACTION = (
     b"BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY;\n"
@@ -192,20 +230,21 @@ class Postgres:
             )
 
 
+def manifest_select(names=None, schema_version=SCHEMA_VERSION):
+    projection = collections_for_version(schema_version)
+    if names is not None and set(names) != set(projection):
+        raise BackupError("Missing or invalid manifest collections.")
+    parts = [
+        f"'{name}', (SELECT COALESCE(json_agg(r ORDER BY r.id), '[]'::json) "
+        f"FROM (SELECT {columns} FROM public.{table}) r)"
+        for name, (table, columns) in projection.items()
+    ]
+    return "SELECT json_build_object(\n" + ",\n".join(parts) + "\n)"
+
+
 def manifest_query(names=None, schema_version=SCHEMA_VERSION):
-    parts = []
-    for name, (table, columns) in COLLECTIONS.items():
-        if names is not None and name not in names:
-            continue
-        if name == "topics" and schema_version < 3:
-            columns = "id, owner_id, name, parent_id, archived"
-        parts.append(
-            f"'{name}', (SELECT COALESCE(json_agg(r ORDER BY r.id), '[]'::json) "
-            f"FROM (SELECT {columns} FROM public.{table}) r)"
-        )
-    return (
-        "SELECT json_build_object(\n" + ",\n".join(parts) + "\n);\nCOMMIT;\n"
-    ).encode()
+    # The COMMIT closes the read-only pg_export_snapshot transaction.
+    return (manifest_select(names, schema_version) + ";\nCOMMIT;\n").encode()
 
 
 def record_backup(pg, directory):
@@ -266,19 +305,14 @@ def verify_bundle(directory):
     if (
         not isinstance(manifest, dict)
         or type(manifest.get("schema_version")) is not int
-        or manifest["schema_version"] not in (1, 2, SCHEMA_VERSION)
+        or manifest["schema_version"] not in SUPPORTED_SCHEMA_VERSIONS
         or manifest.get("postgres_major") != PG_MAJOR
     ):
         raise BackupError("Unsupported backup manifest format.")
     collections = manifest.get("collections")
     if (
         not isinstance(collections, dict)
-        or set(collections)
-        != (
-            set(COLLECTIONS)
-            if manifest["schema_version"] >= 2
-            else set(COLLECTIONS) - {"knowledge_exports"}
-        )
+        or set(collections) != set(collections_for_version(manifest["schema_version"]))
         or any(not isinstance(rows, list) for rows in collections.values())
     ):
         raise BackupError("Missing or invalid manifest collections.")
@@ -304,6 +338,73 @@ def create(pg, destination):
         staging.rename(destination)
 
 
+def restore_assertion_sql(expected, schema_version):
+    """Verify the full versioned projection BEFORE commit, never post-commit.
+
+    Hex-encode the expected JSON: note/URL/quote contents cannot break SQL
+    quoting, PL/pgSQL dollar delimiters, or trigger psql metacommands.
+    """
+    expected_json = json.dumps(
+        expected, sort_keys=True, ensure_ascii=True,
+        separators=(",", ":"), allow_nan=False,
+    ).encode("utf-8").hex()
+    select = manifest_select(expected, schema_version)
+    return (
+        "\nDO $kt_backup_assert$\nBEGIN\n"
+        "    IF (" + select + ")::jsonb IS DISTINCT FROM "
+        "convert_from(decode('" + expected_json + "', 'hex'), 'UTF8')::jsonb THEN\n"
+        "        RAISE EXCEPTION 'Restore manifest projection mismatch';\n"
+        "    END IF;\nEND;\n$kt_backup_assert$;\nCOMMIT;\n"
+    ).encode("ascii")
+
+
+def restore_atomically(pg, directory, target, expected, schema_version):
+    """Stream pg_restore's SQL through one psql transaction, including validation.
+
+    pg_restore --single-transaction commits *before* the old post-restore
+    manifest comparison. Feeding its SQL plus the comparison into one psql
+    session means any SQL error OR projection mismatch rolls back all DDL/data.
+    No huge dump is materialized in memory or on disk as a SQL intermediate.
+    """
+    options = pg.options()
+    with (directory / DUMP).open("rb") as archive:
+        reader = subprocess.Popen(
+            pg.command(
+                "pg_restore",
+                ("--format=custom", "--no-owner", "--no-privileges", "--file=-"),
+            ),
+            stdin=archive, stdout=subprocess.PIPE, **options,
+        )
+        writer = None
+        try:
+            writer = subprocess.Popen(
+                pg.command("psql", (*PSQL_ARGS, f"--dbname={target}")),
+                stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, **options,
+            )
+            writer.stdin.write(b"BEGIN;\n")
+            while chunk := reader.stdout.read(1024 * 1024):
+                writer.stdin.write(chunk)
+            pg.check(reader.wait(), "pg_restore")
+            writer.stdin.write(restore_assertion_sql(expected, schema_version))
+            writer.stdin.close()
+            pg.check(writer.wait(), "psql")
+        except OSError:
+            # A broken pipe often means ON_ERROR_STOP terminated psql already.
+            # Closing that transaction (without COMMIT) causes PostgreSQL rollback.
+            raise BackupError("Restore stream failed; target transaction rolled back.") from None
+        finally:
+            reader.stdout.close()
+            if reader.poll() is None:
+                reader.kill()
+            reader.wait()
+            if writer is not None:
+                if not writer.stdin.closed:
+                    writer.stdin.close()
+                if writer.poll() is None:
+                    writer.kill()
+                writer.wait()
+
+
 def restore(pg, directory, target):
     if not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_-]{0,62}", target):
         raise BackupError(
@@ -321,30 +422,7 @@ def restore(pg, directory, target):
     if pg.psql(EMPTY_DATABASE, target) != b"t":
         raise BackupError("Restore requires a freshly created empty database.")
 
-    # A pathless pg_restore reads its archive on stdin, including through Compose.
-    with (directory / DUMP).open("rb") as archive:
-        pg.run(
-            "pg_restore",
-            "--single-transaction",
-            "--exit-on-error",
-            "--no-password",
-            "--no-owner",
-            "--no-privileges",
-            f"--dbname={target}",
-            stdin=archive,
-            output=subprocess.DEVNULL,
-        )
-
-    actual = json.loads(
-        pg.psql(TRANSACTION + manifest_query(expected, version), target)
-    )
-    if actual != expected:
-        mismatches = ", ".join(
-            name for name in expected if actual[name] != expected[name]
-        )
-        raise BackupError(
-            f"Restore contents differ from the manifest in: {mismatches}."
-        )
+    restore_atomically(pg, directory, target, expected, version)
 
 
 def main():

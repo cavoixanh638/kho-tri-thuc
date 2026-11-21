@@ -198,20 +198,25 @@ def list_items(
     if not 1 <= limit <= 100 or not 0 <= offset <= 1_000_000:
         return Status(422, {"code": "invalid_page"})
     items = catalog(request.user).filter(deleted_at__isnull=not deleted)
-    if node_id is not None or unfiled:
+    if node_id is not None:
         from .knowledge_tree import tree
 
         nodes = tree(request.user.pk)
         visible = {row["id"] for row in nodes}
-        if node_id is not None:
-            if node_id not in visible:
-                from django.http import Http404
+        if node_id not in visible:
+            from django.http import Http404
 
-                raise Http404
-            ids = [row["id"] for row in nodes if node_id in row["path_ids"]]
-            items = items.filter(itemtopic__topic_id__in=ids).distinct()
-        elif unfiled:
-            items = items.exclude(itemtopic__topic_id__in=visible)
+            raise Http404
+        ids = [row["id"] for row in nodes if node_id in row["path_ids"]]
+        items = items.filter(
+            Q(itemtopic__topic_id__in=ids) | Q(home_topic_id__in=ids)
+        ).distinct()
+    elif unfiled:
+        # Do not compute the entire Topic tree for an unfiled page.
+        # Parent notes are not folder placements, and archived ones are hidden.
+        from .explorer import without_visible_folder
+
+        items = without_visible_folder(items, request.user.pk)
     if favorite:
         items = items.filter(favorite=True)
     if unclassified:

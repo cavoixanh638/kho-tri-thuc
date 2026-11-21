@@ -13,7 +13,7 @@ export function KnowledgeText({ text, title }: { text: string; title?: string })
   return <div className="knowledge-text">
     <Markdown skipHtml remarkPlugins={[remarkGfm, remarkNoteOutline]} urlTransform={(url, key) => key === 'href' && (internalItemHref(url) || /^#kt-heading-[a-z0-9]+-\d+$/.test(url)) ? url : externalHttpUrl(url) ?? ''}
       components={{
-        h1: ({ children, id }) => <h3 id={id} tabIndex={-1}>{children}</h3>, h2: ({ children, id }) => <h3 id={id} tabIndex={-1}>{children}</h3>, h3: ({ children, id }) => <h4 id={id} tabIndex={-1}>{children}</h4>,
+        h1: ({ children, id }) => <h2 id={id} tabIndex={-1}>{children}</h2>, h2: ({ children, id }) => <h3 id={id} tabIndex={-1}>{children}</h3>, h3: ({ children, id }) => <h4 id={id} tabIndex={-1}>{children}</h4>,
         h4: ({ children, id }) => <h4 id={id} tabIndex={-1}>{children}</h4>, h5: ({ children, id }) => <h5 id={id} tabIndex={-1}>{children}</h5>, h6: ({ children, id }) => <h6 id={id} tabIndex={-1}>{children}</h6>,
         a: ({ href, children }) => href ? href.startsWith('#kt-heading-') ? <a href={href} onClick={(event) => {
           event.preventDefault();

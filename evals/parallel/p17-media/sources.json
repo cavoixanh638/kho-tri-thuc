@@ -1,0 +1,452 @@
+[
+  {
+    "id": "FB-001",
+    "platform": "facebook",
+    "url": "https://www.facebook.com/reel/917000000000001",
+    "host": "www.facebook.com",
+    "expected_direct_video_download": true,
+    "evidence": "synthetic_url_only",
+    "video_id": ""
+  },
+  {
+    "id": "FB-002",
+    "platform": "facebook",
+    "url": "https://facebook.com/share/r/P17f0002/",
+    "host": "facebook.com",
+    "expected_direct_video_download": true,
+    "evidence": "synthetic_url_only",
+    "video_id": ""
+  },
+  {
+    "id": "FB-003",
+    "platform": "facebook",
+    "url": "https://m.facebook.com/watch/?v=917000000000003",
+    "host": "m.facebook.com",
+    "expected_direct_video_download": true,
+    "evidence": "synthetic_url_only",
+    "video_id": ""
+  },
+  {
+    "id": "FB-004",
+    "platform": "facebook",
+    "url": "https://www.facebook.com/reel/917000000000004",
+    "host": "www.facebook.com",
+    "expected_direct_video_download": true,
+    "evidence": "synthetic_url_only",
+    "video_id": ""
+  },
+  {
+    "id": "FB-005",
+    "platform": "facebook",
+    "url": "https://facebook.com/share/r/P17f0005/",
+    "host": "facebook.com",
+    "expected_direct_video_download": true,
+    "evidence": "synthetic_url_only",
+    "video_id": ""
+  },
+  {
+    "id": "FB-006",
+    "platform": "facebook",
+    "url": "https://m.facebook.com/watch/?v=917000000000006",
+    "host": "m.facebook.com",
+    "expected_direct_video_download": true,
+    "evidence": "synthetic_url_only",
+    "video_id": ""
+  },
+  {
+    "id": "FB-007",
+    "platform": "facebook",
+    "url": "https://www.facebook.com/reel/917000000000007",
+    "host": "www.facebook.com",
+    "expected_direct_video_download": true,
+    "evidence": "synthetic_url_only",
+    "video_id": ""
+  },
+  {
+    "id": "FB-008",
+    "platform": "facebook",
+    "url": "https://facebook.com/share/r/P17f0008/",
+    "host": "facebook.com",
+    "expected_direct_video_download": true,
+    "evidence": "synthetic_url_only",
+    "video_id": ""
+  },
+  {
+    "id": "FB-009",
+    "platform": "facebook",
+    "url": "https://m.facebook.com/watch/?v=917000000000009",
+    "host": "m.facebook.com",
+    "expected_direct_video_download": true,
+    "evidence": "synthetic_url_only",
+    "video_id": ""
+  },
+  {
+    "id": "FB-010",
+    "platform": "facebook",
+    "url": "https://www.facebook.com/reel/917000000000010",
+    "host": "www.facebook.com",
+    "expected_direct_video_download": true,
+    "evidence": "synthetic_url_only",
+    "video_id": ""
+  },
+  {
+    "id": "FB-011",
+    "platform": "facebook",
+    "url": "https://facebook.com/share/r/P17f0011/",
+    "host": "facebook.com",
+    "expected_direct_video_download": true,
+    "evidence": "synthetic_url_only",
+    "video_id": ""
+  },
+  {
+    "id": "FB-012",
+    "platform": "facebook",
+    "url": "https://m.facebook.com/watch/?v=917000000000012",
+    "host": "m.facebook.com",
+    "expected_direct_video_download": true,
+    "evidence": "synthetic_url_only",
+    "video_id": ""
+  },
+  {
+    "id": "FB-013",
+    "platform": "facebook",
+    "url": "https://www.facebook.com/reel/917000000000013",
+    "host": "www.facebook.com",
+    "expected_direct_video_download": true,
+    "evidence": "synthetic_url_only",
+    "video_id": ""
+  },
+  {
+    "id": "FB-014",
+    "platform": "facebook",
+    "url": "https://facebook.com/share/r/P17f0014/",
+    "host": "facebook.com",
+    "expected_direct_video_download": true,
+    "evidence": "synthetic_url_only",
+    "video_id": ""
+  },
+  {
+    "id": "FB-015",
+    "platform": "facebook",
+    "url": "https://m.facebook.com/watch/?v=917000000000015",
+    "host": "m.facebook.com",
+    "expected_direct_video_download": true,
+    "evidence": "synthetic_url_only",
+    "video_id": ""
+  },
+  {
+    "id": "FB-016",
+    "platform": "facebook",
+    "url": "https://www.facebook.com/reel/917000000000016",
+    "host": "www.facebook.com",
+    "expected_direct_video_download": true,
+    "evidence": "synthetic_url_only",
+    "video_id": ""
+  },
+  {
+    "id": "FB-017",
+    "platform": "facebook",
+    "url": "https://facebook.com/share/r/P17f0017/",
+    "host": "facebook.com",
+    "expected_direct_video_download": true,
+    "evidence": "synthetic_url_only",
+    "video_id": ""
+  },
+  {
+    "id": "FB-018",
+    "platform": "facebook",
+    "url": "https://m.facebook.com/watch/?v=917000000000018",
+    "host": "m.facebook.com",
+    "expected_direct_video_download": true,
+    "evidence": "synthetic_url_only",
+    "video_id": ""
+  },
+  {
+    "id": "FB-019",
+    "platform": "facebook",
+    "url": "https://www.facebook.com/reel/917000000000019",
+    "host": "www.facebook.com",
+    "expected_direct_video_download": true,
+    "evidence": "synthetic_url_only",
+    "video_id": ""
+  },
+  {
+    "id": "FB-020",
+    "platform": "facebook",
+    "url": "https://facebook.com/share/r/P17f0020/",
+    "host": "facebook.com",
+    "expected_direct_video_download": true,
+    "evidence": "synthetic_url_only",
+    "video_id": ""
+  },
+  {
+    "id": "YT-001",
+    "platform": "youtube",
+    "url": "https://www.youtube.com/shorts/P17YT000001",
+    "host": "www.youtube.com",
+    "video_id": "P17YT000001",
+    "expected_direct_video_download": false,
+    "evidence": "synthetic_url_only"
+  },
+  {
+    "id": "YT-002",
+    "platform": "youtube",
+    "url": "https://www.youtube.com/shorts/P17YT000002",
+    "host": "www.youtube.com",
+    "video_id": "P17YT000002",
+    "expected_direct_video_download": false,
+    "evidence": "synthetic_url_only"
+  },
+  {
+    "id": "YT-003",
+    "platform": "youtube",
+    "url": "https://www.youtube.com/shorts/P17YT000003",
+    "host": "www.youtube.com",
+    "video_id": "P17YT000003",
+    "expected_direct_video_download": false,
+    "evidence": "synthetic_url_only"
+  },
+  {
+    "id": "YT-004",
+    "platform": "youtube",
+    "url": "https://www.youtube.com/shorts/P17YT000004",
+    "host": "www.youtube.com",
+    "video_id": "P17YT000004",
+    "expected_direct_video_download": false,
+    "evidence": "synthetic_url_only"
+  },
+  {
+    "id": "YT-005",
+    "platform": "youtube",
+    "url": "https://www.youtube.com/shorts/P17YT000005",
+    "host": "www.youtube.com",
+    "video_id": "P17YT000005",
+    "expected_direct_video_download": false,
+    "evidence": "synthetic_url_only"
+  },
+  {
+    "id": "YT-006",
+    "platform": "youtube",
+    "url": "https://www.youtube.com/shorts/P17YT000006",
+    "host": "www.youtube.com",
+    "video_id": "P17YT000006",
+    "expected_direct_video_download": false,
+    "evidence": "synthetic_url_only"
+  },
+  {
+    "id": "YT-007",
+    "platform": "youtube",
+    "url": "https://www.youtube.com/shorts/P17YT000007",
+    "host": "www.youtube.com",
+    "video_id": "P17YT000007",
+    "expected_direct_video_download": false,
+    "evidence": "synthetic_url_only"
+  },
+  {
+    "id": "YT-008",
+    "platform": "youtube",
+    "url": "https://www.youtube.com/shorts/P17YT000008",
+    "host": "www.youtube.com",
+    "video_id": "P17YT000008",
+    "expected_direct_video_download": false,
+    "evidence": "synthetic_url_only"
+  },
+  {
+    "id": "YT-009",
+    "platform": "youtube",
+    "url": "https://www.youtube.com/shorts/P17YT000009",
+    "host": "www.youtube.com",
+    "video_id": "P17YT000009",
+    "expected_direct_video_download": false,
+    "evidence": "synthetic_url_only"
+  },
+  {
+    "id": "YT-010",
+    "platform": "youtube",
+    "url": "https://www.youtube.com/shorts/P17YT000010",
+    "host": "www.youtube.com",
+    "video_id": "P17YT000010",
+    "expected_direct_video_download": false,
+    "evidence": "synthetic_url_only"
+  },
+  {
+    "id": "YT-011",
+    "platform": "youtube",
+    "url": "https://www.youtube.com/shorts/P17YT000011",
+    "host": "www.youtube.com",
+    "video_id": "P17YT000011",
+    "expected_direct_video_download": false,
+    "evidence": "synthetic_url_only"
+  },
+  {
+    "id": "YT-012",
+    "platform": "youtube",
+    "url": "https://www.youtube.com/shorts/P17YT000012",
+    "host": "www.youtube.com",
+    "video_id": "P17YT000012",
+    "expected_direct_video_download": false,
+    "evidence": "synthetic_url_only"
+  },
+  {
+    "id": "YT-013",
+    "platform": "youtube",
+    "url": "https://www.youtube.com/shorts/P17YT000013",
+    "host": "www.youtube.com",
+    "video_id": "P17YT000013",
+    "expected_direct_video_download": false,
+    "evidence": "synthetic_url_only"
+  },
+  {
+    "id": "YT-014",
+    "platform": "youtube",
+    "url": "https://www.youtube.com/shorts/P17YT000014",
+    "host": "www.youtube.com",
+    "video_id": "P17YT000014",
+    "expected_direct_video_download": false,
+    "evidence": "synthetic_url_only"
+  },
+  {
+    "id": "YT-015",
+    "platform": "youtube",
+    "url": "https://www.youtube.com/shorts/P17YT000015",
+    "host": "www.youtube.com",
+    "video_id": "P17YT000015",
+    "expected_direct_video_download": false,
+    "evidence": "synthetic_url_only"
+  },
+  {
+    "id": "TT-001",
+    "platform": "tiktok",
+    "url": "https://www.tiktok.com/@p17_fixture/video/7250000000000000001",
+    "host": "www.tiktok.com",
+    "video_id": "7250000000000000001",
+    "expected_direct_video_download": false,
+    "evidence": "synthetic_url_only"
+  },
+  {
+    "id": "TT-002",
+    "platform": "tiktok",
+    "url": "https://www.tiktok.com/@p17_fixture/video/7250000000000000002",
+    "host": "www.tiktok.com",
+    "video_id": "7250000000000000002",
+    "expected_direct_video_download": false,
+    "evidence": "synthetic_url_only"
+  },
+  {
+    "id": "TT-003",
+    "platform": "tiktok",
+    "url": "https://www.tiktok.com/@p17_fixture/video/7250000000000000003",
+    "host": "www.tiktok.com",
+    "video_id": "7250000000000000003",
+    "expected_direct_video_download": false,
+    "evidence": "synthetic_url_only"
+  },
+  {
+    "id": "TT-004",
+    "platform": "tiktok",
+    "url": "https://www.tiktok.com/@p17_fixture/video/7250000000000000004",
+    "host": "www.tiktok.com",
+    "video_id": "7250000000000000004",
+    "expected_direct_video_download": false,
+    "evidence": "synthetic_url_only"
+  },
+  {
+    "id": "TT-005",
+    "platform": "tiktok",
+    "url": "https://www.tiktok.com/@p17_fixture/video/7250000000000000005",
+    "host": "www.tiktok.com",
+    "video_id": "7250000000000000005",
+    "expected_direct_video_download": false,
+    "evidence": "synthetic_url_only"
+  },
+  {
+    "id": "TT-006",
+    "platform": "tiktok",
+    "url": "https://www.tiktok.com/@p17_fixture/video/7250000000000000006",
+    "host": "www.tiktok.com",
+    "video_id": "7250000000000000006",
+    "expected_direct_video_download": false,
+    "evidence": "synthetic_url_only"
+  },
+  {
+    "id": "TT-007",
+    "platform": "tiktok",
+    "url": "https://www.tiktok.com/@p17_fixture/video/7250000000000000007",
+    "host": "www.tiktok.com",
+    "video_id": "7250000000000000007",
+    "expected_direct_video_download": false,
+    "evidence": "synthetic_url_only"
+  },
+  {
+    "id": "TT-008",
+    "platform": "tiktok",
+    "url": "https://www.tiktok.com/@p17_fixture/video/7250000000000000008",
+    "host": "www.tiktok.com",
+    "video_id": "7250000000000000008",
+    "expected_direct_video_download": false,
+    "evidence": "synthetic_url_only"
+  },
+  {
+    "id": "TT-009",
+    "platform": "tiktok",
+    "url": "https://www.tiktok.com/@p17_fixture/video/7250000000000000009",
+    "host": "www.tiktok.com",
+    "video_id": "7250000000000000009",
+    "expected_direct_video_download": false,
+    "evidence": "synthetic_url_only"
+  },
+  {
+    "id": "TT-010",
+    "platform": "tiktok",
+    "url": "https://www.tiktok.com/@p17_fixture/video/7250000000000000010",
+    "host": "www.tiktok.com",
+    "video_id": "7250000000000000010",
+    "expected_direct_video_download": false,
+    "evidence": "synthetic_url_only"
+  },
+  {
+    "id": "TT-011",
+    "platform": "tiktok",
+    "url": "https://www.tiktok.com/@p17_fixture/video/7250000000000000011",
+    "host": "www.tiktok.com",
+    "video_id": "7250000000000000011",
+    "expected_direct_video_download": false,
+    "evidence": "synthetic_url_only"
+  },
+  {
+    "id": "TT-012",
+    "platform": "tiktok",
+    "url": "https://www.tiktok.com/@p17_fixture/video/7250000000000000012",
+    "host": "www.tiktok.com",
+    "video_id": "7250000000000000012",
+    "expected_direct_video_download": false,
+    "evidence": "synthetic_url_only"
+  },
+  {
+    "id": "TT-013",
+    "platform": "tiktok",
+    "url": "https://www.tiktok.com/@p17_fixture/video/7250000000000000013",
+    "host": "www.tiktok.com",
+    "video_id": "7250000000000000013",
+    "expected_direct_video_download": false,
+    "evidence": "synthetic_url_only"
+  },
+  {
+    "id": "TT-014",
+    "platform": "tiktok",
+    "url": "https://www.tiktok.com/@p17_fixture/video/7250000000000000014",
+    "host": "www.tiktok.com",
+    "video_id": "7250000000000000014",
+    "expected_direct_video_download": false,
+    "evidence": "synthetic_url_only"
+  },
+  {
+    "id": "TT-015",
+    "platform": "tiktok",
+    "url": "https://www.tiktok.com/@p17_fixture/video/7250000000000000015",
+    "host": "www.tiktok.com",
+    "video_id": "7250000000000000015",
+    "expected_direct_video_download": false,
+    "evidence": "synthetic_url_only"
+  }
+]

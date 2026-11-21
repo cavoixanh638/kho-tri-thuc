@@ -2,6 +2,8 @@ from typing import Literal
 
 from catalog.api import router as library_router
 from catalog.collection_api import router as collection_router
+from catalog.vault_api import router as vault_router
+from catalog.organization_review_api import router as organization_review_router
 from catalog.explorer_api import router as explorer_router
 from catalog.groups_api import router as groups_router
 from catalog.navigation_api import router as navigation_router
@@ -30,6 +32,8 @@ api.add_router("", groups_router)
 api.add_router("", tree_router)
 api.add_router("", navigation_router)
 api.add_router("", collection_router)
+api.add_router("", vault_router)
+api.add_router("", organization_review_router)
 api.add_router("", search_router)
 api.add_router("", capture_router)
 api.add_router("", content_router)

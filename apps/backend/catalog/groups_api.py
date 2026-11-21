@@ -326,8 +326,11 @@ def _inline_item_links(markdown):
         cursor = len(text) if closing is None else opening.end() + closing.end()
     plain.append(text[cursor:])
     text = "".join(plain)
+    # Literal external URLs may contain Markdown-looking text in their path.
+    # They are not authored links to an Item; avoid inventing backlinks.
+    text = re.sub(r"(?i)https?://[^\s<>]+", " ", text)
     pattern = re.compile(
-        r"(?<!\S)\[[^\[\]<>\\\n]*\]\([ \t]*(<)?#/muc/([a-fA-F0-9-]{36})(?(1)>)[ \t]*\)"
+        r"(?<![\\!])\[[^\[\]<>\\\n]*\]\([ \t]*(<)?#/muc/([a-fA-F0-9-]{36})(?(1)>)[ \t]*\)"
     )
     ids = set()
     for line in text.splitlines():

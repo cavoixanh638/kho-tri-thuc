@@ -99,7 +99,14 @@ def viewer(request, asset_id: UUID):
 
 
 def selected_range(header, size):
-    """Single byte range, including open-ended and suffix forms; cap each read."""
+    """Select one bounded byte range without ever lying about an explicit range.
+
+    A client can advance an open-ended range in 4 MiB steps. Explicit closed
+    and suffix ranges must be served in full or rejected with HTTP 416: quietly
+    truncating a suffix would return the *wrong bytes* for PDF/media seekers.
+    """
+    if size <= 0:
+        raise ValueError("viewer_range_invalid")
     if header is None:
         if size > MAX_RANGE:
             raise ValueError("viewer_range_required")
@@ -113,12 +120,17 @@ def selected_range(header, size):
         end = min(int(last), size - 1) if last else size - 1
         if start >= size or end < start:
             raise ValueError("viewer_range_invalid")
+        if not last:
+            # Open-ended requests can be served incrementally by media clients.
+            end = min(end, start + MAX_RANGE - 1)
     else:
         suffix = int(last)
         if suffix <= 0:
             raise ValueError("viewer_range_invalid")
         start, end = max(0, size - suffix), size - 1
-    return start, min(end, start + MAX_RANGE - 1), True
+    if end - start + 1 > MAX_RANGE:
+        raise ValueError("viewer_range_too_large")
+    return start, end, True
 
 
 @router.api_operation(["GET", "HEAD"], "/assets/{asset_id}/content/{version}/{sha256}")
@@ -143,6 +155,8 @@ def content(request, asset_id: UUID, version: int, sha256: str):
     except ValueError as exc:
         response = error(str(exc), 416)
         response["Content-Range"] = f"bytes */{asset.size}"
+        response["Accept-Ranges"] = "bytes"
+        response["ETag"] = etag
         return response
     try:
         storage = storage_for_owner(request.user.pk)
@@ -152,6 +166,11 @@ def content(request, asset_id: UUID, version: int, sha256: str):
         )
     except DriveError as exc:
         return storage_error(exc)
+    # Even an incorrectly configured storage adapter may never produce a 206
+    # with a Content-Length that disagrees with the bytes actually returned.
+    expected = 1 if request.method == "HEAD" else end - start + 1
+    if not isinstance(payload, bytes) or len(payload) != expected:
+        return error("viewer_range_size_mismatch", 502)
     response = private(
         HttpResponse(
             b"" if request.method == "HEAD" else payload,
