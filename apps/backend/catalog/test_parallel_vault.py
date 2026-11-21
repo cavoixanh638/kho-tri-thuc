@@ -127,6 +127,34 @@ class ParallelVaultTests(TestCase):
         self.assertEqual(CaptureEvent.objects.count(), 100)
         self.assertEqual(Asset.objects.count(), 5)
 
+    def test_selective_import_only_creates_selected_note_folder_closure(self):
+        folder_a = Topic.objects.create(owner=self.owner, name="P02-Folder A")
+        folder_b = Topic.objects.create(owner=self.owner, name="P02-Folder B")
+        note_a = Item.objects.create(
+            owner=self.owner, kind="text", title="P02-Note A",
+            note="Nội dung A", home_topic=folder_a,
+        )
+        note_b = Item.objects.create(
+            owner=self.owner, kind="text", title="P02-Note B",
+            note="Nội dung B", home_topic=folder_b,
+        )
+        ItemTopic.objects.create(item=note_a, topic=folder_a, user_pinned=True)
+        ItemTopic.objects.create(item=note_b, topic=folder_b, user_pinned=True)
+        chosen_id = str(note_a.pk)
+        other_id = str(note_b.pk)
+        archive = export_vault(self.owner)
+        ItemTopic.objects.filter(item__owner=self.owner).delete()
+        Item.objects.filter(owner=self.owner).delete()
+        Topic.objects.filter(owner=self.owner).delete()
+        preview = preview_import(self.owner, archive)
+        result = apply_import(self.owner, archive, preview["receipt"], [chosen_id])
+        self.assertEqual(result["created"], 1)
+        self.assertTrue(Item.objects.filter(owner=self.owner, pk=chosen_id).exists())
+        self.assertFalse(Item.objects.filter(owner=self.owner, pk=other_id).exists())
+        self.assertTrue(Topic.objects.filter(owner=self.owner, name="P02-Folder A").exists())
+        self.assertFalse(Topic.objects.filter(owner=self.owner, name="P02-Folder B").exists())
+        self.assertEqual(ItemTopic.objects.filter(item__owner=self.owner).count(), 1)
+
     def test_owner_conflicts_never_expose_foreign_note(self):
         item = Item.objects.create(owner=self.owner, kind="text", title="Riêng")
         archive = export_vault(self.owner)

@@ -8,6 +8,8 @@ import { itemNeedsRefresh } from './itemProcessing';
 import { KnowledgeExportPanel } from './KnowledgeExportPanel';
 import { KnowledgeText } from './KnowledgeText';
 import { KnowledgeReading } from './KnowledgeReading';
+import { SourceCitationBridge } from './SourceCitationBridge';
+import { OrganizationReview } from './OrganizationReview';
 import { SourceLinks } from './SourceLinks';
 import { MarkdownEditor } from './MarkdownEditor';
 import { useMarkdownDraft } from './MarkdownEditorDraft';
@@ -237,6 +239,7 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
           </form> : <>
             {item.note ? <>
               <KnowledgeText text={item.note} title={itemTitle(item)} />
+              {!item.deleted && hasSourceContent && <SourceCitationBridge id={item.item_id} refreshKey={evidenceRevision} onIllustration={showIllustration} />}
               <details className="raw-knowledge"><summary>Xem Markdown gốc</summary><pre>{item.note}</pre></details>
             </> : !item.deleted ? <KnowledgeReading id={item.item_id} refreshKey={evidenceRevision} onIllustration={showIllustration} /> : <Empty>Bài đang ở thùng rác.</Empty>}
             {(item.original_url || item.description) && <details className="source-description"><summary>Nguồn và mô tả</summary>
@@ -300,6 +303,7 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
           </div>
         </section>
         <ItemOrganization id={item.item_id} csrf={csrf} deleted={item.deleted} refreshKey={evidenceRevision} onSaved={onRefresh} />
+        {!item.deleted && <OrganizationReview id={item.item_id} csrf={csrf} refreshKey={evidenceRevision} onSaved={onRefresh} />}
         {!item.deleted && <OptionalStructureBoundary key={`${item.item_id}:${evidenceRevision}`}>
           <ItemStructurePanel id={item.item_id} csrf={csrf} refreshKey={evidenceRevision} onChanged={onRefresh} />
         </OptionalStructureBoundary>}

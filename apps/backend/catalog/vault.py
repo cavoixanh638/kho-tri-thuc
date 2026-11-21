@@ -677,6 +677,29 @@ def _topics(owner, rows):
     return mapping
 
 
+def _selected_topic_rows(data, chosen, statuses):
+    """Import only the folders needed by selected changed items and their ancestors.
+
+    An unrelated archive folder must not be written when the user chooses a
+    subset of notes. Folder placement is allowed to bring its parent chain.
+    """
+    affected = {row["id"] for row in data["items"]
+                if row["id"] in chosen and statuses[row["id"]] != "unchanged"}
+    wanted = {row["home_topic_id"] for row in data["items"]
+              if row["id"] in affected and row["home_topic_id"] is not None}
+    wanted.update(row["topic_id"] for row in data["item_topics"]
+                  if row["item_id"] in affected)
+    by_id = {row["id"]: row for row in data["topics"]}
+    needed = set()
+    for topic_id in wanted:
+        while topic_id is not None and topic_id not in needed:
+            if topic_id not in by_id:
+                raise VaultError("invalid_item_membership")
+            needed.add(topic_id)
+            topic_id = by_id[topic_id]["parent_id"]
+    return [row for row in data["topics"] if row["id"] in needed]
+
+
 def _check_selection(owner, data, selected):
     if not isinstance(selected, list) or len(selected) > MAX_ITEMS or any(not isinstance(k, str) for k in selected):
         raise VaultError("invalid_vault_selection")
@@ -728,7 +751,7 @@ def apply_import(owner, archive: bytes, receipt: str, selected: list[str]):
                 "events_created": 0, "assets_created": 0, "media_verified": 0}
     if token.get("baseline") != _fingerprint(owner, [row["id"] for row in data["items"]]):
         raise VaultError("vault_preview_database_changed")
-    folders = _topics(owner, data["topics"])
+    folders = _topics(owner, _selected_topic_rows(data, chosen, statuses))
     created = updated = events_created = assets_created = 0
     for row in data["items"]:
         key = row["id"]
