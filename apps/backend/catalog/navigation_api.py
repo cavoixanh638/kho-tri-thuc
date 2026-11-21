@@ -105,15 +105,17 @@ def note_links(request, item_id: UUID):
                     break
                 mentions.append(hit(peer))
     rows = list(outgoing[:31])
+    visible_target_count = outgoing.count()
     return {
         "outgoing": [hit(peer) for peer in rows[:30]],
         "incoming": incoming,
         "unlinked": mentions,
         "counts": {
-            "outgoing": outgoing.count(),
+            "outgoing": visible_target_count,
             "incoming": incoming_count,
             "unlinked_shown": len(mentions),
         },
+        "unavailable_outgoing_count": len(targets - {item.pk}) - visible_target_count,
         "truncated": len(rows) > 30 or truncated,
         "scope": "explicit_inline_markdown; mentions_are_candidates_only",
     }

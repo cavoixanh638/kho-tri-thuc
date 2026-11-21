@@ -36,7 +36,7 @@ class NavigationBrowserTests(LiveServerTestCase):
         first = Item.objects.create(
             owner=owner, kind="text", title="Trùng tên", note="Bài thứ nhất"
         )
-        second = Item.objects.create(
+        Item.objects.create(
             owner=owner, kind="text", title="Trùng tên", note="Bài thứ hai"
         )
         # Reverse-chronological navigation puts the second note first. ArrowDown
@@ -56,6 +56,7 @@ class NavigationBrowserTests(LiveServerTestCase):
             capture_output=True,
             text=True,
             timeout=120,
+            check=False,
         )
         self.assertEqual(result.returncode, 0, (result.stdout + result.stderr)[-8000:])
         focus.refresh_from_db()

@@ -52,10 +52,15 @@ try {
   for (const width of [1920, 1440, 768, 390]) {
     await page.setViewport({ width, height: width === 1920 ? 1080 : 900 });
     await page.eval(() => scrollTo(0, 0));
-    for (let count = 0; count < 5; count++) {
+    for (const label of ['Tạo ghi chú mới', 'Di chuyển bài đang mở', 'Gắn nguồn vào bài đang mở', 'Đi đến ngày nhận trong thư viện', 'Tạo ghi chú mới']) {
       await click('Tìm và thao tác · Ctrl+K');
-      await wait(() => document.querySelector('dialog').open && document.querySelectorAll('dialog [role="option"]').length > 4);
-      await page.eval(() => [...document.querySelectorAll('dialog [role="option"]')].find((node) => node.textContent === 'Tạo ghi chú mới').click());
+      await wait(() => document.querySelector('dialog').open);
+      await page.eval(() => { const field = document.querySelector('dialog input'); field.focus(); field.select(); });
+      await page.send('Input.insertText', { text: label });
+      await wait((label) => [...document.querySelectorAll('dialog [role="option"]')].some((node) => node.textContent === label), label);
+      await page.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 });
+      await page.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 });
+      await wait(() => !document.querySelector('dialog').open);
     }
     assert.equal(await page.eval(() => document.documentElement.scrollWidth > innerWidth), false);
     await page.screenshot({ path: path.join(out, 'navigation-' + width + '.png'), format: 'png' });
