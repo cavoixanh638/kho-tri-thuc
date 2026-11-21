@@ -180,3 +180,64 @@ class CatalogueTests(TestCase):
         record_observed_outcome(owner=owner, model="gemini-3.6-flash",
                                 task="ocr_simple", status="model_rate_limit")
         self.assertIsNone(select_for_user(owner)["model"])
+
+
+class ModelPreferencesApiTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(username="gemini-owner")
+        self.client.force_login(self.user)
+
+    @override_settings(GEMINI_API_KEY="", GEMINI_OCR_ENABLED=False,
+                       GEMINI_ALLOW_PREMIUM_MODELS=False)
+    def test_no_key_discloses_no_secrets_or_fake_remaining_quota(self):
+        response = self.client.get("/api/v1/integrations/gemini/models")
+        self.assertEqual(response.status_code, 200, response.content)
+        data = response.json()
+        self.assertFalse(data["configured"])
+        self.assertFalse(data["ocr_enabled"])
+        self.assertEqual(data["mode"], "balanced")
+        self.assertIsNone(data["usage"]["provider_remaining_requests"])
+        self.assertIsNone(data["usage"]["provider_remaining_tokens"])
+        self.assertEqual(data["automatic_status"], "provider_not_configured")
+        self.assertNotIn("GEMINI_API_KEY", str(data))
+
+    @override_settings(GEMINI_API_KEY="fixture-only",
+                       GEMINI_OCR_ENABLED=False,
+                       GEMINI_ALLOW_PREMIUM_MODELS=False)
+    def test_user_can_update_mode_but_cannot_choose_unknown_or_premium_model(self):
+        apply_discovery([entry("gemini-3.5-flash-lite"),
+                         entry("gemini-3.8-flash"),
+                         entry("gemini-4-argon")])
+        from json import dumps
+        endpoint = "/api/v1/integrations/gemini/preferences"
+        bad = self.client.post(endpoint,
+            data=dumps({"mode": "manual", "manual_model_id": "gemini-4-argon"}),
+            content_type="application/json")
+        self.assertEqual(bad.status_code, 422, bad.content)
+        expensive = self.client.post(endpoint,
+            data=dumps({"mode": "manual", "manual_model_id": "gemini-3.8-flash"}),
+            content_type="application/json")
+        self.assertEqual(expensive.status_code, 422, expensive.content)
+        good = self.client.post(endpoint,
+            data=dumps({"mode": "manual", "manual_model_id": "gemini-3.5-flash-lite"}),
+            content_type="application/json")
+        self.assertEqual(good.status_code, 200, good.content)
+        self.assertEqual(GeminiPreference.objects.get(owner=self.user).mode, "manual")
+
+    def test_catalog_refresh_is_staff_only(self):
+        denied = self.client.post("/api/v1/integrations/gemini/refresh",
+                                   data="{}", content_type="application/json")
+        self.assertEqual(denied.status_code, 403, denied.content)
+        self.user.is_staff = True
+        self.user.save(update_fields=["is_staff"])
+        with patch("processing.gemini_api.refresh_if_due", return_value="not_due") as call:
+            accepted = self.client.post("/api/v1/integrations/gemini/refresh",
+                                        data="{}", content_type="application/json")
+        self.assertEqual(accepted.status_code, 200)
+        self.assertEqual(accepted.json()["refresh_status"], "not_due")
+        call.assert_called_once_with(force=True)
+
+    def test_anonymous_cannot_access_catalog(self):
+        self.client.logout()
+        response = self.client.get("/api/v1/integrations/gemini/models")
+        self.assertEqual(response.status_code, 401)
