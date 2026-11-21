@@ -1,5 +1,6 @@
 import { LibraryViews, libraryModes, libraryLocationHref, parseLibraryLocation, type LibraryLocation, type LibraryFilter } from './LibraryViews';
-import { KnowledgeTree, knowledgeNodeHref, nodeKindLabels, type KnowledgeNode, type KnowledgeTreeData } from './KnowledgeTree';
+import { knowledgeNodeHref, nodeKindLabels, type KnowledgeNode, type KnowledgeTreeData } from './KnowledgeTree';
+import { KnowledgeExplorer } from './KnowledgeExplorer';
 import { Button, SegmentedControl } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import type { Item, Page } from './api';
@@ -10,7 +11,7 @@ export function LibraryScreen({ csrf = '' }: { csrf?: string }) {
   const [scope, setScope] = useState(() => parseLibraryLocation(window.location.hash));
   const { filter, offset, view } = scope;
   const [revision, setRevision] = useState(0);
-  const [treeExpanded, setTreeExpanded] = useState(false);
+  const [treeExpanded, setTreeExpanded] = useState(()=>{try{return sessionStorage.getItem('kt-explorer-visible')!=='0';}catch{return true;}});
   useEffect(() => {
     function changeScope() { setScope(parseLibraryLocation(window.location.hash)); }
     window.addEventListener('hashchange', changeScope);
@@ -44,15 +45,15 @@ export function LibraryScreen({ csrf = '' }: { csrf?: string }) {
       if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
       const target = event.target instanceof Element ? event.target.closest('a') : null;
       const href = target?.getAttribute('href');
-      if (href?.startsWith('#/thu-vien')) {
+      if (href?.startsWith('#/thu-vien') && !href.includes('collection=')) {
         event.preventDefault();
         const next = parseLibraryLocation(href);
         navigate({ ...next, view });
       }
     }}>
     <aside className={'library-tree-shell' + (treeExpanded ? ' is-open' : '')}>
-      <button className="library-tree-toggle" type="button" aria-expanded={treeExpanded} aria-controls="library-tree-content" onClick={() => setTreeExpanded((value) => !value)}>{treeExpanded ? 'Thu gọn mục lục' : 'Mở mục lục kho tri thức'}</button>
-      <div className="library-tree-content" id="library-tree-content"><KnowledgeTree data={tree.data} error={tree.error} onRetry={tree.retry} selectedId={scope.id} unfiled={scope.unfiled} csrf={csrf} onSaved={saved} /></div>
+      <button className="library-tree-toggle" type="button" aria-expanded={treeExpanded} aria-controls="library-tree-content" onClick={() => setTreeExpanded((value) => {try{sessionStorage.setItem('kt-explorer-visible',value?'0':'1');}catch{/* preference is optional */}return !value;})}>{treeExpanded ? 'Thu gọn thư mục và ghi chú' : 'Mở thư mục và ghi chú'}</button>
+      <div className="library-tree-content" id="library-tree-content"><KnowledgeExplorer data={tree.data} error={tree.error} onRetry={()=>{tree.retry();library.retry();}} selectedId={scope.id} unfiled={scope.unfiled} csrf={csrf} onSaved={saved} /></div>
     </aside>
     <section className="panel knowledge-library-content" aria-label="Danh sách mục">
       <nav className="knowledge-breadcrumb" aria-label="Đường dẫn mục lục">
@@ -63,7 +64,7 @@ export function LibraryScreen({ csrf = '' }: { csrf?: string }) {
       <div className="panel-heading"><h2>{selected?.name ?? (scope.id != null ? (tree.data ? 'Nhánh không còn truy cập được' : 'Đang tải nhánh') : scope.unfiled ? 'Chưa xếp mục lục' : 'Tất cả bài tri thức')}</h2>
         {selected && <span className="list-meta">{selected.item_count} bài trong nhánh · {selected.direct_count} bài xếp trực tiếp</span>}
       </div>
-      {selected && <p className="list-meta">Bao gồm bài ở các nhánh con. Để xếp bài, mở bài và chọn Chỉnh nhóm.</p>}
+      {selected && <p className="list-meta">Bao gồm bài ở các nhánh con. Tạo hoặc chuyển ghi chú ngay trong cây thư mục; các lối tắt vẫn mở cùng một bài.</p>}
       {!scope.unfiled && children.length > 0 && <nav className="knowledge-child-branches" aria-label="Các nhánh con">
         {children.map((node) => <a key={node.id} href={knowledgeNodeHref(node.id)}><span><small>{nodeKindLabels[node.node_kind]}</small>{node.name}</span><span className="list-meta">{node.item_count} bài <span aria-hidden="true">›</span></span></a>)}
       </nav>}
