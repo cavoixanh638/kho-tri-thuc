@@ -90,7 +90,7 @@ class UploadTests(TransactionTestCase):
         self.assertEqual(staging_path(asset.pk).read_bytes(), DATA)
 
     def test_single_inbox_image_with_caption_is_one_file_item(self):
-        caption = "# Ảnh ghi chú\\nThông tin về cảng biển và logistics"
+        caption = "# Ảnh ghi chú\nThông tin về cảng biển và logistics"
         image = SimpleUploadedFile(
             "canh-cang.png", b"synthetic-png-placeholder", content_type="image/png"
         )
@@ -119,7 +119,7 @@ class UploadTests(TransactionTestCase):
         self.assertEqual(Item.objects.count(), 1)
 
     def test_invalid_image_caption_does_not_stage_or_create_any_item(self):
-        for caption in ("A" * 65_537, "bad\\x00caption"):
+        for caption in ("A" * 65_537, "bad\x00caption"):
             response = self.client.post(
                 ENDPOINT,
                 {"file": SimpleUploadedFile("image.png", b"fixture", content_type="image/png"),
