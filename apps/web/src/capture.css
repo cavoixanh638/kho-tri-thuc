@@ -1,3 +1,144 @@
+
 .capture-compose .receipt { overflow-wrap: anywhere; }
 .capture-compose .receipt > a { display: block; margin-block: 8px; }
 .capture-compose small { color: var(--muted); line-height: 1.5; }
+.capture-compose .capture-intro { margin: 8px 0 0; color: var(--muted); }
+.capture-compose .form-stack { margin-top: 18px; gap: 12px; }
+.capture-unified-box {
+  border: 1px solid #b6bfcb;
+  background: #fff;
+  border-radius: 10px;
+  min-width: 0;
+  overflow: hidden;
+  transition: border-color 100ms ease-out, box-shadow 100ms ease-out;
+}
+.capture-unified-box:focus-within, .capture-unified-box.is-dragging {
+  border-color: var(--signal, #1d5fbf);
+  box-shadow: 0 0 0 2px rgb(29 95 191 / 11%);
+}
+.capture-unified-label {
+  display: block;
+  padding: 17px 18px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+.capture-unified-input {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 160px;
+  padding: 12px 18px 10px;
+  background: transparent;
+  color: var(--text);
+  border: 0;
+  border-radius: 0;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.65;
+  resize: vertical;
+  outline: none;
+}
+.capture-unified-input::placeholder { color: #697481; opacity: 1; }
+.capture-unified-input:focus-visible { outline: none; }
+.capture-unified-input:disabled { opacity: .65; }
+.capture-file-input { position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; }
+.capture-unified-tools {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-top: 1px solid var(--rule, #eee);
+  background: #fafafa;
+}
+.capture-pick-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 36px;
+  padding: 7px 10px;
+  background: #fff;
+  color: #252b34;
+  border: 1px solid #abb4c0;
+  border-radius: 6px;
+  font: inherit;
+  font-weight: 550;
+  cursor: pointer;
+}
+.capture-pick-button:hover:not(:disabled) { background: #f4f7fb; }
+.capture-pick-button:focus-visible, .capture-file-row button:focus-visible {
+  outline: 2px solid var(--signal, #1d5fbf);
+  outline-offset: 2px;
+}
+.capture-pick-button span { font-size: 18px; line-height: 1; }
+.capture-detected { font-size: 12px; color: #52606f; }
+.capture-hint { font-size: 12px; color: var(--muted); line-height: 1.6; margin: 0; }
+.capture-share-source {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 9px;
+  background: #f0f6fe;
+  margin: 10px 14px 0;
+  padding: 8px 10px;
+  border-radius: 6px;
+}
+.capture-share-source .capture-file-label {
+  min-width: 0;
+  font-size: 12px;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+.capture-share-source button, .capture-file-row button {
+  flex: none;
+  padding: 5px 8px;
+  min-height: 32px;
+  border: 0;
+  border-radius: 5px;
+  color: #4c5563;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+.capture-share-source button:hover, .capture-file-row button:hover { background: #e9edf2; }
+.capture-file-list { list-style: none; margin: 0; padding: 4px 14px 12px; }
+.capture-file-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  border-top: 1px solid #eef0f2;
+  padding: 9px 0;
+}
+.capture-file-preview, .capture-file-fallback {
+  width: 54px;
+  height: 54px;
+  flex: 0 0 54px;
+  border-radius: 6px;
+  border: 1px solid #e0e4e9;
+  background: #f0f2f4;
+  object-fit: cover;
+}
+.capture-file-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #596674;
+}
+.capture-file-info { display: grid; gap: 4px; min-width: 0; flex: 1; }
+.capture-file-info strong { overflow-wrap: anywhere; font-size: 13px; }
+.capture-file-info small { font-size: 11px; }
+.capture-compose .receipt ul { padding-left: 18px; margin: 10px 0 0; }
+@media (max-width: 640px) {
+  .capture-unified-label { padding: 14px 13px 0; }
+  .capture-unified-input { padding: 12px 13px; min-height: 145px; }
+  .capture-unified-tools { padding: 10px; align-items: start; }
+  .capture-detected { align-self: center; }
+  .capture-file-list { padding-inline: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .capture-unified-box { transition: none; }
+}
