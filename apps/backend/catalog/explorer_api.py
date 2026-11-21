@@ -12,6 +12,15 @@ from .models import Topic
 router = Router(tags=["Knowledge explorer"], auth=django_auth)
 
 
+@router.get("/explorer/find", response=dict)
+def find_notes(request, q: str = Field(default="", max_length=200)):
+    query = explorer.item_query(request.user.pk)
+    if q.strip():
+        from django.db.models import Q
+        query = query.filter(Q(title__icontains=q.strip()) | Q(note__icontains=q.strip()))
+    return {"results": [explorer.summarize(row) for row in query.order_by("title", "id")[:20]]}
+
+
 class Placement(Schema):
     action: Literal["move", "add", "remove"]
     folder_id: int | None = Field(default=None, ge=1)
