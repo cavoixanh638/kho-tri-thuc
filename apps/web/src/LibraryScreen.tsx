@@ -24,6 +24,20 @@ export function LibraryScreen({ csrf = '' }: { csrf?: string }) {
     } catch { return !narrow; }
   });
   useEffect(() => {
+    // When resizing an already-open desktop browser to mobile, follow the
+    // responsive default unless the user explicitly toggled the tree.
+    const media = window.matchMedia?.('(max-width: 1100px)');
+    if (!media) return;
+    const update = () => {
+      try {
+        if (sessionStorage.getItem('kt-explorer-visible') !== null) return;
+      } catch { /* no persisted preference */ }
+      setTreeExpanded(!media.matches);
+    };
+    media.addEventListener?.('change', update);
+    return () => media.removeEventListener?.('change', update);
+  }, []);
+  useEffect(() => {
     function changeScope() { setScope(parseLibraryLocation(window.location.hash)); }
     window.addEventListener('hashchange', changeScope);
     return () => window.removeEventListener('hashchange', changeScope);
