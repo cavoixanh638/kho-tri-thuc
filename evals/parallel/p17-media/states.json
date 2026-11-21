@@ -1,0 +1,58 @@
+[
+  {
+    "state": "captured",
+    "media_bytes": false,
+    "readback_sha_verified": false,
+    "transcript": "none",
+    "thumbnail": "none"
+  },
+  {
+    "state": "metadata_only",
+    "media_bytes": false,
+    "readback_sha_verified": false,
+    "transcript": "not_available",
+    "thumbnail": "none"
+  },
+  {
+    "state": "downloaded_unverified",
+    "media_bytes": true,
+    "readback_sha_verified": false,
+    "transcript": "pending",
+    "thumbnail": "pending"
+  },
+  {
+    "state": "stored_verified",
+    "media_bytes": true,
+    "readback_sha_verified": true,
+    "transcript": "pending",
+    "thumbnail": "pending"
+  },
+  {
+    "state": "transcript_pending",
+    "media_bytes": true,
+    "readback_sha_verified": true,
+    "transcript": "pending",
+    "thumbnail": "ready"
+  },
+  {
+    "state": "transcript_done",
+    "media_bytes": true,
+    "readback_sha_verified": true,
+    "transcript": "done",
+    "thumbnail": "ready"
+  },
+  {
+    "state": "transcript_unavailable",
+    "media_bytes": true,
+    "readback_sha_verified": true,
+    "transcript": "not_available",
+    "thumbnail": "placeholder"
+  },
+  {
+    "state": "failed",
+    "media_bytes": false,
+    "readback_sha_verified": false,
+    "transcript": "failed",
+    "thumbnail": "none"
+  }
+]
