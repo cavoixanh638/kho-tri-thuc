@@ -203,3 +203,6 @@ class RelatedItem(models.Model):
                 fields=["item_a", "item_b"], name="related_pair_uniq"
             ),
         ]
+
+
+from .collection_models import SavedCollection  # noqa: E402,F401

@@ -7,7 +7,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("catalog", "0004_knowledge_tree"),
+        ("catalog", "0006_item_structural_parent"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
     operations = [

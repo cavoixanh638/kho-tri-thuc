@@ -14,6 +14,8 @@ import { useMarkdownDraft } from './MarkdownEditorDraft';
 import { NoteTemplatePicker } from './NoteTemplatePicker';
 import { acceptNoteTemplate } from './NoteTemplateConfig';
 import { ItemSuggestionPanel } from './ItemSuggestionPanel';
+import { ResearchClipper, ClipAnnotations } from './ResearchClipper';
+import { PropertyChips } from './PropertyChips';
 import { CaptureList, Empty, ErrorNotice, itemTitle, kindLabels, Loading, PageControls, PageTitle, ServerTime, useResource } from './views';
 
 const fetchStates: Record<string, string> = {
@@ -61,6 +63,7 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
   const [discarding, setDiscarding] = useState(false);
   const [busy, setBusy] = useState(false);
   const [reviewBusy, setReviewBusy] = useState(false);
+  const [clipRevision, setClipRevision] = useState(0);
   const inFlight = useRef(false);
   const [openingAsset, setOpeningAsset] = useState<string>();
   const [error, setError] = useState<string>();
@@ -212,6 +215,9 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
         <ItemSuggestionPanel key={item.item_id} item={item} csrf={csrf} editing={editing || busy} draftDirty={dirty}
           onUpdated={onUpdated} onBusyChange={setReviewBusy} />
         {!item.deleted && <SourceLinks id={item.item_id} csrf={csrf} deleted={item.deleted} onSaved={() => { setConfirmation('Đã gắn nguồn, đang trích văn bản vào bài.'); onRefresh(); }} />}
+        {!item.deleted && <ResearchClipper id={item.item_id} csrf={csrf} onSaved={() => { setClipRevision((value) => value + 1); onRefresh(); }} />}
+        {!item.deleted && <ClipAnnotations item={item} csrf={csrf} disabled={editing || busy || reviewBusy} onUpdated={onUpdated}
+          refreshKey={evidenceRevision + ':' + clipRevision} onIllustration={showIllustration} />}
         {!item.deleted && hasSourceContent && <details className="source-evidence"><summary>Các phần trích và bằng chứng nguồn</summary><ExtractedContent id={item.item_id} refreshKey={evidenceRevision} /></details>}
         {item.assets.length > 0 && <details ref={mediaDetails} className="panel assets" id="item-media">
             <summary>Video, media và tài liệu minh họa ({item.assets.length})</summary>
@@ -234,6 +240,7 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
       <div className="panel-stack">
         <section className="panel" aria-labelledby="item-status">
           <h2 id="item-status">Thông tin mục</h2>
+          <PropertyChips item={item} />
           <dl className="key-value">
             <div><dt>Loại</dt><dd>{kindLabels[item.kind]}</dd></div>
             <div><dt>Nhận lần đầu</dt><dd><ServerTime value={item.saved_at} /></dd></div>
