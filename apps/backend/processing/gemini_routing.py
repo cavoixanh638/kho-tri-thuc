@@ -44,8 +44,12 @@ def select_for_user(user, *, task="ocr_simple", now=None):
     if not settings.GEMINI_OCR_ENABLED:
         return {"model": None, "reason": "ocr_not_enabled", "quota": "unknown"}
     daily = GeminiUsageEvent.objects.filter(created_at__gte=pacific_day_start(now))
-    # An unclassified project-wide billing/limit error must stop switching.
-    if daily.filter(status__in=["project_quota", "billing_exhausted"]).exists():
+    # Billing/prepay exhaustion may persist longer than a single day; fail
+    # closed until an operator reviews and explicitly clears the block.
+    if GeminiUsageEvent.objects.filter(status="billing_exhausted").exists():
+        return {"model": None, "reason": "billing_requires_review", "quota": "unknown"}
+    # Unknown project-wide quota is not proof another model has free headroom.
+    if daily.filter(status="project_quota").exists():
         return {"model": None, "reason": "project_limit_or_billing", "quota": "unknown"}
     if daily.count() >= settings.GEMINI_MAX_LOCAL_REQUESTS_PER_DAY:
         return {"model": None, "reason": "local_daily_budget_limit", "quota": "local_only"}
