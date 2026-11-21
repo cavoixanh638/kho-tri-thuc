@@ -87,8 +87,8 @@ class ModelSelectionTests(SimpleTestCase):
         )
 
     def test_pacific_day_reset_includes_dst(self):
-        summer = pacific_day_start(datetime(2026, 7, 1, 12, tzinfo=UTC))
-        winter = pacific_day_start(datetime(2026, 11, 21, 12, tzinfo=UTC))
+        summer = pacific_day_start(datetime(2026, 7, 1, 12, tzinfo=UTC.utc))
+        winter = pacific_day_start(datetime(2026, 11, 21, 12, tzinfo=UTC.utc))
         self.assertEqual(summer.hour, 7)
         self.assertEqual(winter.hour, 8)
 
