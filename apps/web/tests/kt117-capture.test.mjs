@@ -203,16 +203,16 @@ test('file retry retains File/key through remount and ACK never claims verified 
     }
     return response(path.endsWith('/session') ? session() : { results: [], next_offset: null });
   };
-  await render(); await submit(); assert.ok(container.textContent.includes('Chưa xác nhận tiếp nhận tệp'));
+  await render(); await submit(); assert.ok(container.textContent.includes('Chưa xác nhận tệp'));
   await remount(); fail = false; await submit();
   assert.deepEqual(keys, ['kt117-file-attempt', 'kt117-file-attempt']);
-  assert.ok(container.textContent.includes('Đã tiếp nhận tệp để xử lý'));
-  assert.ok(container.textContent.includes('Chưa xác nhận tệp đã được lưu và kiểm tra trên Drive'));
+  assert.ok(container.textContent.includes('Máy chủ đã tiếp nhận 1 tệp để xử lý'));
+  assert.ok(container.textContent.includes('Chưa xác nhận các tệp đã được lưu và kiểm tra trên Drive'));
 });
 
 test('an unsent file selection survives leaving and returning to the capture screen', async () => {
   await render();
-  await ui.act(async () => { container.querySelector('input[value="file"]').click(); await settle(); });
+  await click('＋ Chọn ảnh / tệp');
   const file = new File(['fixture'], 'unsent-fixture.txt', { type: 'text/plain' });
   const picker = container.querySelector('input[type="file"]');
   assert.ok(picker);
