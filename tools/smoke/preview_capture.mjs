@@ -11,7 +11,7 @@ import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
 import { resolve, basename } from 'node:path';
 import { Browser } from './p08_cdp.mjs';
 
-const ORIGIN='http://127.0.0.1:62310';
+const ORIGIN='http://127.0.0.1:5173';
 const out=resolve(process.env.KT_PREVIEW_OUT || 'tmp/kt-preview-ui');
 const evidence={kind:'REAL_BUILT_APP_BROWSER_CAPTURE', source:'React built App + Django + isolated PostgreSQL',
   code_sha:null, width_height:[], files:[], errors:[], synthetic_data_only:true,
