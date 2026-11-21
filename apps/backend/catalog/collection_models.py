@@ -1,5 +1,6 @@
 """Saved owner-scoped query definitions; never materialized Item memberships."""
 
+from typing import ClassVar
 from uuid import uuid4
 
 from django.conf import settings
@@ -19,12 +20,12 @@ class SavedCollection(models.Model):
 
     class Meta:
         app_label = "catalog"
-        constraints = [
+        constraints: ClassVar = [
             models.UniqueConstraint(
                 fields=["owner", "normalized_name"], name="collection_owner_name_uniq"
             ),
         ]
-        indexes = [
+        indexes: ClassVar = [
             models.Index(
                 fields=["owner", "name", "id"], name="collection_owner_name_idx"
             ),

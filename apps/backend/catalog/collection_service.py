@@ -41,6 +41,8 @@ class DateCondition(BaseModel):
 
     @model_validator(mode="after")
     def ordered(self):
+        if self.to == date.max:
+            raise ValueError("End date is outside supported range")
         if self.from_date and self.to and self.from_date > self.to:
             raise ValueError("Start must precede end")
         return self
