@@ -239,9 +239,8 @@ class P09HierarchyAudit(TransactionTestCase):
         )
         self.assertEqual(self.item.title, "Renamed")
 
-    @unittest.expectedFailure
-    def test_known_gap_unfiled_explorer_and_library_must_agree(self):
-        """Frozen catalog/api.py excludes shortcuts while explorer.py includes unfiled homes."""
+    def test_unfiled_explorer_and_library_agree_on_active_shortcuts(self):
+        """A live shortcut is a visible placement even after the home is unset."""
         self.assertEqual(self.placement("move", None).status_code, 200)
         self.assertTrue(ItemTopic.objects.filter(item=self.item, topic=self.folder).exists())
         explorer_page = self.api("GET", "/explorer/children?unfiled=true")
@@ -250,8 +249,14 @@ class P09HierarchyAudit(TransactionTestCase):
         self.assertEqual(library_page.status_code, 200)
         ids = {row["item_id"] for row in explorer_page.json()["notes"]}
         listed = {row["id"] for row in library_page.json()["results"]}
-        self.assertIn(str(self.item.pk), ids)
-        self.assertIn(str(self.item.pk), listed)
+        self.assertNotIn(str(self.item.pk), ids)
+        self.assertNotIn(str(self.item.pk), listed)
+        # Removing the last visible placement makes the note genuinely unfiled.
+        ItemTopic.objects.filter(item=self.item).delete()
+        explorer_page = self.api("GET", "/explorer/children?unfiled=true")
+        library_page = self.api("GET", "/items?unfiled=true")
+        self.assertIn(str(self.item.pk), {row["item_id"] for row in explorer_page.json()["notes"]})
+        self.assertIn(str(self.item.pk), {row["id"] for row in library_page.json()["results"]})
 
     def test_stable_root_pagination_125_items_115_folders_no_private_body(self):
         notes = Item.objects.bulk_create([
