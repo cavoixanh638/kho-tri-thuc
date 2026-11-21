@@ -118,6 +118,37 @@ class UploadTests(TransactionTestCase):
         self.assertEqual(Item.objects.get(pk=item.pk).note, caption)
         self.assertEqual(Item.objects.count(), 1)
 
+    def test_verified_photo_with_caption_enqueues_metadata_organization_without_ocr(self):
+        accepted = self.client.post(
+            ENDPOINT, {
+                "file": SimpleUploadedFile("logistics.png", b"qa-only-image", content_type="image/png"),
+                "note": "Nghiên cứu logistics Hải Phòng",
+            }, HTTP_IDEMPOTENCY_KEY="photo-organize"
+        )
+        self.assertEqual(accepted.status_code, 201, accepted.content)
+        upload_job = Job.objects.get(kind=UPLOAD_KIND)
+        fake = FakeDrive()
+        storage = DriveStorage(
+            fake, SimpleNamespace(owner_id=self.owner.pk, root_folder_id="root")
+        )
+        with (
+            patch("storage.upload_job.storage_for_owner", return_value=storage),
+            patch("storage.upload_job.thumbnail_from_staging"),
+            patch("storage.upload_job.extract_from_staging"),
+        ):
+            upload_asset(upload_job)
+        self.assertEqual(
+            Job.objects.filter(
+                item_id=accepted.json()["item_id"], kind="organize"
+            ).count(),
+            1,
+            "Images without extracted text must still enter conservative metadata classification",
+        )
+        self.assertEqual(
+            Asset.objects.get(pk=accepted.json()["asset_id"]).locations.get().status,
+            StorageLocation.Status.VERIFIED,
+        )
+
     def test_invalid_image_caption_does_not_stage_or_create_any_item(self):
         for caption in ("A" * 65_537, "bad\x00caption"):
             response = self.client.post(
