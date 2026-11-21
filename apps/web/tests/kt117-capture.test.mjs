@@ -203,16 +203,16 @@ test('file retry retains File/key through remount and ACK never claims verified 
     }
     return response(path.endsWith('/session') ? session() : { results: [], next_offset: null });
   };
-  await render(); await submit(); assert.ok(container.textContent.includes('Chưa xác nhận tiếp nhận tệp'));
+  await render(); await submit(); assert.ok(container.textContent.includes('Chưa xác nhận tệp'));
   await remount(); fail = false; await submit();
   assert.deepEqual(keys, ['kt117-file-attempt', 'kt117-file-attempt']);
-  assert.ok(container.textContent.includes('Đã tiếp nhận tệp để xử lý'));
-  assert.ok(container.textContent.includes('Chưa xác nhận tệp đã được lưu và kiểm tra trên Drive'));
+  assert.ok(container.textContent.includes('Máy chủ đã tiếp nhận 1 tệp để xử lý'));
+  assert.ok(container.textContent.includes('Chưa xác nhận các tệp đã được lưu và kiểm tra trên Drive'));
 });
 
 test('an unsent file selection survives leaving and returning to the capture screen', async () => {
   await render();
-  await ui.act(async () => { container.querySelector('input[value="file"]').click(); await settle(); });
+  await click('＋ Chọn ảnh / tệp');
   const file = new File(['fixture'], 'unsent-fixture.txt', { type: 'text/plain' });
   const picker = container.querySelector('input[type="file"]');
   assert.ok(picker);
@@ -231,4 +231,119 @@ test('manifest retains existing GET share target without privileged permission c
   const manifest = JSON.parse(await readFile(new URL('../public/manifest.webmanifest', import.meta.url), 'utf8'));
   assert.deepEqual(manifest.share_target, { action: '/', method: 'GET', params: { title: 'shared_title', text: 'shared_text', url: 'shared_url' } });
   assert.equal(manifest.start_url, '/#/gui');
+});
+
+
+test('unified inbox detects one leading URL and keeps mixed paragraphs as text', async () => {
+  assert.deepEqual(ui.detectInboxInput('https://example.org/watch?v=1'), {
+    kind: 'link', url: 'https://example.org/watch?v=1', text: '', source: 'pasted-link',
+  });
+  assert.deepEqual(ui.detectInboxInput('https://example.org/guide\r\nGhi chú\r\n'), {
+    kind: 'link', url: 'https://example.org/guide', text: 'Ghi chú\r\n', source: 'pasted-link',
+  });
+  for (const content of ['Bài học có https://example.org ở giữa.', 'https://a.org\nhttps://b.org', 'javascript:alert(1)']) {
+    assert.deepEqual(ui.detectInboxInput(content), { kind: 'text', text: content, source: 'authored-text' });
+  }
+  let sent;
+  globalThis.fetch = async (path, options = {}) => {
+    if (options.method === 'POST') { sent = JSON.parse(options.body); return response(receipt, 201); }
+    return response(path.endsWith('/session') ? session() : { results: [], next_offset: null });
+  };
+  await render();
+  assert.equal(container.querySelectorAll('textarea').length, 1, 'There must be one editable intake surface');
+  assert.equal(container.querySelectorAll('input[type="radio"]').length, 0, 'No manual type-switching radio');
+  await input(container.querySelector('textarea'), 'https://example.org/guide\nĐoạn chú thích');
+  await submit(2);
+  assert.deepEqual(sent, { kind: 'link', source_channel: 'web',
+    url: 'https://example.org/guide', text: 'Đoạn chú thích' });
+  assert.ok(container.textContent.includes('Đã tiếp nhận lúc'));
+});
+
+test('clipboard PNG plus authored note stays in one queued file Item', async () => {
+  const photo = new File(['synthetic bytes'], 'anh-chup.png', { type: 'image/png' });
+  let uploaded, calls = 0;
+  globalThis.fetch = async (path, options = {}) => {
+    if (path.endsWith('/uploads')) {
+      calls++; uploaded = options;
+      return response({ item_id: receipt.item_id, asset_id: 'synthetic-asset', state: 'queued' }, 201);
+    }
+    return response(path.endsWith('/session') ? session() : { results: [], next_offset: null });
+  };
+  await render();
+  const textarea = container.querySelector('textarea');
+  await input(textarea, '# Kinh tế biển\nẢnh khảo sát');
+  await ui.act(async () => {
+    const paste = new window.Event('paste', { bubbles: true, cancelable: true });
+    Object.defineProperty(paste, 'clipboardData', { value: {
+      items: [{ kind: 'file', getAsFile: () => photo }],
+    } });
+    textarea.dispatchEvent(paste);
+    assert.equal(paste.defaultPrevented, true, 'File paste must not become broken text');
+    await settle();
+  });
+  assert.ok(container.textContent.includes('anh-chup.png'));
+  assert.ok(container.textContent.includes('Ảnh'));
+  await submit(2);
+  assert.equal(calls, 1);
+  assert.equal(uploaded.body.get('file').name, 'anh-chup.png');
+  assert.equal(uploaded.body.get('note'), '# Kinh tế biển\nẢnh khảo sát');
+  assert.ok(uploaded.headers.get('Idempotency-Key'));
+  assert.ok(container.textContent.includes('Máy chủ đã tiếp nhận 1 tệp để xử lý'));
+  assert.ok(container.textContent.includes('Chưa xác nhận các tệp đã được lưu và kiểm tra trên Drive'));
+  assert.equal(container.querySelector('textarea').value, '');
+});
+
+test('a batch keeps only unacknowledged files and reuses their keys after failure', async () => {
+  const png = new File(['image'], 'hinh.png', { type: 'image/png' });
+  const pdf = new File(['pdf'], 'tai-lieu.pdf', { type: 'application/pdf' });
+  let failSecond = true;
+  const sent = [];
+  globalThis.fetch = async (path, options = {}) => {
+    if (path.endsWith('/uploads')) {
+      const file = options.body.get('file');
+      sent.push({ filename: file.name, key: options.headers.get('Idempotency-Key'), note: options.body.get('note') });
+      if (file.name === 'tai-lieu.pdf' && failSecond) throw new TypeError('synthetic network');
+      return response({ item_id: receipt.item_id, asset_id: 'synthetic-' + file.name, state: 'queued' }, 201);
+    }
+    return response(path.endsWith('/session') ? session() : { results: [], next_offset: null });
+  };
+  await render();
+  await input(container.querySelector('textarea'), 'Dùng chung chú thích');
+  const picker = container.querySelector('input[type="file"]');
+  Object.defineProperty(picker, 'files', { configurable: true, value: [png, pdf] });
+  await ui.act(async () => { picker.dispatchEvent(new window.Event('change', { bubbles: true })); await settle(); });
+  assert.equal(ui.readCaptureFiles('kt117-alice').length, 2);
+  await submit();
+  assert.equal(sent.length, 2);
+  assert.ok(container.textContent.includes('hinh.png:') || container.textContent.includes('hinh.png'));
+  assert.ok(container.textContent.includes('tai-lieu.pdf'));
+  assert.equal(ui.readCaptureFiles('kt117-alice').length, 1, 'Only unacknowledged file remains pending');
+  const failedKey = sent[1].key;
+  failSecond = false; await submit();
+  assert.equal(sent.length, 3);
+  assert.equal(sent[2].filename, 'tai-lieu.pdf');
+  assert.equal(sent[2].key, failedKey);
+  assert.equal(sent[2].note, 'Dùng chung chú thích');
+  assert.equal(ui.readCaptureFiles('kt117-alice').length, 0);
+});
+
+test('oversize and >10 file selection are rejected without uploads', async () => {
+  let posted = 0;
+  globalThis.fetch = async (path, options = {}) => {
+    if (options.method === 'POST') posted++;
+    return response(path.endsWith('/session') ? session() : { results: [], next_offset: null });
+  };
+  await render();
+  const picker = container.querySelector('input[type="file"]');
+  const many = Array.from({ length: 11 }, (_, i) => new File(['x'], 'photo-' + i + '.png', { type: 'image/png' }));
+  Object.defineProperty(picker, 'files', { configurable: true, value: many });
+  await ui.act(async () => { picker.dispatchEvent(new window.Event('change', { bubbles: true })); await settle(); });
+  assert.ok(container.textContent.includes('tối đa 10'));
+  assert.equal(ui.readCaptureFiles('kt117-alice').length, 0);
+  const huge = new File(['x'], 'big.png', { type: 'image/png' });
+  Object.defineProperty(huge, 'size', { configurable: true, value: 129 * 1024 * 1024 });
+  Object.defineProperty(picker, 'files', { configurable: true, value: [huge] });
+  await ui.act(async () => { picker.dispatchEvent(new window.Event('change', { bubbles: true })); await settle(); });
+  assert.ok(container.textContent.includes('128 MiB'));
+  assert.equal(posted, 0);
 });

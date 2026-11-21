@@ -52,8 +52,8 @@ check('share-safe-parse', () => {
 check('receipt-not-upload', () => {
   assert.match(screen, /if \(inFlight\.current\) return/);
   assert.match(screen, /idempotencyKey: attempt\.current\.key/);
-  assert.match(screen, /idempotencyKey: fileAttempt\.current\.key/);
-  assert.match(screen, /Chưa xác nhận tệp đã được lưu và kiểm tra trên Drive/);
+  assert.match(screen, /idempotencyKey: row\.key/);
+  assert.match(screen, /Chưa xác nhận các tệp đã được lưu và kiểm tra trên Drive/);
 }, 'Client does not confuse acknowledgement with verified storage');
 check('auth-network-retry', () => {
   assert.match(tests, /failure \$\{failure\} retains draft and retry key/);
@@ -62,9 +62,9 @@ check('auth-network-retry', () => {
   assert.match(tests, /30-share-corpus/);
 }, 'Existing KT117 dynamic tests exercise retry/login/30-share cases');
 check('ime-regression-contract', () => {
-  assert.match(screen, /<Textarea label="Nội dung tri thức \(Markdown\)"/);
-  assert.match(screen, /onChange=\{\(event\) => \{ clearAttempt\(\); setNote\(event\.currentTarget\.value\); \}\}/);
-  assert.match(screen, /Array\.from\(text\)\.length > 65_536/);
+  assert.match(screen, /<textarea id="capture-input"/);
+  assert.match(screen, /onChange=\{event => onTextChange\(event\.currentTarget\.value\)\}/);
+  assert.match(screen, /Array\.from\(content\)\.length > 65_536/);
 }, 'Controlled textarea receives input value and retains Unicode; native IME still NOT_RUN');
 check('responsive-ui-source', () => {
   const css=read('apps/web/src/capture.css');

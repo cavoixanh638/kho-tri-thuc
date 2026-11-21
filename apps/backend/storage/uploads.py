@@ -6,7 +6,7 @@ from uuid import UUID, uuid4
 
 from django.contrib.auth import get_user_model
 from django.db import transaction
-from ninja import File, Router, Schema, Status
+from ninja import File, Form, Router, Schema, Status
 from ninja.files import UploadedFile
 from ninja.security import django_auth
 
@@ -99,14 +99,14 @@ def _content_type(value):
     return "application/octet-stream"
 
 
-def _record_upload(owner, file, key, asset_id, size, sha256):
+def _record_upload(owner, file, key, asset_id, size, sha256, note=''):
     with transaction.atomic(durable=True):
         get_user_model().objects.select_for_update().only("pk").get(pk=owner.pk)
         if existing := _job_for(owner, key):
             return existing, False
 
         filename = _filename(file.name)
-        item = Item.objects.create(owner=owner, kind=Item.Kind.FILE, title=filename)
+        item = Item.objects.create(owner=owner, kind=Item.Kind.FILE, title=filename, note=note)
         asset = Asset.objects.create(
             id=asset_id,
             item=item,
@@ -124,7 +124,7 @@ def _record_upload(owner, file, key, asset_id, size, sha256):
         return job, True
 
 
-def accept_upload(owner, file, request_key=None):
+def accept_upload(owner, file, request_key=None, note=''):
     asset_id = uuid4()
     if request_key is None:
         key = f"asset:{asset_id}"
@@ -137,7 +137,7 @@ def accept_upload(owner, file, request_key=None):
     path, size, sha256 = _stage(file, asset_id)
     # A connection failure during COMMIT can hide a successful commit.
     # Preserve the stage for the worker if the database outcome is ambiguous.
-    job, created = _record_upload(owner, file, key, asset_id, size, sha256)
+    job, created = _record_upload(owner, file, key, asset_id, size, sha256, note=note)
     if not created:
         _remove_redundant_stage(path)
     return job, created
@@ -153,12 +153,20 @@ def accept_upload(owner, file, request_key=None):
         503: UploadErrorResponse,
     },
 )
-def upload(request, file: File[UploadedFile]):
+def upload(request, file: File[UploadedFile], note: Form[str] = ''):
+    # A caption typed into the unified inbox belongs to the same file Item.
+    # Reject overlong/unsafe text before creating any staging bytes or DB row.
+    if len(note) > 65_536 or "\0" in note:
+        return Status(400, {"code": "invalid_upload_note"})
+    try:
+        note.encode("utf-8")
+    except UnicodeEncodeError:
+        return Status(400, {"code": "invalid_upload_note"})
     request_key = request.headers.get("Idempotency-Key")
     if request_key is not None and not IDEMPOTENCY_KEY.fullmatch(request_key):
         return Status(400, {"code": "invalid_idempotency_key"})
     try:
-        job, created = accept_upload(request.user, file, request_key)
+        job, created = accept_upload(request.user, file, request_key, note=note)
     except UploadTooLarge:
         return Status(413, {"code": "upload_too_large"})
     except OSError:

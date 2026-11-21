@@ -37,12 +37,21 @@ export type CaptureDraft = Omit<SharedCapture, 'kind'> & {
 // Tab memory survives the login screen replacing CaptureScreen. It is scoped to
 // the authenticated account and is never an offline queue or an acknowledgement.
 const drafts = new Map<string, CaptureDraft>();
-const files = new Map<string, { file: File; key: string }>();
+type PendingFile = { file: File; key: string; caption?: string };
+const files = new Map<string, PendingFile[]>();
 export function readCaptureDraft(owner: string) { return drafts.get(owner); }
 export function saveCaptureDraft(owner: string, draft: CaptureDraft) { drafts.set(owner, draft); }
 export function clearCaptureDraft(owner: string) { drafts.delete(owner); files.delete(owner); }
-export function readCaptureFile(owner: string) { return files.get(owner); }
-export function saveCaptureFile(owner: string, value: { file: File; key: string } | null) {
-  if (value) files.set(owner, value);
+export function readCaptureFile(owner: string) { return files.get(owner)?.[0]; }
+export function saveCaptureFile(owner: string, value: PendingFile | null) {
+  if (value) files.set(owner, [value]);
+  else files.delete(owner);
+}
+/** Kept only in account-scoped tab memory; never implies durable offline storage. */
+export function readCaptureFiles(owner: string): PendingFile[] {
+  return [...(files.get(owner) ?? [])];
+}
+export function saveCaptureFiles(owner: string, value: PendingFile[]): void {
+  if (value.length) files.set(owner, [...value]);
   else files.delete(owner);
 }
