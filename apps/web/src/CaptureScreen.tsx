@@ -43,7 +43,7 @@ export function CaptureScreen({ csrf }: { csrf: string }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
   const [owner, setOwner] = useState<string>();
-  const ownerRef = useRef<string>();
+  const ownerRef = useRef<string | undefined>(undefined);
   const ownerReady = useRef<Promise<void> | null>(null);
   const dirty = useRef(false);
   const [saving, setSaving] = useState(false);
