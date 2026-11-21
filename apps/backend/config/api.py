@@ -9,6 +9,7 @@ from ninja import NinjaAPI, Schema, Status
 from processing.content_api import router as content_router
 from processing.knowledge_api import router as knowledge_router
 from processing.retry_api import router as retry_router
+from processing.suggestion_api import router as suggestion_router
 from processing.thumbnail_api import router as thumbnail_router
 from search.api import router as search_router
 from storage.api import router as drive_router
@@ -26,6 +27,7 @@ api.add_router("", capture_router)
 api.add_router("", content_router)
 api.add_router("", knowledge_router)
 api.add_router("", retry_router)
+api.add_router("", suggestion_router)
 api.add_router("", thumbnail_router)
 api.add_router("/uploads", upload_router)
 
