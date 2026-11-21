@@ -30,6 +30,13 @@ def preview(request, item_id: UUID):
     return _call(service.review, request.user.pk, item_id, request.session)
 
 
+@router.post("/items/{item_id}/organization-review/undo",
+             response={200: dict, 404: dict, 409: dict, 422: dict})
+def undo(request, item_id: UUID, payload: ReceiptInput):
+    return _call(service.undo, request.user.pk, item_id,
+                 payload.receipt, request.session)
+
+
 @router.post("/items/{item_id}/organization-review/{action}",
              response={200: dict, 404: dict, 409: dict, 422: dict})
 def decision(request, item_id: UUID, action: str, payload: ReceiptInput):
@@ -37,8 +44,3 @@ def decision(request, item_id: UUID, action: str, payload: ReceiptInput):
                  action, request.session)
 
 
-@router.post("/items/{item_id}/organization-review/undo",
-             response={200: dict, 404: dict, 409: dict, 422: dict})
-def undo(request, item_id: UUID, payload: ReceiptInput):
-    return _call(service.undo, request.user.pk, item_id,
-                 payload.receipt, request.session)
