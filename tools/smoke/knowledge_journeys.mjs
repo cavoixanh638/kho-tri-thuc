@@ -74,8 +74,13 @@ if (prerequisitesReady) {
         const node = [...(document.querySelector(scope)?.querySelectorAll('label') || [])].find((el) => el.textContent.replaceAll('*', '').trim() === label || el.firstChild?.textContent.trim() === label);
         const field = node?.htmlFor ? document.getElementById(node.htmlFor) : node?.querySelector('select');
         if (!field) return false;
-        field.value = value;
-        field.dispatchEvent(new Event('change', { bubbles: true })); return true;
+        // Set via the native descriptor so React's controlled-value tracker
+        // observes a genuine change. A direct `field.value = ...` followed by
+        // a synthetic event left React state stale in the real P08 J1 run.
+        Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set.call(field, value);
+        field.dispatchEvent(new Event('input', { bubbles: true }));
+        field.dispatchEvent(new Event('change', { bubbles: true }));
+        return true;
       }, { label, value, scope });
       assert.ok(found, 'Missing labeled select: ' + label);
     }
