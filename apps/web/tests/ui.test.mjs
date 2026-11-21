@@ -358,7 +358,8 @@ test('StrictMode share target preserves Unicode inputs after removing query para
   };
   await render(ui.CaptureScreen, { csrf: 'fixture-csrf' }, true);
   assert.equal(window.location.search, '');
-  assert.equal(container.querySelector('input[placeholder="https://…"]').value, 'https://example.invalid/video');
+  assert.ok(container.querySelector('.capture-share-source')?.textContent.includes('https://example.invalid/video'));
+  assert.equal(container.querySelectorAll('.capture-compose textarea').length, 1, 'Single unified intake input');
   assert.equal(container.querySelector('textarea').value, 'Chia sẻ\nGhi chú');
   await ui.act(async () => {
     container.querySelector('form').dispatchEvent(new window.Event('submit', { bubbles: true, cancelable: true }));
