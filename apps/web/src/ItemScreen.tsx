@@ -304,7 +304,7 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
         </section>
         <ItemOrganization id={item.item_id} csrf={csrf} deleted={item.deleted} refreshKey={evidenceRevision} onSaved={onRefresh} />
         {!item.deleted && <OrganizationReview id={item.item_id} csrf={csrf} refreshKey={evidenceRevision} onSaved={onRefresh} />}
-        {!item.deleted && <OptionalStructureBoundary key={`${item.item_id}:${evidenceRevision}`}>
+        {!item.deleted && <OptionalStructureBoundary key={item.item_id}>
           <ItemStructurePanel id={item.item_id} csrf={csrf} refreshKey={evidenceRevision} onChanged={onRefresh} />
         </OptionalStructureBoundary>}
         <KnowledgeExportPanel id={item.item_id} csrf={csrf} deleted={item.deleted} refreshKey={evidenceRevision} />
