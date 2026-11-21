@@ -4,7 +4,6 @@ from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import Count, Exists, OuterRef, Q
 from django.db.models.functions import Substr
-
 from ingestion.services import CaptureSubmission, submit_capture
 
 from .models import Item, ItemTopic, Topic
