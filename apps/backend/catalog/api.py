@@ -211,7 +211,12 @@ def list_items(
             ids = [row["id"] for row in nodes if node_id in row["path_ids"]]
             items = items.filter(itemtopic__topic_id__in=ids).distinct()
         elif unfiled:
-            items = items.exclude(itemtopic__topic_id__in=visible)
+            # An unfiled Item has no active folder assignment or primary home.
+            # A structural note parent is not a folder; inactive/archived
+            # memberships do not hide a note from this virtual collection.
+            from .explorer import without_visible_folder
+
+            items = without_visible_folder(items, request.user.pk)
     if favorite:
         items = items.filter(favorite=True)
     if unclassified:
