@@ -1,4 +1,5 @@
 import uuid
+from typing import ClassVar
 
 import django.db.models.deletion
 from django.conf import settings
@@ -6,11 +7,11 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-    dependencies = [
+    dependencies: ClassVar = [
         ("catalog", "0004_knowledge_tree"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
-    operations = [
+    operations: ClassVar = [
         migrations.CreateModel(
             name="SavedCollection",
             fields=[

@@ -200,8 +200,8 @@ class CollectionTests(TestCase):
         value = self.post({"name": "Riêng"}).json()
         url = "/api/v1/collections/" + value["id"]
         self.client.force_login(self.other)
-        for path in (url, url + "/items"):
-            self.assertEqual(self.client.get(path).status_code, 404)
+        for endpoint in (url, url + "/items"):
+            self.assertEqual(self.client.get(endpoint).status_code, 404)
         self.assertEqual(self.client.delete(url).status_code, 404)
         self.client.logout()
         self.assertEqual(self.client.get("/api/v1/collections").status_code, 401)
@@ -281,6 +281,16 @@ class CollectionScaleTests(TestCase):
             batch_size=1000,
         )
         Item.objects.create(owner=other, kind="text", note="Riêng tư")
+        # A TestCase bulk load is uncommitted and autovacuum cannot update its
+        # statistics. Analyze the synthetic fixture before measuring plans.
+        with connection.cursor() as cursor:
+            for table in (
+                "catalog_item",
+                "catalog_topic",
+                "catalog_itemtopic",
+                "processing_derivedcontent",
+            ):
+                cursor.execute("ANALYZE " + table)
         definitions = [
             {},
             {"favorite": True},
