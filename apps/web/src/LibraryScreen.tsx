@@ -13,7 +13,16 @@ export function LibraryScreen({ csrf = '' }: { csrf?: string }) {
   const { filter, offset, view } = scope;
   const collectionId = collectionIdFromHash(window.location.hash);
   const [revision, setRevision] = useState(0);
-  const [treeExpanded, setTreeExpanded] = useState(()=>{try{return sessionStorage.getItem('kt-explorer-visible')!=='0';}catch{return true;}});
+  const [treeExpanded, setTreeExpanded] = useState(() => {
+    const narrow = typeof window.matchMedia === 'function'
+      && window.matchMedia('(max-width: 1100px)').matches;
+    // Let a user's explicit choice persist. Otherwise show the library list
+    // first on mobile/tablet, where the tall folder tree hid all note results.
+    try {
+      const saved = sessionStorage.getItem('kt-explorer-visible');
+      return saved === null ? !narrow : saved !== '0';
+    } catch { return !narrow; }
+  });
   useEffect(() => {
     function changeScope() { setScope(parseLibraryLocation(window.location.hash)); }
     window.addEventListener('hashchange', changeScope);
