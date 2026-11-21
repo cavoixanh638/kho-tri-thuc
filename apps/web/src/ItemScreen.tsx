@@ -239,7 +239,7 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
           </form> : <>
             {item.note ? <>
               <KnowledgeText text={item.note} title={itemTitle(item)} />
-              {!item.deleted && hasSourceContent && <SourceCitationBridge id={item.item_id} refreshKey={evidenceRevision} onIllustration={showIllustration} />}
+              {!item.deleted && <SourceCitationBridge id={item.item_id} refreshKey={evidenceRevision} onIllustration={showIllustration} />}
               <details className="raw-knowledge"><summary>Xem Markdown gốc</summary><pre>{item.note}</pre></details>
             </> : !item.deleted ? <KnowledgeReading id={item.item_id} refreshKey={evidenceRevision} onIllustration={showIllustration} /> : <Empty>Bài đang ở thùng rác.</Empty>}
             {(item.original_url || item.description) && <details className="source-description"><summary>Nguồn và mô tả</summary>
