@@ -4,15 +4,25 @@ export function wikiQuery(text: string, caret: number): WikiQuery | undefined {
   const before = text.slice(0, caret);
   let fence: string | undefined;
   for (const line of before.split('\n')) {
-    const marker = /^ {0,3}(`{3,}|~{3,})/.exec(line)?.[1];
-    if (marker) { if (!fence) fence = marker; else if (marker[0] === fence[0] && marker.length >= fence.length) fence = undefined; }
+    const marker = /^ {0,3}(`{3,}|~{3,})(.*)$/.exec(line);
+    if (!marker) continue;
+    if (!fence) fence = marker[1];
+    else if (marker[1][0] === fence[0] && marker[1].length >= fence.length && !marker[2].trim()) fence = undefined;
   }
   if (fence) return;
   const lineStart = before.lastIndexOf('\n') + 1;
   const line = before.slice(lineStart);
   if (/^( {4}|\t|\s*<|\s*>)/.test(line)) return;
   const match = /(?<![\\\[])\[\[([^\[\]\n]{0,120})$/.exec(line);
-  if (!match || /[`]/.test(line.slice(0, match.index))) return;
+  if (!match) return;
+  // Paired inline code spans before the trigger are ordinary completed prose.
+  // Only an unmatched backtick run should suppress autocomplete.
+  let inline = '';
+  for (const run of line.slice(0, match.index).matchAll(/`+/g)) {
+    if (!inline) inline = run[0];
+    else if (run[0].length === inline.length) inline = '';
+  }
+  if (inline) return;
   return { start: lineStart + match.index, end: caret, query: match[1] };
 }
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;

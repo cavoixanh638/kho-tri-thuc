@@ -3,7 +3,6 @@
 Uses the existing KT124 URLconf and a disposable Django test PostgreSQL database.
 Command: python apps/backend/manage.py test catalog.test_parallel_navigation
 """
-from unittest import expectedFailure
 from uuid import NAMESPACE_URL, uuid5
 
 from django.contrib.auth import get_user_model
@@ -114,7 +113,6 @@ class ParallelNavigationAuditTests(TestCase):
                 self.assertEqual(_inline_item_links(text), set())
         self.assertEqual(_inline_item_links("Xem thêm " + link), {uid})
 
-    @expectedFailure  # P10-F01: valid Markdown adjacent to punctuation is dropped
     def test_known_gap_punctuation_adjacent_link(self):
         uid = uuid5(NAMESPACE_URL, "p10-adjacent")
         self.assertEqual(_inline_item_links(f"Xem:[Bài](#/muc/{uid})"), {uid})

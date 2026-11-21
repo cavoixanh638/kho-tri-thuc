@@ -327,7 +327,7 @@ def _inline_item_links(markdown):
     plain.append(text[cursor:])
     text = "".join(plain)
     pattern = re.compile(
-        r"(?<!\S)\[[^\[\]<>\\\n]*\]\([ \t]*(<)?#/muc/([a-fA-F0-9-]{36})(?(1)>)[ \t]*\)"
+        r"(?<![\\!])\[[^\[\]<>\\\n]*\]\([ \t]*(<)?#/muc/([a-fA-F0-9-]{36})(?(1)>)[ \t]*\)"
     )
     ids = set()
     for line in text.splitlines():
