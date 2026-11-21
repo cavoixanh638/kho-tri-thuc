@@ -134,6 +134,12 @@ class NavigationTests(TestCase):
         self.assertEqual(
             self.client.get(f"/api/v1/items/{private.pk}/links").status_code, 404
         )
+        mention.note += f"\n[Không truy cập](#/muc/{private.pk})"
+        mention.save(update_fields=["note"])
+        hidden = self.client.get(f"/api/v1/items/{mention.pk}/links").json()
+        self.assertEqual(hidden["unavailable_outgoing_count"], 1)
+        self.assertEqual(hidden["outgoing"], [])
+        self.assertNotIn(private.title, str(hidden))
         target.deleted_at = timezone.now()
         target.save(update_fields=["deleted_at"])
         self.assertEqual(

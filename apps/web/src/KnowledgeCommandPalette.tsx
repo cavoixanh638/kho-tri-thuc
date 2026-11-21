@@ -73,7 +73,7 @@ export function KnowledgeCommandPalette({ currentItemId, onAction }: { currentIt
         if (event.key === 'Escape') { event.preventDefault(); close(); }
         else if (choices.length && ['ArrowDown', 'ArrowUp'].includes(event.key)) {
           event.preventDefault(); setActive((old) => (old + (event.key === 'ArrowDown' ? 1 : -1) + choices.length) % choices.length);
-        } else if (event.key === 'Enter' && choices[active]) { event.preventDefault(); choose(choices[active]); }
+        } else if (event.key === 'Enter' && event.target === input.current && choices[active]) { event.preventDefault(); choose(choices[active]); }
       }}>
       <header><h2 id={id}>Tìm và thao tác</h2><button type="button" onClick={close}>Đóng</button></header>
       <label htmlFor={id + '-query'}>Tên bài, thư mục hoặc lệnh</label>
