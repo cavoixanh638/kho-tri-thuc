@@ -9,6 +9,8 @@ import { KnowledgeExportPanel } from './KnowledgeExportPanel';
 import { KnowledgeText } from './KnowledgeText';
 import { KnowledgeReading } from './KnowledgeReading';
 import { SourceLinks } from './SourceLinks';
+import { MarkdownEditor } from './MarkdownEditor';
+import { useMarkdownDraft } from './MarkdownEditorDraft';
 import { CaptureList, Empty, ErrorNotice, itemTitle, kindLabels, Loading, PageControls, PageTitle, ServerTime, useResource } from './views';
 
 const fetchStates: Record<string, string> = {
@@ -49,8 +51,9 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
   item: Item; csrf: string; onUpdated: (item: Item) => void; onRefresh: () => void;
   refreshError?: boolean; pollingPaused?: boolean;
 }) {
-  const [editing, setEditing] = useState(false);
-  const [draft, setDraft] = useState({ title: item.title, description: item.description, note: item.note });
+  const { draft, setDraft, base, editing, dirty, recovered, storageError, start, finish } = useMarkdownDraft(item);
+  const composing = useRef(false);
+  const [discarding, setDiscarding] = useState(false);
   const [busy, setBusy] = useState(false);
   const inFlight = useRef(false);
   const [openingAsset, setOpeningAsset] = useState<string>();
@@ -69,9 +72,17 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
     setConfirmation('');
     setBusy(true);
     try {
+      const textFields = (['title', 'description', 'note'] as const).filter((field) => patch[field] !== undefined);
+      if (textFields.length) {
+        const latest = await request<Item>(`/items/${encodeURIComponent(item.item_id)}`);
+        if (latest.deleted || textFields.some((field) => latest[field] !== base[field])) {
+          setError('Nội dung đã thay đổi ở phiên khác. Bản nháp vẫn được giữ; sao chép phần cần giữ rồi tải lại để đối chiếu.');
+          return;
+        }
+      }
       const result = await request<Item>(`/items/${encodeURIComponent(item.item_id)}`, { method: 'PATCH', csrf, body: patch });
       onUpdated(result);
-      if (patch.title !== undefined || patch.note !== undefined || patch.description !== undefined) setEditing(false);
+      if (textFields.length) finish();
       setConfirmation(patch.deleted === true ? 'Đã chuyển vào thùng rác.'
         : patch.deleted === false ? 'Đã khôi phục mục.'
           : patch.favorite === true ? 'Đã thêm vào yêu thích.'
@@ -118,30 +129,45 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
 
   function saveNotes(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
-    void update(draft);
+    saveDraft();
+  }
+
+  function saveDraft() {
+    if (composing.current || !dirty) return;
+    const patch = Object.fromEntries((['title', 'description', 'note'] as const)
+      .filter((field) => draft[field] !== base[field]).map((field) => [field, draft[field]]));
+    void update(patch);
   }
 
   return <>
     <a className="back-link" href="#/thu-vien">‹ Thư viện</a>
     <PageTitle title={itemTitle(item)} />
-    <div className="detail-view">
+    <div className="detail-view markdown-item-detail">
       <div className="panel-stack">
         <section className="panel" aria-labelledby="item-content">
           <div className="panel-heading">
             <h2 id="item-content">Tri thức</h2>
-            {!editing && <Button variant="default" onClick={() => {
-              setDraft({ title: item.title, description: item.description, note: item.note });
-              setEditing(true);
-            }} disabled={busy || item.deleted}>Chỉnh sửa</Button>}
+            {!editing && <Button variant="default" onClick={start} disabled={busy || item.deleted}>Chỉnh sửa</Button>}
           </div>
-          {editing ? <form className="form-stack" onSubmit={saveNotes}>
+          {editing ? <form className="form-stack" onSubmit={saveNotes}
+            onCompositionStartCapture={() => { composing.current = true; }} onCompositionEndCapture={() => { composing.current = false; }}>
+            {recovered && <p role="status">Đã khôi phục bản nháp trong tab này. Chưa lưu lên máy chủ.</p>}
+            {storageError && <p role="alert">Không lưu được bản nháp trong tab. Giữ trang mở và sao chép nội dung trước khi rời trang.</p>}
             <TextInput label="Tiêu đề" value={draft.title} maxLength={512} disabled={busy} onChange={(event) => setDraft({ ...draft, title: event.currentTarget.value })} />
             <Textarea label="Mô tả" value={draft.description} minRows={3} autosize disabled={busy} onChange={(event) => setDraft({ ...draft, description: event.currentTarget.value })} />
-            <Textarea label="Nội dung tri thức (Markdown)" description="Văn bản chính để đọc, tìm kiếm và tổ chức. Nguồn và media được giữ kèm theo." value={draft.note} minRows={10} autosize disabled={busy} onChange={(event) => setDraft({ ...draft, note: event.currentTarget.value })} />
+            <MarkdownEditor value={draft.note} title={draft.title} disabled={busy} onChange={(note) => setDraft((current) => ({ ...current, note }))}
+              onSave={saveDraft} onCompositionChange={(value) => { composing.current = value; }} />
+            <p role="status">{dirty ? 'Bản nháp chưa lưu lên máy chủ.' : 'Chưa có thay đổi.'}</p>
             <div className="form-actions">
-              <Button type="submit" loading={busy}>Lưu thay đổi</Button>
-              <Button variant="default" disabled={busy} onClick={() => setEditing(false)}>Hủy</Button>
+              <Button type="submit" loading={busy} disabled={!dirty}>Lưu thay đổi</Button>
+              <Button type="button" variant="default" disabled={busy} onClick={() => dirty ? setDiscarding(true) : finish()}>Hủy</Button>
             </div>
+            {error && <ErrorNotice>{error}</ErrorNotice>}
+            {discarding && <div role="group" aria-label="Xác nhận bỏ bản nháp">
+              <p>Bỏ các thay đổi chưa lưu?</p>
+              <Button type="button" variant="default" onClick={() => setDiscarding(false)}>Tiếp tục soạn</Button>
+              <Button type="button" color="red.8" onClick={() => { finish(); setDiscarding(false); }}>Bỏ bản nháp</Button>
+            </div>}
           </form> : <>
             {item.note ? <>
               <KnowledgeText text={item.note} title={itemTitle(item)} />
@@ -206,7 +232,7 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
         <ItemOrganization id={item.item_id} csrf={csrf} deleted={item.deleted} refreshKey={evidenceRevision} onSaved={onRefresh} />
         <KnowledgeExportPanel id={item.item_id} csrf={csrf} deleted={item.deleted} refreshKey={evidenceRevision} />
         {confirmation && <div className="notice" role="status">{confirmation}</div>}
-        {error && <ErrorNotice>{error}</ErrorNotice>}
+        {error && !editing && <ErrorNotice>{error}</ErrorNotice>}
       </div>
     </div>
   </>;
