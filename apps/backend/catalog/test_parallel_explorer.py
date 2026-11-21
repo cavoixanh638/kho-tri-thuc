@@ -227,6 +227,9 @@ class P09HierarchyAudit(TransactionTestCase):
                     CaptureEvent.objects.count(), Job.objects.count())
         self.assertEqual(self.placement("move", None).status_code, 200)
         self.assertEqual(self.structure(self.item, None, version=1, order=11).status_code, 200)
+        # Pure reorganization must not enqueue processing jobs. Changing the
+        # title later may legitimately trigger a new indexing/export job.
+        self.assertEqual(Job.objects.count(), original[-1])
         rename = self.api("PATCH", f"/items/{self.item.pk}",
                           {"title": "Renamed", "expected_edit_version": 0})
         self.assertEqual(rename.status_code, 200, rename.content)
@@ -235,7 +238,7 @@ class P09HierarchyAudit(TransactionTestCase):
         asset.refresh_from_db()
         self.assertEqual(
             (self.item.note, event.pk, event.server_received_at, asset.pk,
-             CaptureEvent.objects.count(), Job.objects.count()), original
+             CaptureEvent.objects.count()), original[:-1]
         )
         self.assertEqual(self.item.title, "Renamed")
 
@@ -256,7 +259,7 @@ class P09HierarchyAudit(TransactionTestCase):
         explorer_page = self.api("GET", "/explorer/children?unfiled=true")
         library_page = self.api("GET", "/items?unfiled=true")
         self.assertIn(str(self.item.pk), {row["item_id"] for row in explorer_page.json()["notes"]})
-        self.assertIn(str(self.item.pk), {row["id"] for row in library_page.json()["results"]})
+        self.assertIn(str(self.item.pk), {row["item_id"] for row in library_page.json()["results"]})
 
     def test_stable_root_pagination_125_items_115_folders_no_private_body(self):
         notes = Item.objects.bulk_create([
@@ -354,6 +357,11 @@ class P09HierarchyAudit(TransactionTestCase):
         event.refresh_from_db()
         self.assertEqual(self.item.note, RAW)
         self.assertEqual(event.server_received_at, original)
+        # The old active shortcut remains visible; an archived home does not
+        # make the note unfiled while that shortcut still exists.
+        page = self.api("GET", "/explorer/children?unfiled=true").json()
+        self.assertNotIn(str(self.item.pk), [r["item_id"] for r in page["notes"]])
+        ItemTopic.objects.filter(item=self.item, topic=self.folder).delete()
         page = self.api("GET", "/explorer/children?unfiled=true").json()
         self.assertIn(str(self.item.pk), [r["item_id"] for r in page["notes"]])
 
