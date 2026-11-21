@@ -174,7 +174,8 @@ export function CaptureScreen({ csrf }: { csrf: string }) {
     setSaving(true);
     inFlight.current = true;
     setError(undefined);
-    setUploadReceipts([]);
+    // Preserve receipts for files acknowledged before a partial batch failure.
+    // The next retry only sends files that remain in the pending queue.
     await ownerReady.current;
     persistDraft();
     try {
