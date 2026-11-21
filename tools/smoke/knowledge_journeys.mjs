@@ -249,7 +249,8 @@ if (prerequisitesReady) {
         assert.equal(patched.status, 200);
         await page.send('Page.reload', { ignoreCache: true });
         await wait((child) => !!document.querySelector('a[href="#/muc/' + child + '"]'), context.child, 'renamed link rendered');
-        for (const tag of ['h1','h2','h3','h4','h5','h6']) assert.ok(await page.eval((tag) => !!document.querySelector('.knowledge-text ' + tag + '[id]'), tag), tag);
+        const headings = await page.eval(() => [...document.querySelectorAll('.knowledge-text h2[id],.knowledge-text h3[id],.knowledge-text h4[id],.knowledge-text h5[id],.knowledge-text h6[id]')].map(n => n.tagName));
+        assert.deepEqual(headings, ['H2', 'H3', 'H4', 'H4', 'H5', 'H6'], 'H1-H6 markdown levels follow the page H1 without flattening H1/H2');
         await page.eval(() => document.body.focus());
         await page.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'k', code: 'KeyK', windowsVirtualKeyCode: 75, modifiers: 2 });
         await page.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'k', code: 'KeyK', windowsVirtualKeyCode: 75, modifiers: 2 });
@@ -327,7 +328,8 @@ if (prerequisitesReady) {
         const previous = (await get('/items/' + context.parent)).note;
         await click('Chỉnh sửa');
         await summary('Thêm mẫu ghi chú', '.raw-knowledge');
-        await click('Bài học');
+        await wait(() => [...document.querySelectorAll('.note-template-options button strong')].some(el => el.textContent.trim() === 'Bài học'), undefined, 'lesson template');
+        await page.eval(() => [...document.querySelectorAll('.note-template-options button')].find(button => button.querySelector('strong')?.textContent.trim() === 'Bài học')?.click());
         assert.equal((await get('/items/' + context.parent)).note, previous, 'Template preview must not save');
         await click('Thêm mẫu vào cuối');
         await wait(() => document.body.textContent.includes('Đã thêm mẫu vào bản nháp'), undefined, 'template draft appended');
