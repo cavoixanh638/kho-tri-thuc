@@ -16,7 +16,7 @@ import stat
 import unicodedata
 import zipfile
 from datetime import datetime
-from urllib.parse import quote, unquote, urlsplit
+from urllib.parse import parse_qsl, quote, unquote, urlsplit
 from uuid import UUID
 
 from django.contrib.auth import get_user_model
@@ -158,8 +158,37 @@ def _safe_url(value, optional=False):
         )
     except ValueError:
         valid = False
-    if not valid or SENSITIVE.search(value) or re.search(r"(?i)(?:[?&#])(?:token|key|secret|sig|credential|password|auth|code)=", value):
+    if not valid or SENSITIVE.search(value) or re.search(
+        r"(?i)(?:[?&#])(?:token|key|secret|sig|credential|password|auth|code)=", value
+    ):
         raise VaultError("unsafe_source_reference")
+    # Encoded/aliased keys cannot sidestep archive credential screening.
+    # Check the *parameter name* rather than generic URL values to avoid
+    # rejecting an ordinary article title that contains words like "token".
+    dangerous = {
+        "token", "sig", "signature", "secret", "key", "api_key",
+        "access_token", "refresh_token", "id_token", "session_token",
+        "client_secret", "credential", "credentials", "password", "passwd",
+        "pwd", "auth", "authorization", "code", "oauth_code",
+        "jwt", "x_amz_signature", "x_amz_credential",
+        "x_goog_signature", "x_goog_credential",
+    }
+    for chunk in (url.query, url.fragment):
+        # Fragments may contain a redirect state followed by query keys.
+        for part in chunk.split("?"):
+            for raw_key, _unused in parse_qsl(part, keep_blank_values=True):
+                key = raw_key
+                for _ in range(3):
+                    decoded = unquote(key)
+                    if decoded == key:
+                        break
+                    key = decoded
+                key = unicodedata.normalize("NFKC", key).casefold().replace("-", "_")
+                if (
+                    key in dangerous or key.endswith(("_token", "_secret", "_signature"))
+                    or key.startswith(("auth_", "oauth_", "credential_"))
+                ):
+                    raise VaultError("unsafe_source_reference")
 
 
 def _safe_path(path):
