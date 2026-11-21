@@ -44,11 +44,11 @@ def select_for_user(user, *, task="ocr_simple", now=None):
     if not settings.GEMINI_OCR_ENABLED:
         return {"model": None, "reason": "ocr_not_enabled", "quota": "unknown"}
     daily = GeminiUsageEvent.objects.filter(created_at__gte=pacific_day_start(now))
-    if daily.count() >= settings.GEMINI_MAX_LOCAL_REQUESTS_PER_DAY:
-        return {"model": None, "reason": "local_daily_budget_limit", "quota": "local_only"}
     # An unclassified project-wide billing/limit error must stop switching.
     if daily.filter(status__in=["project_quota", "billing_exhausted"]).exists():
         return {"model": None, "reason": "project_limit_or_billing", "quota": "unknown"}
+    if daily.count() >= settings.GEMINI_MAX_LOCAL_REQUESTS_PER_DAY:
+        return {"model": None, "reason": "local_daily_budget_limit", "quota": "local_only"}
     preference = GeminiPreference.objects.filter(owner=user).first()
     mode = preference.mode if preference else "balanced"
     manual = preference.manual_model_id if preference else ""
