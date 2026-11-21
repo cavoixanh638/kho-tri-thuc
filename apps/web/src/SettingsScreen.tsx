@@ -2,6 +2,7 @@ import { Button } from '@mantine/core';
 import { useState } from 'react';
 import { request, type DriveStatus } from './api';
 import { GroupsManager } from './GroupsManager';
+import { GeminiModelPanel } from './GeminiModelPanel';
 import { KnowledgeVaultPanel } from './KnowledgeVaultPanel';
 import { ErrorNotice, Loading, PageTitle, useResource } from './views';
 
@@ -55,6 +56,12 @@ export function SettingsScreen({ csrf, driveResult, username }: { csrf: string; 
             </>}
         {error && <ErrorNotice>Chưa mở được trang kết nối Google Drive. Hãy thử lại.</ErrorNotice>}
       </div>
+    </section>
+    <section className="settings-row" aria-labelledby="gemini-title">
+      <div><h2 id="gemini-title">Đọc ảnh và chọn model Gemini</h2>
+        <p className="section-note">Một lần thiết lập, hệ thống chọn model phù hợp từng tác vụ. Có thể khóa model thủ công; không tự nâng chi phí.</p>
+      </div>
+      <GeminiModelPanel csrf={csrf} />
     </section>
     <section className="settings-row" aria-labelledby="groups-title">
       <div><h2 id="groups-title">Nhóm trong thư viện</h2><p className="section-note">Tạo chủ đề, dự án hoặc nhãn để gắn vào các mục.</p></div>
