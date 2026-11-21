@@ -1,6 +1,7 @@
 from typing import Literal
 
 from catalog.api import router as library_router
+from catalog.collection_api import router as collection_router
 from catalog.groups_api import router as groups_router
 from catalog.tree_api import router as tree_router
 from django.db import DatabaseError
@@ -21,6 +22,7 @@ from .health import check_database
 api = NinjaAPI(title="Kho Tri Thức", version="1.0.0")
 api.add_router("/integrations/drive", drive_router)
 api.add_router("", library_router)
+api.add_router("", collection_router)
 api.add_router("", groups_router)
 api.add_router("", tree_router)
 api.add_router("", search_router)

@@ -447,3 +447,41 @@ ALTER TEXT SEARCH CONFIGURATION kt_vi
 ### 15.3. Quy tắc tích hợp nhiều agent
 
 Mỗi agent sửa đúng file thuộc task; API/type/stylesheet/runner và `CURRENT_STATE.md` là file chung cần G00 ghép sau. Nếu cần migrate model, phải có backfill, rollback và test DB mới/restored; không viết đè lịch sử Event hoặc user note. Báo cáo PR có Code SHA/Tested SHA và PASS/FAIL/NOT_RUN. Nghiệp vụ chuẩn ở CAPTURE_AND_ORGANIZE, tiến độ ở CURRENT_STATE, tiêu chí ở ROADMAP_AND_TESTS.
+
+## 16. Bổ sung bắt buộc: Thư mục và bài tri thức có cấu trúc cha–con (20/11/2026)
+
+**Phát hiện kiểm mã PR #57:** `Topic.parent` chỉ biểu diễn folder→folder; `ItemTopic` là quan hệ many-to-many folder→Item; `RelatedItem` là cặp tương quan không có hướng (`item_a < item_b`), **không phải** cha→con giữa bài. Cây `KnowledgeTree` đang chỉ render `Topic`, note được tải trong list bên phải; chế độ List/Table/Card/Timeline của KT-118 **không khắc phục khoảng trống này**. Chi tiết task [KT-122](workstreams/notes-ux-20261120/KT-122-FOLDER-EXPLORER.md) và [KT-123](workstreams/notes-ux-20261120/KT-123-NOTE-HIERARCHY.md).
+
+### 16.1. Ba quan hệ lưu khác nghĩa
+
+1. `Topic.parent`: **thư mục cha–thư mục con**, giữ giới hạn chu trình, owner, depth 64 và không trùng sibling name.
+2. `ItemTopic`: **ghi chú thuộc thư mục**, M:N **không duplicate Item UUID/Asset**, thêm quyết định “vị trí chính” sau khi so sánh các thiết kế dữ liệu và migrations. Folder trong Postgres là virtual; Drive file ID không chuyển theo folder mỗi lần người dùng kéo thả.
+3. **Directed Item hierarchy mới (design proposal):** `parent_item_id`→`child_item_id`, 1 cha cấu trúc trực tiếp/Item nếu chọn mô hình cây đơn giản, có `sort_order`, owner/cycle checks/transaction, version/audit; không tái sử dụng `RelatedItem(similar)` vì đảo chiều `item_a<item_b` là canonical pair, không biểu diễn quyền cha/con. Có thể thiết kế FK trong Item hoặc bảng ItemHierarchyEdge sau ADR, nhưng không được mặc định đã code.
+
+Liên kết Markdown A→B/backlink là **reference**, quan hệ `RelatedItem` là **similarity/candidate**; chỉ liên kết có user confirmation mới là structural parent. Heading H1..H6 tổ chức **mục lục bên trong cùng một Item**, không tạo Item con ẩn.
+
+### 16.2. Hợp đồng UX và các bất biến
+
+- Explorer trái **chung một cây thư mục và ghi chú**, tạo và mở ghi chú trực tiếp trong folder, kéo thả/move folder và note với thao tác bàn phím tương đương, breadcrumb, note outline, panel cha/con và backlink riêng. Từ chiều rộng <=1100px ở PR #57 cây đang ẩn ban đầu sau nút “Mở mục lục kho tri thức”: phải đưa trạng thái mở cây dễ tìm, nhớ khi chuyển view.
+- Một Item có thể ở nhiều thư mục; hiện “home” và shortcut bằng cùng UUID. Chuyển home không xóa các quan hệ nhánh phụ đã pinned, không thay `CaptureEvent`, `Asset`, `Source`, `StorageLocation` hoặc `Item.note`. Không thay label “Bộ sách/Chương” của `Topic` thành quan hệ Item parent giả.
+- API phân trang/lazy: 10.000 Item không tải toàn bộ note cho sidebar; count distinct theo ancestor, không double count multi-branch. Mọi thay đổi chốt qua DB transaction/CSRF/owner; bảo vệ concurrent rename/move, cycle, archived, deleted, rollback migration + backup/restore/export.
+- **Phạm vi triển khai:** KT-122 là folder mixed explorer, KT-123 là note→note; tách PR để có thể test độc lập. Base phát triển phải là **PR #57 `codex/notes-ux-integration` chưa merge**, tránh bỏ qua KT-118/119 và không double-apply #48–56. Đây là **spec**, code/test **NOT_RUN** cho hai task mới.
+
+**Nguyên tắc quản lý tài liệu:** Một ghi chú Markdown là Item có UUID trong PostgreSQL (không nhất thiết là tệp .md vật lý trong folder Drive). Obsidian là chuẩn UX tham khảo; không sao chép plugin/code, không khẳng định Vault/Filesystem đã được thay bằng Drive virtual folder. Nếu cần xuất Obsidian-compatible folder sau này, làm bằng portable export rõ version, mapping UUID→path và liên kết, không lấy folder path làm khóa nghiệp vụ.
+
+## 17. Bổ sung sau kiểm kê 38 nhóm năng lực của 17 sản phẩm (20/11/2026)
+
+**Tách lớp thật:** `Topic.parent` cho folder→folder, `ItemTopic` cho folder→Item M:N, typed directed `ItemHierarchy` chỉ khi KT-123 được triển khai. `RelatedItem(similar)`/wiki-reference/backlinks **không phải structural parent**. File Explorer mixed trong KT-122 là **lớp UI trên cùng PostgreSQL**, không tạo folder vật lý Drive hay nhân `Item` một note/ba folder. Điều này là điều kiện để không lặp lỗi G00.
+
+**Các lớp tính năng bị bỏ sót trong đợt PR57:**
+- **KT-124 navigation:** Markdown source, wiki-link autocomplete resolved to stable UUID, backlink/unlinked mention, TOC H1–H6 và keyboard command palette. Cần định nghĩa parser/serialization và URL ownership, không viết đè Markdown khi đổi tên.
+- **KT-125 smart collections:** saved owner-scoped query/filter với dynamic membership; tách khỏi `ItemTopic` folder vật lý/ảo; property chips từ dữ liệu hiện có, typed custom props phải ADR/migration nếu chứng minh cần. Tránh duplicating IDs và N+1.
+- **KT-126 clipping:** URL/article/selection quotes và source locator/hash/version, “gửi vào Item đang có”; CaptureEvent mới/old retry phải đúng, extracted evidence khác với authored note. Không coi `SourceLinks` chỉ gắn URL là clip quote.
+- **KT-127 portable vault:** Markdown per-note + manifest/UUID/multi-folder/Item parent/asset/Source/Event history; dry-run import/rollback, phân biệt với `KnowledgeExport` per-item và `pg_dump` DR backup. Không commit exported notes riêng tư lên GitHub.
+- **KT-128 browser journeys:** Có code/test chưa chứng minh cùng thao tác end-to-end; test browser/Android có screenshot và SHA mới được nâng trạng thái UX_COMPLETE.
+- **KT-129 evidence/triage:** ánh xạ AI suggestion/auto-group phải có giải thích/candidate/precision; không tự tạo nhóm theo title video thiếu transcript.
+- **KT-130 conditional register:** OCR/voice/semantic AI/source-scoped notebook/Canvas/offline CRDT chỉ mở khi trigger rõ, không coi bị xóa vĩnh viễn.
+
+**Đối chiếu mã thực:** `ItemScreen.tsx` có Textarea + Preview candidate PR57, không phải Obsidian inline editor đầy đủ; `LibraryViews` chỉ list/table/card/timeline, không phải saved queries; `SearchScreen` có q/filter URL, chưa có smart collection; `RelatedSources` có backlinks trích từ internal Markdown nhưng chưa user-facing wiki autocomplete; `KnowledgeExportPanel` chỉ per-item, không vault roundtrip; `ItemSuggestionPanel` manual proposal, không AI provider thực. **Không sửa API/schema không cần thiết** để làm đúng UX.
+
+**Thứ tự làm:** AGENTS + [INDEX](workstreams/notes-ux-20261120/INDEX.md) + [ma trận G00](workstreams/notes-ux-20261120/G00-FEATURE-TRACEABILITY.md) trước khi AI code; branch từ HEAD PR57 còn OPEN; API/stylesheet/editor chung phải được G00 tích hợp tránh concurrent conflict; bảo toàn UUID/Source/Asset/CaptureEvent, Drive, phiên bản và rollback.
