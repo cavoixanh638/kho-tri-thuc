@@ -170,6 +170,15 @@ class CatalogueTests(TestCase):
         self.assertEqual(select_for_user(other)["reason"], "project_limit_or_billing")
 
     @override_settings(GEMINI_API_KEY="fake", GEMINI_OCR_ENABLED=True)
+    def test_billing_cap_does_not_reset_into_automatic_paid_fallback(self):
+        apply_discovery([entry("gemini-3.5-flash-lite"), entry("gemini-3.6-flash")])
+        owner = get_user_model().objects.create_user(username="gemini-billing")
+        with patch("processing.gemini_routing.timezone.now", return_value=timezone.now() - timedelta(days=2)):
+            record_observed_outcome(owner=owner, model="gemini-3.5-flash-lite",
+                                    task="ocr_simple", status="billing_exhausted")
+        self.assertEqual(select_for_user(owner)["reason"], "billing_requires_review")
+
+    @override_settings(GEMINI_API_KEY="fake", GEMINI_OCR_ENABLED=True)
     def test_user_manual_model_is_strict(self):
         apply_discovery([entry("gemini-3.5-flash-lite"), entry("gemini-3.6-flash")])
         owner = get_user_model().objects.create_user(username="gemini-manual")
