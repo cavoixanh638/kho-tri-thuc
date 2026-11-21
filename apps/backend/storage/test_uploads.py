@@ -89,6 +89,48 @@ class UploadTests(TransactionTestCase):
         self.assertEqual(list(self.stage.iterdir()), [staging_path(asset.pk)])
         self.assertEqual(staging_path(asset.pk).read_bytes(), DATA)
 
+    def test_single_inbox_image_with_caption_is_one_file_item(self):
+        caption = "# Ảnh ghi chú\\nThông tin về cảng biển và logistics"
+        image = SimpleUploadedFile(
+            "canh-cang.png", b"synthetic-png-placeholder", content_type="image/png"
+        )
+        accepted = self.client.post(
+            ENDPOINT, {"file": image, "note": caption}, HTTP_IDEMPOTENCY_KEY="photo-1"
+        )
+        self.assertEqual(accepted.status_code, 201, accepted.content)
+        item = Item.objects.get(pk=accepted.json()["item_id"])
+        self.assertEqual(item.kind, Item.Kind.FILE)
+        self.assertEqual(item.note, caption)
+        self.assertEqual(item.title, "canh-cang.png")
+        self.assertEqual(Asset.objects.get(pk=accepted.json()["asset_id"]).mime, "image/png")
+        self.assertEqual(Job.objects.filter(item=item, kind=UPLOAD_KIND).count(), 1)
+
+        again = self.client.post(
+            ENDPOINT, {
+                "file": SimpleUploadedFile(
+                    "canh-cang.png", b"synthetic-png-placeholder", content_type="image/png"
+                ),
+                "note": "Different caption must not overwrite first ACK",
+            }, HTTP_IDEMPOTENCY_KEY="photo-1"
+        )
+        self.assertEqual(again.status_code, 200, again.content)
+        self.assertEqual(again.json(), accepted.json())
+        self.assertEqual(Item.objects.get(pk=item.pk).note, caption)
+        self.assertEqual(Item.objects.count(), 1)
+
+    def test_invalid_image_caption_does_not_stage_or_create_any_item(self):
+        for caption in ("A" * 65_537, "bad\\x00caption"):
+            response = self.client.post(
+                ENDPOINT,
+                {"file": SimpleUploadedFile("image.png", b"fixture", content_type="image/png"),
+                 "note": caption},
+            )
+            self.assertEqual(response.status_code, 400, response.content)
+        self.assertEqual(list(self.stage.iterdir()), [])
+        self.assertFalse(Item.objects.exists())
+        self.assertFalse(Asset.objects.exists())
+        self.assertFalse(Job.objects.exists())
+
     def test_replay_keys_are_scoped_to_the_owner_and_optional(self):
         first = self.post_upload("key")
         other = Client()
