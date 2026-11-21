@@ -77,7 +77,7 @@ function DefinitionForm({ initial, csrf, onSaved }: { initial?: SavedCollection;
       <p>Các loại điều kiện kết hợp bằng AND. Trong mỗi ô “Bất kỳ”, chọn một hoặc nhiều nhóm bằng Ctrl/⌘ hoặc Shift.</p>
       {groups.error && <ErrorNotice retry={groups.retry}>Chưa tải được nhóm.</ErrorNotice>}
       {(['topics', 'projects', 'tags'] as const).map((kind) => <fieldset key={kind}><legend>{({ topics: 'Chủ đề / thư mục', projects: 'Dự án', tags: 'Nhãn' })[kind]}</legend><div className="saved-collection-fields">
-        {(['any', 'all', 'exclude'] as const).map((operator) => <label key={operator}>{({ any: 'Bất kỳ', all: 'Tất cả', exclude: 'Loại trừ' })[operator]}<select multiple aria-label={kind + '-' + operator} value={query[kind][operator].map(String)} disabled={busy || !groups.data}
+        {(['any', 'all', 'exclude'] as const).map((operator) => <label key={operator}>{({ any: 'Bất kỳ', all: 'Tất cả', exclude: 'Loại trừ' })[operator]}<select multiple aria-label={({ topics: 'Chủ đề / thư mục', projects: 'Dự án', tags: 'Nhãn' })[kind] + ' — ' + ({ any: 'Bất kỳ', all: 'Tất cả', exclude: 'Loại trừ' })[operator]} value={query[kind][operator].map(String)} disabled={busy || !groups.data}
           onChange={(event) => change({ [kind]: { ...query[kind], [operator]: [...event.currentTarget.selectedOptions].map((option) => Number(option.value)) } })}>
           {groups.data?.[kind].map((entry) => <option key={entry.id} value={entry.id}>{entry.name}</option>)}
         </select></label>)}
