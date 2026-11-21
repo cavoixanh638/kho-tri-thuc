@@ -81,7 +81,7 @@ try{
   mkdirSync(out,{recursive:true});
   const health=await fetch(ORIGIN+'/api/v1/health',{signal:AbortSignal.timeout(5000)});
   assert.equal(health.status,200,'Isolated QA backend health');
-  browser=await Browser.launch({binary:process.env.KT_JOURNEY_CHROMIUM||'chromium'});
+  browser=await Browser.launch({binary:process.env.KT_JOURNEY_CHROMIUM||'chromium',startupTimeoutMs:30000});
   page=await browser.newPage({width:1440,height:900,reducedMotion:true});
   await page.goto(ORIGIN);
   await wait(()=>!!document.querySelector('input[autocomplete="username"]'),undefined,'login form');
