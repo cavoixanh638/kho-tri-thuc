@@ -157,7 +157,7 @@ def _safe_url(value, optional=False):
         )
     except ValueError:
         valid = False
-    if not valid or SENSITIVE.search(value):
+    if not valid or SENSITIVE.search(value) or re.search(r"(?i)(?:[?&#])(?:token|key|secret|sig|credential|password|auth|code)=", value):
         raise VaultError("unsafe_source_reference")
 
 
@@ -277,8 +277,10 @@ def _validate(data):
         or data.get("format") != FORMAT or data.get("schema_version") != VERSION
         or data.get("media_included") is not False
         or any(not isinstance(data.get(key), list) for key in SECTIONS)
+        or set(data) != {*SECTIONS, "format", "schema_version", "media_included", "created_at"}
     ):
         raise VaultError("unsupported_vault_format")
+    _timestamp(data["created_at"])
     if (
         len(data["items"]) > MAX_ITEMS or len(data["topics"]) > MAX_TOPICS
         or len(data["assets"]) > MAX_ASSETS or len(data["events"]) > MAX_EVENTS
@@ -527,6 +529,8 @@ def parse_vault(archive: bytes):
         raise VaultError("invalid_vault_manifest") from None
     if not isinstance(data, dict) or not isinstance(data.get("items"), list):
         raise VaultError("invalid_vault_manifest")
+    if len(data["items"]) > MAX_ITEMS:
+        raise VaultError("vault_item_limit")
     expected = set()
     for row in data["items"]:
         if not isinstance(row, dict):
@@ -558,7 +562,10 @@ def parse_vault(archive: bytes):
             raise VaultError("vault_note_hash_mismatch")
     if set(files) != expected:
         raise VaultError("unexpected_vault_entry")
-    _validate(data)
+    try:
+        _validate(data)
+    except (KeyError, TypeError, AttributeError, IndexError, OverflowError, RecursionError) as error:
+        raise VaultError("invalid_vault_manifest") from error
     return data, digest(archive)
 
 
