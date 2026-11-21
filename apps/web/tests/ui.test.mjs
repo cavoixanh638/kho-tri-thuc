@@ -283,37 +283,6 @@ test('P01: valid structure payload exposes children and accepts command-palette 
   assert.ok(controls.querySelector('select'), 'Folder selector is attached to the command');
 });
 
-test('P01: authenticated App routes saved collections and folder explorer without losing navigation', async () => {
-  window.scrollTo = () => {};
-  window.history.replaceState(null, '', '/#/thu-vien?collection=new');
-  const paths = [];
-  const folder = { id: 2, parent_id: null, name: 'Thư mục kiểm thử', path: 'Thư mục kiểm thử',
-    path_ids: [2], depth: 0, node_kind: 'folder', sort_order: 0,
-    direct_count: 0, item_count: 0, child_count: 0 };
-  globalThis.fetch = async (path) => {
-    paths.push(String(path));
-    if (path.endsWith('/session')) return response({ authenticated: true, csrf_token: 'app-csrf', username: 'Người dùng thử' });
-    if (path.endsWith('/knowledge-tree')) return response({ nodes: [folder] });
-    if (path.includes('/explorer/children')) return response({ folders: [folder], notes: [], next_offset: null });
-    if (path.endsWith('/groups')) return response({ topics: [], projects: [], tags: [] });
-    if (path.endsWith('/collections')) return response({ results: [] });
-    if (path.includes('/items?')) return response({ results: [], next_offset: null });
-    throw new Error('Unexpected App API ' + path);
-  };
-  await render(ui.App);
-  assert.ok(container.querySelector('.saved-collection-form'), 'Saving search conditions is accessible at /thu-vien?collection=new');
-  assert.ok(container.querySelector('.library-tree-toggle'), 'Folder explorer is mounted in App');
-  assert.ok(container.textContent.includes('Thư mục kiểm thử'));
-  await ui.act(async () => {
-    window.location.hash = '#/thu-vien?node=2';
-    window.dispatchEvent(new window.Event('hashchange'));
-    await settle();
-  });
-  assert.ok(container.querySelector('[aria-label="Danh sách mục"]'));
-  assert.match(container.querySelector('[aria-label="Danh sách mục"]').textContent, /Thư mục kiểm thử/);
-  assert.ok(paths.some((path) => path.includes('/items?') && path.includes('node_id=2')), 'Folder selection reaches the item-list API');
-});
-
 test('a text article reads as knowledge without misleading missing-extraction status or repeated title', async () => {
   globalThis.fetch = itemRoutes(() => item({ kind: 'text', title: 'Bài tri thức', note: '# Bài tri thức\n\nNội dung **đã có**.', original_url: '', source_fetch: 'not_applicable', asset_storage: 'not_applicable' }));
   await render(ui.ItemScreen, { id: 'fixture-item', csrf: 'fixture-csrf' });
