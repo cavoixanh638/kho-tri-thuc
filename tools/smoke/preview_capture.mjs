@@ -61,7 +61,9 @@ async function api(path,method='GET',body){
 async function seed(){
   const existing=await api('/items');
   assert.equal(existing.status,200,'Library API');
-  if(existing.data?.results?.length)return existing.data.results[0].item_id;
+  // Insert a short, clearly synthetic authored-note corpus even when the
+  // earlier capture smoke already populated the disposable QA account. The
+  // detail screenshot should display the Markdown editor, not an invalid URL.
   const samples=[
     {kind:'text',text:'# Hệ thống Kho Tri Thức\n\nLưu ghi chú, video và tài liệu nguồn trong một thư viện thống nhất.\n\n## Các bước\n- Thu thập thông tin\n- Xếp vào thư mục và gắn nhãn\n- Liên kết các ghi chú có liên quan\n- Tra cứu lại khi cần'},
     {kind:'text',text:'# Quản lý tư liệu học tập\n\nTổng hợp các video, bài học và trích dẫn có thể tìm kiếm.\n\n## Ghi nhớ\nGiữ nguyên nguồn, phân loại theo chủ đề, không làm mất lịch sử tiếp nhận.'},
@@ -98,6 +100,14 @@ try{
   assert.ok(first,'Synthetic note was not saved');
   await gotoHash('#/thu-vien','.knowledge-library-layout');
   await screenshot('01-thu-vien-desktop.png',1440,900);
+  await page.setViewport({width:390,height:844});
+  await wait(() => {
+    const button=document.querySelector('.library-tree-toggle');
+    const body=document.querySelector('.library-tree-content');
+    return !!button && button.getAttribute('aria-expanded')==='false'
+      && !!body && getComputedStyle(body).display==='none'
+      && !!document.querySelector('.knowledge-library-content');
+  },undefined,'mobile tree defaults collapsed and library remains visible');
   await screenshot('02-thu-vien-mobile.png',390,844);
   await gotoHash('#/gui','.capture-compose');
   await screenshot('03-gui-vao-kho-desktop.png',1440,900);
