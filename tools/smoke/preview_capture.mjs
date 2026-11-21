@@ -112,6 +112,29 @@ try{
   await gotoHash('#/gui','.capture-compose');
   await screenshot('03-gui-vao-kho-desktop.png',1440,900);
   await screenshot('04-gui-vao-kho-mobile.png',390,844);
+  // Show the actual React paste/file queue on screen with a tiny synthetic
+  // canvas image. This does NOT upload any file to the backend.
+  await page.setViewport({width:1440,height:900});
+  await page.eval(async () => {
+    const canvas=document.createElement('canvas');
+    canvas.width=320;canvas.height=180;
+    const ctx=canvas.getContext('2d');
+    if (!ctx) throw Error('No 2D canvas context');
+    ctx.fillStyle='#e3f0fa';ctx.fillRect(0,0,320,180);
+    ctx.fillStyle='#a3bdca';ctx.fillRect(0,115,320,65);
+    ctx.fillStyle='#477b73';ctx.beginPath();ctx.moveTo(0,142);ctx.lineTo(120,48);ctx.lineTo(195,125);ctx.lineTo(265,65);ctx.lineTo(320,125);ctx.lineTo(320,180);ctx.lineTo(0,180);ctx.fill();
+    ctx.fillStyle='#154f5d';ctx.font='bold 22px sans-serif';ctx.fillText('Ảnh mẫu (QA)',75,34);
+    const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
+    if (!blob) throw Error('Could not encode synthetic image');
+    const file=new File([blob],'anh-mau-qa.png',{type:'image/png'});
+    const transfer=new DataTransfer();transfer.items.add(file);
+    const chooser=document.querySelector('.capture-file-input');
+    chooser.files=transfer.files;
+    chooser.dispatchEvent(new Event('change',{bubbles:true}));
+  });
+  await wait(()=>!!document.querySelector('.capture-file-preview') && document.body.textContent.includes('anh-mau-qa.png'),
+    undefined,'real React image attachment preview');
+  await screenshot('08-gui-anh-mau-desktop.png',1440,900);
   await gotoHash('#/muc/'+first,'.detail-view');
   await screenshot('05-chi-tiet-ghi-chu-desktop.png',1440,900);
   await gotoHash('#/cai-dat','.settings-row');
