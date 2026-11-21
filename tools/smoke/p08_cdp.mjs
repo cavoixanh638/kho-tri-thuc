@@ -74,7 +74,7 @@ class Page {
 
 export class Browser {
   constructor(child, dir, cdp) { this.child = child; this.dir = dir; this.cdp = cdp; }
-  static async launch({ extraArgs = [], binary = process.env.KT_JOURNEY_CHROMIUM || 'chromium' } = {}) {
+  static async launch({ extraArgs = [], binary = process.env.KT_JOURNEY_CHROMIUM || 'chromium', startupTimeoutMs = 12000 } = {}) {
     const dir = mkdtempSync(join(tmpdir(), 'kt128-p08-chromium-'));
     let child;
     try {
@@ -86,7 +86,7 @@ export class Browser {
       ], { stdio: ['ignore', 'ignore', 'pipe'], env: process.env });
       let output = '';
       const wsUrl = await new Promise((resolve, reject) => {
-        const timer = setTimeout(() => reject(Error('Chromium launch timed out')), 12000);
+        const timer = setTimeout(() => reject(Error('Chromium launch timed out')), startupTimeoutMs);
         const finish = (fn, value) => { clearTimeout(timer); fn(value); };
         child.once('error', (error) => finish(reject, error));
         child.once('exit', (code) => finish(reject, Error(`Chromium exited ${code}`)));
