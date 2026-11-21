@@ -11,3 +11,17 @@
 .source-locator-viewer iframe { height: 70vh; border: 0; }
 .source-locator[data-state="STALE_SOURCE"] { background: #fff0dc; }
 .source-locator [role="alert"] { color: #8b2525; }
+
+/* P06: source evidence remains adjacent to, but separate from, authored Markdown. */
+.source-citations { margin: 1rem 0; border: 1px solid var(--control, #d4d4d4); border-radius: 8px; padding: .9rem; overflow-wrap: anywhere; }
+.source-citations h3 { margin: 0 0 .35rem; font-size: 1.05rem; }
+.source-citations > p { margin: .35rem 0 .8rem; color: var(--muted, #646464); }
+.source-citations-list { list-style: none; margin: 0; padding: 0; display: grid; gap: .65rem; }
+.source-citations-list > li { border-top: 1px solid var(--control, #d4d4d4); padding-top: .65rem; min-width: 0; }
+.source-citation-head { display: flex; justify-content: space-between; gap: .5rem; flex-wrap: wrap; align-items: baseline; }
+.source-citation-head span { color: var(--muted, #646464); }
+.source-citation-excerpt { margin: .35rem 0; }
+.source-citation-excerpt summary { cursor: pointer; min-height: 32px; }
+.source-citation-excerpt p { white-space: pre-wrap; overflow-wrap: anywhere; }
+.source-citations-more { font: inherit; margin-top: .8rem; padding: .5rem .7rem; min-height: 44px; cursor: pointer; color: var(--text, #171717); background: var(--surface, #fff); border: 1px solid var(--control, #d4d4d4); border-radius: 4px; }
+.source-citations-more:focus-visible, .source-citation-excerpt summary:focus-visible { outline: 3px solid var(--signal, #1d5fbf); outline-offset: 3px; }
