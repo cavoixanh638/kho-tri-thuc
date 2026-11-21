@@ -94,7 +94,7 @@ function Login({ csrf, onLogin }: { csrf: string; onLogin: (session: Session) =>
 }
 
 function activePath() {
-  return location.hash || '#/gui';
+  return window.location.hash || '#/gui';
 }
 
 export function App() {
