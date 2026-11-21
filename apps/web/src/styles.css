@@ -115,7 +115,8 @@ time { font-variant-numeric: tabular-nums; }
 .detail-source { margin: 12px 0 0; overflow-wrap: anywhere; }
 .prose-text { margin: 12px 0 0; }
 .knowledge-text { overflow-wrap: anywhere; line-height: 1.75; max-width: 76ch; }
-.knowledge-text h3 { font-size: 19px; margin: 24px 0 10px; line-height: 1.4; }
+.knowledge-text h2 { font-size: 21px; margin: 24px 0 10px; line-height: 1.4; }
+.knowledge-text h3 { font-size: 18px; margin: 22px 0 9px; line-height: 1.4; }
 .knowledge-text h4 { font-size: 16px; margin: 20px 0 8px; }
 .knowledge-text > :first-child { margin-block-start: 8px; }
 .knowledge-text p, .knowledge-text ul, .knowledge-text ol { margin-block: 12px; }
