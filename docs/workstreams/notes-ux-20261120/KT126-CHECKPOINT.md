@@ -16,7 +16,18 @@ retry/send distinction, owned evidence, stale versions and blocked input.
 TypeScript/Vite build PASS. UI/component/browser/UAT and20 actual public web
 pages still NOT_RUN. Corpus is synthetic; no Drive/production data/provider.
 
-Pending: frontend cases, source rendering/preview browser checks, public read
-smoke with redacted hash report, integration/backup/vault adaptation and final CI.
-Current local code must be committed/pushed with this checkpoint (TEST_PENDING
-for the UI); test output above does not imply whole KT126 DONE.
+Update saved21/11/2026: code737a4c3 +7dfeecd pushed to PR58.
+Eight explicit frontend tests PASS (link/article/selection preview/save,
+unverified state, retry key, duplicate click, highlight and approved versioned
+insertion).20 actual public Python documentation pages all previewed/saved with
+raw note preserved and excerpt match; safe report KT126-PUBLIC-READS.json.
+The report stamps HEADb54f892 while test/offset fix were still dirty and later
+committed7dfeecd; final clean-SHA acceptance must rerun it, not silently retag.
+No remote article text or session credentials are in the report.
+
+Pending: actual integrated source rendering/clip browser journey, source state/
+permissions regression, migration/backup/vault schema coverage and latest CI.
+Clip UI/API offsets now validated as plain integers; article truncation at60k
+characters is explicitly labelled. Authored note changes only on approved insert.
+tools/smoke/knowledge_journeys.mjs contains draft real-App clip flow, not yet run.
+Do not infer whole KT126 DONE from module tests or public read smoke.
