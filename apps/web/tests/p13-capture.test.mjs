@@ -47,12 +47,12 @@ test('P13 retransmission preserves attempt key until server acknowledgment', () 
   assert.match(capture, /Chưa xác nhận tiếp nhận/);
 });
 test('P13 textarea retains browser IME result, with native Gboard/Unikey gate not inferred', () => {
-  assert.match(capture, /setNote\(event\.currentTarget\.value\)/);
-  assert.match(capture, /Array\.from\(text\)\.length > 65_536/);
-  assert.match(capture, /text\.includes\('\\0'\)/);
+  assert.match(capture, /onTextChange\(event\.currentTarget\.value\)/);
+  assert.match(capture, /Array\.from\(content\)\.length > 65_536/);
+  assert.match(capture, /content\.includes\('\\0'\)/);
   assert.doesNotMatch(capture, /(?:onKeyDown|onKeyPress).*preventDefault/s);
 });
 test('P13 receipts distinguish accepted capture from verified Drive media', () => {
   assert.match(capture, /Đã tiếp nhận lúc/);
-  assert.match(capture, /Chưa xác nhận tệp đã được lưu và kiểm tra trên Drive/);
+  assert.match(capture, /Chưa xác nhận các tệp đã được lưu và kiểm tra trên Drive/);
 });
