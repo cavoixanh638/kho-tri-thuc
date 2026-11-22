@@ -36,7 +36,7 @@ def local_usage_snapshot(now=None):
     }
 
 
-def select_for_user(user, *, task="ocr_simple", now=None):
+def select_for_user(user, *, task="ocr_simple", now=None, allowed_models=None):
     """A conservative candidate, never a quota guarantee or billable call."""
     now = now or timezone.now()
     if not settings.GEMINI_API_KEY:
@@ -63,6 +63,7 @@ def select_for_user(user, *, task="ocr_simple", now=None):
             "generation_methods": record.generation_methods,
         }
         for record in GeminiModelCatalog.objects.filter(reviewed=True)
+        if allowed_models is None or record.model_id in allowed_models
     }
     cooldown = set(
         GeminiUsageEvent.objects.filter(
