@@ -5,8 +5,9 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { Browser } from './p08_cdp.mjs';
 
-test('native Chromium navigates, evaluates JS, emulates reduced motion, screenshots 390 and 1920', { timeout: 30000 }, async () => {
-  const browser = await Browser.launch();
+test('native Chromium navigates, evaluates JS, emulates reduced motion, screenshots 390 and 1920', { timeout: 60000 }, async () => {
+  // CI starts two isolated Compose stacks; allow bounded Chromium cold start.
+  const browser = await Browser.launch({ startupTimeoutMs: 30000 });
   const tmp = mkdtempSync(join(tmpdir(), 'p08-browser-test-'));
   try {
     const page = await browser.newPage({ width: 390, height: 844, reducedMotion: true });
