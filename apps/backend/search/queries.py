@@ -30,6 +30,22 @@ visible_items AS NOT MATERIALIZED (
           WHERE it.item_id = i.id AND t.id = %(tag_id)s AND t.owner_id = i.owner_id
       ))
 ),
+-- For the FIRST result page only, six (limit+1) or more visible FTS Item
+-- matches already outrank every substring/typo score (which is <=1.0).
+-- A bounded FTS probe lets PostgreSQL skip the costly fuzzy branch entirely
+-- without changing the first-page Item ranking or next_cursor. Keep fuzzy
+-- enabled on cursor pages so results below the FTS tier remain reachable.
+fts_first_page AS MATERIALIZED (
+    SELECT count(*) >= %(page_size)s AS full
+    FROM (
+        SELECT first_i.id
+        FROM visible_items first_i CROSS JOIN input
+        WHERE to_tsvector('public.kt_vi', public.kt_search_item(
+            first_i.title, first_i.description, first_i.note
+        )) @@ tsq
+        LIMIT %(page_size)s
+    ) qualified
+),
 recent_captures AS MATERIALIZED (
     SELECT c.id, c.item_id, c.server_received_at
     FROM ingestion_captureevent c
@@ -62,11 +78,12 @@ matches AS (
                 THEN 1.0::real
                 ELSE word_similarity(folded, {ITEM_FOLD})
            END, NULL
-    FROM visible_items i CROSS JOIN input
-    WHERE (%(substring)s AND {ITEM_FOLD} LIKE
+    FROM visible_items i CROSS JOIN input CROSS JOIN fts_first_page fts_page
+    WHERE (%(cursor_id)s::uuid IS NOT NULL OR NOT fts_page.full)
+      AND ((%(substring)s AND {ITEM_FOLD} LIKE
                ('%%' || replace(replace(replace(folded, '!', '!!'), '%%', '!%%'), '_', '!_') || '%%')
                ESCAPE '!')
-       OR (%(typo)s AND {ITEM_FOLD} OPERATOR(public.%%>) folded)
+       OR (%(typo)s AND {ITEM_FOLD} OPERATOR(public.%%>) folded))
 
     UNION ALL
     SELECT c.item_id, 'capture_event', NULL, c.id, true,
