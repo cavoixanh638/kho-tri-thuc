@@ -116,6 +116,7 @@ try {
     assert.equal(ff.status,0,'FFMPEG_MP4_GENERATION_FAILED '+String(ff.error?.code||ff.stderr).slice(0,200));
   }
   const mp4=readFileSync(mp4path),pdf=makePdf();
+  if(process.env.KT_J6B_PDF_OUT) writeFileSync(process.env.KT_J6B_PDF_OUT,pdf,{mode:0o600});
   assert.ok(mp4.length>10000&&pdf.length>500);
   report.fixture={mp4_sha256:sha(mp4),pdf_sha256:sha(pdf),pdf_pages:3,mp4_duration_seconds:12};
   const html='<!doctype html><html><body><h1>J6B fixture</h1><iframe width="720" height="560" src="/fixture.pdf#page=2"></iframe><video src="/fixture.mp4" controls muted preload="auto" width="320" height="180"></video></body></html>';
