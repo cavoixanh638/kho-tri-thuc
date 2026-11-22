@@ -102,18 +102,23 @@ try{
   browser=await Browser.launch({binary:process.env.KT_JOURNEY_CHROMIUM});
   const page=await browser.newPage({width:1440,height:1080});
   await page.goto(origin);
-  const login=await page.eval(async credentials=>{
-    const session=await fetch('/api/v1/session',{credentials:'same-origin'}).then(r=>r.json());
-    return fetch('/api/v1/session',{method:'POST',credentials:'same-origin',
-      headers:{'Content-Type':'application/json','X-CSRFToken':session.csrf_token},
-      body:JSON.stringify(credentials)}).then(r=>r.status);
-  },{username:'p08-fixture',password:process.env.KT_J6B_QA_PASSWORD});
-  assert.equal(login,200,'QA login');
+  // Use the SAME React login form as real users: programmatically POSTing
+  // /session alone leaves the SPA's in-memory session state unauthenticated.
+  await waitFor(page,()=>!!document.querySelector('input[autocomplete="username"]'),null,'React login form');
+  async function typeLogin(selector,value){
+    const found=await page.eval(s=>{const input=document.querySelector(s);if(!input)return false;input.focus();input.select();return true;},selector);
+    assert.equal(found,true,'login field absent');
+    await page.send('Input.insertText',{text:value});
+  }
+  await typeLogin('input[autocomplete="username"]','p08-fixture');
+  await typeLogin('input[autocomplete="current-password"]',process.env.KT_J6B_QA_PASSWORD);
+  await page.eval(()=>document.querySelector('.login-panel button[type="submit"]').click());
+  await waitFor(page,()=>!!document.querySelector('.capture-compose'),null,'React authenticated screen',16000);
+  const session=await page.eval(async()=>fetch('/api/v1/session',{credentials:'same-origin'}).then(r=>r.json()));
+  assert.equal(session.authenticated,true,'Django session');
+  assert.equal(session.username,'p08-fixture');
   result.checks.push('real Django authenticated session');
-  // The App's React auth state was mounted before the programmatic QA login.
-  // A real navigation reload is required to hydrate the newly authenticated
-  // session before hash-route content or citations become visible.
-  await page.goto(origin+'/#/muc/'+data.items.pdf.item_id);
+  await page.eval(hash=>{location.hash=hash;},'#/muc/'+data.items.pdf.item_id);
   for(const kind of ['pdf','mp4']){
     const fixture=data.items[kind],id=fixture.item_id,asset=fixture.asset_id;
     const knowledge=await getJson(page,'/items/'+id+'/knowledge');
