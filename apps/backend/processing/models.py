@@ -119,6 +119,8 @@ class GeminiPreference(models.Model):
     )
     mode = models.CharField(max_length=16, choices=Mode.choices, default=Mode.BALANCED)
     manual_model_id = models.CharField(max_length=128, blank=True)
+    # Explicit per-account consent before externally processing original photos.
+    external_ocr_consent = models.BooleanField(default=False)
     updated_at = models.DateTimeField(auto_now=True)
 
 
