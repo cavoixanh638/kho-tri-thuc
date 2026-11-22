@@ -1,5 +1,19 @@
 # HIỆN TRẠNG THỰC TẾ — KHO TRI THỨC
 
+## Chú ý — GitHub snapshot mới ngày 22/11/2026 (chưa tích hợp vào main)
+
+**Nguồn:** [bảng kiểm toán đối chiếu](operations/RELEASE_READINESS_20261122.md), kiểm trực tiếp GitHub HEAD, PR, Actions. Phần dưới đây giữ **lịch sử đã kiểm trên Windows/main**, không xóa thông tin trước đó.
+
+- `main` HEAD lúc đối chiếu: `1f64f50147b9f92177b3e04f787a36fc673736d6`.
+- `PR #79` (nhiều luồng), `PR #81` (Unified Inbox), `PR #82` (Gemini model), `PR #84` (Gemini OCR) đều **OPEN/DRAFT/UNMERGED/NOT_DEPLOYED**. Các CI Actions báo SUCCESS cho từng candidate nhưng không tương đương live PASS. HEAD chính xác tại checkpoint ở bảng audit.
+- Candidate PR84 **ahead 232 / behind 26** so với `main` tại checkpoint; cần đối chiếu 26 commit và tập migration trước khi lập release candidate thực.
+- **P08 browser** trong Actions #44971811417: `9 PASS / 0 FAIL / 0 BLOCKED / 4 NOT_RUN`, `status=NOT_RUN` dù step đặt continue-on-error. P15 fatal `Cannot focus .research-clipper select`; release UAT **chưa PASS**.
+- **Chất lượng và vận hành chưa chốt:** P16 86 truy vấn chưa chạy PostgreSQL benchmark; P17 10k metadata fixture **không** là 10k video tải thật; YouTube/TikTok chưa có đường tải video gốc tương ứng Facebook; Gemini OCR 394 backend tests theo CI nhưng inference thật/CER/WER/provider ngân sách **NOT_RUN**.
+- **NEXT:** P0-01 reconcile branch và plan; P0-02 sửa P15 và làm gate fail-closed, kiểm J3/J6B/J8/J9; P0-03 kiểm media/search/group bằng dữ liệu có phép và gold. Android **DEFERRED theo người dùng**.
+
+Đây là checkpoint nguồn mã/CI, **không thay đổi** trạng thái đã triển khai Windows hay khẳng định PR Draft đã vận hành thật.
+
+
 **Ngày checkpoint:** 20/11/2026 (Asia/Ho_Chi_Minh).
 **Nguồn kiểm chứng:** Windows đã chạy candidate `8daa02bf7b8a45c41b65bfc2387d686beb27f5b8` của [PR #29](https://github.com/cavoixanh638/kho-tri-thuc/pull/29), từ main `8828663`; [CI #44566379899](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44566379899) PASS. Kết quả live/restore/connector ở phần KT-113 dưới đây. Khi tiếp tục luôn kiểm GitHub head/merge/runtime thực tế, không coi SHA trong tài liệu là bất biến. Khảo sát [QLVB_System_new](https://github.com/cavoixanh638/QLVB_System_new) chỉ là tham khảo thiết kế.
 **Mục đích:** nơi duy nhất ghi **đã hoàn thành điều gì thật**. Roadmap là kế hoạch/điều kiện PASS, không là chứng cứ chạy thật.
