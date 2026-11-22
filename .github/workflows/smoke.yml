@@ -257,6 +257,30 @@ jobs:
             tmp/p08-kt128/p08-j9-source.json \
             tmp/p08-kt128/p08-j9-restored.json
 
+      # Native media capability preflight with two ORIGINAL generated binary files.
+      # Isolated localhost server only, no private provider; J6B remains NOT_RUN
+      # until the actual PDF page and private authenticated viewer are verified.
+      - name: P08 J6B generated PDF/MP4 native Chromium preflight (not full release gate)
+        continue-on-error: true
+        timeout-minutes: 3
+        env:
+          KT_J6B_ISOLATED: 'YES'
+        run: |
+          browser="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || true)"
+          if [ -z "$browser" ]; then echo "NO_BROWSER_BINARY"; exit 2; fi
+          export KT_JOURNEY_CHROMIUM="$browser"
+          node --check tools/smoke/p08_j6b_native_preflight.mjs
+          node tools/smoke/p08_j6b_native_preflight.mjs
+
+      - name: Upload P08 J6B native preflight and manual PDF screenshot
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: kt-p08-j6b-native-preflight
+          path: tmp/p08-j6b-native/
+          if-no-files-found: warn
+          retention-days: 14
+
       - name: Publish P15 browser screenshots and keyboard findings
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
