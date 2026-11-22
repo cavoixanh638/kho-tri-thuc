@@ -21,13 +21,19 @@ const hash = data => createHash('sha256').update(data).digest('hex');
 let server, browser;
 const requests = [];
 try {
-  const output = join(temporary, 'synthetic.mp4');
-  execFileSync('ffmpeg', [
-    '-hide_banner', '-loglevel', 'error', '-nostdin', '-f', 'lavfi',
-    '-i', 'testsrc2=size=320x180:rate=10', '-t', '12', '-an',
-    '-c:v', 'libx264', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p',
-    '-movflags', '+faststart', '-y', output,
-  ], {timeout: 60000});
+  const importedFixture = process.env.P08_NATIVE_MEDIA_FILE;
+  const output = importedFixture ? resolve(importedFixture) : join(temporary, 'synthetic.mp4');
+  if (importedFixture) {
+    assert.equal(process.env.P08_NATIVE_MEDIA_GENERATED, 'YES');
+    assert.ok(output.startsWith(out + '/p08-native-'), 'only the QA-generated fixture file is accepted');
+  } else {
+    execFileSync('ffmpeg', [
+      '-hide_banner', '-loglevel', 'error', '-nostdin', '-f', 'lavfi',
+      '-i', 'testsrc2=size=320x180:rate=10', '-t', '12', '-an',
+      '-c:v', 'libx264', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p',
+      '-movflags', '+faststart', '-y', output,
+    ], {timeout: 60000});
+  }
   const body = readFileSync(output);
   assert.equal(body.toString('ascii', 4, 8), 'ftyp', 'MP4 binary');
   const sha256 = hash(body);
