@@ -174,3 +174,54 @@ test('authored ASR evidence expands timed segments without inferring time from s
   assert.match(container.textContent, /0:02.5/);
   assert.ok(!container.textContent.includes('00:01-00:04Đến vị trí nguồn'));
 });
+
+
+test('verified PDFium image route shows exact page without trusting native #page iframe', async () => {
+  const hash = 'a'.repeat(64), assetId = '11111111-1111-4111-8111-111111111111';
+  const part = { id: 207, kind: 'document_text', text: 'Trang thứ hai', format: 'text',
+    asset_id: assetId, locator: { page: 2 }, processor: 'pypdfium2', processor_version: 'v1',
+    source: { state: 'current', version: hash, asset_version: 4, source_id: null,
+      source_url: null, mime: 'application/pdf' } };
+  const url = '/api/v1/assets/' + assetId + '/content/4/' + hash;
+  const pdfPage = '/api/v1/assets/' + assetId + '/pdf-page/4/' + hash + '/2';
+  globalThis.fetch = async (path, opts) => {
+    assert.equal(path, '/api/v1/assets/' + assetId + '/viewer');
+    assert.equal(opts.credentials, 'same-origin');
+    return new Response(JSON.stringify({
+      assetId, version: hash, assetVersion: 4, url, kind: 'pdf',
+      pageNavigationVerified: false, rangeVerified: true,
+      pdfPageRenderer: 'server_pdfium2',
+    }));
+  };
+  await render(ui.SourceCitationList, { parts: [part] });
+  assert.equal(container.querySelector('img[src*="/pdf-page/"]'), null);
+  await click('Mở và định vị PDF riêng tư');
+  assert.equal(container.querySelector('.source-locator').dataset.state, 'AVAILABLE');
+  assert.equal(container.querySelector('iframe'), null, 'native PDF iframe must not claim correct page');
+  const image = container.querySelector('.source-locator-viewer img');
+  assert.ok(image);
+  assert.equal(new URL(image.src).pathname, pdfPage);
+  assert.equal(image.getAttribute('data-verified-page'), null, 'not verified before image loads');
+  await ui.act(async () => { image.dispatchEvent(new dom.window.Event('load')); await settle(); });
+  assert.equal(container.querySelector('img').dataset.verifiedPage, '2');
+  assert.match(container.textContent, /đúng trang 2/);
+});
+
+test('failed private page render revokes AVAILABLE and shows a clear warning', async () => {
+  const hash = 'a'.repeat(64), assetId = '11111111-1111-4111-8111-111111111111';
+  const part = { id: 208, kind: 'document_text', text: 'Hỏng PDF', format: 'text',
+    asset_id: assetId, locator: { page: 999 }, processor: 'pypdfium2', processor_version: 'v1',
+    source: { state: 'current', version: hash, asset_version: 1, source_id: null,
+      source_url: null, mime: 'application/pdf' } };
+  const url = '/api/v1/assets/' + assetId + '/content/1/' + hash;
+  globalThis.fetch = async () => new Response(JSON.stringify({ assetId, version: hash,
+    assetVersion: 1, url, kind: 'pdf', pageNavigationVerified: false,
+    pdfPageRenderer: 'server_pdfium2' }));
+  await render(ui.SourceCitationList, { parts: [part] });
+  await click('Mở và định vị PDF riêng tư');
+  const image = container.querySelector('.source-locator-viewer img'); assert.ok(image);
+  await ui.act(async () => { image.dispatchEvent(new dom.window.Event('error')); await settle(); });
+  assert.equal(container.querySelector('.source-locator').dataset.state, 'NOT_SUPPORTED');
+  assert.equal(container.querySelector('.source-locator-viewer img'), null);
+  assert.match(container.querySelector('[role="alert"]').textContent, /Không dựng được đúng trang PDF/);
+});
