@@ -182,6 +182,29 @@ jobs:
           node --test tools/smoke/p08_*.test.mjs
           node tools/smoke/knowledge_journeys.mjs
 
+      # Extend J8 browser ZIP export/preview with a FULL import into a different
+      # freshly migrated PostgreSQL database (no Drive, media bytes or real user).
+      # Retain evidence even on failure; only the J8 reconciler may mark J8 PASS.
+      - name: Verify P08 J8 Vault clean-database roundtrip (synthetic, isolated)
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          qa() { docker compose -p kt-p08-ci --env-file "$RUNNER_TEMP/kt-p08.env" "$@"; }
+          test -s tmp/p08-kt128/p08-results.json
+          qa cp tools/smoke/p08_vault_clean_db.py api:/tmp/p08_vault_clean_db.py
+          qa exec -T -e P08_VAULT_ISOLATED=YES -e P08_VAULT_MODE=source api \
+            python manage.py shell -c "exec(compile(open('/tmp/p08_vault_clean_db.py',encoding='utf-8').read(),'/tmp/p08_vault_clean_db.py','exec'))"
+          qa exec -T db sh -ec 'createdb --no-password -U "$POSTGRES_USER" --template=template0 --encoding=UTF8 kt_p08_vault_clean'
+          qa exec -T -e POSTGRES_DB=kt_p08_vault_clean api python manage.py migrate --noinput
+          qa exec -T -e POSTGRES_DB=kt_p08_vault_clean -e P08_VAULT_ISOLATED=YES -e P08_VAULT_MODE=target api \
+            python manage.py shell -c "exec(compile(open('/tmp/p08_vault_clean_db.py',encoding='utf-8').read(),'/tmp/p08_vault_clean_db.py','exec'))"
+          qa cp api:/tmp/p08-vault-clean/source.json tmp/p08-kt128/p08-j8-source.json
+          qa cp api:/tmp/p08-vault-clean/result.json tmp/p08-kt128/p08-j8-clean-result.json
+          node tools/smoke/p08_reconcile_j8.mjs \
+            tmp/p08-kt128/p08-results.json \
+            tmp/p08-kt128/p08-j8-source.json \
+            tmp/p08-kt128/p08-j8-clean-result.json
+
       - name: Evaluate P15 real-browser keyboard and responsive behavior
         continue-on-error: true
         env:
