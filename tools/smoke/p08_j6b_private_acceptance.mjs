@@ -28,7 +28,7 @@ const report={task:'P08/J6B',status:'NOT_RUN',scope:'REAL_APP_DJANGO_ISOLATED_SY
   pdf:{},mp4:{},foreign_owner_rejected:false,note_preserved:false};
 try {
   proxy=createServer((req,res)=>{
-    const target=req.url?.startsWith('/api/v1/')?targets.api:targets.web;
+    const target=(req.url?.startsWith('/api/v1/') || req.url?.startsWith('/api/v1/session')) ? targets.api : targets.web;
     const request=httpRequest({hostname:target.hostname,port:target.port,path:req.url,
       method:req.method,headers:{...req.headers,host:req.headers.host}},remote=>{
       res.writeHead(remote.statusCode||502,remote.headers);
