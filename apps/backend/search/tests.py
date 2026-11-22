@@ -193,6 +193,28 @@ class SearchServiceTests(TestCase):
         self.assertIsNotNone(first.next_cursor)
         self.assertIsNone(second.next_cursor)
 
+    def test_fts_full_first_page_skips_fuzzy_without_losing_later_cursor_hits(self):
+        exact = [self.item(title="handbok") for _ in range(20)]
+        near = self.item(title="handbook")
+        cursor = None
+        seen = []
+        pages = 0
+        while True:
+            page = self.service.search(self.filters, "handbok", cursor, limit=5)
+            ids = [hit.item_id for hit in page.hits]
+            self.assertLessEqual(len(ids), 5)
+            self.assertFalse(set(ids).intersection(seen))
+            seen.extend(ids)
+            pages += 1
+            cursor = page.next_cursor
+            if cursor is None:
+                break
+            self.assertLess(pages, 10)
+        self.assertEqual(pages, 5)
+        self.assertEqual(len(seen), 21)
+        self.assertEqual(set(seen[:20]), {row.pk for row in exact})
+        self.assertEqual(seen[-1], near.pk)
+
     def test_query_validation(self):
         self.assertEqual(self.hits("   --   "), ())
         self.assertEqual(self.hits("'%_\\'"), ())
