@@ -279,7 +279,7 @@ jobs:
             -movflags +faststart -y /tmp/kt-j6b-generated.mp4
           export KT_J6B_MP4_PATH="$RUNNER_TEMP/kt-j6b-generated.mp4"
           export KT_J6B_PDF_OUT="$RUNNER_TEMP/kt-j6b-generated.pdf"
-          trap 'rm -f "$KT_J6B_MP4_PATH"' EXIT
+          # Retain the generated fixture until the following private-API test.
           qa cp api:/tmp/kt-j6b-generated.mp4 "$KT_J6B_MP4_PATH"
           node --check tools/smoke/p08_j6b_native_preflight.mjs
           node tools/smoke/p08_j6b_native_preflight.mjs
@@ -336,6 +336,11 @@ jobs:
           path: tmp/p08-j6b-native/
           if-no-files-found: warn
           retention-days: 14
+
+      - name: Erase ephemeral J6B fixture files from hosted runner
+        if: always()
+        run: |
+          rm -f "$RUNNER_TEMP/kt-j6b-generated.mp4" "$RUNNER_TEMP/kt-j6b-generated.pdf"
 
       - name: Publish P15 browser screenshots and keyboard findings
         if: always()
