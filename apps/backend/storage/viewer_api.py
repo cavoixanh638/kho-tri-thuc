@@ -100,9 +100,9 @@ def viewer(request, asset_id: UUID):
                 # A separate exact-page PDFium renderer is available for small
                 # verified originals. The native browser PDF #page plugin is
                 # still NOT verified and must never be reported as such.
-                "pdfPageRenderer": "server_pdfium2"
-                if asset.mime == "application/pdf" and asset.size <= MAX_PDF_BYTES
-                else None,
+                **({"pdfPageRenderer": "server_pdfium2"}
+                   if asset.mime == "application/pdf" and asset.size <= MAX_PDF_BYTES
+                   else {}),
             }
         )
     )
