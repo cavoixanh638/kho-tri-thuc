@@ -73,7 +73,8 @@ function eventData(k) {
   const name = shift ? 'Tab' : k;
   const [windowsVirtualKeyCode, code] = keymap[name];
   return { key: name === 'Space' ? ' ' : name === 'CtrlK' ? 'k' : name, code,
-    windowsVirtualKeyCode, modifiers: shift ? 8 : name === 'CtrlK' ? 2 : 0 };
+    windowsVirtualKeyCode, nativeVirtualKeyCode: windowsVirtualKeyCode,
+    modifiers: shift ? 8 : name === 'CtrlK' ? 2 : 0 };
 }
 async function browserAudit() {
   const origin = process.env.P15_QA_URL || 'http://127.0.0.1:62315';
@@ -102,7 +103,14 @@ async function browserAudit() {
     }
     async function key(k) {
       const e = eventData(k);
-      await page.send('Input.dispatchKeyEvent', { type: 'keyDown', ...e });
+      // CDP keyDown with a printable text field triggers native summary
+      // activation (Enter/Space) like a real browser keystroke. A synthetic
+      // 'key' alone may not activate a closed <details> disclosure.
+      const text = k === 'Enter' ? '\r' : k === 'Space' ? ' ' : '';
+      await page.send('Input.dispatchKeyEvent', {
+        type: 'keyDown', ...e,
+        ...(text ? { text, unmodifiedText: text } : {}),
+      });
       await page.send('Input.dispatchKeyEvent', { type: 'keyUp', ...e });
       await sleep();
     }
@@ -191,7 +199,8 @@ async function browserAudit() {
         () => page.eval(() => !!document.querySelector('.capture-advanced-tools[open]')));
       await waitFor(s => {
         const el = document.querySelector(s);
-        return !!el && el.getClientRects().length > 0;
+        const details = el?.closest('.capture-advanced-tools');
+        return !!el && !!details?.open && el.getClientRects().length > 0;
       }, '.research-clipper select', 'expanded clipper select');
       await focus('.research-clipper select');
       await record('clipper-select-down', 'ArrowDown', () => page.eval(() => document.querySelector('.research-clipper select')?.value === 'article'));
@@ -275,6 +284,9 @@ async function browserAudit() {
     report.fatal = String(err.stack || err);
     process.exitCode = 1;
     console.error(report.fatal);
+    // This log contains only status, IDs and test descriptions, never text input.
+    console.error('P15 keyboard failures:',
+      JSON.stringify(report.keyboard.filter(row => row.status !== 'PASS')));
   } finally {
     write('browser-results.json', report);
     await browser?.close();
