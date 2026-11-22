@@ -118,21 +118,25 @@ test('same asset with two extracted versions selects its exact viewer, not the f
   assert.equal(mapped[1].viewer.version, 'another-hash');
 });
 
-test('PDF page request uses authenticated version-pinned viewer, not Drive thumbnail', async () => {
+test('PDF page request uses authenticated version-pinned exact-page PNG, never an unverified iframe fragment', async () => {
   const hash = 'a'.repeat(64), assetId = '11111111-1111-4111-8111-111111111111';
   const part = { id: 46, kind: 'document_text', text: 'Trang bảy', format: 'text', asset_id: assetId, locator: { page: 7 },
     processor: 'fixture', processor_version: 'v1',
     source: { state: 'current', version: hash, asset_version: 3, source_id: null, source_url: null, mime: 'application/pdf' } };
-  const url = `/api/v1/assets/${assetId}/content/3/${hash}`;
   globalThis.fetch = async (path, options) => {
-    assert.equal(path, `/api/v1/assets/${assetId}/viewer`); assert.equal(options.credentials, 'same-origin');
-    return new Response(JSON.stringify({ assetId, version: hash, assetVersion: 3, url, kind: 'pdf', pageNavigationVerified: true }));
+    assert.equal(path, `/api/v1/assets/${assetId}/pdf-page/3/${hash}/7`);
+    assert.equal(options.credentials, 'same-origin');
+    assert.equal(options.redirect, 'error');
+    return new Response(new Uint8Array(500), { status: 200,
+      headers: { 'Content-Type': 'image/png', 'X-KT-PDF-Page': '7',
+        'X-KT-Asset-Version': '3', 'X-KT-Source-SHA256': hash } });
   };
   await render(ui.SourceCitationList, { parts: [part] });
   assert.equal(container.querySelector('iframe'), null);
   await click('Mở và định vị PDF riêng tư');
   assert.equal(container.querySelector('.source-locator').dataset.state, 'AVAILABLE');
-  assert.equal(new URL(container.querySelector('iframe').src).pathname + new URL(container.querySelector('iframe').src).hash, url + '#page=7');
+  assert.equal(container.querySelector('img').alt, 'Nội dung trang PDF số 7');
+  assert.equal(container.querySelector('iframe'), null);
 });
 
 test('stale source cannot open a private PDF viewer or falsely promise precise navigation', async () => {
