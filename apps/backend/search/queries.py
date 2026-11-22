@@ -54,7 +54,14 @@ matches AS (
 
     UNION ALL
     SELECT i.id, 'item', NULL, NULL, false,
-           word_similarity(folded, {ITEM_FOLD}), NULL
+           -- A literal substring already is a direct match. Avoid invoking
+           -- costly word_similarity across all matching Item bodies (10k
+           -- candidates in the synthetic scale corpus); preserve the
+           -- original fuzzy similarity for *non-substring* typo candidates.
+           CASE WHEN %(substring)s AND strpos({ITEM_FOLD}, folded) > 0
+                THEN 1.0::real
+                ELSE word_similarity(folded, {ITEM_FOLD})
+           END, NULL
     FROM visible_items i CROSS JOIN input
     WHERE (%(substring)s AND {ITEM_FOLD} LIKE
                ('%%' || replace(replace(replace(folded, '!', '!!'), '%%', '!%%'), '_', '!_') || '%%')
