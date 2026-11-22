@@ -7,6 +7,7 @@ import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
+import { inflateSync } from 'node:zlib';
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -22,7 +23,10 @@ function makePdf() {
   const objects = [ '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>', null ];
   const pageIds = [];
   for (let index = 1; index <= 3; index++) {
-    const stream = 'BT /F1 28 Tf 60 650 Td (P08 PDF PAGE ' + index + ') Tj ET';
+    // Encode a distinctive full-page color on each page. The screenshot
+    // classifier checks rendered pixels rather than trusting a #page fragment.
+    const shade = index === 1 ? '0.9 0.08 0.08' : index === 2 ? '0.08 0.85 0.08' : '0.08 0.08 0.9';
+    const stream = shade + ' rg 0 0 612 792 re f\n0 0 0 rg BT /F1 28 Tf 60 650 Td (P08 PDF PAGE ' + index + ') Tj ET';
     const len = Buffer.byteLength(stream, 'ascii');
     objects.push('<< /Length ' + len + ' >>\nstream\n' + stream + '\nendstream');
     const contentId = objects.length;
@@ -42,6 +46,45 @@ function makePdf() {
   for (let i=1; i<offsets.length; i++) body += String(offsets[i]).padStart(10,'0') + ' 00000 n \n';
   body += 'trailer\n<< /Size ' + (objects.length+1) + ' /Root ' + objects.length + ' 0 R >>\nstartxref\n' + xref + '\n%%EOF\n';
   return Buffer.from(body, 'ascii');
+}
+// Decode native PNG scanlines using built-in zlib. This is a sampling oracle,
+// never OCR: the generated PDF has large uniquely colored pages.
+function countGreenRenderedPixels(png) {
+  assert.equal(png.subarray(0,8).toString('hex'), '89504e470d0a1a0a');
+  let offset=8, width=0, height=0, depth=0, type=0;
+  const idat=[];
+  while(offset+12<=png.length){
+    const size=png.readUInt32BE(offset);const kind=png.toString('ascii',offset+4,offset+8);
+    const bytes=png.subarray(offset+8,offset+8+size);offset+=size+12;
+    if(kind==='IHDR'){width=bytes.readUInt32BE(0);height=bytes.readUInt32BE(4);depth=bytes[8];type=bytes[9];assert.equal(bytes[12],0,'interlaced PNG unsupported');}
+    if(kind==='IDAT')idat.push(bytes);
+    if(kind==='IEND')break;
+  }
+  assert.equal(depth,8);assert.ok(type===2||type===6);
+  const channels=type===2?3:4,stride=width*channels,raw=inflateSync(Buffer.concat(idat));
+  let cursor=0, previous=Buffer.alloc(stride),total=0,green=0,red=0,blue=0;
+  for(let y=0;y<height;y++){
+    const filter=raw[cursor++],current=Buffer.alloc(stride);
+    for(let k=0;k<stride;k++){
+      const value=raw[cursor++],left=k>=channels?current[k-channels]:0,up=previous[k],upLeft=k>=channels?previous[k-channels]:0;
+      let predict=0;
+      if(filter===1)predict=left;
+      else if(filter===2)predict=up;
+      else if(filter===3)predict=Math.floor((left+up)/2);
+      else if(filter===4){const p=left+up-upLeft,a=Math.abs(p-left),b=Math.abs(p-up),c=Math.abs(p-upLeft);predict=a<=b&&a<=c?left:b<=c?up:upLeft;}
+      else if(filter!==0)throw Error('UNSUPPORTED_PNG_FILTER');
+      current[k]=(value+predict)&255;
+    }
+    // Inside the PDF document region, away from frame scrollbars and toolbar.
+    if(y>=170&&y<490){for(let x=160;x<630&&x<width;x+=3){
+      const k=x*channels,R=current[k],G=current[k+1],B=current[k+2];
+      total++;if(G>R*1.8&&G>B*1.8&&G>90)green++;
+      if(R>G*1.8&&R>B*1.8&&R>90)red++;
+      if(B>G*1.8&&B>R*1.8&&B>90)blue++;
+    }}
+    previous=current;
+  }
+  return {green,red,blue,total,green_ratio:Number((green/Math.max(1,total)).toFixed(4))};
 }
 function serve(req,res,bytes,mime) {
   res.setHeader('Content-Type',mime);
@@ -117,12 +160,23 @@ try {
     report.mp4_seeks.push({target_seconds:target,actual_seconds:result.time,error_seconds:Math.abs(result.time-target)});
   }
   assert.ok(requests.includes('/fixture.pdf')&&requests.includes('/fixture.mp4'));
-  await page.screenshot({path:path.join(out,'pdf-page2-and-mp4.png'),format:'png'});
-  report.status='PREFLIGHT_PASS_NATIVE_MP4_PDF_FRAGMENT_ONLY';
+  // A rendered-color check is stronger than inspecting iframe.src. Capture
+  // multiple frames to allow Chrome's PDF extension to finish first paint.
+  const screenshot=path.join(out,'pdf-page2-and-mp4.png');
+  let observed={green_ratio:0};
+  for(let attempt=0;attempt<7;attempt++){
+    await new Promise(resolve=>setTimeout(resolve,500));
+    await page.screenshot({path:screenshot,format:'png'});
+    observed=countGreenRenderedPixels(readFileSync(screenshot));
+    if(observed.green_ratio>=0.04)break;
+  }
+  report.pdf_visual_color_observation=observed;
+  report.pdf_rendered_page_verified=observed.green_ratio>=0.04 && observed.green>observed.red*5 && observed.green>observed.blue*5;
+  report.status=report.pdf_rendered_page_verified?'PREFLIGHT_PASS_CHROMIUM_PDF_PAGE2_MP4_NATIVE':'PREFLIGHT_PASS_NATIVE_MP4_PDF_FRAGMENT_ONLY';
   report.pdf_fragment_requested=true;
   report.mp4_max_error_seconds=Math.max(...report.mp4_seeks.map(x=>x.error_seconds));
   report.browser_requests=requests.length;
-  report.pdf_page_manual_check='NOT_RUN';
+  report.pdf_page_manual_check=report.pdf_rendered_page_verified?'AUTOMATED_COLOR_PAGE2_ONLY':'NOT_RUN';
   report.private_asset_ownership='NOT_RUN';
   writeFileSync(path.join(out,'results.json'),JSON.stringify(report,null,2)+'\n');
   console.log(JSON.stringify({status:report.status,mp4_seek_count:report.mp4_seeks.length,max_error_seconds:report.mp4_max_error_seconds,full_j6b_pass:false}));
