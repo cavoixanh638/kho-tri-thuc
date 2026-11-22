@@ -167,7 +167,16 @@ async function browserAudit() {
       await record('collection-tab', 'Tab', visibleFocus);
       await record('collection-reverse-tab', 'ShiftTab', visibleFocus);
       await record('collection-close', 'Space', () => page.eval(() => !document.querySelector('.saved-collection-form details')?.open));
-      await route('#/gui', '.research-clipper');
+      // The Unified Inbox intentionally hides the secondary clipper in a native
+      // details disclosure. Test its keyboard path before touching hidden fields.
+      await route('#/gui', '.capture-advanced-tools > summary');
+      await focus('.capture-advanced-tools > summary');
+      await record('clipper-open-details', 'Enter',
+        () => page.eval(() => !!document.querySelector('.capture-advanced-tools[open]')));
+      await waitFor(s => {
+        const el = document.querySelector(s);
+        return !!el && el.getClientRects().length > 0;
+      }, '.research-clipper select', 'expanded clipper select');
       await focus('.research-clipper select');
       await record('clipper-select-down', 'ArrowDown', () => page.eval(() => document.querySelector('.research-clipper select')?.value === 'article'));
       await record('clipper-select-up', 'ArrowUp', () => page.eval(() => document.querySelector('.research-clipper select')?.value === 'link'));
