@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone as utc_timezone
 from zoneinfo import ZoneInfo
 
 from django.conf import settings
-from django.db.models import Sum
+from django.db.models import Q, Sum
 from django.utils import timezone
 
 from .gemini_policy import choose_model
@@ -36,7 +36,7 @@ def local_usage_snapshot(now=None):
     }
 
 
-def select_for_user(user, *, task="ocr_simple", now=None):
+def select_for_user(user, *, task="ocr_simple", now=None, allowed_models=None):
     """A conservative candidate, never a quota guarantee or billable call."""
     now = now or timezone.now()
     if not settings.GEMINI_API_KEY:
@@ -63,11 +63,12 @@ def select_for_user(user, *, task="ocr_simple", now=None):
             "generation_methods": record.generation_methods,
         }
         for record in GeminiModelCatalog.objects.filter(reviewed=True)
+        if allowed_models is None or record.model_id in allowed_models
     }
     cooldown = set(
         GeminiUsageEvent.objects.filter(
-            created_at__gte=now - timedelta(minutes=10),
-            status="model_rate_limit",
+            Q(status="model_rate_limit", created_at__gte=now - timedelta(minutes=10))
+            | Q(status="model_unavailable", created_at__gte=now - timedelta(hours=24))
         ).values_list("model_id", flat=True)
     )
     tiers = ("economy", "balanced", "premium") if settings.GEMINI_ALLOW_PREMIUM_MODELS else (

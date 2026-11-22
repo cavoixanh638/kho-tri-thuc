@@ -7,6 +7,8 @@ type Part = { id: number; kind: string; text: string; processor?: string; locato
 type Content = { results: Part[]; next_offset: number | null };
 
 function locationLabel(part: Part) {
+  if (part.kind === 'image_ocr') return 'Chữ đọc từ ảnh bằng Gemini — cần đối chiếu';
+  if (part.kind === 'image_description') return 'Mô tả ảnh do AI tạo — có thể chưa chính xác';
   const { page, sheet, row, block } = part.locator;
   if (page !== undefined) return `Trang ${page}`;
   if (sheet !== undefined) return `Sheet ${sheet}${row === undefined ? '' : ` · dòng ${row}`}`;

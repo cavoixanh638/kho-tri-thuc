@@ -11,12 +11,18 @@ export function KnowledgeReading({ id, refreshKey, onIllustration, sourceViewers
   if (content.error) return <ErrorNotice retry={content.retry}>Chưa đọc được tri thức từ nguồn.</ErrorNotice>;
   if (!content.data) return <Loading label="Đang đọc văn bản tri thức" />;
   const data = content.data;
+  const containsAiImageText = data.parts.some(part =>
+    part.kind === 'image_ocr' || part.kind === 'image_description');
+  const imageReview = containsAiImageText
+    ? <p className="notice">Nội dung chữ và mô tả do Gemini trích từ ảnh có thể sai dấu, bảng và số liệu; hãy đối chiếu ảnh gốc trước khi sử dụng.</p> : null;
   if (data.origin === 'missing') return <Empty>Chưa lấy được văn bản nguồn. Video chỉ trở thành nội dung đọc được sau khi có phụ đề hoặc bản chép lời; bạn cũng có thể biên soạn trực tiếp.</Empty>;
   if (data.origin === 'authored') return <div>
+    {imageReview}
     <KnowledgeText text={data.text} />
     <SourceCitationList parts={data.parts} sourceViewers={sourceViewers} onIllustration={onIllustration} truncated={data.truncated} />
   </div>;
   return <div>
+    {imageReview}
     {data.needs_review && <p className="notice">Bản chép lời tự động trên Windows. Cần đối chiếu video trước khi dùng làm kiến thức đã biên soạn.</p>}
     {data.text && <KnowledgeText text={data.text} />}
     {data.parts.map((part) => {

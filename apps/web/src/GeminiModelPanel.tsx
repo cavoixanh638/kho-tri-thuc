@@ -15,6 +15,8 @@ type ModelRow = {
 type Catalog = {
   configured: boolean;
   ocr_enabled: boolean;
+  external_processing_allowed: boolean;
+  external_ocr_consent: boolean;
   premium_models_enabled: boolean;
   last_success_at: string | null;
   last_error_code: string;
@@ -38,6 +40,7 @@ export function GeminiModelPanel({ csrf }: { csrf: string }) {
   const registry = useResource<Catalog>('/integrations/gemini/models');
   const [mode, setMode] = useState<Mode>('balanced');
   const [manual, setManual] = useState('');
+  const [externalConsent, setExternalConsent] = useState(false);
   const [pending, setPending] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState(false);
@@ -47,8 +50,9 @@ export function GeminiModelPanel({ csrf }: { csrf: string }) {
     if (data && !pending) {
       setMode(data.mode);
       setManual(data.manual_model_id);
+      setExternalConsent(data.external_ocr_consent);
     }
-  }, [data?.mode, data?.manual_model_id]);
+  }, [data?.mode, data?.manual_model_id, data?.external_ocr_consent]);
 
   async function save() {
     setPending(true);
@@ -59,6 +63,7 @@ export function GeminiModelPanel({ csrf }: { csrf: string }) {
         method: 'POST', csrf, body: {
           mode,
           manual_model_id: mode === 'manual' ? manual : '',
+          external_ocr_consent: externalConsent,
         },
       });
       setSaved(true);
@@ -81,7 +86,9 @@ export function GeminiModelPanel({ csrf }: { csrf: string }) {
       !data ? <Loading /> : <>
         <dl className="key-value">
           <div><dt>Trạng thái</dt><dd>{!data.configured ? 'Chưa cấu hình API key trên máy chủ' :
-            !data.ocr_enabled ? 'Đã có API key; chưa bật xử lý OCR' : 'Đã bật xử lý OCR'}</dd></div>
+            !data.ocr_enabled || !data.external_processing_allowed
+              ? 'Chưa bật gửi ảnh tới Gemini trên máy chủ'
+              : data.external_ocr_consent ? 'OCR Gemini đã được cho phép' : 'Chờ đồng ý gửi ảnh của tài khoản'}</dd></div>
           <div><dt>Danh mục model</dt><dd>{data.last_success_at ?
             'Đồng bộ gần nhất ' + new Date(data.last_success_at).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })
             : 'Chưa đồng bộ'}</dd></div>
@@ -110,6 +117,17 @@ export function GeminiModelPanel({ csrf }: { csrf: string }) {
             </select>
             <p className="section-note">Chế độ thủ công không tự chuyển sang model khác khi gặp giới hạn.</p>
           </>}
+          <label className="gemini-ocr-consent">
+            <input type="checkbox" checked={externalConsent} disabled={pending}
+              onChange={event => { setExternalConsent(event.currentTarget.checked); setSaved(false); }} />
+            Cho phép gửi <strong>ảnh gốc đã xác minh</strong> của tài khoản này tới Gemini để đọc chữ và mô tả.
+          </label>
+          <p className="section-note">
+            Mặc định tắt. Bật đồng ý chỉ cấp quyền cho ảnh mới hoặc ảnh được chọn xử lý lại;
+            còn cần quản trị viên bật dịch vụ Gemini trên máy chủ. Ảnh có thể chứa thông tin
+            riêng tư; chỉ bật khi đồng ý chính sách lưu trữ dữ liệu và chi phí của Google.
+            Bạn có thể bỏ chọn để dừng tác vụ chưa chạy.
+          </p>
           <div className="form-actions">
             <Button loading={pending} onClick={() => void save()}
               disabled={mode === 'manual' && !manual}>Lưu lựa chọn</Button>
