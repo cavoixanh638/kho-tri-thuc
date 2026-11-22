@@ -106,6 +106,7 @@ class GeminiImageClientTests(SimpleTestCase):
     GEMINI_OCR_EXTERNAL_PROCESSING_ALLOWED=True,
     GEMINI_ALLOW_PREMIUM_MODELS=False,
     GEMINI_MAX_LOCAL_REQUESTS_PER_DAY=3,
+    GEMINI_OCR_APPROVED_MODELS=frozenset({"gemini-3.5-flash-lite"}),
 )
 class GeminiOCRJobTests(TestCase):
     @classmethod
