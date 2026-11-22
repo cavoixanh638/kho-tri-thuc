@@ -110,7 +110,10 @@ def _search_params(filters, query, cursor, limit):
         "tag_id": filters.tag_id,
         "query": query,
         "substring": len(query) >= 3,
-        "typo": len(query) >= 4 and query.isalnum(),
+        # Identifiers with digits are exact keys. Trigram fuzzy matching of
+        # such keys produces thousands of near-identical candidates and
+        # distracts from the precise indexed FTS/substring hit.
+        "typo": len(query) >= 4 and query.isalnum() and not any(ch.isdigit() for ch in query),
         "capture_limit": CAPTURE_SCAN_LIMIT,
         "cursor_id": cursor.item_id if cursor else None,
         "cursor_score": cursor.score if cursor else None,
