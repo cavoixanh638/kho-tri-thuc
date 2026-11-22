@@ -302,7 +302,7 @@ jobs:
           qa cp tools/smoke/p08_j6b_private_backend.py api:/tmp/p08_j6b_private_backend.py
           qa exec -d -T -e P08_J6B_ISOLATED=YES             -e PDF_NATIVE_PAGE_NAVIGATION_VERIFIED=1             api python /tmp/p08_j6b_private_backend.py
           # The backend is reachable only over the disposable Docker bridge.
-          qa exec -T api python -c 'import urllib.request,time; [(time.sleep(0.5)) for _ in range(30) if not (lambda: False)()]' >/dev/null
+          sleep 2
           qa exec -T api python -c "import urllib.request; print(urllib.request.urlopen('http://127.0.0.1:8001/api/v1/health',timeout=5).status)"
           qa cp api:/tmp/p08-j6b-private-manifest.json tmp/p08-kt128/p08-j6b-private-manifest.json
           cid="$(qa ps -q api)"
