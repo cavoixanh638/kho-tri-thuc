@@ -150,7 +150,16 @@ async function browserAudit() {
         assert.ok(await verify(), 'Expected keyboard interaction was not observed');
         report.keyboard.push({ id, viewport: width, area, key: which, status: 'PASS' });
       } catch (e) {
-        report.keyboard.push({ id, viewport: width, area, key: which, status: 'FAIL', error: String(e.message || e).slice(0, 160) });
+        const focus_state = await page.eval(() => {
+          const el = document.activeElement;
+          const r = el?.getBoundingClientRect();
+          return { tag: el?.tagName ?? null, id: el?.id ?? '',
+            class_name: typeof el?.className === 'string' ? el.className.slice(0, 90) : '',
+            rect: r ? { width: r.width, height: r.height, top: r.top, bottom: r.bottom } : null,
+            visible: !!el && el.getClientRects().length > 0 };
+        }).catch(() => null);
+        report.keyboard.push({ id, viewport: width, area, key: which, status: 'FAIL',
+          error: String(e.message || e).slice(0, 160), focus_state });
       }
     }
     const visibleFocus = () => page.eval(() => {
@@ -174,6 +183,11 @@ async function browserAudit() {
       width = w;
       await page.setViewport({ width, height: width === 1920 ? 1080 : 900 });
       await route('#/thu-vien', '.knowledge-library-layout');
+      // The layout paints before the async explorer data; wait for actual
+      // synthetic folder rows so Tab order does not race a React remount.
+      await waitFor(() => !!document.querySelector('.knowledge-explorer nav[role="tree"]')
+        && document.querySelectorAll('.knowledge-explorer [role="treeitem"]').length > 0,
+      undefined, 'library explorer loaded');
       await focus('a.brand');
       for (let i = 0; i < 6; i++) await record('global-tab', 'Tab', visibleFocus);
       for (let i = 0; i < 2; i++) await record('global-reverse-tab', 'ShiftTab', visibleFocus);
@@ -212,18 +226,39 @@ async function browserAudit() {
         const toggle=document.querySelector('.library-tree-toggle');
         if(toggle && getComputedStyle(toggle).display !== 'none' && toggle.getAttribute('aria-expanded')==='false') toggle.click();
       });
-      const nodes = await page.eval(() => document.querySelectorAll('.knowledge-explorer [role="treeitem"]').length);
-      if (nodes >= 2) {
-        await focus('.knowledge-explorer [role="treeitem"]');
-        await record('tree-down', 'ArrowDown', () => page.eval(() => document.activeElement?.getAttribute('role') === 'treeitem' && document.activeElement !== document.querySelector('.knowledge-explorer [role="treeitem"]')));
-        await record('tree-up', 'ArrowUp', () => page.eval(() => document.activeElement === document.querySelector('.knowledge-explorer [role="treeitem"]')));
-      } else report.blocked.push({ viewport: w, feature: 'tree ArrowUp/Down', status: 'NOT_RUN', reason: 'Need >=2 synthetic folder/note rows' });
-      const expandable = await page.eval(() => !!document.querySelector('.knowledge-explorer [role="treeitem"][aria-expanded="false"]'));
+      await waitFor(() => !!document.querySelector('.knowledge-explorer nav[role="tree"]')
+        && document.querySelectorAll('.knowledge-explorer [role="treeitem"]').length >= 1,
+      undefined, 'loaded synthetic tree before keyboard checks');
+      // A synthetic QA account has one top-level P08 folder. Expand first to
+      // reveal its children BEFORE testing roving ArrowDown/ArrowUp navigation.
+      const expandable = await page.eval(() =>
+        !!document.querySelector('.knowledge-explorer [role="treeitem"][aria-expanded="false"]'));
       if (expandable) {
         await focus('.knowledge-explorer [role="treeitem"][aria-expanded="false"]');
-        await record('tree-expand', 'ArrowRight', () => page.eval(() => document.activeElement?.getAttribute('aria-expanded') === 'true'));
-        await record('tree-collapse', 'ArrowLeft', () => page.eval(() => document.activeElement?.getAttribute('aria-expanded') === 'false'));
-      } else report.blocked.push({ viewport: w, feature: 'tree expand/collapse', status: 'NOT_RUN', reason: 'Need expandable synthetic row' });
+        await record('tree-expand', 'ArrowRight',
+          () => page.eval(() => document.activeElement?.getAttribute('aria-expanded') === 'true'));
+      } else report.blocked.push({ viewport: w, feature: 'tree expand/collapse', status: 'NOT_RUN', reason: 'No expandable synthetic folder row' });
+      const loadedChildren = expandable && await page.eval(() =>
+        document.querySelectorAll('.knowledge-explorer [role="treeitem"]').length >= 2);
+      if (!loadedChildren && expandable) {
+        await waitFor(() => document.querySelectorAll('.knowledge-explorer [role="treeitem"]').length >= 2,
+          undefined, 'expanded synthetic child treeitem');
+      }
+      const nodes = await page.eval(() =>
+        document.querySelectorAll('.knowledge-explorer [role="treeitem"]').length);
+      if (nodes >= 2) {
+        await focus('.knowledge-explorer [role="treeitem"]');
+        await record('tree-down', 'ArrowDown',
+          () => page.eval(() => document.activeElement?.getAttribute('role') === 'treeitem' &&
+            document.activeElement !== document.querySelector('.knowledge-explorer [role="treeitem"]')));
+        await record('tree-up', 'ArrowUp',
+          () => page.eval(() => document.activeElement === document.querySelector('.knowledge-explorer [role="treeitem"]')));
+      } else report.blocked.push({ viewport: w, feature: 'tree ArrowUp/Down', status: 'NOT_RUN', reason: 'Need >=2 loaded synthetic folder/note rows' });
+      if (expandable) {
+        await focus('.knowledge-explorer [role="treeitem"][aria-expanded="true"]');
+        await record('tree-collapse', 'ArrowLeft',
+          () => page.eval(() => document.activeElement?.getAttribute('aria-expanded') === 'false'));
+      }
       const qaItemId = process.env.P15_QA_ITEM_ID || await page.eval(async () => {
         const r=await fetch('/api/v1/items?limit=100', {credentials:'same-origin'});
         if(!r.ok)return null;
