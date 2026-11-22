@@ -67,9 +67,11 @@ const report = {
   full_j6b_pass:false,mp4_seeks:[],
 };
 try {
-  const mp4path=path.join(temp,'fixture.mp4');
-  const ff=spawnSync('ffmpeg',['-nostdin','-hide_banner','-loglevel','error','-f','lavfi','-i','testsrc=size=320x180:rate=15','-t','12','-an','-c:v','libx264','-preset','ultrafast','-pix_fmt','yuv420p','-movflags','+faststart','-y',mp4path],{timeout:60000,encoding:'utf8'});
-  assert.equal(ff.status,0,'FFMPEG_MP4_GENERATION_FAILED '+String(ff.stderr).slice(0,200));
+  const mp4path=process.env.KT_J6B_MP4_PATH || path.join(temp,'fixture.mp4');
+  if (!process.env.KT_J6B_MP4_PATH) {
+    const ff=spawnSync('ffmpeg',['-nostdin','-hide_banner','-loglevel','error','-f','lavfi','-i','testsrc=size=320x180:rate=15','-t','12','-an','-c:v','libx264','-preset','ultrafast','-pix_fmt','yuv420p','-movflags','+faststart','-y',mp4path],{timeout:60000,encoding:'utf8'});
+    assert.equal(ff.status,0,'FFMPEG_MP4_GENERATION_FAILED '+String(ff.error?.code||ff.stderr).slice(0,200));
+  }
   const mp4=readFileSync(mp4path),pdf=makePdf();
   assert.ok(mp4.length>10000&&pdf.length>500);
   report.fixture={mp4_sha256:sha(mp4),pdf_sha256:sha(pdf),pdf_pages:3,mp4_duration_seconds:12};
