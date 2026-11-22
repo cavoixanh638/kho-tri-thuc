@@ -101,8 +101,12 @@ class PrivatePdfPageTests(TestCase):
         self.client.force_login(self.owner)
         self.assertEqual(self.client.get(self.path.replace("/pdf-page/2/", "/pdf-page/1/")).status_code, 409)
         self.assertEqual(self.client.get(self.path.replace(self.digest, "a" * 64)).status_code, 409)
-        self.assertEqual(self.client.get(self.path[:-1] + "4").status_code, 416)
+        # Authorization and stale-version failures must reject without reads.
         self.assertFalse(self.calls)
+        # Page number 4 is outside the *parsed* three-page PDF, so the
+        # backend must read+verify bytes before it can know the page count.
+        self.assertEqual(self.client.get(self.path[:-1] + "4").status_code, 416)
+        self.assertEqual(self.calls, [(0, len(self.body) - 1)])
 
     def test_corruption_and_malformed_bytes_cannot_pass_verified_page(self):
         self.mock.return_value.read_range.side_effect = lambda *_: b"0" * len(self.body)
