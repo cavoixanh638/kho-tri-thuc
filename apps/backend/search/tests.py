@@ -124,6 +124,16 @@ class SearchServiceTests(TestCase):
                 self.assertEqual(hit.item_id, item.pk)
         self.assertEqual(self.hits("123/%UB"), ())
 
+    def test_digit_bearing_identifiers_avoid_noisy_fuzzy_candidate_expansion(self):
+        exact = self.item(title="KTJ9TERM00000 tài liệu chính xác")
+        near = self.item(title="KTJ9TERM00001 tài liệu tương tự")
+        params = _search_params(self.filters, "KTJ9TERM00000", None, 5)
+        self.assertTrue(params["substring"])
+        self.assertFalse(params["typo"])
+        self.assertTrue(_search_params(self.filters, "handbok", None, 5)["typo"])
+        self.assertEqual([hit.item_id for hit in self.hits("KTJ9TERM00000")], [exact.pk])
+        self.assertNotEqual(exact.pk, near.pk)
+
     def test_owner_soft_delete_and_group_intersection_apply_to_every_source(self):
         topic = Topic.objects.create(owner=self.owner, name="Topic")
         project = Project.objects.create(owner=self.owner, name="Project")
