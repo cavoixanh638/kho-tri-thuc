@@ -46,6 +46,8 @@ def get_models(request):
     return {
         "configured": bool(settings.GEMINI_API_KEY),
         "ocr_enabled": bool(settings.GEMINI_OCR_ENABLED),
+        "external_processing_allowed": bool(getattr(settings, "GEMINI_OCR_EXTERNAL_PROCESSING_ALLOWED", False)),
+        "external_ocr_consent": preference.external_ocr_consent,
         "premium_models_enabled": bool(settings.GEMINI_ALLOW_PREMIUM_MODELS),
         "refresh_hours": 12,
         "last_attempt_at": state.last_attempt_at.isoformat() if state and state.last_attempt_at else None,
@@ -65,6 +67,7 @@ def get_models(request):
 class PreferenceInput(Schema):
     mode: Literal["economy", "balanced", "quality", "manual"]
     manual_model_id: str = Field(default="", max_length=128)
+    external_ocr_consent: bool | None = None
 
 
 @router.post("/integrations/gemini/preferences", response={200: dict, 422: dict})
@@ -84,13 +87,16 @@ def update_preferences(request, payload: PreferenceInput):
             return Status(422, {"code": "model_not_allowed_by_cost_policy"})
     else:
         model_id = ""
+    defaults = {"mode": payload.mode, "manual_model_id": model_id}
+    if payload.external_ocr_consent is not None:
+        defaults["external_ocr_consent"] = payload.external_ocr_consent
     preference, _ = GeminiPreference.objects.update_or_create(
-        owner=request.user,
-        defaults={"mode": payload.mode, "manual_model_id": model_id},
+        owner=request.user, defaults=defaults,
     )
     return {
         "mode": preference.mode,
         "manual_model_id": preference.manual_model_id,
+        "external_ocr_consent": preference.external_ocr_consent,
         "effective_candidate": select_for_user(request.user)["model"],
     }
 
