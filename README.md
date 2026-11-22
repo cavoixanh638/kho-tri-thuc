@@ -1,7 +1,7 @@
 # Kho Tri Thức — Lưu khoa học, mở rộng bền vững
 
 **Kế hoạch hiện hành: V4.7 (18/11/2026) — tiếp nhận tức thì, tự tổ chức và bảo toàn lịch sử; PostgreSQL đã chốt.**
-**Trạng thái triển khai và kết quả kiểm thử:** [CURRENT_STATE.md](docs/CURRENT_STATE.md). **Chạy scaffold:** [LOCAL_SETUP.md](docs/operations/LOCAL_SETUP.md).
+**Trạng thái triển khai và kết quả kiểm thử:** [CURRENT_STATE.md](docs/CURRENT_STATE.md). **Đối chiếu kế hoạch–mã nguồn–nghiệm thu 22/11/2026:** [Bảng kiểm toán G00](docs/operations/RELEASE_READINESS_20261122.md). **Chạy scaffold:** [LOCAL_SETUP.md](docs/operations/LOCAL_SETUP.md).
 
 Kho Tri Thức lấy **văn bản/Markdown làm nội dung chính** để đọc, tìm kiếm và tổ chức. Media và tài liệu nguồn đi kèm để minh họa và truy nguyên. Có thể viết/dán bài văn bản hoặc gửi URL/tệp → **lưu ngay nội dung và thời điểm nhận** → thu thập nội dung khả dụng → **tự xếp vào nhóm hiện có khi đủ tin cậy và tìm các mục liên quan**. File gốc lưu Google Drive, danh mục/lịch sử trong PostgreSQL. Gửi lại link tạo lượt tiếp nhận mới nhưng không nhân đôi file; HTTP retry cùng request key không tạo lượt mới. [Đọc và viết Markdown](docs/operations/TEXT_KNOWLEDGE.md), [quy trình](docs/CAPTURE_AND_ORGANIZE.md).
 

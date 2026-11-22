@@ -182,3 +182,16 @@ Các công việc và mã kiểm thử chi tiết nằm trong `docs/ROADMAP_AND_
 **Các task bổ sung không được bỏ:** [KT-122](workstreams/notes-ux-20261120/KT-122-FOLDER-EXPLORER.md), [KT-123](workstreams/notes-ux-20261120/KT-123-NOTE-HIERARCHY.md), [KT-124](workstreams/notes-ux-20261120/KT-124-NAVIGATION-LINKING.md), [KT-125](workstreams/notes-ux-20261120/KT-125-SMART-COLLECTIONS.md), [KT-126](workstreams/notes-ux-20261120/KT-126-CLIPPER-HIGHLIGHTS.md), [KT-127](workstreams/notes-ux-20261120/KT-127-PORTABLE-VAULT.md), [KT-128](workstreams/notes-ux-20261120/KT-128-USER-JOURNEY-ACCEPTANCE.md). [KT-129](workstreams/notes-ux-20261120/KT-129-ORGANIZATION-REVIEW.md) cần evidence/benchmark; [KT-130](workstreams/notes-ux-20261120/KT-130-DEFERRED-RESEARCH.md) giữ các ý tưởng chưa áp dụng (Canvas, OCR, AI scoped research, offline sync, voice, semantic) có lý do và trigger, thay vì để chúng biến mất.
 
 **Không đổi nền tảng đã chốt:** Django + PostgreSQL + Drive. **PR #57 là candidate OPEN/UNMERGED**, chưa chứng nhận các hành trình trên. Những task 122–130 mới ở trạng thái SPEC_READY / NOT_RUN. Chỉ tiến hành lập trình khi người dùng giao; test/CI phải báo rõ SHA và trạng thái thực.
+
+## 13. Phụ lục đối chiếu ngày 22/11/2026 — không thay mục tiêu v4.7
+
+Người dùng đã chỉ đạo **cập nhật thường xuyên và đối chiếu với kế hoạch trước khi triển khai**. Vì vậy áp dụng [checkpoint kiểm toán và cổng nghiệm thu](operations/RELEASE_READINESS_20261122.md) cho mọi vòng thực hiện.
+
+- **Trục ưu tiên không đổi**: A (tiếp nhận/Drive/backup) → B (tự tổ chức/tìm kiếm/media) → C (ChatGPT pilot) → D (nâng cấp có điều kiện). Có thể nghiên cứu/viết mã cho D trước nhưng không được dùng CI xanh của D để gọi A/B đã nghiệm thu.
+- **Yêu cầu bổ sung được chấp nhận sau baseline**: ô gửi mọi loại nội dung duy nhất (PR #81) và Gemini OCR ảnh / quản lý model (PR #82/#84). Tất cả đang là **mã đề xuất, chưa merge/deploy, chưa nghiệm thu API Gemini thật** tại checkpoint; không tự bật truyền dữ liệu/chi phí.
+- **Khối lượng có ảnh hưởng trực tiếp tới bản đầu**: nâng cổng thực tế media (Facebook/TikTok/YouTube, link chỉ là link nếu tải thất bại), 10.000 mục, tiếng Việt, chứng cứ Google Drive readback và backup/restore, hành trình tạo→xếp→tìm→xem→khôi phục.
+- **Hoãn theo người dùng:** Android/native; không mở rộng B2/R2, semantic/vector, chatbot riêng, microservices khi chưa có dấu hiệu cần thiết.
+- **Tách cổng:** code/CI xanh **khác** UAT thật, độ chính xác OCR/ASR, Drive/provider thật và quyền/chi phí. Khi thiếu mẫu, không ghi 100% hoàn thành.
+- Không đổi tên baseline kế hoạch thành v4.8 chỉ vì một bản kiểm toán; bản v4.8 chính thức cần tổng hợp lựa chọn và tiêu chí được người dùng duyệt.
+
+Chi tiết công việc và trạng thái snapshot nằm ở tài liệu trên; `CURRENT_STATE.md` vẫn là sự thật **đã tích hợp/đã nghiệm thu** của main, không ghi PR Draft thành tính năng phát hành.

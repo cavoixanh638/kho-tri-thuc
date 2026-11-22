@@ -213,3 +213,20 @@ Người dùng yêu cầu **tổ chức folder như Obsidian và mối quan hệ
 **Đã có dưới dạng code candidate ở PR #57, CHƯA merge:** KT-114–121 (một phần editor/related/multi-view/receipt/AI manual POC); không gọi là hoàn thành trải nghiệm Obsidian/Notion/Coda. **Chưa có code** cho KT-122–130. Source chính xác phải kiểm HEAD PR57. KT-128 là gate UX hội tụ: click qua hành trình thực, chụp bằng chứng, nêu SHA/viewport/thiết bị/DB; unit CI green không thay browser UAT.
 
 **Gate an toàn:** bảo toàn Source/Asset/Item UUID/CaptureEvent/Drive, scoped owner, rollback, backup, K12/Android/Drive real NOT_RUN nếu không có. Những đề xuất không cần thiết/chi phí lớn (Canvas, semantic, OCR, voice, full offline sync, AI provider) giữ ở KT-130 với lý do và điều kiện mở lại, KHÔNG xóa khỏi tri thức nghiên cứu. Các PR task mới base nhánh integration của PR57, không merge/deploy khi chưa được giao.
+
+
+## 12. Gate phát hành và cập nhật tiến độ — bổ sung 22/11/2026
+
+Áp dụng [bảng đối chiếu phạm vi–mã–test–trạng thái](operations/RELEASE_READINESS_20261122.md). **Mỗi PR/checkpoint** phải chỉ ra mục tiêu v4.7 (A/B/C/D), task KT/Pxx, tác động, code/tested SHA, môi trường, test và các ca NOT_RUN; phát triển tính năng không đồng nghĩa nghiệm thu.
+
+| Cổng phát hành | Nội dung phải chứng minh | Tiêu chí chốt |
+| --- | --- | --- |
+| **G1 — Toàn vẹn dữ liệu** | CaptureEvent/ACK/Drive verified/đọc lại byte gốc, retry/idempotency, backup/restore Postgres+manifest, kiểm quyền, dữ liệu multiple groups | Mỗi hành trình có log SHA và số lượng Item/Asset/Event không đổi sai; live và mock phân biệt |
+| **G2 — Hành trình người dùng** | Browser KT128: folder→note con→link/clip→search/view→Vault→restore, PDF/MP4 locator thật; P15 keyboard/focus 1920/1440/768/390 | **13/13 P08 PASS** để chốt toàn bộ browser gate, P15 không còn fatal/FAIL; thiết bị được hoãn ghi NOT_RUN chứ không ngụy tạo |
+| **G3 — Chất lượng tra cứu/AI** | P16 truy vấn PostgreSQL, KT107/129 corpus 30–50 Item có gold, Gemini ảnh có gold tiếng Việt khi bật pilot | Ghi rõ precision/recall/P95, mẫu số/công thức, lỗi sai/không chắc chắn; nếu chưa chạy: QUALITY_NOT_RUN |
+| **G4 — Khả năng mở rộng** | P17 100→1k→10k Item thật trong DB thử và upload/verify tương ứng; media dung lượng lớn chỉ khi có quyền/ngân sách | Có thời gian P95, bytes, dung lượng, throughput, Drive SHA readback, failure/restart; chạy fixture metadata không tính 10k media |
+| **G5 — Vận hành** | Bản release candidate từ main mới nhất, security rollback, HTTPS, Drive/AI quyền và chi phí | Đã review diff/behind, migrations/backup trước, user duyệt merge/deploy, không tự động bật ngoại vi |
+
+**Cách tính bắt buộc:** `executed=PASS+FAIL`; `pass_rate=PASS/executed` chỉ khi `executed>0`; `completion=PASS/(PASS+FAIL+BLOCKED+NOT_RUN)`; mẫu số 0 → `NOT_RUN`. Với kiểm thử chất lượng: `precision=đúng/đã tự gán`; `recall@5=tổng gold có trong top5/tổng gold`; `P95` tính theo nearest-rank trên số lần gọi đã chạy. **Không bỏ các ca chưa chạy khi đánh giá hoàn thành**, chỉ bỏ khỏi mẫu số `pass_rate` đã thực thi và ghi lý do.
+
+**Ưu tiên cổng:** P0-01 reconcile main/PR79/81/82/84, P0-02 khép P08/P15, P0-03 media–search–organization kiểm định; P1-01 ChatGPT/Gemini thật sau quyền, P1-02 staging/restore/rollout; Android và nâng cấp khác vẫn hoãn. Không biến việc nhắc kế hoạch thành một cron full Docker tốn Actions mỗi ngày. Khi mở task mới, đọc lại trạng thái live GitHub, không chép nhầm checkpoint cũ.
