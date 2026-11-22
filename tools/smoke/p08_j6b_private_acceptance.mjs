@@ -30,7 +30,7 @@ try {
   proxy=createServer((req,res)=>{
     const target=req.url?.startsWith('/api/v1/')?targets.api:targets.web;
     const request=httpRequest({hostname:target.hostname,port:target.port,path:req.url,
-      method:req.method,headers:{...req.headers,host:'127.0.0.1'}},remote=>{
+      method:req.method,headers:{...req.headers,host:req.headers.host}},remote=>{
       res.writeHead(remote.statusCode||502,remote.headers);
       remote.pipe(res);
     });
