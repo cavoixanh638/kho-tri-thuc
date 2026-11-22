@@ -257,6 +257,22 @@ jobs:
             tmp/p08-kt128/p08-j9-source.json \
             tmp/p08-kt128/p08-j9-restored.json
 
+      # Issue #90: instrumentation only, after J9 seeded and restored a
+      # synthetic 10k/1k dataset. Reuse the SAME isolated browser runner and
+      # database. Never capture raw SQL, user content or production credentials.
+      - name: Profile 10k library SQL and FTS execution (synthetic read-only)
+        continue-on-error: true
+        timeout-minutes: 3
+        run: |
+          set -euo pipefail
+          qa() { docker compose -p kt-p08-ci --env-file "$RUNNER_TEMP/kt-p08.env" "$@"; }
+          test -s tmp/p08-kt128/p08-j9-source.json
+          qa cp tools/smoke/p08_query_profile.py api:/tmp/p08_query_profile.py
+          qa exec -T -e POSTGRES_DB=kt_p08_scale \
+            -e P08_J9_ISOLATED=YES -e P08_J9_PROFILE=YES api \
+            python manage.py shell -c "exec(compile(open('/tmp/p08_query_profile.py',encoding='utf-8').read(),'/tmp/p08_query_profile.py','exec'))"
+          qa cp api:/tmp/p08-j9-scale/query-profile.json tmp/p08-kt128/p08-query-profile.json
+
       - name: Publish P15 browser screenshots and keyboard findings
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
