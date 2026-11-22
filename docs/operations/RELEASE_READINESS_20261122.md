@@ -74,3 +74,20 @@
 - Nhánh tài liệu này là **đề nghị đưa quy tắc đối chiếu vào main**, không có code production, không sửa dữ liệu. Trạng thái của PR sản phẩm #79/#81/#82/#84 giữ nguyên.
 - Nếu phải rollback, đóng PR/revert riêng các file quy định; không có migration, Drive/OAuth/AI gọi trả phí.
 - **Không kết luận “đã xong dự án”** khi các gate P0 còn `NOT_RUN/FAIL`; sau mỗi lần cập nhật phải ghi rõ `NEXT` theo thứ tự trong bảng mục 5.
+
+## 8. Checkpoint tiếp nối — kiểm chứng P15, P16 và Vault J8 (22/11/2026)
+
+**Không thay baseline v4.7 hay tự thăng cổng G1–G5 thành PASS.** Bảng này bổ sung bằng chứng mới sau checkpoint mục 2–7. Nguồn là GitHub Actions và artifact JSON được đối chiếu, không phải khẳng định chỉ vì PR xanh.
+
+| Gate/công việc | Kết quả thực chứng | SHA và bằng chứng | Trạng thái sau kiểm |
+| --- | --- | --- | --- |
+| G2 / P15 keyboard & viewport | **104 PASS / 0 FAIL / 0 BLOCKED**, Chromium 1920/1440/768/390 không overflow; native HTML details và radio-label focus được kiểm thực | [PR #86](https://github.com/cavoixanh638/kho-tri-thuc/pull/86), HEAD `7ac047aa2a9e36d7b10bfa0612370a2ea7ec92a0`, Actions [#44982495981](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44982495981), merge-tested SHA `81fc67a5b841fca2b9c15eae2ac9cbc6a934846a`, artifact `kt-p15-browser-accessibility` | **BROWSER_DOM_AND_KEYBOARD_PASS**, screen reader và native Android **NOT_RUN** |
+| G2 / P08 | **9/13 PASS**, 4 NOT_RUN (J3 public network opt-in; J6B PDF/MP4 pinned fixtures/native verification; J8 clean DB roundtrip; J9 10k/restore). `completion=9/13=69,23%`; `pass_rate_executed=9/(9+0)=100%` nhưng **không được suy thành nghiệm thu 100%** | Cùng [run #44982495981](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44982495981), artifact `kt-p08-real-browser-ledger` | **NOT_READY**, job G2 FAIL *có chủ ý* vì còn ca chưa chạy |
+| G2 / J8 Vault preflight | QA xác minh `GET /vault/export` trả ZIP 2.791 byte, 2 Item/2 Topic; `POST /vault/import/preview` trả `unchanged=2,new=0,update=0,conflict=0`, note Markdown byte-identical | Cùng PR86 và report P08 `j8_partial` | **PARTIAL_VERIFIED**, clean-DB import/UUID/relations roundtrip **NOT_RUN** |
+| G3 / P16 SearchService | **86 truy vấn** trên PostgreSQL `p16_search_eval` cách ly: Recall@5 `73/77=94,805%`; Precision@5 `73/76=96,053%`; P95 `3,861189 ms`; 13 query âm không vi phạm; `evidence_errors=[]`, `no_leak=true`, fixture rollback | [PR #87](https://github.com/cavoixanh638/kho-tri-thuc/pull/87), HEAD `fb3009cc1178b6ae3d9c9f70363f841c0af136da`, [run #44982084393](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44982084393), merge-tested SHA `bb203c32a256489ab36b9a3c86d8deb7288265af`, artifact `kt-p16-postgres-search-eval` | **MEASURED_SYNTHETIC_PG**; gold độc lập, 10k, latency web/cold-cache, dữ liệu thật **NOT_RUN** |
+
+**Sai số và các ca bỏ qua:** Recall/precision chỉ tính 73 truy vấn dương, 77 gold và 76 kết quả trả về; 13 truy vấn âm dùng cho kiểm rò rỉ/an toàn, không đưa vào mẫu số recall/precision dương; 4 gold bị thiếu thuộc nhóm `semantic` chưa có tìm kiếm ngữ nghĩa. P95 = phần tử vị trí `ceil(0,95 × 86)=82` trong 86 mẫu latency đã sắp tăng (nearest-rank), không phải 95% của tổng thời gian xử lý. Không được dùng kết quả này để mở ngay pgvector hay kết luận chất lượng thực tế đã đủ.
+
+**Trạng thái CI công khai chính xác:** PR #86 và #87 có `scaffold` PASS đối với các nhiệm vụ đã thực thi; workflow tổng RED vì cổng G2 cố tình fail closed khi P08 incomplete. Đây là hành vi đúng, **không phải lỗi compile/backend**. PR #85 (tài liệu) CI PASS. Các PR đều Draft, chưa merge/deploy/khai thác dữ liệu cá nhân.
+
+**NEXT sau checkpoint:** P0-01 đánh giá branch candidate từ `main` và 26 commit docs-only; P0-02 chuẩn bị *clean DB Vault import*, fixture PDF/MP4 có phiên bản và pilot web clip được phép; P0-03 kiểm 10k PostgreSQL/backup/worker và 30–50 nội dung VN có gold người duyệt; P1 thử Gemini API/ChatGPT thực tế khi được phép. Android vẫn hoãn.
