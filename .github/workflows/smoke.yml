@@ -313,6 +313,9 @@ jobs:
           export KT_JOURNEY_CHROMIUM="$browser"
           node --check tools/smoke/p08_j6b_private_browser.mjs
           node tools/smoke/p08_j6b_private_browser.mjs
+          node tools/smoke/p08_reconcile_j6b.mjs \
+            tmp/p08-kt128/p08-results.json \
+            tmp/p08-j6b-private/result.json
           # Delete only generated QA fixtures; never remove project assets.
           qa exec -T api rm -f /tmp/kt-j6b-generated.mp4 /tmp/kt-j6b-generated.pdf
 
