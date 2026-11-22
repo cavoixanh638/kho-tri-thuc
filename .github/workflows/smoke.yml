@@ -219,6 +219,44 @@ jobs:
           export KT_JOURNEY_CHROMIUM="$browser"
           node tools/smoke/p15_accessibility.mjs --browser
 
+      # J9 is a separate 10k/1k PostgreSQL synthetic QA database and clean
+      # restored database; run AFTER P15 so its UI inspection remains isolated.
+      # The existing job retains the normal hard release gate; never make G2
+      # green if the public source or native PDF/MP4 tests are still NOT_RUN.
+      - name: Verify P08 J9 at 10k Items and 1k folders with checked PG restore (isolated)
+        continue-on-error: true
+        timeout-minutes: 7
+        run: |
+          set -euo pipefail
+          qa() { docker compose -p kt-p08-ci --env-file "$RUNNER_TEMP/kt-p08.env" "$@"; }
+          test -s tmp/p08-kt128/p08-results.json
+          qa cp tools/smoke/p08_scale_10k.py api:/tmp/p08_scale_10k.py
+          qa exec -T db sh -ec 'createdb --no-password -U "$POSTGRES_USER" --template=template0 --encoding=UTF8 kt_p08_scale'
+          qa exec -T -e POSTGRES_DB=kt_p08_scale api python manage.py migrate --noinput
+          qa exec -T -e POSTGRES_DB=kt_p08_scale -e P08_J9_ISOLATED=YES -e P08_J9_MODE=source api \
+            python manage.py shell -c "exec(compile(open('/tmp/p08_scale_10k.py',encoding='utf-8').read(),'/tmp/p08_scale_10k.py','exec'))"
+
+          # PostgreSQL native custom-format dump with explicit SHA256 verification,
+          # then a single-transaction pg_restore into a fresh database. This is
+          # NOT a Drive backup or a full production disaster-recovery exercise.
+          qa exec -T db sh -ec \
+            'pg_dump --no-password -U "$POSTGRES_USER" --format=custom --file=/tmp/p08-j9-scale.dump kt_p08_scale && sha256sum /tmp/p08-j9-scale.dump > /tmp/p08-j9-scale.sha256 && sha256sum -c /tmp/p08-j9-scale.sha256'
+          digest="$(qa exec -T db sh -ec 'sha256sum /tmp/p08-j9-scale.dump' | awk '{print $1}')"
+          [[ "$digest" =~ ^[0-9a-f]{64}$ ]] || { echo "INVALID_BACKUP_SHA256"; exit 1; }
+          qa exec -T db sh -ec 'createdb --no-password -U "$POSTGRES_USER" --template=template0 --encoding=UTF8 kt_p08_scale_restored'
+          qa exec -T db sh -ec \
+            'pg_restore --no-password -U "$POSTGRES_USER" --single-transaction --exit-on-error --no-owner --no-privileges --dbname=kt_p08_scale_restored /tmp/p08-j9-scale.dump && sha256sum -c /tmp/p08-j9-scale.sha256'
+          qa exec -T -e POSTGRES_DB=kt_p08_scale_restored -e P08_J9_ISOLATED=YES \
+            -e P08_J9_MODE=restored -e P08_J9_BACKUP_SHA256="$digest" \
+            -e P08_J9_BACKUP_VERIFIED=YES api \
+            python manage.py shell -c "exec(compile(open('/tmp/p08_scale_10k.py',encoding='utf-8').read(),'/tmp/p08_scale_10k.py','exec'))"
+          qa cp api:/tmp/p08-j9-scale/source.json tmp/p08-kt128/p08-j9-source.json
+          qa cp api:/tmp/p08-j9-scale/restored.json tmp/p08-kt128/p08-j9-restored.json
+          node tools/smoke/p08_reconcile_j9.mjs \
+            tmp/p08-kt128/p08-results.json \
+            tmp/p08-kt128/p08-j9-source.json \
+            tmp/p08-kt128/p08-j9-restored.json
+
       - name: Publish P15 browser screenshots and keyboard findings
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
