@@ -257,6 +257,26 @@ jobs:
             tmp/p08-kt128/p08-j9-source.json \
             tmp/p08-kt128/p08-j9-restored.json
 
+      # A generated MP4 never counts as a verified Drive fixture. This proves
+      # native Chromium HTMLMediaElement seeked events on an isolated loopback
+      # private 206 Range server, and deliberately leaves J6B NOT_RUN until
+      # the real app PDF page and original-media endpoint are validated.
+      - name: Verify P08 J6B native MP4 seek as a sub-proof (no Drive or PDF claims)
+        continue-on-error: true
+        timeout-minutes: 3
+        env:
+          P08_NATIVE_MEDIA_ISOLATED: 'YES'
+          KT_JOURNEY_OUT: tmp/p08-kt128
+        run: |
+          browser="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || true)"
+          if [ -z "$browser" ]; then echo "NO_BROWSER_BINARY"; exit 2; fi
+          command -v ffmpeg || { echo "FFMPEG_NOT_INSTALLED"; exit 2; }
+          export KT_JOURNEY_CHROMIUM="$browser"
+          node tools/smoke/p08_native_media.mjs
+          node tools/smoke/p08_attach_media.mjs \
+            tmp/p08-kt128/p08-results.json \
+            tmp/p08-kt128/p08-j6b-native-media.json
+
       - name: Publish P15 browser screenshots and keyboard findings
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
