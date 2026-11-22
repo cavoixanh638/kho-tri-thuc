@@ -163,8 +163,23 @@ async function browserAudit() {
       }
     }
     const visibleFocus = () => page.eval(() => {
-      const el = document.activeElement, r = el?.getBoundingClientRect();
-      return !!r && r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < innerHeight && el.tagName !== 'BODY';
+      const el = document.activeElement;
+      // Mantine's accessible radio is deliberately 0x0; its visible sibling
+      // label MUST have a keyboard-focus ring. Never exempt hidden controls
+      // without confirming that their actual visual proxy is focus-visible.
+      if (el instanceof HTMLInputElement && el.type === 'radio'
+          && el.classList.contains('mantine-SegmentedControl-input')) {
+        const label = el.nextElementSibling;
+        const rect = label?.getBoundingClientRect();
+        const outline = label ? getComputedStyle(label) : null;
+        return label instanceof HTMLLabelElement && label.htmlFor === el.id &&
+          !!rect && rect.width > 0 && rect.height > 0 &&
+          rect.bottom > 0 && rect.top < innerHeight &&
+          outline?.outlineStyle !== 'none' && parseFloat(outline?.outlineWidth || '0') >= 2;
+      }
+      const r = el?.getBoundingClientRect();
+      return !!r && r.width > 0 && r.height > 0 && r.bottom > 0 &&
+        r.top < innerHeight && el.tagName !== 'BODY';
     });
     const shot = async (area) => {
       const name = 'p15-' + area + '-' + width + '.png';
