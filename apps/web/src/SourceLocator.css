@@ -9,6 +9,8 @@
 .source-locator-viewer { margin-top: 1rem; }
 .source-locator-viewer video, .source-locator-viewer audio, .source-locator-viewer iframe { width: 100%; max-width: 100%; }
 .source-locator-viewer iframe { height: 70vh; border: 0; }
+.source-locator-viewer img { display: block; max-width: 100%; width: auto; height: auto; margin-inline: auto; border: 1px solid var(--control, #d4d4d4); }
+
 .source-locator[data-state="STALE_SOURCE"] { background: #fff0dc; }
 .source-locator [role="alert"] { color: #8b2525; }
 

@@ -1,6 +1,9 @@
 """Private, version-pinned source bytes; no disk cache, tokens or redirects."""
 
+import hashlib
 import re
+import subprocess
+import sys
 from uuid import UUID
 
 from django.http import HttpResponse, JsonResponse
@@ -9,6 +12,7 @@ from ninja import Router
 from ninja.security import django_auth
 
 from .drive import DriveError
+from .pdf_page_render import MAX_PDF_BYTES, MAX_PAGES, MAX_RENDERED_BYTES
 from .models import Asset, StorageLocation
 from .service import DRIVE_PROVIDER, storage_for_owner
 
@@ -93,9 +97,64 @@ def viewer(request, asset_id: UUID):
                 "rangeVerified": True,
                 # Native PDF fragment navigation has not been accepted on every host.
                 "pageNavigationVerified": False,
+                # A separate exact-page PDFium renderer is available for small
+                # verified originals. The native browser PDF #page plugin is
+                # still NOT verified and must never be reported as such.
+                **({"pdfPageRenderer": "server_pdfium2"}
+                   if asset.mime == "application/pdf" and asset.size <= MAX_PDF_BYTES
+                   else {}),
             }
         )
     )
+
+
+@router.get("/assets/{asset_id}/pdf-page/{version}/{sha256}/{page}")
+def exact_pdf_page(request, asset_id: UUID, version: int, sha256: str, page: int):
+    """Return rasterized page N from the exact current private PDF bytes.
+
+    Never infer from metadata or trust the browser's native PDF #page fragment.
+    12 MiB file cap and an isolated 12-second subprocess guard PDFium parsing.
+    """
+    asset = owned_asset(request, asset_id)
+    if version != asset.content_version or sha256 != asset.sha256:
+        return error("viewer_source_changed", 409)
+    if asset.mime != "application/pdf" or not supported(asset):
+        return error("viewer_not_supported", 409)
+    if type(asset.size) is not int or asset.size > MAX_PDF_BYTES:
+        return error("pdf_page_file_too_large", 413)
+    if not 1 <= page <= MAX_PAGES:
+        return error("pdf_page_invalid", 422)
+    try:
+        port = storage_for_owner(request.user.pk)
+        chunks = []
+        for first in range(0, asset.size, MAX_RANGE):
+            last = min(asset.size - 1, first + MAX_RANGE - 1)
+            part = port.read_range(asset, first, last)
+            if not isinstance(part, bytes) or len(part) != last - first + 1:
+                return error("viewer_range_size_mismatch", 502)
+            chunks.append(part)
+    except DriveError as exc:
+        return storage_error(exc)
+    body = b"".join(chunks)
+    if hashlib.sha256(body).hexdigest() != asset.sha256:
+        return error("viewer_source_changed", 409)
+    try:
+        completed = subprocess.run(
+            [sys.executable, "-m", "storage.pdf_page_render", str(page)],
+            input=body, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+            timeout=12, check=False,
+        )
+    except (subprocess.TimeoutExpired, OSError):
+        return error("pdf_page_unavailable", 503)
+    if (completed.returncode != 0 or not completed.stdout
+            or len(completed.stdout) > MAX_RENDERED_BYTES):
+        return error("pdf_page_unavailable", 422)
+    response = private(HttpResponse(completed.stdout, content_type="image/webp"))
+    response["Content-Length"] = str(len(completed.stdout))
+    response["X-Rendered-Pdf-Page"] = str(page)
+    response["X-Source-Asset-Version"] = str(asset.content_version)
+    response["Content-Disposition"] = 'inline; filename="verified-pdf-page.webp"'
+    return response
 
 
 def selected_range(header, size):
