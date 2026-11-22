@@ -110,6 +110,10 @@ try{
   },{username:'p08-fixture',password:process.env.KT_J6B_QA_PASSWORD});
   assert.equal(login,200,'QA login');
   result.checks.push('real Django authenticated session');
+  // The App's React auth state was mounted before the programmatic QA login.
+  // A real navigation reload is required to hydrate the newly authenticated
+  // session before hash-route content or citations become visible.
+  await page.goto(origin+'/#/muc/'+data.items.pdf.item_id);
   for(const kind of ['pdf','mp4']){
     const fixture=data.items[kind],id=fixture.item_id,asset=fixture.asset_id;
     const knowledge=await getJson(page,'/items/'+id+'/knowledge');
@@ -134,7 +138,15 @@ try{
     result.checks.push(kind+' 206 range and stale sha fail-closed');
     await page.eval(hash=>{location.hash=hash;},'#/muc/'+id);
     await waitFor(page,id=>location.hash.endsWith(id),id,kind+' route');
-    await waitFor(page,()=>!!document.querySelector('.source-locator'),null,kind+' SourceLocator');
+    try {
+      await waitFor(page,()=>!!document.querySelector('.source-locator'),null,kind+' SourceLocator');
+    } catch(error) {
+      const debug=await page.eval(()=>({hash:location.hash,
+        title:document.title,visible:document.body.innerText.slice(0,600),
+        citations:document.querySelectorAll('.source-citations').length}));
+      console.error('J6B_QA_REACT_DIAGNOSTIC',JSON.stringify(debug));
+      throw error;
+    }
     const label=kind==='pdf'?'Mở và định vị PDF riêng tư':'Mở và định vị nguồn riêng tư';
     await openControl(page,label);
     if(kind==='pdf'){
