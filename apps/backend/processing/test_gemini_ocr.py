@@ -60,7 +60,6 @@ class GeminiImageClientTests(SimpleTestCase):
         payload = json.loads(seen[0].data)
         self.assertEqual(payload["contents"][0]["parts"][1]["inline_data"]["mime_type"], "image/png")
         self.assertEqual(payload["generationConfig"]["responseMimeType"], "application/json")
-        self.assertEqual(timeout if False else 45, 45)
 
     def test_fails_closed_on_bad_schema_and_incomplete_generation(self):
         for candidate in (
@@ -214,6 +213,85 @@ class GeminiOCRJobTests(TestCase):
             with self.assertRaisesRegex(Exception, "ocr_local_budget_limit"):
                 _reserve(self.owner)
             self.assertEqual(GeminiUsageEvent.objects.count(), 1)
+
+
+    def test_only_benchmark_approved_models_can_trigger_a_request(self):
+        enqueue_image_ocr(self.asset)
+        with (
+            override_settings(GEMINI_OCR_APPROVED_MODELS=frozenset()),
+            patch("processing.gemini_ocr_job.storage_for_owner",
+                  return_value=SimpleNamespace(read_range=lambda *args: self.source)),
+            patch("processing.gemini_ocr_job.generate_ocr") as provider,
+        ):
+            Worker({KIND: process_image_ocr}).run_once()
+        provider.assert_not_called()
+        self.assertFalse(GeminiUsageEvent.objects.exists())
+        self.assertEqual(Job.objects.get(kind=KIND).error_code, "ocr_model_unavailable")
+
+    def test_revoked_user_consent_prevents_queued_ocr_external_call(self):
+        enqueue_image_ocr(self.asset)
+        GeminiPreference.objects.filter(owner=self.owner).update(external_ocr_consent=False)
+        with patch("processing.gemini_ocr_job.generate_ocr") as provider:
+            Worker({KIND: process_image_ocr}).run_once()
+        provider.assert_not_called()
+        self.assertEqual(Job.objects.get(kind=KIND).error_code, "ocr_consent_required")
+        self.assertFalse(GeminiUsageEvent.objects.exists())
+
+    def test_proven_model_specific_limit_allows_one_approved_auto_fallback(self):
+        GeminiModelCatalog.objects.create(
+            model_id="gemini-3.6-flash", label="QA Flash",
+            generation_methods=["generateContent"],
+            active=True, reviewed=True, last_seen_at=timezone.now(),
+        )
+        enqueue_image_ocr(self.asset)
+        success = OCRResult(
+            text="Cảng biển Việt Nam", description="Một biểu đồ.",
+            model_version="gemini-3.6-flash-001",
+            input_tokens=77, output_tokens=22,
+        )
+        responses = [
+            GeminiProviderError("model_rate_limit", status="model_rate_limit"),
+            success,
+        ]
+        with (
+            override_settings(GEMINI_OCR_APPROVED_MODELS=frozenset({
+                "gemini-3.5-flash-lite", "gemini-3.6-flash",
+            })),
+            patch("processing.gemini_ocr_job.storage_for_owner",
+                  return_value=SimpleNamespace(read_range=lambda *args: self.source)),
+            patch("processing.gemini_ocr_job.generate_ocr", side_effect=responses) as call,
+        ):
+            Worker({KIND: process_image_ocr}).run_once()
+        self.assertEqual(call.call_count, 2)
+        self.assertEqual(
+            [row.kwargs["model_id"] for row in call.call_args_list],
+            ["gemini-3.5-flash-lite", "gemini-3.6-flash"],
+        )
+        self.assertEqual(
+            list(GeminiUsageEvent.objects.order_by("created_at").values_list("status", flat=True)),
+            ["model_rate_limit", "success"],
+        )
+        self.assertEqual(
+            DerivedContent.objects.get(kind="image_ocr").source_locator["model_id"],
+            "gemini-3.6-flash",
+        )
+
+    def test_manual_never_falls_back_after_model_specific_429(self):
+        GeminiPreference.objects.filter(owner=self.owner).update(
+            mode="manual", manual_model_id="gemini-3.5-flash-lite"
+        )
+        enqueue_image_ocr(self.asset)
+        with (
+            patch("processing.gemini_ocr_job.storage_for_owner",
+                  return_value=SimpleNamespace(read_range=lambda *args: self.source)),
+            patch("processing.gemini_ocr_job.generate_ocr",
+                  side_effect=GeminiProviderError(
+                      "model_rate_limit", status="model_rate_limit"
+                  )) as provider,
+        ):
+            Worker({KIND: process_image_ocr}).run_once()
+        self.assertEqual(provider.call_count, 1)
+        self.assertEqual(Job.objects.get(kind=KIND).state, Job.State.FAILED)
 
     def test_provider_429_blocks_unknown_project_quota_instead_of_model_hopping(self):
         enqueue_image_ocr(self.asset)
