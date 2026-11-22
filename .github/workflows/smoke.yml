@@ -273,6 +273,34 @@ jobs:
             python manage.py shell -c "exec(compile(open('/tmp/p08_query_profile.py',encoding='utf-8').read(),'/tmp/p08_query_profile.py','exec'))"
           qa cp api:/tmp/p08-j9-scale/query-profile.json tmp/p08-kt128/p08-query-profile.json
 
+      # P16 relevance/provenance verification is opt-in ONLY on this one
+      # optimization PR. The P16 corpus uses 86 synthetic QA queries and
+      # rolls back fixture writes, so there is no ongoing CI cost for others.
+      - name: Check 86 Vietnamese search gold queries after fuzzy optimization
+        if: github.event_name == 'pull_request' && github.head_ref == 'perf/search-fuzzy-shortcut-20261122'
+        continue-on-error: true
+        timeout-minutes: 4
+        run: |
+          set -euo pipefail
+          qa() { docker compose -p kt-p08-ci --env-file "$RUNNER_TEMP/kt-p08.env" "$@"; }
+          qa exec -T db sh -ec 'createdb --no-password -U "$POSTGRES_USER" --template=template0 --encoding=UTF8 p16_search_fuzzy_qa'
+          qa exec -T -e POSTGRES_DB=p16_search_fuzzy_qa api python manage.py migrate --noinput
+          qa exec -T api mkdir -p /tmp/p08-p16/tools/search /tmp/p08-p16/evals/parallel/p16-search
+          qa cp tools/search/p16_eval.py api:/tmp/p08-p16/tools/search/p16_eval.py
+          qa cp evals/parallel/p16-search/corpus.json api:/tmp/p08-p16/evals/parallel/p16-search/corpus.json
+          qa exec -T -e POSTGRES_DB=p16_search_fuzzy_qa -e P16_ALLOW_TEST_DB=1 api \
+            python manage.py shell -c "ns={'__name__':'p16_qa','__file__':'/tmp/p08-p16/tools/search/p16_eval.py'};exec(compile(open(ns['__file__'],encoding='utf-8').read(),ns['__file__'],'exec'),ns);ns['run_live']('/tmp/p08-p16/p16-report.json')"
+          qa cp api:/tmp/p08-p16/p16-report.json tmp/p08-kt128/p16-search-report.json
+          python3 - <<'PY'
+          import json
+          report = json.load(open('tmp/p08-kt128/p16-search-report.json', encoding='utf-8'))
+          print(json.dumps({key: report.get(key) for key in ('status', 'query_count', 'latency_count', 'recall_at_5', 'precision_at_5', 'no_leak', 'evidence_errors')}, ensure_ascii=False))
+          assert report['status'] == 'MEASURED_SYNTHETIC_PG'
+          assert report['query_count'] == 86 and report['latency_count'] == 86
+          assert report['recall_at_5'] >= 0.948 and report['precision_at_5'] >= 0.960
+          assert report['no_leak'] and not report['evidence_errors']
+          PY
+
       - name: Publish P15 browser screenshots and keyboard findings
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
