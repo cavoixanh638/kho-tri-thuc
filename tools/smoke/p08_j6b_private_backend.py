@@ -7,12 +7,14 @@ No Drive credentials, uploader or Internet egress are used for byte reads.
 import hashlib
 import json
 import os
+import sys
 from pathlib import Path
 from wsgiref.simple_server import WSGIRequestHandler, WSGIServer, make_server
 
 assert os.environ.get("P08_J6B_ISOLATED") == "YES"
 assert os.environ.get("POSTGRES_DB") == "kt_p08_journeys"
 assert os.environ.get("PDF_NATIVE_PAGE_NAVIGATION_VERIFIED") == "1"
+sys.path.insert(0, "/app")  # Script executes from /tmp inside the backend image.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 import django
 
