@@ -120,7 +120,7 @@ export function GeminiModelPanel({ csrf }: { csrf: string }) {
           <label className="gemini-ocr-consent">
             <input type="checkbox" checked={externalConsent} disabled={pending}
               onChange={event => { setExternalConsent(event.currentTarget.checked); setSaved(false); }} />
-            Cho phép gửi **ảnh gốc đã xác minh** của tài khoản này tới Gemini để đọc chữ và mô tả.
+            Cho phép gửi <strong>ảnh gốc đã xác minh</strong> của tài khoản này tới Gemini để đọc chữ và mô tả.
           </label>
           <p className="section-note">
             Mặc định tắt. Bật đồng ý chỉ cấp quyền cho ảnh mới hoặc ảnh được chọn xử lý lại;
