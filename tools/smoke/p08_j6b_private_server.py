@@ -7,6 +7,8 @@ runtime and Google Drive adapters remain unmodified.
 import hashlib
 import json
 import os
+import sys
+sys.path.insert(0, '/app')  # isolated QA script copied to /tmp; Django modules live under /app
 import subprocess
 import threading
 from pathlib import Path
