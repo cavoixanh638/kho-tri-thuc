@@ -326,9 +326,8 @@ def restored():
     )}, ensure_ascii=False))
 
 
-if __name__ == "__main__":
-    raise RuntimeError("Use Django manage.py shell with guarded P08_J9_MODE")
-else:
-    mode = os.environ.get("P08_J9_MODE")
-    require(mode in ("source", "restored"), "INVALID_MODE")
-    (seed if mode == "source" else restored)()
+# Executed directly by the isolated Django shell loader, never imported by
+# production code. Every mode is guarded against non-QA database names.
+mode = os.environ.get("P08_J9_MODE")
+require(mode in ("source", "restored"), "INVALID_MODE")
+(seed if mode == "source" else restored)()
