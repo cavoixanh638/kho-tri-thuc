@@ -278,10 +278,52 @@ jobs:
             -c:v libx264 -preset ultrafast -pix_fmt yuv420p \
             -movflags +faststart -y /tmp/kt-j6b-generated.mp4
           export KT_J6B_MP4_PATH="$RUNNER_TEMP/kt-j6b-generated.mp4"
+          export KT_J6B_PDF_OUT="$RUNNER_TEMP/kt-j6b-generated.pdf"
           trap 'rm -f "$KT_J6B_MP4_PATH"' EXIT
           qa cp api:/tmp/kt-j6b-generated.mp4 "$KT_J6B_MP4_PATH"
           node --check tools/smoke/p08_j6b_native_preflight.mjs
           node tools/smoke/p08_j6b_native_preflight.mjs
+
+      # The second WSGI server patches only the external byte adapter, while
+      # real Django auth, Item/Asset/DerivedContent, 206 Range and React UI run.
+      # Browser checks a page-2 color oracle and the actual MP4 currentTime.
+      - name: P08 J6B private Django pinned-source and real React viewer acceptance
+        continue-on-error: true
+        timeout-minutes: 3
+        env:
+          P08_J6B_ISOLATED: 'YES'
+          KT_J6B_QA_PASSWORD: p08-only-ci-user-fixture
+        run: |
+          set -euo pipefail
+          qa() { docker compose -p kt-p08-ci --env-file "$RUNNER_TEMP/kt-p08.env" "$@"; }
+          test -s "$RUNNER_TEMP/kt-j6b-generated.pdf"
+          test -s "$RUNNER_TEMP/kt-j6b-generated.mp4"
+          qa cp "$RUNNER_TEMP/kt-j6b-generated.pdf" api:/tmp/kt-j6b-generated.pdf
+          qa cp tools/smoke/p08_j6b_private_backend.py api:/tmp/p08_j6b_private_backend.py
+          qa exec -d -T -e P08_J6B_ISOLATED=YES             -e PDF_NATIVE_PAGE_NAVIGATION_VERIFIED=1             api python /tmp/p08_j6b_private_backend.py
+          # The backend is reachable only over the disposable Docker bridge.
+          qa exec -T api python -c 'import urllib.request,time; [(time.sleep(0.5)) for _ in range(30) if not (lambda: False)()]' >/dev/null
+          qa exec -T api python -c "import urllib.request; print(urllib.request.urlopen('http://127.0.0.1:8001/api/v1/health',timeout=5).status)"
+          qa cp api:/tmp/p08-j6b-private-manifest.json tmp/p08-kt128/p08-j6b-private-manifest.json
+          cid="$(qa ps -q api)"
+          export KT_J6B_BACKEND_IP="$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$cid")"
+          export KT_J6B_MANIFEST=tmp/p08-kt128/p08-j6b-private-manifest.json
+          browser="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || true)"
+          test -n "$browser"
+          export KT_JOURNEY_CHROMIUM="$browser"
+          node --check tools/smoke/p08_j6b_private_browser.mjs
+          node tools/smoke/p08_j6b_private_browser.mjs
+          # Delete only generated QA fixtures; never remove project assets.
+          qa exec -T api rm -f /tmp/kt-j6b-generated.mp4 /tmp/kt-j6b-generated.pdf
+
+      - name: Upload P08 J6B private viewer acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: kt-p08-j6b-private-browser
+          path: tmp/p08-j6b-private/
+          if-no-files-found: warn
+          retention-days: 14
 
       - name: Upload P08 J6B native preflight and manual PDF screenshot
         if: always()
