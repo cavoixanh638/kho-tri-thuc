@@ -322,7 +322,9 @@ jobs:
           api_ip="$(docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$api_id")"
           export KT_J6B_API_URL="http://$api_ip:8152"
           export KT_J6B_FIXTURE="tmp/p08-j6b-private/fixture.json"
-          curl -fsS "$KT_J6B_API_URL/api/v1/health" >/dev/null
+          # Docker bridge IP is not on Django's host allowlist and can be
+          # misrouted via HTTP_PROXY; use an explicit allowed Host and no proxy.
+          curl --noproxy '*' -H 'Host: 127.0.0.1:8152' -fsS "$KT_J6B_API_URL/api/v1/health" >/dev/null
           node --check tools/smoke/p08_j6b_private_acceptance.mjs
           node tools/smoke/p08_j6b_private_acceptance.mjs
           node tools/smoke/p08_reconcile_j6b.mjs \
