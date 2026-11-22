@@ -70,6 +70,14 @@ if (prerequisitesReady) {
       await page.eval(() => document.querySelector('[data-p08-input="current"]')?.removeAttribute('data-p08-input'));
     }
     async function select(label, value, scope = 'body') {
+      // React route transitions are asynchronous; a direct same-tick query
+      // makes J3 fail before the ResearchClipper's select has mounted.
+      await wait(({ label, scope }) => [...(document.querySelector(scope)?.querySelectorAll('label') || [])]
+        .some((el) => {
+          const text = el.textContent.replaceAll('*', '').trim();
+          const field = el.htmlFor ? document.getElementById(el.htmlFor) : el.querySelector('select');
+          return (text === label || el.firstChild?.textContent.trim() === label) && field?.tagName === 'SELECT';
+        }), { label, scope }, 'select:' + label);
       const found = await page.eval(({ label, value, scope }) => {
         const node = [...(document.querySelector(scope)?.querySelectorAll('label') || [])].find((el) => el.textContent.replaceAll('*', '').trim() === label || el.firstChild?.textContent.trim() === label);
         const field = node?.htmlFor ? document.getElementById(node.htmlFor) : node?.querySelector('select');
