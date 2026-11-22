@@ -67,6 +67,17 @@ try {
   assert.equal(knowledge.body.parts[0].source.state,'current');
   assert.equal(knowledge.body.parts[0].locator.page,2);
   await page.goto(origin+'/#/muc/'+pdf.item_id,{settleMs:650});
+  const pdfApiView = await page.eval(async (id) => {
+    const [session, item] = await Promise.all([
+      fetch('/api/v1/session',{credentials:'same-origin'}).then(r=>r.json()),
+      fetch('/api/v1/items/'+id,{credentials:'same-origin'}),
+    ]);
+    return {authenticated:session.authenticated === true, itemStatus:item.status};
+  }, pdf.item_id);
+  console.log('J6B_PDF_API_VIEW',JSON.stringify(pdfApiView));
+  assert.equal(pdfApiView.authenticated,true,'App cookie session must be active after navigation');
+  assert.equal(pdfApiView.itemStatus,200,'Actual ItemScreen API must return the authored PDF item');
+  try {
   await page.eval(()=>new Promise((resolve,reject)=>{
     const until=Date.now()+12000;
     const poll=()=>{
@@ -77,6 +88,21 @@ try {
       setTimeout(poll,60);
     };poll();
   }));
+  } catch (error) {
+    const state=await page.eval(() => ({
+      hash:location.hash,
+      login:!!document.querySelector('.login-panel'),
+      title:document.title,
+      citations:document.querySelector('.source-citations')?.textContent?.slice(0,160) || null,
+      locators:[...document.querySelectorAll('.source-locator')].map(e=>({state:e.dataset.state,buttons:[...e.querySelectorAll('button')].map(b=>b.textContent?.trim())})),
+      visibleButtons:[...document.querySelectorAll('button')].map(e=>e.textContent?.trim()).filter(Boolean).slice(0,25),
+      alerts:[...document.querySelectorAll('[role="alert"]')].map(e=>e.textContent?.slice(0,150)),
+      hasNote:document.body.textContent.includes('Văn bản gốc P08 J6B pdf'),
+    }));
+    console.error('J6B_PDF_UI_DIAGNOSTIC',JSON.stringify(state));
+    await page.screenshot({path:path.join(out,'pdf-action-missing.png'),format:'png'});
+    throw error;
+  }
   const pdfResult=await page.eval(()=>new Promise((resolve,reject)=>{
     const until=Date.now()+16000;
     const poll=()=>{
