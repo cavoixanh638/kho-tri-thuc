@@ -282,6 +282,60 @@ jobs:
           node --check tools/smoke/p08_j6b_native_preflight.mjs
           node tools/smoke/p08_j6b_native_preflight.mjs
 
+      # Built React App + actual Django authenticated/private views, with an
+      # injected synthetic in-memory storage adapter in a separate QA WSGI
+      # process. No real Drive/Gemini credentials, no production file access.
+      - name: P08 J6B real App private PDF page + MP4 seek acceptance (synthetic)
+        continue-on-error: true
+        timeout-minutes: 5
+        env:
+          KT_J6B_ISOLATED: 'YES'
+          KT_J6B_WEB: http://127.0.0.1:62310
+        run: |
+          set -euo pipefail
+          qa() { docker compose -p kt-p08-ci --env-file "$RUNNER_TEMP/kt-p08.env" "$@"; }
+          browser="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || true)"
+          test -n "$browser" || { echo "NO_CHROMIUM"; exit 2; }
+          export KT_JOURNEY_CHROMIUM="$browser"
+          qa cp tools/smoke/p08_j6b_private_server.py api:/tmp/p08_j6b_private_server.py
+          qa exec -T api python -m py_compile /tmp/p08_j6b_private_server.py
+          qa exec -d -e KT_J6B_ISOLATED=YES api sh -c \
+            'exec python /tmp/p08_j6b_private_server.py > /tmp/p08-j6b-server.log 2>&1'
+          ready=0
+          for tick in $(seq 1 45); do
+            if qa exec -T api python -c \
+              "import urllib.request; assert urllib.request.urlopen('http://127.0.0.1:8152/api/v1/health',timeout=2).status == 200" >/dev/null 2>&1; then
+              ready=1; break
+            fi
+            sleep 1
+          done
+          if [ "$ready" != 1 ]; then
+            qa exec -T api sh -c 'tail -n 50 /tmp/p08-j6b-server.log' || true
+            echo "J6B_QA_FIXTURE_SERVER_NOT_READY"; exit 2
+          fi
+          mkdir -p tmp/p08-j6b-private
+          qa cp api:/tmp/p08-j6b-private-ci/fixture.json tmp/p08-j6b-private/fixture.json
+          api_id="$(qa ps -q api)"
+          api_ip="$(docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$api_id")"
+          export KT_J6B_API_URL="http://$api_ip:8152"
+          export KT_J6B_FIXTURE="tmp/p08-j6b-private/fixture.json"
+          curl -fsS "$KT_J6B_API_URL/api/v1/health" >/dev/null
+          node --check tools/smoke/p08_j6b_private_acceptance.mjs
+          node tools/smoke/p08_j6b_private_acceptance.mjs
+          node tools/smoke/p08_reconcile_j6b.mjs \
+            tmp/p08-kt128/p08-results.json \
+            tmp/p08-j6b-private/fixture.json \
+            tmp/p08-j6b-private/results.json
+
+      - name: Publish P08 J6B private API/browser screenshots and evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: kt-p08-j6b-private-end-to-end
+          path: tmp/p08-j6b-private/
+          if-no-files-found: warn
+          retention-days: 14
+
       - name: Upload P08 J6B native preflight and manual PDF screenshot
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
