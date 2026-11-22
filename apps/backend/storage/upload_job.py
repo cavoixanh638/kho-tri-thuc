@@ -72,6 +72,10 @@ def upload_asset(job):
         source_fetch="not_applicable"
     )
     thumbnail_from_staging(asset, path)
+    # Only operator-approved, verified, bounded images create external OCR jobs.
+    from processing.gemini_ocr_job import enqueue_image_ocr
+
+    enqueue_image_ocr(asset)
     # Images and other formats without extractable text still need a first
     # conservative classification pass (filename and authored caption). When
     # document extraction produced text it has already queued this job.
