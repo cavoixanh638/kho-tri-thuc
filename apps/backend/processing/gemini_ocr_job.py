@@ -157,6 +157,8 @@ def _reserve(owner, asset=None):
         GeminiCatalogState.objects.select_for_update().get(pk=1)
         selection = select_for_user(owner, task="ocr_simple")
         model = selection["model"]
+        if model and model not in getattr(settings, "GEMINI_OCR_APPROVED_MODELS", frozenset()):
+            raise JobFailure("ocr_model_not_validated", retryable=False)
         if not model:
             reason = selection["reason"]
             # Only the operator can approve a model, enable paid use or clear
