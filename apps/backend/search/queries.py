@@ -36,7 +36,7 @@ visible_items AS NOT MATERIALIZED (
 -- without changing the first-page Item ranking or next_cursor. Keep fuzzy
 -- enabled on cursor pages so results below the FTS tier remain reachable.
 fts_first_page AS MATERIALIZED (
-    SELECT count(*) >= %(page_size)s AS full
+    SELECT count(*) >= %(page_size)s AS enough
     FROM (
         SELECT first_i.id
         FROM visible_items first_i CROSS JOIN input
@@ -79,7 +79,7 @@ matches AS (
                 ELSE word_similarity(folded, {ITEM_FOLD})
            END, NULL
     FROM visible_items i CROSS JOIN input CROSS JOIN fts_first_page fts_page
-    WHERE (%(cursor_id)s::uuid IS NOT NULL OR NOT fts_page.full)
+    WHERE (%(cursor_id)s::uuid IS NOT NULL OR NOT fts_page.enough)
       AND ((%(substring)s AND {ITEM_FOLD} LIKE
                ('%%' || replace(replace(replace(folded, '!', '!!'), '%%', '!%%'), '_', '!_') || '%%')
                ESCAPE '!')
