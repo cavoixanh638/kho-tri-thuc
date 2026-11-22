@@ -88,7 +88,7 @@ try{
     const isMedia=req.url?.startsWith('/api/v1/assets/');
     const target=isMedia?'http://'+backend+':8001':web;
     const url=new URL(req.url||'/',target);
-    const upstream=http.request(url,{method:req.method,headers:{...req.headers,host:'127.0.0.1'},timeout:14000},back=>{
+    const upstream=http.request(url,{method:req.method,headers:{...req.headers},timeout:14000},back=>{
       res.writeHead(back.statusCode||502,back.headers);
       back.pipe(res);
     });
