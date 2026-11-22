@@ -103,3 +103,9 @@ GEMINI_OCR_ENABLED = os.getenv("GEMINI_OCR_ENABLED", "0") == "1"
 GEMINI_MAX_LOCAL_REQUESTS_PER_DAY = max(
     0, min(100_000, int(os.getenv("GEMINI_MAX_LOCAL_REQUESTS_PER_DAY", "80")))
 )
+
+# Separate consent to transmit private image pixels to an external provider.
+# Both flags must be enabled explicitly; defaults make zero Gemini image calls.
+GEMINI_OCR_EXTERNAL_PROCESSING_ALLOWED = os.getenv(
+    "GEMINI_OCR_EXTERNAL_PROCESSING_ALLOWED", "0"
+) == "1"
