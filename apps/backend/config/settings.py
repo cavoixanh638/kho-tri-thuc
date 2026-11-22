@@ -90,6 +90,8 @@ THUMBNAIL_CACHE_DIR = os.getenv(
 )
 WEB_DIST = os.getenv("WEB_DIST", "")
 FFMPEG_BINARY = os.getenv("FFMPEG_BINARY", "ffmpeg")
+# PDF #page=N is enabled only after verifying native host rendering; default fail-closed.
+PDF_NATIVE_PAGE_NAVIGATION_VERIFIED = os.getenv("PDF_NATIVE_PAGE_NAVIGATION_VERIFIED", "0") == "1"
 FFPROBE_BINARY = os.getenv("FFPROBE_BINARY", "ffprobe")
 LOCAL_ASR_MODEL_DIR = os.getenv("LOCAL_ASR_MODEL_DIR", "")
 # Explicit development opt-in. This enables manual review only, never an AI provider.
