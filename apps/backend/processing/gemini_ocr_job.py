@@ -155,7 +155,10 @@ def _reserve(owner, asset=None):
     with transaction.atomic():
         GeminiCatalogState.objects.get_or_create(pk=1)
         GeminiCatalogState.objects.select_for_update().get(pk=1)
-        selection = select_for_user(owner, task="ocr_simple")
+        selection = select_for_user(
+            owner, task="ocr_simple",
+            allowed_models=getattr(settings, "GEMINI_OCR_APPROVED_MODELS", frozenset()),
+        )
         model = selection["model"]
         if model and model not in getattr(settings, "GEMINI_OCR_APPROVED_MODELS", frozenset()):
             raise JobFailure("ocr_model_not_validated", retryable=False)
@@ -243,19 +246,28 @@ def process_image_ocr(job):
     original = _checked_image_bytes(asset)
     normalized, mime = _prepare_image(original)
     _active_lease(job)
-    model, event = _reserve(asset.item.owner, asset=asset)
-    if event is None:
+    # A model-specific 429 may justify ONE alternative model for Auto modes.
+    # Unknown/project-wide 429 or Manual mode must NEVER hop models.
+    from .models import GeminiPreference
+    preference = GeminiPreference.objects.filter(owner_id=asset.item.owner_id).first()
+    auto = preference is None or preference.mode != "manual"
+    for index in range(2 if auto else 1):
+        model, event = _reserve(asset.item.owner, asset=asset)
+        if event is None:
+            return
+        try:
+            result = generate_ocr(
+                api_key=settings.GEMINI_API_KEY, model_id=model,
+                image=normalized, mime_type=mime,
+            )
+        except GeminiProviderError as exc:
+            _settle_usage(event, status=exc.status, error_code=exc.code)
+            if auto and index == 0 and exc.status == "model_rate_limit":
+                continue
+            raise JobFailure(exc.code, retryable=exc.retryable) from None
+        except Exception:
+            _settle_usage(event, status="error", error_code="unexpected_response")
+            raise JobFailure("gemini_ocr_unavailable", retryable=False) from None
+        _settle_usage(event, status="success", result=result)
+        _save(job, asset, model, result)
         return
-    try:
-        result = generate_ocr(
-            api_key=settings.GEMINI_API_KEY, model_id=model,
-            image=normalized, mime_type=mime,
-        )
-    except GeminiProviderError as exc:
-        _settle_usage(event, status=exc.status, error_code=exc.code)
-        raise JobFailure(exc.code, retryable=exc.retryable) from None
-    except Exception:
-        _settle_usage(event, status="error", error_code="unexpected_response")
-        raise JobFailure("gemini_ocr_unavailable", retryable=False) from None
-    _settle_usage(event, status="success", result=result)
-    _save(job, asset, model, result)
