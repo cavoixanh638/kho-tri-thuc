@@ -66,7 +66,10 @@ try {
   assert.equal(knowledge.body.parts[0].source.version,pdf.sha256);
   assert.equal(knowledge.body.parts[0].source.state,'current');
   assert.equal(knowledge.body.parts[0].locator.page,2);
-  await page.goto(origin+'/#/muc/'+pdf.item_id,{settleMs:650});
+  // After programmatic session POST, navigating only to a new #hash keeps
+  // React's in-memory unauthenticated state. Change the document query to
+  // force a real page reload so App re-reads the authenticated Django session.
+  await page.goto(origin+'/?j6b=pdf#/muc/'+pdf.item_id,{settleMs:650});
   const pdfApiView = await page.eval(async (id) => {
     const [session, item] = await Promise.all([
       fetch('/api/v1/session',{credentials:'same-origin'}).then(r=>r.json()),
@@ -137,7 +140,7 @@ try {
   assert.equal(mp4Knowledge.body.parts.length,1);
   assert.equal(mp4Knowledge.body.parts[0].source.version,mp4.sha256);
   assert.equal(mp4Knowledge.body.parts[0].locator.start_seconds,2.5);
-  await page.goto(origin+'/#/muc/'+mp4.item_id,{settleMs:650});
+  await page.goto(origin+'/?j6b=mp4#/muc/'+mp4.item_id,{settleMs:650});
   await page.eval(()=>new Promise((resolve,reject)=>{
     const until=Date.now()+12000;
     const poll=()=>{
