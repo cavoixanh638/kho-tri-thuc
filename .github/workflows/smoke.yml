@@ -299,6 +299,9 @@ jobs:
           test -s "$RUNNER_TEMP/kt-j6b-generated.pdf"
           test -s "$RUNNER_TEMP/kt-j6b-generated.mp4"
           qa cp "$RUNNER_TEMP/kt-j6b-generated.pdf" api:/tmp/kt-j6b-generated.pdf
+          # docker cp preserves source mode 0600 but container runs Django as app.
+          # Only this synthetic PDF is made readable inside disposable QA.
+          qa exec -T -u root api chmod 0644 /tmp/kt-j6b-generated.pdf
           qa cp tools/smoke/p08_j6b_private_backend.py api:/tmp/p08_j6b_private_backend.py
           qa exec -d -T -e P08_J6B_ISOLATED=YES -e PDF_NATIVE_PAGE_NAVIGATION_VERIFIED=1 api sh -c 'python /tmp/p08_j6b_private_backend.py > /tmp/p08-j6b-server.log 2>&1'
           # Allow synthetic Asset rows and hashes to initialize before HTTP.
