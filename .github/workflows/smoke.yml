@@ -269,6 +269,16 @@ jobs:
           browser="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || true)"
           if [ -z "$browser" ]; then echo "NO_BROWSER_BINARY"; exit 2; fi
           export KT_JOURNEY_CHROMIUM="$browser"
+          # Backend image already includes ffmpeg: don't install extra packages
+          # on hosted Actions runners, and don't upload generated MP4 as artifact.
+          qa() { docker compose -p kt-p08-ci --env-file "$RUNNER_TEMP/kt-p08.env" "$@"; }
+          qa exec -T api ffmpeg -nostdin -hide_banner -loglevel error \
+            -f lavfi -i testsrc=size=320x180:rate=15 -t 12 -an \
+            -c:v libx264 -preset ultrafast -pix_fmt yuv420p \
+            -movflags +faststart -y /tmp/kt-j6b-generated.mp4
+          export KT_J6B_MP4_PATH="$RUNNER_TEMP/kt-j6b-generated.mp4"
+          trap 'rm -f "$KT_J6B_MP4_PATH"' EXIT
+          qa cp api:/tmp/kt-j6b-generated.mp4 "$KT_J6B_MP4_PATH"
           node --check tools/smoke/p08_j6b_native_preflight.mjs
           node tools/smoke/p08_j6b_native_preflight.mjs
 
