@@ -109,3 +109,10 @@ GEMINI_MAX_LOCAL_REQUESTS_PER_DAY = max(
 GEMINI_OCR_EXTERNAL_PROCESSING_ALLOWED = os.getenv(
     "GEMINI_OCR_EXTERNAL_PROCESSING_ALLOWED", "0"
 ) == "1"
+
+# Model IDs require a successful OCR quality benchmark & explicit operator approval.
+# PR82 reviewed model profiles alone do not authorize external inference.
+GEMINI_OCR_APPROVED_MODELS = frozenset(
+    item.strip() for item in os.getenv("GEMINI_OCR_APPROVED_MODELS", "").split(",")
+    if item.strip()
+)
