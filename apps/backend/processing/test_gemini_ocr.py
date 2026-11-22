@@ -20,7 +20,7 @@ from .gemini_ocr_client import (
 from .gemini_ocr_job import (
     KIND, _prepare_image, _reserve, enqueue_image_ocr, process_image_ocr,
 )
-from .models import DerivedContent, GeminiModelCatalog, GeminiUsageEvent
+from .models import DerivedContent, GeminiModelCatalog, GeminiPreference, GeminiUsageEvent
 
 
 class _MemoryResponse:
@@ -129,6 +129,7 @@ class GeminiOCRJobTests(TestCase):
             provider_file_id="fixture-verified", status=StorageLocation.Status.VERIFIED,
             verified_at=timezone.now(), provider_revision="v1",
         )
+        GeminiPreference.objects.create(owner=cls.owner, external_ocr_consent=True)
         GeminiModelCatalog.objects.create(
             model_id="gemini-3.5-flash-lite", label="QA Lite",
             generation_methods=["generateContent"],
