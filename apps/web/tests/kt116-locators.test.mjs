@@ -114,8 +114,9 @@ test('reading multiple assets selects each viewer by asset ID even when host vie
   const buttons = [...container.querySelectorAll('button')].filter(button => button.textContent === 'Đến vị trí nguồn');
   assert.equal(buttons.length, 2);
   await ui.act(async () => { for (const button of buttons) button.click(); await settle(); });
-  const frames = [...container.querySelectorAll('iframe')].map(frame => new URL(frame.src));
-  assert.deepEqual(frames.map(frame => frame.pathname + frame.hash), ['/api/v1/assets/pdf-a/stream#page=1', '/api/v1/assets/pdf-b/stream#page=200']);
+  // A claimed native iframe capability is NOT proof that PDF pages rendered.
+  // New private PDF path requires verified PNG bytes from the exact source.
+  assert.equal(container.querySelectorAll('iframe').length, 0);
 });
 
 function privateMediaPart() {
@@ -159,4 +160,45 @@ test('late private descriptor cannot open an old asset after citation changes', 
   assert.equal(signal.aborted, true);
   await ui.act(async () => { resolveOld(new Response(JSON.stringify(privateMediaViewer(part)))); await settle(); });
   assert.equal(container.querySelector('audio'), null);
+});
+
+function verifiedPrivatePdfPart() {
+  return { id: 1001, kind: 'pdf_page', asset_id: '33333333-3333-4333-8333-333333333333',
+    locator: { page: 2 }, processor: 'pypdfium2-fixture',
+    source: { state: 'current', version: 'c'.repeat(64), asset_version: 7,
+      mime: 'application/pdf', source_id: null, source_url: null } };
+}
+test('private PDF page is displayed ONLY after authenticated pinned PNG headers and body', async () => {
+  const part=verifiedPrivatePdfPart();
+  let calls=0;
+  globalThis.fetch=async (url, options)=>{
+    calls++;
+    assert.equal(url, `/api/v1/assets/${part.asset_id}/pdf-page/7/${part.source.version}/2`);
+    assert.equal(options.credentials,'same-origin');
+    assert.equal(options.redirect,'error');
+    return new Response(new Uint8Array(400), {
+      status: 200, headers: { 'Content-Type':'image/png', 'X-KT-PDF-Page':'2',
+        'X-KT-Asset-Version':'7', 'X-KT-Source-SHA256':part.source.version },
+    });
+  };
+  await render(ui.SourceLocatorCitation,{part});
+  assert.equal(calls,0);
+  assert.equal(container.querySelector('iframe'),null);
+  await click('Mở và định vị PDF riêng tư');
+  assert.equal(calls,1);
+  assert.equal(container.querySelector('.source-locator').dataset.state,'AVAILABLE');
+  assert.equal(container.querySelector('img').alt,'Nội dung trang PDF số 2');
+  assert.equal(container.querySelector('iframe'),null);
+  assert.ok(container.textContent.includes('Đã dựng trang 2'));
+});
+test('private PDF preview rejects wrong page/version without claiming AVAILABLE', async () => {
+  const part=verifiedPrivatePdfPart();
+  globalThis.fetch=async ()=>new Response(new Uint8Array(400),{status:200,
+    headers:{'Content-Type':'image/png','X-KT-PDF-Page':'1',
+      'X-KT-Asset-Version':'7','X-KT-Source-SHA256':part.source.version}});
+  await render(ui.SourceLocatorCitation,{part});
+  await click('Mở và định vị PDF riêng tư');
+  assert.equal(container.querySelector('img'),null);
+  assert.equal(container.querySelector('.source-locator').dataset.state,'NOT_SUPPORTED');
+  assert.ok(container.querySelector('[role=alert]'));
 });

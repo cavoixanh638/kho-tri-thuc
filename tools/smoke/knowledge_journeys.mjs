@@ -70,6 +70,13 @@ if (prerequisitesReady) {
       await page.eval(() => document.querySelector('[data-p08-input="current"]')?.removeAttribute('data-p08-input'));
     }
     async function select(label, value, scope = 'body') {
+      // Hash navigation precedes asynchronous React screen/data mount.
+      // Wait for the actual labeled select rather than racing the render.
+      await wait(({label,scope}) => [...(document.querySelector(scope)?.querySelectorAll('label') || [])]
+        .some(el => {
+          if (el.textContent.replaceAll('*','').trim() !== label && el.firstChild?.textContent.trim() !== label) return false;
+          return !!(el.htmlFor ? document.getElementById(el.htmlFor) : el.querySelector('select'));
+        }), { label, scope }, 'select:' + label);
       const found = await page.eval(({ label, value, scope }) => {
         const node = [...(document.querySelector(scope)?.querySelectorAll('label') || [])].find((el) => el.textContent.replaceAll('*', '').trim() === label || el.firstChild?.textContent.trim() === label);
         const field = node?.htmlFor ? document.getElementById(node.htmlFor) : node?.querySelector('select');
