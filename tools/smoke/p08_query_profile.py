@@ -123,8 +123,8 @@ def plan_summary(sql, params):
     try:
         with transaction.atomic():
             with connection.cursor() as cursor:
+                cursor.execute("SET TRANSACTION READ ONLY")
                 cursor.execute("SET LOCAL statement_timeout TO '7000ms'")
-                cursor.execute("SET LOCAL default_transaction_read_only TO on")
                 cursor.execute("EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON) " + sql, params)
                 result = cursor.fetchone()[0]
             transaction.set_rollback(True)
