@@ -150,7 +150,7 @@ def _existing(asset, model):
     ).exists()
 
 
-def _reserve(owner):
+def _reserve(owner, asset=None):
     """Atomic project-wide *local* request cap, never provider quota remaining."""
     with transaction.atomic():
         GeminiCatalogState.objects.get_or_create(pk=1)
@@ -165,6 +165,8 @@ def _reserve(owner):
                 "ocr_model_unavailable"
             )
             raise JobFailure(safe, retryable=False)
+        if asset is not None and _existing(asset, model):
+            return model, None
         event = GeminiUsageEvent.objects.create(
             owner=owner, model_id=model, task="ocr_simple", status="reserved"
         )
@@ -217,8 +219,11 @@ def _save(job, asset, model, result):
         RelatedItem.objects.filter(
             Q(item_a=item) | Q(item_b=item), status=RelatedItem.Status.ACTIVE
         ).update(status=RelatedItem.Status.STALE)
+        classify_key = "ocr-classify:" + hashlib.sha256(
+            f"{asset.pk}:{asset.sha256}:{VERSION}:{model}".encode()
+        ).hexdigest()
         JobRepository.enqueue(
-            kind="organize", idempotency_key=f"ocr:{asset.pk}:{VERSION}:{model}"[:128],
+            kind="organize", idempotency_key=classify_key,
             item=item, input_ref={"item_id": str(item.pk)},
         )
 
@@ -236,9 +241,8 @@ def process_image_ocr(job):
     original = _checked_image_bytes(asset)
     normalized, mime = _prepare_image(original)
     _active_lease(job)
-    model, event = _reserve(asset.item.owner)
-    if _existing(asset, model):
-        _settle_usage(event, status="error", error_code="already_processed")
+    model, event = _reserve(asset.item.owner, asset=asset)
+    if event is None:
         return
     try:
         result = generate_ocr(
