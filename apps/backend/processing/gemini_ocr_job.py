@@ -26,7 +26,7 @@ from .gemini_ocr_client import (
     GeminiProviderError, MAX_IMAGE_BYTES, VERSION, generate_ocr,
 )
 from .gemini_routing import select_for_user
-from .models import DerivedContent, GeminiCatalogState, GeminiUsageEvent
+from .models import DerivedContent, GeminiCatalogState, GeminiPreference, GeminiUsageEvent
 
 KIND = "gemini_image_ocr"
 OCR_KIND = "image_ocr"
@@ -46,6 +46,12 @@ def _enabled():
     )
 
 
+def _user_consented(owner_id):
+    return GeminiPreference.objects.filter(
+        owner_id=owner_id, external_ocr_consent=True
+    ).exists()
+
+
 def _job_key(asset):
     return "ocr:" + hashlib.sha256(
         f"{asset.pk}:{asset.sha256}:{VERSION}".encode("ascii")
@@ -54,7 +60,8 @@ def _job_key(asset):
 
 def enqueue_image_ocr(asset):
     """Call only after owner Drive verifies the original; manual opt-in only."""
-    if (not _enabled() or asset.role != "original" or asset.item.deleted_at
+    if (not _enabled() or not _user_consented(asset.item.owner_id)
+            or asset.role != "original" or asset.item.deleted_at
             or asset.mime not in ALLOWED_MIMES
             or not asset.sha256 or not asset.size
             or asset.size > MAX_IMAGE_BYTES
@@ -222,6 +229,8 @@ def process_image_ocr(job):
     if not _enabled():
         raise JobFailure("ocr_not_enabled", retryable=False)
     asset = _scope(job)
+    if not _user_consented(asset.item.owner_id):
+        raise JobFailure("ocr_consent_required", retryable=False)
     # Do not call Gemini (or reserve paid use) if same model already produced
     # current OCR. Choose from the approved catalog again after reading bytes.
     original = _checked_image_bytes(asset)
