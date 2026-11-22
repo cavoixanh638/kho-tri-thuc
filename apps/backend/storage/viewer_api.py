@@ -3,6 +3,7 @@
 import re
 from uuid import UUID
 
+from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from ninja import Router
@@ -92,7 +93,8 @@ def viewer(request, asset_id: UUID):
                 "kind": "pdf" if asset.mime == "application/pdf" else "media",
                 "rangeVerified": True,
                 # Native PDF fragment navigation has not been accepted on every host.
-                "pageNavigationVerified": False,
+                "pageNavigationVerified": asset.mime == "application/pdf"
+                and settings.PDF_NATIVE_PAGE_NAVIGATION_VERIFIED,
             }
         )
     )
