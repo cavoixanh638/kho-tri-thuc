@@ -127,7 +127,10 @@ function SourceLocatorMedia({ viewer, locator, mime }: { viewer: SourceViewer; l
 }
 export function SourceLocatorCitation({ part, viewer, onIllustration }: { part: SourcePart; viewer?: SourceViewer; onIllustration?: (assetId: string) => void }) {
   const [privateViewer, setPrivateViewer] = useState<SourceViewer>();
+  const [pdfPage, setPdfPage] = useState<{ url: string; assetId: string; version: string; page: number }>();
   const result = resolveLocator(part, viewer ?? privateViewer);
+  const pageReady = Boolean(pdfPage && result.locator?.kind === 'page' && pdfPage.page === result.locator.page
+    && pdfPage.assetId === part.asset_id && pdfPage.version === part.source?.version);
   const [opened, setOpened] = useState(false);
   const [original, setOriginal] = useState<string>();
   const [busy, setBusy] = useState(false);
@@ -137,16 +140,37 @@ export function SourceLocatorCitation({ part, viewer, onIllustration }: { part: 
   const inFlight = useRef<AbortController | null>(null);
   currentRevision.current = revision;
   useEffect(() => {
-    setOpened(false); setPrivateViewer(undefined); setOriginal(undefined); setError(''); setBusy(false);
+    setOpened(false); setPrivateViewer(undefined); setPdfPage(undefined); setOriginal(undefined); setError(''); setBusy(false);
     return () => { inFlight.current?.abort(); currentRevision.current = ''; };
   }, [revision]);
   useEffect(() => { currentRevision.current = revision; }, [revision]);
+  // Blob URLs contain authenticated source pixels. Revoke them after display,
+  // when switching the citation, or on unmount.
+  useEffect(() => () => { if (pdfPage?.url) URL.revokeObjectURL(pdfPage.url); }, [pdfPage]);
   const loadViewer = async () => {
     if (!part.asset_id || busy) return;
     const controller = new AbortController(); inFlight.current?.abort(); inFlight.current = controller;
     const stillCurrent = () => !controller.signal.aborted && currentRevision.current === revision;
     setBusy(true); setError('');
     try {
+      if (result.locator?.kind === 'page' && part.source?.mime === 'application/pdf' && part.source.version
+        && part.source.asset_version && part.source.state === 'current') {
+        // Exact page image comes from authenticated SHA256-checked source bytes
+        // decoded by PDFium. An iframe #page=N is NOT evidence of a rendered page.
+        const page = result.locator.page;
+        const endpoint = `/api/v1/assets/${encodeURIComponent(part.asset_id)}/pdf-page/${part.source.asset_version}/${part.source.version}/${page}`;
+        const response = await fetch(endpoint, { credentials: 'same-origin', signal: controller.signal, redirect: 'error' });
+        if (!response.ok || response.headers.get('Content-Type')?.split(';')[0] !== 'image/png'
+          || response.headers.get('X-KT-PDF-Page') !== String(page)
+          || response.headers.get('X-KT-Source-SHA256') !== part.source.version
+          || response.headers.get('X-KT-Asset-Version') !== String(part.source.asset_version)) throw new Error('pdf_page_not_verified');
+        const png = await response.blob();
+        if (png.size < 100 || png.size > 5 * 1024 * 1024) throw new Error('pdf_page_invalid_bytes');
+        const url = URL.createObjectURL(png);
+        if (stillCurrent()) { setPdfPage({ url, assetId: part.asset_id, version: part.source.version, page }); setOpened(true); }
+        else URL.revokeObjectURL(url);
+        return;
+      }
       const value = await request<SourceViewer>(`/assets/${encodeURIComponent(part.asset_id)}/viewer`, { signal: controller.signal });
       if (value.url !== `/api/v1/assets/${part.asset_id}/content/${part.source?.asset_version}/${part.source?.version}`) throw new Error('unpinned_viewer');
       const resolved = resolveLocator(part, value);
@@ -169,12 +193,12 @@ export function SourceLocatorCitation({ part, viewer, onIllustration }: { part: 
       if (stillCurrent()) setError(error instanceof ApiError && [401, 403, 404].includes(error.status) ? 'Nguồn không còn tồn tại hoặc bạn chưa có quyền truy cập.' : 'Chưa mở được nguồn. Liên kết có thể hết hạn; hãy thử lại.');
     } finally { if (stillCurrent()) setBusy(false); }
   };
-  return <div className="source-locator" data-state={result.state}>
-    <div className="source-locator-line"><strong>{result.label}</strong><span>{stateText[result.state]}</span></div>
-    <p>{result.reason}</p>
+  return <div className="source-locator" data-state={pageReady ? 'AVAILABLE' : result.state}>
+    <div className="source-locator-line"><strong>{result.label}</strong><span>{pageReady ? stateText.AVAILABLE : stateText[result.state]}</span></div>
+    <p>{pageReady ? 'Trang PDF đã được dựng từ đúng phiên bản tệp và xác nhận SHA256.' : result.reason}</p>
     <div className="source-locator-actions">
-      {result.state === 'AVAILABLE' && <button type="button" onClick={() => setOpened(true)}>Đến vị trí nguồn</button>}
-      {result.state === 'NOT_SUPPORTED' && (result.locator?.kind === 'time' || result.locator?.kind === 'page') && part.asset_id && part.source?.state === 'current'
+      {(result.state === 'AVAILABLE' || pageReady) && <button type="button" onClick={() => setOpened(true)}>Đến vị trí nguồn</button>}
+      {result.state === 'NOT_SUPPORTED' && !pageReady && (result.locator?.kind === 'time' || result.locator?.kind === 'page') && part.asset_id && part.source?.state === 'current'
         && <button type="button" disabled={busy} onClick={() => void loadViewer()}>{busy ? 'Đang kiểm tra nguồn…' : result.locator.kind === 'page' ? 'Mở và định vị PDF riêng tư' : 'Mở và định vị nguồn riêng tư'}</button>}
       {result.state !== 'MISSING_ASSET' && <button type="button" disabled={busy} onClick={() => void loadOriginal()}>{busy ? 'Đang tìm nguồn…' : 'Mở nguồn gốc'}</button>}
       {part.asset_id && onIllustration && <button type="button" onClick={() => onIllustration(part.asset_id!)}>Xem minh họa từ nguồn</button>}
@@ -182,7 +206,10 @@ export function SourceLocatorCitation({ part, viewer, onIllustration }: { part: 
     </div>
     {error && <p role="alert">{error}</p>}
     {opened && result.viewer && result.locator?.kind === 'time' && <SourceLocatorMedia key={revision} viewer={result.viewer} locator={result.locator} mime={part.source?.mime ?? ''} />}
-    {opened && result.viewer && result.locator?.kind === 'page' && <div className="source-locator-viewer"><p>Yêu cầu mở trang {result.locator.page}; kiểm tra số trang trong trình xem PDF.</p><iframe title={`Nguồn PDF trang ${result.locator.page}`} src={`${result.viewer.url}#page=${result.locator.page}`} referrerPolicy="no-referrer" /></div>}
+    {opened && pageReady && pdfPage && <div className="source-locator-viewer">
+      <p>Đã dựng trang {pdfPage.page} từ file PDF đúng phiên bản và xác minh nội dung.</p>
+      <img src={pdfPage.url} alt={`Nội dung trang PDF số ${pdfPage.page}`} onError={() => setError('Không hiển thị được ảnh trang PDF đã xác minh.')} />
+    </div>}
     <small>{part.processor}{part.processor_version ? ` · ${part.processor_version}` : ''}{part.source?.asset_version != null ? ` · Phiên bản file ${part.source.asset_version}` : ''}</small>
   </div>;
 }
