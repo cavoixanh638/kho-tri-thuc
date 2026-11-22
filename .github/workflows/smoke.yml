@@ -68,6 +68,34 @@ jobs:
           docker compose exec -T api python manage.py migrate --check
           docker compose exec -T api python manage.py test
 
+      # Reuse the already-running disposable Compose PostgreSQL, but create a
+      # separate p16_ database. Never run against user or production records.
+      - name: Measure P16 Vietnamese FTS on isolated PostgreSQL (86 synthetic gold queries)
+        run: |
+          set -euo pipefail
+          python3 tools/search/p16_eval.py --validate
+          docker compose exec -T db sh -ec 'createdb --no-password -U "$POSTGRES_USER" --template=template0 --encoding=UTF8 p16_search_eval'
+          cleanup() {
+            docker compose exec -T db sh -ec 'dropdb --if-exists --no-password -U "$POSTGRES_USER" p16_search_eval' || true
+          }
+          trap cleanup EXIT
+          docker compose exec -T api mkdir -p /tmp/kt-p16/tools/search /tmp/kt-p16/evals/parallel/p16-search
+          docker compose cp tools/search/p16_eval.py api:/tmp/kt-p16/tools/search/p16_eval.py
+          docker compose cp evals/parallel/p16-search/corpus.json api:/tmp/kt-p16/evals/parallel/p16-search/corpus.json
+          docker compose exec -T -e POSTGRES_DB=p16_search_eval api python manage.py migrate --noinput
+          docker compose exec -T -e POSTGRES_DB=p16_search_eval -e P16_ALLOW_TEST_DB=1 api python manage.py shell -c "p='/tmp/kt-p16/tools/search/p16_eval.py'; ns={'__file__':p,'__name__':'p16_eval'};exec(compile(open(p,encoding='utf-8').read(),p,'exec'),ns);r=ns['run_live']('/tmp/kt-p16/result.json');assert r['status']=='MEASURED_SYNTHETIC_PG' and r['latency_count']==86 and r['no_leak'] and not r['evidence_errors'], 'P16 provenance or evaluation safety gate failed'"
+          mkdir -p tmp
+          docker compose cp api:/tmp/kt-p16/result.json tmp/p16-evaluation.json
+
+      - name: Upload isolated P16 benchmark report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: kt-p16-postgres-search-eval
+          path: tmp/p16-evaluation.json
+          if-no-files-found: warn
+          retention-days: 14
+
       - name: Check worker, API and built frontend
         run: |
           docker compose exec -T worker python manage.py run_worker --check
