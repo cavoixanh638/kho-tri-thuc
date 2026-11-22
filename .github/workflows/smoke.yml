@@ -127,7 +127,7 @@ jobs:
         run: docker compose down --volumes
 
   browser_acceptance:
-    name: Isolated P08 Chromium journeys (not production UAT)
+    name: G2 browser acceptance with truthful NOT_RUN gate (not production UAT)
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     permissions:
@@ -139,6 +139,9 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+
+      - name: Verify the G2 verdict cannot turn NOT_RUN into PASS (offline unit)
+        run: node --test tools/smoke/release_acceptance_gate.test.mjs
 
       - name: Prepare independent disposable PostgreSQL/React/Django QA project
         run: |
@@ -210,6 +213,16 @@ jobs:
           path: tmp/p08-kt128/
           if-no-files-found: warn
           retention-days: 14
+
+      # Leave the diagnostic P08/P15 steps continue-on-error to retain both
+      # artefacts, then fail this one existing job if either gate is incomplete.
+      # No extra Actions runner, provider API or test DB is started by this step.
+      - name: Enforce G2 release-candidate browser evidence (fail on NOT_RUN)
+        if: always()
+        run: |
+          node tools/smoke/release_acceptance_gate.mjs \
+            --p08 tmp/p08-kt128/p08-results.json \
+            --p15 tmp/p15-accessibility/browser-results.json
 
       - name: Shut down only P08 disposable containers and test volumes
         if: always()

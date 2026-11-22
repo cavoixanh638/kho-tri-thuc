@@ -73,7 +73,8 @@ function eventData(k) {
   const name = shift ? 'Tab' : k;
   const [windowsVirtualKeyCode, code] = keymap[name];
   return { key: name === 'Space' ? ' ' : name === 'CtrlK' ? 'k' : name, code,
-    windowsVirtualKeyCode, modifiers: shift ? 8 : name === 'CtrlK' ? 2 : 0 };
+    windowsVirtualKeyCode, nativeVirtualKeyCode: windowsVirtualKeyCode,
+    modifiers: shift ? 8 : name === 'CtrlK' ? 2 : 0 };
 }
 async function browserAudit() {
   const origin = process.env.P15_QA_URL || 'http://127.0.0.1:62315';
@@ -102,7 +103,14 @@ async function browserAudit() {
     }
     async function key(k) {
       const e = eventData(k);
-      await page.send('Input.dispatchKeyEvent', { type: 'keyDown', ...e });
+      // CDP keyDown with a printable text field triggers native summary
+      // activation (Enter/Space) like a real browser keystroke. A synthetic
+      // 'key' alone may not activate a closed <details> disclosure.
+      const text = k === 'Enter' ? '\r' : k === 'Space' ? ' ' : '';
+      await page.send('Input.dispatchKeyEvent', {
+        type: 'keyDown', ...e,
+        ...(text ? { text, unmodifiedText: text } : {}),
+      });
       await page.send('Input.dispatchKeyEvent', { type: 'keyUp', ...e });
       await sleep();
     }
@@ -112,7 +120,23 @@ async function browserAudit() {
         if (!el || !el.getClientRects().length) return false;
         el.focus(); return document.activeElement === el;
       }, selector);
-      assert.ok(ok, 'Cannot focus ' + selector);
+      if (!ok) {
+        const diagnosis = await page.eval(s => {
+          const el = document.querySelector(s);
+          if (!el) return { exists: false };
+          const cs = getComputedStyle(el);
+          const active = document.activeElement;
+          return {
+            exists: true, visible_rect: el.getClientRects().length > 0,
+            disabled: !!el.disabled, tabIndex: el.tabIndex,
+            display: cs.display, visibility: cs.visibility,
+            details_open: el.closest('.capture-advanced-tools')?.open ?? null,
+            active_tag: active?.tagName || null,
+            active_disabled: !!active?.disabled,
+          };
+        }, selector);
+        assert.fail('Cannot focus ' + selector + ' (' + JSON.stringify(diagnosis) + ')');
+      }
     }
     async function route(hash, selector) {
       await page.eval(value => { location.hash = value; }, hash);
@@ -126,12 +150,36 @@ async function browserAudit() {
         assert.ok(await verify(), 'Expected keyboard interaction was not observed');
         report.keyboard.push({ id, viewport: width, area, key: which, status: 'PASS' });
       } catch (e) {
-        report.keyboard.push({ id, viewport: width, area, key: which, status: 'FAIL', error: String(e.message || e).slice(0, 160) });
+        const focus_state = await page.eval(() => {
+          const el = document.activeElement;
+          const r = el?.getBoundingClientRect();
+          return { tag: el?.tagName ?? null, id: el?.id ?? '',
+            class_name: typeof el?.className === 'string' ? el.className.slice(0, 90) : '',
+            rect: r ? { width: r.width, height: r.height, top: r.top, bottom: r.bottom } : null,
+            visible: !!el && el.getClientRects().length > 0 };
+        }).catch(() => null);
+        report.keyboard.push({ id, viewport: width, area, key: which, status: 'FAIL',
+          error: String(e.message || e).slice(0, 160), focus_state });
       }
     }
     const visibleFocus = () => page.eval(() => {
-      const el = document.activeElement, r = el?.getBoundingClientRect();
-      return !!r && r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < innerHeight && el.tagName !== 'BODY';
+      const el = document.activeElement;
+      // Mantine's accessible radio is deliberately 0x0; its visible sibling
+      // label MUST have a keyboard-focus ring. Never exempt hidden controls
+      // without confirming that their actual visual proxy is focus-visible.
+      if (el instanceof HTMLInputElement && el.type === 'radio'
+          && el.classList.contains('mantine-SegmentedControl-input')) {
+        const label = el.nextElementSibling;
+        const rect = label?.getBoundingClientRect();
+        const outline = label ? getComputedStyle(label) : null;
+        return label instanceof HTMLLabelElement && label.htmlFor === el.id &&
+          !!rect && rect.width > 0 && rect.height > 0 &&
+          rect.bottom > 0 && rect.top < innerHeight &&
+          outline?.outlineStyle !== 'none' && parseFloat(outline?.outlineWidth || '0') >= 2;
+      }
+      const r = el?.getBoundingClientRect();
+      return !!r && r.width > 0 && r.height > 0 && r.bottom > 0 &&
+        r.top < innerHeight && el.tagName !== 'BODY';
     });
     const shot = async (area) => {
       const name = 'p15-' + area + '-' + width + '.png';
@@ -150,6 +198,11 @@ async function browserAudit() {
       width = w;
       await page.setViewport({ width, height: width === 1920 ? 1080 : 900 });
       await route('#/thu-vien', '.knowledge-library-layout');
+      // The layout paints before the async explorer data; wait for actual
+      // synthetic folder rows so Tab order does not race a React remount.
+      await waitFor(() => !!document.querySelector('.knowledge-explorer nav[role="tree"]')
+        && document.querySelectorAll('.knowledge-explorer [role="treeitem"]').length > 0,
+      undefined, 'library explorer loaded');
       await focus('a.brand');
       for (let i = 0; i < 6; i++) await record('global-tab', 'Tab', visibleFocus);
       for (let i = 0; i < 2; i++) await record('global-reverse-tab', 'ShiftTab', visibleFocus);
@@ -167,7 +220,17 @@ async function browserAudit() {
       await record('collection-tab', 'Tab', visibleFocus);
       await record('collection-reverse-tab', 'ShiftTab', visibleFocus);
       await record('collection-close', 'Space', () => page.eval(() => !document.querySelector('.saved-collection-form details')?.open));
-      await route('#/gui', '.research-clipper');
+      // The Unified Inbox intentionally hides the secondary clipper in a native
+      // details disclosure. Test its keyboard path before touching hidden fields.
+      await route('#/gui', '.capture-advanced-tools > summary');
+      await focus('.capture-advanced-tools > summary');
+      await record('clipper-open-details', 'Enter',
+        () => page.eval(() => !!document.querySelector('.capture-advanced-tools[open]')));
+      await waitFor(s => {
+        const el = document.querySelector(s);
+        const details = el?.closest('.capture-advanced-tools');
+        return !!el && !!details?.open && el.getClientRects().length > 0;
+      }, '.research-clipper select', 'expanded clipper select');
       await focus('.research-clipper select');
       await record('clipper-select-down', 'ArrowDown', () => page.eval(() => document.querySelector('.research-clipper select')?.value === 'article'));
       await record('clipper-select-up', 'ArrowUp', () => page.eval(() => document.querySelector('.research-clipper select')?.value === 'link'));
@@ -178,18 +241,39 @@ async function browserAudit() {
         const toggle=document.querySelector('.library-tree-toggle');
         if(toggle && getComputedStyle(toggle).display !== 'none' && toggle.getAttribute('aria-expanded')==='false') toggle.click();
       });
-      const nodes = await page.eval(() => document.querySelectorAll('.knowledge-explorer [role="treeitem"]').length);
-      if (nodes >= 2) {
-        await focus('.knowledge-explorer [role="treeitem"]');
-        await record('tree-down', 'ArrowDown', () => page.eval(() => document.activeElement?.getAttribute('role') === 'treeitem' && document.activeElement !== document.querySelector('.knowledge-explorer [role="treeitem"]')));
-        await record('tree-up', 'ArrowUp', () => page.eval(() => document.activeElement === document.querySelector('.knowledge-explorer [role="treeitem"]')));
-      } else report.blocked.push({ viewport: w, feature: 'tree ArrowUp/Down', status: 'NOT_RUN', reason: 'Need >=2 synthetic folder/note rows' });
-      const expandable = await page.eval(() => !!document.querySelector('.knowledge-explorer [role="treeitem"][aria-expanded="false"]'));
+      await waitFor(() => !!document.querySelector('.knowledge-explorer nav[role="tree"]')
+        && document.querySelectorAll('.knowledge-explorer [role="treeitem"]').length >= 1,
+      undefined, 'loaded synthetic tree before keyboard checks');
+      // A synthetic QA account has one top-level P08 folder. Expand first to
+      // reveal its children BEFORE testing roving ArrowDown/ArrowUp navigation.
+      const expandable = await page.eval(() =>
+        !!document.querySelector('.knowledge-explorer [role="treeitem"][aria-expanded="false"]'));
       if (expandable) {
         await focus('.knowledge-explorer [role="treeitem"][aria-expanded="false"]');
-        await record('tree-expand', 'ArrowRight', () => page.eval(() => document.activeElement?.getAttribute('aria-expanded') === 'true'));
-        await record('tree-collapse', 'ArrowLeft', () => page.eval(() => document.activeElement?.getAttribute('aria-expanded') === 'false'));
-      } else report.blocked.push({ viewport: w, feature: 'tree expand/collapse', status: 'NOT_RUN', reason: 'Need expandable synthetic row' });
+        await record('tree-expand', 'ArrowRight',
+          () => page.eval(() => document.activeElement?.getAttribute('aria-expanded') === 'true'));
+      } else report.blocked.push({ viewport: w, feature: 'tree expand/collapse', status: 'NOT_RUN', reason: 'No expandable synthetic folder row' });
+      const loadedChildren = expandable && await page.eval(() =>
+        document.querySelectorAll('.knowledge-explorer [role="treeitem"]').length >= 2);
+      if (!loadedChildren && expandable) {
+        await waitFor(() => document.querySelectorAll('.knowledge-explorer [role="treeitem"]').length >= 2,
+          undefined, 'expanded synthetic child treeitem');
+      }
+      const nodes = await page.eval(() =>
+        document.querySelectorAll('.knowledge-explorer [role="treeitem"]').length);
+      if (nodes >= 2) {
+        await focus('.knowledge-explorer [role="treeitem"]');
+        await record('tree-down', 'ArrowDown',
+          () => page.eval(() => document.activeElement?.getAttribute('role') === 'treeitem' &&
+            document.activeElement !== document.querySelector('.knowledge-explorer [role="treeitem"]')));
+        await record('tree-up', 'ArrowUp',
+          () => page.eval(() => document.activeElement === document.querySelector('.knowledge-explorer [role="treeitem"]')));
+      } else report.blocked.push({ viewport: w, feature: 'tree ArrowUp/Down', status: 'NOT_RUN', reason: 'Need >=2 loaded synthetic folder/note rows' });
+      if (expandable) {
+        await focus('.knowledge-explorer [role="treeitem"][aria-expanded="true"]');
+        await record('tree-collapse', 'ArrowLeft',
+          () => page.eval(() => document.activeElement?.getAttribute('aria-expanded') === 'false'));
+      }
       const qaItemId = process.env.P15_QA_ITEM_ID || await page.eval(async () => {
         const r=await fetch('/api/v1/items?limit=100', {credentials:'same-origin'});
         if(!r.ok)return null;
@@ -250,6 +334,9 @@ async function browserAudit() {
     report.fatal = String(err.stack || err);
     process.exitCode = 1;
     console.error(report.fatal);
+    // This log contains only status, IDs and test descriptions, never text input.
+    console.error('P15 keyboard failures:',
+      JSON.stringify(report.keyboard.filter(row => row.status !== 'PASS')));
   } finally {
     write('browser-results.json', report);
     await browser?.close();

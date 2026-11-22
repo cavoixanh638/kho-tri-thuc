@@ -415,7 +415,55 @@ if (prerequisitesReady) {
         }
         return { status: 'PASS', actual: '4 viewport widths + four library modes, identical Item IDs and no overflow', evidence: report.viewports.map((row) => row.screenshot) };
       });
-      await attempt('J8', async () => ({ status: 'NOT_RUN', actual: 'Frozen snapshot lacks verified KT127 vault export/import API and empty DB roundtrip', reason: 'KT127_NOT_IN_FROZEN_SNAPSHOT' }));
+      await attempt('J8', async () => {
+        if (!context.parent || !context.child) return {
+          status: 'BLOCKED', actual: 'No synthetic notes available for portable-vault preflight',
+          reason: 'DEPENDENCY:J1_SYNTHETIC_NOTES_REQUIRED',
+        };
+        const before = (await get('/items/' + context.parent)).note;
+        const result = await page.eval(async () => {
+          const exported = await fetch('/api/v1/vault/export',
+            { credentials: 'same-origin', cache: 'no-store', headers: { Accept: 'application/zip' } });
+          if (!exported.ok) return { export_http: exported.status };
+          const blob = await exported.blob();
+          const head = [...new Uint8Array(await blob.slice(0, 4).arrayBuffer())];
+          const session = await fetch('/api/v1/session',
+            { credentials: 'same-origin' }).then(r => r.json());
+          const form = new FormData();
+          form.set('file', blob, 'p08-synthetic-export.zip');
+          const preview = await fetch('/api/v1/vault/import/preview', {
+            method: 'POST', credentials: 'same-origin', cache: 'no-store',
+            headers: { 'X-CSRFToken': session.csrf_token, Accept: 'application/json' },
+            body: form,
+          });
+          let data = null;
+          try { data = await preview.json(); } catch { /* capture HTTP failure without leaking response */ }
+          return {
+            export_http: exported.status, bytes: blob.size, zip_magic: head,
+            preview_http: preview.status,
+            metadata: data?.metadata || null, counts: data?.counts || null,
+            item_ids: Array.isArray(data?.rows) ? data.rows.map(row => row.item_id) : [],
+          };
+        });
+        assert.equal(result.export_http, 200, 'Portable vault export API mounted');
+        assert.ok(result.bytes > 100, 'Exported archive contains portable metadata');
+        assert.deepEqual(result.zip_magic, [80, 75, 3, 4], 'Export must be a ZIP archive');
+        assert.equal(result.preview_http, 200, 'Import preview accepts exported ZIP');
+        assert.ok(result.metadata?.items >= 2 && result.metadata?.topics >= 2);
+        assert.ok(result.item_ids.includes(context.parent) && result.item_ids.includes(context.child));
+        assert.equal((await get('/items/' + context.parent)).note, before,
+          'Export and preview must not mutate the authored note');
+        report.j8_partial = {
+          exported_zip_bytes: result.bytes, synthetic_items: result.metadata.items,
+          synthetic_topics: result.metadata.topics, preview_counts: result.counts,
+          original_markdown_unchanged: true,
+        };
+        return {
+          status: 'NOT_RUN',
+          actual: 'Real authenticated ZIP export and preview passed on synthetic PostgreSQL; independent clean-database import/UUID relation roundtrip not exercised',
+          reason: 'CLEAN_DATABASE_IMPORT_AND_RELATIONS_ROUNDTRIP_NOT_RUN',
+        };
+      });
       await attempt('J9', async () => ({ status: 'NOT_RUN', actual: 'No seeded 10k Item/1k node DB, restore and retry run in this browser session', reason: 'SCALE_RESTORE_SEPARATE_ISOLATED_DB_REQUIRED' }));
     } catch (error) {
       report.driver_error = cleanError(error);
