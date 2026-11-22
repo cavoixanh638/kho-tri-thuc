@@ -270,7 +270,18 @@ jobs:
         run: |
           browser="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || true)"
           if [ -z "$browser" ]; then echo "NO_BROWSER_BINARY"; exit 2; fi
-          command -v ffmpeg || { echo "FFMPEG_NOT_INSTALLED"; exit 2; }
+          # ffmpeg lives inside the already-built backend image, not on the
+          # Ubuntu host; reuse it to avoid apt-installing tools in Actions.
+          qa() { docker compose -p kt-p08-ci --env-file "$RUNNER_TEMP/kt-p08.env" "$@"; }
+          mkdir -p tmp/p08-kt128
+          qa exec -T api ffmpeg -hide_banner -loglevel error -nostdin \
+            -f lavfi -i testsrc2=size=320x180:rate=10 -t 12 -an \
+            -c:v libx264 -preset ultrafast -pix_fmt yuv420p \
+            -movflags +faststart -y /tmp/p08-j6b-generated.mp4
+          qa cp api:/tmp/p08-j6b-generated.mp4 tmp/p08-kt128/p08-native-generated.mp4
+          trap 'rm -f tmp/p08-kt128/p08-native-generated.mp4' EXIT
+          export P08_NATIVE_MEDIA_FILE=tmp/p08-kt128/p08-native-generated.mp4
+          export P08_NATIVE_MEDIA_GENERATED=YES
           export KT_JOURNEY_CHROMIUM="$browser"
           node tools/smoke/p08_native_media.mjs
           node tools/smoke/p08_attach_media.mjs \
