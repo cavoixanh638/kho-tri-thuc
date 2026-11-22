@@ -171,6 +171,9 @@ jobs:
           KT_JOURNEY_URL: http://127.0.0.1:62310
           KT_JOURNEY_DB_NAME: kt_p08_journeys
           KT_JOURNEY_ISOLATED: 'YES'
+          # Explicit QA-only read of one public Python documentation page; no secrets,
+          # cookies or user content are transmitted. HTTP bounds enforced in source_fetch.
+          KT_JOURNEY_PUBLIC_NETWORK: 'YES'
           KT_JOURNEY_USER: p08-fixture
           KT_JOURNEY_PASSWORD: p08-only-ci-user-fixture
           KT_JOURNEY_OUT: tmp/p08-kt128
