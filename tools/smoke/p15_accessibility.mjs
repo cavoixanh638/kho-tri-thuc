@@ -112,7 +112,23 @@ async function browserAudit() {
         if (!el || !el.getClientRects().length) return false;
         el.focus(); return document.activeElement === el;
       }, selector);
-      assert.ok(ok, 'Cannot focus ' + selector);
+      if (!ok) {
+        const diagnosis = await page.eval(s => {
+          const el = document.querySelector(s);
+          if (!el) return { exists: false };
+          const cs = getComputedStyle(el);
+          const active = document.activeElement;
+          return {
+            exists: true, visible_rect: el.getClientRects().length > 0,
+            disabled: !!el.disabled, tabIndex: el.tabIndex,
+            display: cs.display, visibility: cs.visibility,
+            details_open: el.closest('.capture-advanced-tools')?.open ?? null,
+            active_tag: active?.tagName || null,
+            active_disabled: !!active?.disabled,
+          };
+        }, selector);
+        assert.fail('Cannot focus ' + selector + ' (' + JSON.stringify(diagnosis) + ')');
+      }
     }
     async function route(hash, selector) {
       await page.eval(value => { location.hash = value; }, hash);
