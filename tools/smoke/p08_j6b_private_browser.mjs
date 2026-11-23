@@ -79,7 +79,7 @@ async function getJson(page,path){
     return {status:response.status,body:await response.json()};
   },path);
 }
-const result={ task:'P08/J6B',status:'NOT_RUN',scope:'ISOLATED_APP_UI_PRIVATE_DJANGO_API',
+const result={ task:'P08/J6B',status:'NOT_RUN',scope:'ISOLATED_APP_UI_PRIVATE_DJANGO_PDFIUM_PAGE_RENDER',
   actual_drive:'NOT_RUN',native_android:'NOT_RUN', synthetic_byte_adapter:true, auth_api:true,
   backend_sha256_verified:false, real_browser_ui:false, pdf_displayed_page_verified:false,
   mp4_ui_seek_verified:false, checks:[] };
@@ -155,19 +155,32 @@ try{
     const label=kind==='pdf'?'Mở và định vị PDF riêng tư':'Mở và định vị nguồn riêng tư';
     await openControl(page,label);
     if(kind==='pdf'){
-      await waitFor(page,()=>!!document.querySelector('.source-locator-viewer iframe[src*="#page=2"]'),null,'private pdf iframe',16000);
-      await page.eval(()=>document.querySelector('.source-locator-viewer iframe').scrollIntoView({block:'center'}));
-      let colors={ratio:0};
-      for(let i=0;i<10;i++){
-        await new Promise(resolve=>setTimeout(resolve,450));
-        const filepath=join(out,'private-pdf-page2.png');
-        await page.screenshot({path:filepath,format:'png'});
-        colors=coloredPixels(readFileSync(filepath));
-        if(colors.ratio>=0.035&&colors.green>10*colors.red&&colors.green>10*colors.blue)break;
-      }
-      result.pdf_color_pixels=colors;
-      result.pdf_displayed_page_verified=colors.ratio>=0.035&&colors.green>10*colors.red&&colors.green>10*colors.blue;
-      assert.equal(result.pdf_displayed_page_verified,true,'Rendered private PDF not visibly on green page 2');
+      await waitFor(page,()=>{
+        const image=document.querySelector('.source-locator-viewer img.source-pdf-page');
+        return image?.complete && image.naturalWidth > 100 && image.naturalHeight > 100;
+      },null,'authenticated pinned PDFium page image',16000);
+      const observed=await page.eval(()=>{
+        const image=document.querySelector('.source-locator-viewer img.source-pdf-page');
+        const canvas=document.createElement('canvas');
+        canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;
+        const context=canvas.getContext('2d',{willReadFrequently:true});
+        context.drawImage(image,0,0);
+        const samples=[];
+        for(const [fx,fy] of [[.2,.2],[.5,.5],[.8,.8],[.5,.2],[.2,.8]]){
+          const at=context.getImageData(Math.floor(canvas.width*fx),Math.floor(canvas.height*fy),1,1).data;
+          samples.push([at[0],at[1],at[2]]);
+        }
+        return {width:canvas.width,height:canvas.height,
+          url:new URL(image.src).pathname,samples};
+      });
+      assert.equal(observed.url,
+        '/api/v1/assets/'+asset+'/pdf-page/1/'+fixture.sha256+'/2');
+      const allGreen=observed.samples.every(([R,G,B])=>G>140&&G>R*2&&G>B*2);
+      result.pdf_color_pixels=observed;
+      result.pdf_displayed_page_verified=allGreen;
+      await page.eval(()=>document.querySelector('.source-locator-viewer img.source-pdf-page').scrollIntoView({block:'center'}));
+      await page.screenshot({path:join(out,'private-pdf-page2.png'),format:'png'});
+      assert.equal(result.pdf_displayed_page_verified,true,'Authenticated PDFium page 2 pixels do not match the green PDF fixture');
     }else{
       const video=await waitFor(page,()=>{
         const v=document.querySelector('.source-locator-viewer video');
