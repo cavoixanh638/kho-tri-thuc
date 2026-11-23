@@ -17,7 +17,7 @@ export type LocatorState = 'AVAILABLE' | 'MISSING_LOCATOR' | 'MISSING_ASSET' | '
 // A host must supply verified, authenticated byte endpoints. Drive /open and thumbnails are never viewers.
 export type SourceViewer = {
   assetId: string; version: string; assetVersion: number; url: string;
-} & ({ kind: 'pdf'; pageNavigationVerified: true } | { kind: 'media'; rangeVerified: true });
+} & ({ kind: 'pdf'; pageNavigationVerified: boolean; pdfPageRenderingVerified?: boolean } | { kind: 'media'; rangeVerified: true });
 export type LocatorResolution = { state: LocatorState; locator?: Locator; label: string; reason: string; viewer?: SourceViewer;
   association: { assetId: string | null; sourceId: number | null; version: string | null; processorVersion: string | null } };
 
@@ -90,7 +90,7 @@ export function resolveLocator(part: SourcePart, viewer?: SourceViewer): Locator
   if (viewer && viewer.url.split('/').length > 6 && viewer.url !== `/api/v1/assets/${part.asset_id}/content/${part.source.asset_version}/${part.source.version}`) {
     return { ...base, state: 'STALE_SOURCE', reason: 'Đường dẫn tệp không khớp phiên bản đã trích. Cần tải lại nguồn.' };
   }
-  const supports = viewer && privateViewerUrl(viewer.url) && viewer.url.split('/')[4] === encodeURIComponent(part.asset_id ?? '') && ((locator.kind === 'page' && viewer.kind === 'pdf' && viewer.pageNavigationVerified && part.source.mime === 'application/pdf')
+  const supports = viewer && privateViewerUrl(viewer.url) && viewer.url.split('/')[4] === encodeURIComponent(part.asset_id ?? '') && ((locator.kind === 'page' && viewer.kind === 'pdf' && (viewer.pageNavigationVerified || viewer.pdfPageRenderingVerified === true) && part.source.mime === 'application/pdf')
     || (locator.kind === 'time' && viewer.kind === 'media' && viewer.rangeVerified === true && /^(audio|video)\//.test(part.source.mime ?? '')));
   if (!supports) return { ...base, state: 'NOT_SUPPORTED', reason: locator.kind === 'section' ? 'Chưa xác định được đoạn này trên trang gốc. Có thể mở website nguồn.' : 'Chưa thể mở đúng vị trí trong nguồn này. Có thể mở file gốc.' };
   return { ...base, state: 'AVAILABLE', reason: 'Mở vị trí trên nguồn đã xác minh.', viewer };
@@ -182,7 +182,14 @@ export function SourceLocatorCitation({ part, viewer, onIllustration }: { part: 
     </div>
     {error && <p role="alert">{error}</p>}
     {opened && result.viewer && result.locator?.kind === 'time' && <SourceLocatorMedia key={revision} viewer={result.viewer} locator={result.locator} mime={part.source?.mime ?? ''} />}
-    {opened && result.viewer && result.locator?.kind === 'page' && <div className="source-locator-viewer"><p>Yêu cầu mở trang {result.locator.page}; kiểm tra số trang trong trình xem PDF.</p><iframe title={`Nguồn PDF trang ${result.locator.page}`} src={`${result.viewer.url}#page=${result.locator.page}`} referrerPolicy="no-referrer" /></div>}
+    {opened && result.viewer && result.locator?.kind === 'page' && <div className="source-locator-viewer">
+      <p>Trang {result.locator.page} — nguồn riêng tư, đã kiểm tra phiên bản.</p>
+      {result.viewer.kind === 'pdf' && result.viewer.pdfPageRenderingVerified
+        ? <img className="source-pdf-page" alt={`Trang PDF ${result.locator.page}`}
+            src={`/api/v1/assets/${part.asset_id}/pdf-page/${result.viewer.assetVersion}/${result.viewer.version}/${result.locator.page}`}
+            referrerPolicy="no-referrer" />
+        : <iframe title={`Nguồn PDF trang ${result.locator.page}`} src={`${result.viewer.url}#page=${result.locator.page}`} referrerPolicy="no-referrer" />}
+    </div>}
     <small>{part.processor}{part.processor_version ? ` · ${part.processor_version}` : ''}{part.source?.asset_version != null ? ` · Phiên bản file ${part.source.asset_version}` : ''}</small>
   </div>;
 }
