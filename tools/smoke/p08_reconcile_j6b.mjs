@@ -16,7 +16,7 @@ export function reconcileJ6B(p08, result) {
   assert.equal(entry.reason, 'PINNED_MEDIA_FIXTURES_ABSENT');
   assert.equal(result?.task, 'P08/J6B');
   assert.equal(result?.status, 'PASS_SYNTHETIC_PRIVATE_FULL_UI');
-  assert.equal(result?.scope, 'ISOLATED_APP_UI_PRIVATE_DJANGO_API');
+  assert.equal(result?.scope, 'ISOLATED_APP_UI_PRIVATE_DJANGO_PDFIUM_PAGE_RENDER');
   assert.equal(result?.synthetic_byte_adapter, true);
   assert.equal(result?.actual_drive, 'NOT_RUN');
   assert.equal(result?.native_android, 'NOT_RUN');
@@ -25,9 +25,9 @@ export function reconcileJ6B(p08, result) {
   assert.equal(result?.real_browser_ui, true);
   assert.equal(result?.pdf_displayed_page_verified, true);
   assert.equal(result?.mp4_ui_seek_verified, true);
-  assert.ok(result?.pdf_color_pixels?.ratio >= .035);
-  assert.ok(result.pdf_color_pixels.green > 10*result.pdf_color_pixels.red);
-  assert.ok(result.pdf_color_pixels.green > 10*result.pdf_color_pixels.blue);
+  assert.ok(result.pdf_color_pixels.width >= 100 && result.pdf_color_pixels.height >= 100);
+  assert.equal(result.pdf_color_pixels.samples.length, 5);
+  assert.ok(result.pdf_color_pixels.samples.every(([r,g,b]) => g > 140 && g > 2*r && g > 2*b));
   assert.ok(Math.abs(result?.mp4_ui_seek?.currentTime-2.5) <= .25);
   assert.equal(result.mp4_ui_seek.width,320);
   assert.equal(result.mp4_ui_seek.height,180);
@@ -39,7 +39,7 @@ export function reconcileJ6B(p08, result) {
     {evidence:['p08-j6b-private/result.json','p08-j6b-private/private-pdf-page2.png']});
   p08.j6b_private = {
     scope:'SYNTHETIC_PINNED_BINARY_REAL_APP', pdf_page:2,
-    rendered_pixel_ratio:result.pdf_color_pixels.ratio,
+    rendered_green_sample_count:result.pdf_color_pixels.samples.length,
     video_actual_seconds:result.mp4_ui_seek.currentTime,
     real_google_drive:'NOT_RUN', native_android:'NOT_RUN',
   };
