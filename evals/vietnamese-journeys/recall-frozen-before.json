@@ -1,0 +1,897 @@
+{
+  "by_split": {
+    "development": {
+      "items": 20,
+      "organization": {
+        "assignment_precision": {
+          "numerator": 11,
+          "denominator": 13,
+          "value": 0.8461538461538461
+        },
+        "false_assignment_rate": {
+          "numerator": 2,
+          "denominator": 13,
+          "value": 0.15384615384615385
+        },
+        "expected_assignment_recall": {
+          "numerator": 11,
+          "denominator": 18,
+          "value": 0.6111111111111112
+        },
+        "eligible_item_coverage": {
+          "numerator": 10,
+          "denominator": 17,
+          "value": 0.5882352941176471
+        },
+        "correct_abstentions": {
+          "numerator": 1,
+          "denominator": 3,
+          "value": 0.3333333333333333
+        },
+        "items_requiring_any_correction": {
+          "numerator": 9,
+          "denominator": 20,
+          "value": 0.45
+        }
+      },
+      "search": {
+        "target_found_in_top5": {
+          "numerator": 0,
+          "denominator": 20,
+          "value": 0.0
+        },
+        "target_at_rank1": {
+          "numerator": 0,
+          "denominator": 20,
+          "value": 0.0
+        },
+        "by_query_kind": {
+          "memory": {
+            "numerator": 0,
+            "denominator": 20,
+            "value": 0.0
+          }
+        },
+        "negative_queries_with_results": {
+          "numerator": 0,
+          "denominator": 7,
+          "value": 0.0
+        },
+        "service_p95_ms": 10.512,
+        "latency_samples": 27
+      }
+    },
+    "holdout": {
+      "items": 16,
+      "organization": {
+        "assignment_precision": {
+          "numerator": 8,
+          "denominator": 9,
+          "value": 0.8888888888888888
+        },
+        "false_assignment_rate": {
+          "numerator": 1,
+          "denominator": 9,
+          "value": 0.1111111111111111
+        },
+        "expected_assignment_recall": {
+          "numerator": 8,
+          "denominator": 14,
+          "value": 0.5714285714285714
+        },
+        "eligible_item_coverage": {
+          "numerator": 7,
+          "denominator": 13,
+          "value": 0.5384615384615384
+        },
+        "correct_abstentions": {
+          "numerator": 2,
+          "denominator": 3,
+          "value": 0.6666666666666666
+        },
+        "items_requiring_any_correction": {
+          "numerator": 7,
+          "denominator": 16,
+          "value": 0.4375
+        }
+      },
+      "search": {
+        "target_found_in_top5": {
+          "numerator": 0,
+          "denominator": 16,
+          "value": 0.0
+        },
+        "target_at_rank1": {
+          "numerator": 0,
+          "denominator": 16,
+          "value": 0.0
+        },
+        "by_query_kind": {
+          "memory": {
+            "numerator": 0,
+            "denominator": 16,
+            "value": 0.0
+          }
+        },
+        "negative_queries_with_results": {
+          "numerator": 0,
+          "denominator": 8,
+          "value": 0.0
+        },
+        "service_p95_ms": 10.626,
+        "latency_samples": 24
+      }
+    }
+  },
+  "overall": {
+    "items": 36,
+    "organization": {
+      "assignment_precision": {
+        "numerator": 19,
+        "denominator": 22,
+        "value": 0.8636363636363636
+      },
+      "false_assignment_rate": {
+        "numerator": 3,
+        "denominator": 22,
+        "value": 0.13636363636363635
+      },
+      "expected_assignment_recall": {
+        "numerator": 19,
+        "denominator": 32,
+        "value": 0.59375
+      },
+      "eligible_item_coverage": {
+        "numerator": 17,
+        "denominator": 30,
+        "value": 0.5666666666666667
+      },
+      "correct_abstentions": {
+        "numerator": 3,
+        "denominator": 6,
+        "value": 0.5
+      },
+      "items_requiring_any_correction": {
+        "numerator": 16,
+        "denominator": 36,
+        "value": 0.4444444444444444
+      }
+    },
+    "search": {
+      "target_found_in_top5": {
+        "numerator": 0,
+        "denominator": 36,
+        "value": 0.0
+      },
+      "target_at_rank1": {
+        "numerator": 0,
+        "denominator": 36,
+        "value": 0.0
+      },
+      "by_query_kind": {
+        "memory": {
+          "numerator": 0,
+          "denominator": 36,
+          "value": 0.0
+        }
+      },
+      "negative_queries_with_results": {
+        "numerator": 0,
+        "denominator": 15,
+        "value": 0.0
+      },
+      "service_p95_ms": 10.626,
+      "latency_samples": 51
+    }
+  },
+  "correction_probe": {
+    "status": "PASS",
+    "item_id": "M01",
+    "action": "pin_missing_topic_then_reorganize_and_get",
+    "persisted": true
+  },
+  "remove_wrong_auto_topic_probe": {
+    "status": "PASS",
+    "item_id": "M14",
+    "topic": "thu âm",
+    "patch_http": 200,
+    "action": "explorer_remove_then_reorganize_and_get",
+    "wrong_topic_present_after_patch": false,
+    "wrong_topic_present_after_job": false
+  },
+  "diagnostics": [
+    {
+      "id": "M01",
+      "split": "development",
+      "expected": [
+        "kỹ thuật ảnh"
+      ],
+      "actual": [],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 9.711,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M02",
+      "split": "development",
+      "expected": [
+        "thu âm"
+      ],
+      "actual": [],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 9.786,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M03",
+      "split": "development",
+      "expected": [
+        "dựng video"
+      ],
+      "actual": [
+        "dựng video"
+      ],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 8.159,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M04",
+      "split": "development",
+      "expected": [
+        "sao lưu dữ liệu"
+      ],
+      "actual": [
+        "sao lưu dữ liệu"
+      ],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 9.798,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M05",
+      "split": "development",
+      "expected": [
+        "trích dẫn nguồn"
+      ],
+      "actual": [
+        "trích dẫn nguồn"
+      ],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 10.301,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M06",
+      "split": "development",
+      "expected": [
+        "tập golf"
+      ],
+      "actual": [
+        "tập golf"
+      ],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 8.316,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M07",
+      "split": "holdout",
+      "expected": [
+        "kỹ thuật ảnh"
+      ],
+      "actual": [
+        "kỹ thuật ảnh"
+      ],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 11.059,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M08",
+      "split": "holdout",
+      "expected": [
+        "thu âm"
+      ],
+      "actual": [
+        "thu âm"
+      ],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 10.315,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M09",
+      "split": "holdout",
+      "expected": [
+        "dựng video"
+      ],
+      "actual": [],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 10.498,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M10",
+      "split": "holdout",
+      "expected": [],
+      "actual": [],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 10.626,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M11",
+      "split": "holdout",
+      "expected": [
+        "trích dẫn nguồn"
+      ],
+      "actual": [],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 8.409,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M12",
+      "split": "holdout",
+      "expected": [
+        "tập golf"
+      ],
+      "actual": [],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 9.018,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M13",
+      "split": "development",
+      "expected": [
+        "sao lưu dữ liệu"
+      ],
+      "actual": [],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 8.541,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M14",
+      "split": "development",
+      "expected": [],
+      "actual": [
+        "thu âm"
+      ],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 9.415,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M15",
+      "split": "development",
+      "expected": [
+        "kỹ thuật ảnh"
+      ],
+      "actual": [],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 10.182,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M16",
+      "split": "development",
+      "expected": [
+        "dựng video"
+      ],
+      "actual": [
+        "dựng video"
+      ],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 7.774,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M17",
+      "split": "development",
+      "expected": [
+        "trích dẫn nguồn"
+      ],
+      "actual": [
+        "trích dẫn nguồn"
+      ],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 7.55,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M18",
+      "split": "development",
+      "expected": [
+        "thu âm"
+      ],
+      "actual": [
+        "thu âm"
+      ],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 8.812,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M19",
+      "split": "development",
+      "expected": [],
+      "actual": [
+        "tập golf"
+      ],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 9.483,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M20",
+      "split": "development",
+      "expected": [
+        "sao lưu dữ liệu"
+      ],
+      "actual": [],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 10.508,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M21",
+      "split": "holdout",
+      "expected": [
+        "tập golf"
+      ],
+      "actual": [
+        "tập golf"
+      ],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 10.447,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M22",
+      "split": "holdout",
+      "expected": [
+        "sao lưu dữ liệu"
+      ],
+      "actual": [
+        "sao lưu dữ liệu"
+      ],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 8.815,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M23",
+      "split": "holdout",
+      "expected": [
+        "dựng video"
+      ],
+      "actual": [],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 9.233,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M24",
+      "split": "holdout",
+      "expected": [],
+      "actual": [
+        "dựng video"
+      ],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 9.612,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M25",
+      "split": "holdout",
+      "expected": [
+        "trích dẫn nguồn"
+      ],
+      "actual": [
+        "trích dẫn nguồn"
+      ],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 8.882,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M26",
+      "split": "holdout",
+      "expected": [
+        "kỹ thuật ảnh"
+      ],
+      "actual": [
+        "kỹ thuật ảnh"
+      ],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 7.713,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M27",
+      "split": "development",
+      "expected": [
+        "thu âm"
+      ],
+      "actual": [],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 8.53,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M28",
+      "split": "development",
+      "expected": [],
+      "actual": [],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 8.715,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M29",
+      "split": "development",
+      "expected": [
+        "sao lưu dữ liệu",
+        "thu âm"
+      ],
+      "actual": [
+        "sao lưu dữ liệu",
+        "thu âm"
+      ],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 8.521,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M30",
+      "split": "development",
+      "expected": [
+        "tập golf"
+      ],
+      "actual": [
+        "tập golf"
+      ],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 8.584,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M31",
+      "split": "development",
+      "expected": [
+        "trích dẫn nguồn"
+      ],
+      "actual": [],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 9.194,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M32",
+      "split": "development",
+      "expected": [
+        "dựng video"
+      ],
+      "actual": [
+        "dựng video"
+      ],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 8.963,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M33",
+      "split": "holdout",
+      "expected": [
+        "kỹ thuật ảnh"
+      ],
+      "actual": [],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 7.858,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M34",
+      "split": "holdout",
+      "expected": [],
+      "actual": [],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 9.527,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M35",
+      "split": "holdout",
+      "expected": [
+        "dựng video",
+        "thu âm"
+      ],
+      "actual": [
+        "dựng video",
+        "thu âm"
+      ],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 8.252,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    },
+    {
+      "id": "M36",
+      "split": "holdout",
+      "expected": [
+        "tập golf"
+      ],
+      "actual": [],
+      "kind": "memory",
+      "top5": [],
+      "service_ms": 8.425,
+      "default_top5": [],
+      "expanded": false,
+      "rank": null
+    }
+  ],
+  "negative_queries": [
+    {
+      "id": "N01",
+      "split": "holdout",
+      "top5": [],
+      "service_ms": 7.705,
+      "default_top5": [],
+      "expanded": false
+    },
+    {
+      "id": "N02",
+      "split": "development",
+      "top5": [],
+      "service_ms": 9.475,
+      "default_top5": [],
+      "expanded": false
+    },
+    {
+      "id": "N03",
+      "split": "holdout",
+      "top5": [],
+      "service_ms": 9.891,
+      "default_top5": [],
+      "expanded": false
+    },
+    {
+      "id": "N04",
+      "split": "development",
+      "top5": [],
+      "service_ms": 10.512,
+      "default_top5": [],
+      "expanded": false
+    },
+    {
+      "id": "N05",
+      "split": "development",
+      "top5": [],
+      "service_ms": 10.334,
+      "default_top5": [],
+      "expanded": false
+    },
+    {
+      "id": "N06",
+      "split": "holdout",
+      "top5": [],
+      "service_ms": 8.081,
+      "default_top5": [],
+      "expanded": false
+    },
+    {
+      "id": "N07",
+      "split": "holdout",
+      "top5": [],
+      "service_ms": 9.577,
+      "default_top5": [],
+      "expanded": false
+    },
+    {
+      "id": "N08",
+      "split": "holdout",
+      "top5": [],
+      "service_ms": 9.247,
+      "default_top5": [],
+      "expanded": false
+    },
+    {
+      "id": "N09",
+      "split": "development",
+      "top5": [],
+      "service_ms": 9.623,
+      "default_top5": [],
+      "expanded": false
+    },
+    {
+      "id": "N10",
+      "split": "development",
+      "top5": [],
+      "service_ms": 8.563,
+      "default_top5": [],
+      "expanded": false
+    },
+    {
+      "id": "N11",
+      "split": "holdout",
+      "top5": [],
+      "service_ms": 8.362,
+      "default_top5": [],
+      "expanded": false
+    },
+    {
+      "id": "N12",
+      "split": "development",
+      "top5": [],
+      "service_ms": 10.699,
+      "default_top5": [],
+      "expanded": false
+    },
+    {
+      "id": "N13",
+      "split": "holdout",
+      "top5": [],
+      "service_ms": 8.347,
+      "default_top5": [],
+      "expanded": false
+    },
+    {
+      "id": "N14",
+      "split": "holdout",
+      "top5": [],
+      "service_ms": 7.649,
+      "default_top5": [],
+      "expanded": false
+    },
+    {
+      "id": "N15",
+      "split": "development",
+      "top5": [],
+      "service_ms": 8.151,
+      "default_top5": [],
+      "expanded": false
+    }
+  ],
+  "before_expanding": {
+    "target_found_in_top5": {
+      "numerator": 0,
+      "denominator": 36,
+      "value": 0.0
+    },
+    "target_at_rank1": {
+      "numerator": 0,
+      "denominator": 36,
+      "value": 0.0
+    },
+    "by_query_kind": {
+      "memory": {
+        "numerator": 0,
+        "denominator": 36,
+        "value": 0.0
+      }
+    },
+    "negative_queries_with_results": {
+      "numerator": 0,
+      "denominator": 15,
+      "value": 0.0
+    },
+    "service_p95_ms": 10.626,
+    "latency_samples": 51
+  },
+  "suggestion_policy": "Expand only when offered and target missing from first five; default-call latency.",
+  "code_sha": "581199039f87a39b7ca3ce0dfd243369ad026d15",
+  "backend_tree_clean": true,
+  "corpus_sha256": "d6870d9000dd7fda9dcc33ad1f3382abcd18be1ac586f6cf92df0face206a979",
+  "gold_sha256": "b6fcbfa9dba36a78f92c3ab4c98251498d9fd14c2884e30e1463197ad4b0c6ee",
+  "evaluator_sha256": "3825c9bd8d7c2e29616951868b8b94f8dbeb14c839f0211fb8a7c9e844ed1266",
+  "gold_origin": "model_authored_provisional",
+  "scope": "disposable_postgresql_text_service_only",
+  "independent_user_uat": "NOT_RUN"
+}

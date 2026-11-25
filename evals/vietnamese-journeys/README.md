@@ -32,8 +32,35 @@ Sau khi chấm, runner thử hai thao tác. Với M01, người dùng ghim một
 
 Qua giao diện Windows, có thể đọc cả 36 bài và lặp lại phép thử bằng tài khoản pilot. Bộ chuẩn tạm có 36 câu hỏi tìm một bài xác định và 3 câu không có bài phù hợp. Câu hỏi được soạn trước phép đo. Người dùng chưa tự đặt câu hỏi sau một khoảng thời gian sử dụng. [Mở pilot và đọc kết quả trình duyệt](README-browser.md)
 
-### Thử tìm theo một phần cụm từ
+<a id="tim-theo-tri-nho"></a>
+
+### Tìm theo trí nhớ trong ứng dụng
+
+Trước đây, `plainto_tsquery` nối các từ bằng điều kiện AND. Tìm chuỗi con cần nguyên cụm, còn sửa lỗi gõ chỉ chạy cho truy vấn một từ. Vì vậy một từ khác cách tác giả viết đã đủ làm cả câu trả rỗng. Ví dụ, “mất đuôi câu nói” có thể chỉ khớp “mất” và “câu” trong bài **Âm cuối lời bị cụt**.
+
+Bản Windows `a0c7dc5` tìm chính xác trước. Khi lượt này rỗng, ứng dụng bỏ các từ dẫn câu hỏi và tra chỉ mục của các ghi chú còn hiển thị cho đúng người, chủ đề, dự án và thẻ. Khớp tiêu đề, từ ít gặp và cặp từ đứng gần nhau được ưu tiên. Mã định danh và số trong câu phải có trong bài. Bằng chứng mạnh có thể xuất hiện ngay, những bài chỉ khớp một phần nhỏ cần người dùng chọn **Tìm gần đúng**. Mỗi kết quả có đoạn văn để đối chiếu.
+
+| Câu hỏi và tiêu chí | Trước sửa | Lượt tìm đầu | Tính cả khi chọn **Tìm gần đúng** |
+| --- | ---: | ---: | ---: |
+| Tìm đúng bài trong top 5, bộ gốc | 16/36 | 22/36 | 36/36 |
+| Trong đó, câu nhớ ý | 3/21 | 8/21 | 21/21 |
+| Câu không có bài đúng nhưng nhận kết quả, bộ gốc | 0/3 | 0/3 | 1/3 |
+| Tìm đúng bài trong top 5, bộ 36 câu nhớ ý mới | 0/36 | 1/36 | 34/36 |
+| Câu không có bài đúng nhưng nhận kết quả, bộ mới | 0/15 | 0/15 | 10/15 |
+
+Ở cột cuối, phép đo chỉ mở rộng khi giao diện cho phép và bài đích còn thiếu trong năm kết quả đầu. Đó là khả năng tìm lại khi sử dụng nút gợi ý. Người thật có nhận ra nút, chọn đúng phương án và mất bao lâu vẫn cần đo riêng. [Bộ gốc trước sửa](results-windows-after.json) · [Bộ gốc sau sửa](recall-original-after.json) · [Câu mới trước sửa](recall-frozen-before.json) · [Câu mới sau sửa](recall-frozen-after.json) · [Nghiệm thu trong Chromium](README-browser.md)
+
+Một tác nhân khác đã soạn 36 câu nhớ ý và 15 câu âm từ nội dung ghi chú rồi khóa tệp trước khi xem thuật toán hoặc xếp hạng. Kết quả tổng hợp của lần thử đầu cho thấy trả gợi ý yếu tự động gây nhầm, vì vậy lần nghiệm thu cuối phân biệt lượt mặc định và lượt mở rộng. Hai bài còn trượt trên bộ mới là M03 và M06. [Tệp câu hỏi đã khóa](recall-check.json)
+
+Chạy lại trong môi trường QA như phần trên. Tệp JSON giữ danh sách kết quả theo từng câu, kết quả lượt đầu, việc có mở rộng và nguồn gốc đáp án.
+
+```powershell
+python evals/vietnamese-journeys/evaluate.py --run original.json --follow-suggestions
+python evals/vietnamese-journeys/evaluate.py --gold evals/vietnamese-journeys/recall-check.json --run recall.json --follow-suggestions
+```
+
+### Phép thử ngoại tuyến trước khi sửa
 
 Lệnh `python evals/vietnamese-journeys/compare_partial_match.py` giữ nguyên mọi kết quả tìm kiếm đã có. Với truy vấn trả rỗng, phép thử xét các bài có ít nhất hai từ chung với câu hỏi sau khi bỏ dấu, ưu tiên từ hiếm trong bộ 36 bài. Số bài đích vào top 5 tăng từ 16/36 lên 36/36, trong đó nhóm nhớ ý tăng từ 3/21 lên 21/21. Cả 3 câu hỏi đáng lẽ trả rỗng cũng nhận gợi ý sai. Trong 16 bài giữ lại, số tìm trúng tăng từ 7 lên 16 và cả 2 câu âm đều có kết quả.
 
-Đây là phép so sánh ngoại tuyến trên tiêu đề và nội dung ghi chú tự soạn. Đợt thử tiếp theo nên cho người dùng chủ động chọn “Tìm gần đúng” sau một lần tìm rỗng, rồi đo số lần gợi ý giúp họ mở đúng bài trên một bộ câu hỏi mới. Kết quả hiện tại đủ để thử cách đó trước khi cân nhắc tìm kiếm vector. Bản pilot đang dùng cách tìm mặc định đã đo qua trình duyệt.
+Phép so sánh này dùng tiêu đề và nội dung ghi chú tự soạn. Bảng trên ghi kết quả thực tế sau khi tính năng được đưa vào ứng dụng.
