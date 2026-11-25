@@ -8,6 +8,7 @@ from uuid import UUID
 from django.db import connection
 
 from .queries import SEARCH_SQL
+from .recall import RECALL_SQL, recall_params
 
 
 CAPTURE_SCAN_LIMIT = 1000
@@ -50,6 +51,7 @@ class SearchHit:
 class SearchPage:
     hits: tuple[SearchHit, ...] = ()
     next_cursor: SearchCursor | None = None
+    match_kind: Literal["standard", "partial"] = "standard"
 
 
 class SearchService:
@@ -60,6 +62,7 @@ class SearchService:
         cursor: SearchCursor | None = None,
         *,
         limit: int = 20,
+        allow_partial: bool = True,
     ) -> SearchPage:
         """Return visible items in rank order with the best match per source.
 
@@ -76,9 +79,23 @@ class SearchService:
         if not any(character.isalnum() for character in query):
             return SearchPage()
 
+        params = _search_params(filters, query, cursor, limit)
+        match_kind = "standard"
         with connection.cursor() as db_cursor:
-            db_cursor.execute(SEARCH_SQL, _search_params(filters, query, cursor, limit))
+            db_cursor.execute(SEARCH_SQL, params)
             rows = db_cursor.fetchall()
+            if not rows and allow_partial and (partial := recall_params(query)):
+                if cursor is not None:
+                    # Existing clients carry only a score and UUID. Never append
+                    # the partial ranking to the end of a nonempty standard one.
+                    db_cursor.execute(SEARCH_SQL, {**params, "cursor_id": None, "cursor_score": None,
+                                                   "page_size": 1})
+                    if db_cursor.fetchone():
+                        return SearchPage()
+                db_cursor.execute(RECALL_SQL, {**params, **partial})
+                rows = db_cursor.fetchall()
+                if rows:
+                    match_kind = "partial"
 
         summaries = {}
         for item_id, title, score, source, snippet, locator, provenance in rows:
@@ -98,7 +115,7 @@ class SearchService:
         if len(hits) > limit:
             hits = hits[:limit]
             next_cursor = SearchCursor(hits[-1].score, hits[-1].item_id)
-        return SearchPage(hits, next_cursor)
+        return SearchPage(hits, next_cursor, match_kind)
 
 
 def _search_params(filters, query, cursor, limit):

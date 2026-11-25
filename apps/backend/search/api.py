@@ -34,6 +34,7 @@ class Cursor(Schema):
 class Page(Schema):
     results: list[Hit]
     next_cursor: Cursor | None
+    match_kind: str = "standard"
 
 
 class Error(Schema):
@@ -110,6 +111,7 @@ def search(
         return {
             "results": [asdict(hit) for hit in page.hits],
             "next_cursor": asdict(page.next_cursor) if page.next_cursor else None,
+            "match_kind": page.match_kind,
         }
     except (ValueError, UnicodeError):
         return Status(422, {"code": "invalid_search"})

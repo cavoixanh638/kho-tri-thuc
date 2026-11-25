@@ -7,11 +7,7 @@ DERIVED_VECTOR = f"to_tsvector('public.kt_vi', {DERIVED_TEXT})"
 CAPTURE_TEXT = "public.kt_search_text(c.raw_text)"
 CAPTURE_VECTOR = f"to_tsvector('public.kt_vi', {CAPTURE_TEXT})"
 
-SEARCH_SQL = rf"""
-WITH input AS NOT MATERIALIZED (
-    SELECT plainto_tsquery('public.kt_vi', %(query)s) AS tsq,
-           public.kt_search_fold(%(query)s) AS folded
-),
+VISIBLE_ITEMS = """
 visible_items AS NOT MATERIALIZED (
     SELECT i.id, i.owner_id, i.title, i.description, i.note
     FROM catalog_item i
@@ -29,7 +25,15 @@ visible_items AS NOT MATERIALIZED (
           SELECT 1 FROM catalog_itemtag it JOIN catalog_tag t ON t.id = it.tag_id
           WHERE it.item_id = i.id AND t.id = %(tag_id)s AND t.owner_id = i.owner_id
       ))
+)
+"""
+
+SEARCH_SQL = rf"""
+WITH input AS NOT MATERIALIZED (
+    SELECT plainto_tsquery('public.kt_vi', %(query)s) AS tsq,
+           public.kt_search_fold(%(query)s) AS folded
 ),
+{VISIBLE_ITEMS},
 -- For the FIRST result page only, six (limit+1) or more visible FTS Item
 -- matches already outrank every substring/typo score (which is <=1.0).
 -- A bounded FTS probe lets PostgreSQL skip the costly fuzzy branch entirely
