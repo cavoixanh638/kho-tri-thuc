@@ -42,7 +42,7 @@ Ngày 25/11/2026. **Nguồn chuẩn theo dõi ưu điểm của 17 nghiên cứu
 | TREE-06 | MỘT PHẦN | Mở tổ tiên, active note, tự cuộn tới bài | G17+ | Deep link 5 tầng |
 | TREE-07 | CÓ MÃ | Thu gọn tất cả và mở lại nhánh | G17+ | Không remount root, keyboard |
 | TREE-08 | CÓ MÃ | Giữ root khi lọc unfiled, cô lập lỗi API sidebar | G17+ | Không sập capture/login; test malformed response |
-| TREE-09 | THIẾU | Tìm nhanh folder/note trong cây | G17+ | 10k không tải hết note |
+| TREE-09 | CÓ MÃ | Tìm nhanh folder/note trong cây | G17+ | 10k không tải hết note |
 | TREE-10 | MỘT PHẦN | Outliner indent/outdent, move bằng phím, zoom node | G14+ | Undo, không sửa raw |
 | TREE-11 | MỘT PHẦN | Reference/node tái sử dụng nhiều vị trí | G14+ G16+ | Shortcut có; block ref còn thiếu |
 
@@ -205,7 +205,7 @@ Ngày 25/11/2026. **Nguồn chuẩn theo dõi ưu điểm của 17 nghiên cứu
 | SEARCH-01 | CÓ MÃ | FTS dấu/không dấu, note và derived | G04.5 G07+ G17+ | 86 query PostgreSQL |
 | SEARCH-02 | CÓ MÃ | Filter topic/project/tag, saved search | G04.5 G06.2 G14.2 | Owner scope |
 | SEARCH-03 | MỘT PHẦN | Fuzzy/tìm theo trí nhớ | G04.6 G07+ | 1/36 đầu, 34/36 mở rộng; 10/15 câu âm có gợi ý sai |
-| SEARCH-04 | THIẾU | Highlight hit đúng fragment | G04.5 G04.2 | XSS safe |
+| SEARCH-04 | CÓ MÃ | Highlight hit đúng fragment | G04.5 G04.2 | XSS safe |
 | SEARCH-05 | THIẾU | Hybrid semantic và nhận biết không có đáp án | G04.6 G07+ G11+ | Gold ≥50 query, recall@5 +10 điểm %, false-related ≤+5 điểm; không tự bật provider |
 | SEARCH-06 | MỘT PHẦN | Modal search, facets, keyboard | G04.5 G09.4 | Palette có, evidence chưa |
 | SEARCH-07 | THIẾU | Tìm OCR/transcript và mở locator từ hit | G02.4 G04.2 G06.6 | Thiếu locator fallback |
@@ -407,7 +407,7 @@ Các đề xuất A–E, P1–P5, I01–I06 quy đổi số theo thứ tự xu�
 | [G17 Obsidian #30](https://github.com/cavoixanh638/kho-tri-thuc/pull/30) | G17.5 Vault | PORT-01, PORT-02, PORT-03, PORT-05 |
 | [G17 Obsidian #30](https://github.com/cavoixanh638/kho-tri-thuc/pull/30) | G17.6 Canvas | VIS-01, VIS-05 |
 
-**Kiểm kê:** 176 ID trong 17 nhóm, 94/94 đề xuất gốc có ánh xạ. MỘT PHẦN: 49; THIẾU: 72; CÓ MÃ: 32; HOÃN CÓ ĐIỀU KIỆN: 23. Đây là số dòng, không phải tỷ lệ hoàn thành sản phẩm. Nguồn [INDEX 17 nghiên cứu](research/notes-apps-20261120/INDEX.md), [ma trận 38 nhóm cũ](workstreams/notes-ux-20261120/G00-FEATURE-TRACEABILITY.md), [G00 #47](https://github.com/cavoixanh638/kho-tri-thuc/pull/47).
+**Kiểm kê:** 176 ID trong 17 nhóm, 94/94 đề xuất gốc có ánh xạ. MỘT PHẦN: 49; THIẾU: 70; CÓ MÃ: 34; HOÃN CÓ ĐIỀU KIỆN: 23. Đây là số dòng, không phải tỷ lệ hoàn thành sản phẩm. Nguồn [INDEX 17 nghiên cứu](research/notes-apps-20261120/INDEX.md), [ma trận 38 nhóm cũ](workstreams/notes-ux-20261120/G00-FEATURE-TRACEABILITY.md), [G00 #47](https://github.com/cavoixanh638/kho-tri-thuc/pull/47).
 
 ## Thứ tự triển khai và ownership
 
@@ -430,5 +430,8 @@ Mỗi nhóm có thể chia thành PR nhỏ theo ID và file sở hữu, không g
 | --- | --- | --- | --- |
 | 25/11/2026 | ALL | baseline a820a6d / NOT_RUN mới | Kế hoạch lập; 94/94 truy vết; bắt đầu TREE-08 và WS-02; chưa merge/deploy |
 | 25/11/2026 | WS-02, TREE-07, TREE-08, GATE-01/09 | 94be069ab7753e46a65b1021482bd113b8ad1d40 / NOT_RUN | CODE checkpoint: separator resize 240–480, keyboard/pointer, reload preference (sessionStorage, CSS cap viewport), collapse/reopen cache, root tree bền qua unfiled, malformed payload retry, shortcut accessible label; test DOM thêm/sửa. Docs README và AGENTS bắt buộc ledger. Chưa xác nhận CI/browser/Windows. Rollback: revert commit frontend + docs (không migration). NEXT: chạy CI đúng HEAD; kiểm pointer thật ở 4 viewport; sau PASS tiếp TREE-06/09, WS-03, EDIT-10. |
+
+| 25/11/2026 | WS-02, TREE-07/08, GATE-01 | 94be069 / 10dc329b | [Actions #45660847662](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/45660847662): bước frontend DOM/unit và bước browser acceptance hoàn tất SUCCESS tại lần đọc; các job tổng thể còn chạy nên chưa gọi release PASS. Đây là bằng chứng của checkpoint cũ, không phải HEAD mới. |
+| 25/11/2026 | TREE-06/09, SEARCH-04 | 6daf1424ca10c55ec7d6c7e5a3ede75458836bb5 / NOT_RUN | CODE: tìm tên folder/note trong sidebar bằng /navigation giới hạn 20+20, debounce/abort/IME, không remount cây; tự cuộn mục lục tới note chính đã tải, không cuộn trang đọc, không đổi focus; highlight token khớp tiếng Việt có/không dấu, NFC/NFD, giữ nguyên text, không giả semantic. J7 thêm CDP pointer thật, keyboard, 4 viewport, search, collapse/restore. Còn giới hạn active note ngoài trang lazy đã tải, TREE-06 vẫn MỘT PHẦN; chưa xác nhận CI/Windows. NEXT: CI đúng HEAD rồi tiếp WS-03/04 và EDIT-10. Rollback revert frontend/tests, không migration. |
 
 **Prompt chuyển tiếp:** Vào repo, đọc file này + AGENTS.md + CURRENT_STATE; kiểm HEAD và PR đang mở, chọn đúng ID, thực hiện code, regression, cập nhật ID + checkpoint, commit/PR, không tự merge/deploy. Giữ tất cả ánh xạ và dòng chưa làm/hoãn.
