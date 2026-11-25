@@ -28,6 +28,21 @@ Phép đo đọc mật khẩu đăng nhập từ tệp riêng và kiểm tra `th
 
 ## Cách đọc báo cáo
 
+[Kết quả Chromium sau khi sửa tìm theo trí nhớ](results-browser-memory-windows.json) được đo trên Windows với Chrome 158, mã ứng dụng `a0c7dc588c98683877835aadd3669f4314813bae` và cùng 36 ghi chú tự soạn. Chromium mở đúng nguyên văn 36/36 bài từ Thư viện. Sau khi khởi động lại pilot, M14 vẫn giữ lựa chọn gỡ “thu âm”.
+
+| Kết quả trong năm bài đầu | Trước khi sửa | Lượt tìm mặc định sau sửa | Sau khi bấm “Tìm gần đúng” nếu cần |
+| --- | --- | --- | --- |
+| Mọi câu có bài đích | 16/36 | 22/36 | 36/36 |
+| Diễn đạt theo trí nhớ | 3/21 | 8/21 | 21/21 |
+| Dùng từ trong bài | 9/10 | 10/10 | 10/10 |
+| Không dấu | 4/5 | 4/5 | 5/5 |
+| Câu ở tập giữ lại có bài đích | 7/16 | 10/16 | 16/16 |
+| Câu không có bài phù hợp nhưng có kết quả | 0/3 | 0/3 | 1/3 |
+
+Ở lượt đầu, 22 bài tìm thấy đều ở vị trí đầu và mở đúng. Chromium bấm “Tìm gần đúng” cho 14 câu chưa tìm thấy bài và một câu có đáp án rỗng. Qua cả hai lượt, cả 36 lần mở từ kết quả đều đúng địa chỉ, tiêu đề và Markdown gốc. Bấm mở rộng có thể đưa thêm gợi ý sai. Đáp án của bộ này là đáp án tạm do người soạn đặt.
+
+Bộ hồi quy P16 độc lập với bộ 36 bài trên dùng 28 mục, 86 truy vấn và PostgreSQL QA. Lượt mặc định giữ Recall@5 73/77 và Precision@5 73/76. Cả 13 truy vấn âm đều trả rỗng và phép kiểm quyền, nguồn chứng cứ đều đạt. [Báo cáo P16 tại cùng bản mã](results-p16-memory-windows.json)
+
 [Báo cáo Chromium trên Windows](results-browser-windows.json) ghi 36 truy vấn tìm ghi chú đích và ba truy vấn được kỳ vọng trả rỗng. Với mỗi mục đích trong năm kết quả đầu, Chromium bấm đúng kết quả và đối chiếu tiêu đề, địa chỉ và Markdown gốc. Báo cáo cũng ghi việc mở từng mục từ danh sách Thư viện, số chủ đề và số gán tự động của pilot. Số liệu thời gian tính từ lần bấm tìm hoặc mở kết quả đến khi giao diện hiển thị. Đáp án là nhãn tạm của người soạn bộ thử.
 
 Trên bản `376d51d5bf78404b5f22c042c555b059225bd92a`, Chromium mở đúng cả 36 ghi chú từ Thư viện. Tìm kiếm đưa mục đích lên đầu với 16/36 truy vấn, trong đó có 7/16 truy vấn của tập giữ lại. Cả 16 lượt mở từ kết quả đều đúng và cả ba truy vấn âm đều trả rỗng. Pilot có 21 gán tự động trên 19 ghi chú.

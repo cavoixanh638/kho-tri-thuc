@@ -1,0 +1,1037 @@
+{
+  "tested_sha": "a0c7dc588c98683877835aadd3669f4314813bae",
+  "app_source_dirty": false,
+  "corpus_sha256": "d6870d9000dd7fda9dcc33ad1f3382abcd18be1ac586f6cf92df0face206a979",
+  "labels_sha256": "804d8befa89e58e041b166b58fd5fb7f294c0257ceaffeee1615c52c31bd13c3",
+  "harness_sha256": "1d7c63b8a728295049cb8829d2cb2fd4f9774718195df4f864da8934c3c5ddf0",
+  "platform": "win32",
+  "chromium": "Chrome/158.0.8127.88",
+  "viewport": "1440x900",
+  "items": 36,
+  "answer_origin": "model_authored_provisional",
+  "created_at": "2026-11-25T15:22:49.076Z",
+  "measurement": "One loopback browser session. summary measures the initial submit. If the target is absent from the first five, the runner clicks Tìm gần đúng when offered and including_expansion reports the resulting path. Search latency starts at the submit or expansion click for that stage; total article time starts at the first submit. Typing and time spent choosing a result excluded. Percentiles use nearest rank.",
+  "pilot": {
+    "login": "PASS",
+    "library_open_exact": 36,
+    "topics": 6,
+    "topics_in_placement_ui": 6,
+    "auto_memberships": 21,
+    "notes_with_auto_memberships": 19,
+    "correction": {
+      "item": "M14",
+      "topic": "thu âm",
+      "action": "already_absent",
+      "status": "VERIFIED_ABSENT"
+    }
+  },
+  "summary": {
+    "queries": 39,
+    "target_at_rank1": {
+      "count": 22,
+      "total": 36
+    },
+    "target_in_top5": {
+      "count": 22,
+      "total": 36
+    },
+    "clicked": 22,
+    "opened_correctly": 22,
+    "opened_wrong": 0,
+    "negative_with_results": {
+      "count": 0,
+      "total": 3
+    },
+    "partial_match_queries": 6,
+    "search_to_render_ms": {
+      "samples": 39,
+      "p50": 204.5,
+      "p95": 270.39999997615814,
+      "max": 377.8000000715256
+    },
+    "click_to_article_ms": {
+      "samples": 22,
+      "p50": 93.09999990463257,
+      "p95": 102.19999992847443,
+      "max": 103.19999992847443
+    },
+    "submit_to_article_ms": {
+      "samples": 22,
+      "p50": 289.39999997615814,
+      "p95": 328.5,
+      "max": 357.3000000715256
+    }
+  },
+  "by_split": {
+    "development": {
+      "queries": 21,
+      "target_at_rank1": {
+        "count": 12,
+        "total": 20
+      },
+      "target_in_top5": {
+        "count": 12,
+        "total": 20
+      },
+      "clicked": 12,
+      "opened_correctly": 12,
+      "opened_wrong": 0,
+      "negative_with_results": {
+        "count": 0,
+        "total": 1
+      },
+      "partial_match_queries": 3,
+      "search_to_render_ms": {
+        "samples": 21,
+        "p50": 204.79999995231628,
+        "p95": 270.39999997615814,
+        "max": 377.8000000715256
+      },
+      "click_to_article_ms": {
+        "samples": 12,
+        "p50": 93.20000004768372,
+        "p95": 103.19999992847443,
+        "max": 103.19999992847443
+      },
+      "submit_to_article_ms": {
+        "samples": 12,
+        "p50": 287.6999999284744,
+        "p95": 326.89999997615814,
+        "max": 326.89999997615814
+      }
+    },
+    "holdout": {
+      "queries": 18,
+      "target_at_rank1": {
+        "count": 10,
+        "total": 16
+      },
+      "target_in_top5": {
+        "count": 10,
+        "total": 16
+      },
+      "clicked": 10,
+      "opened_correctly": 10,
+      "opened_wrong": 0,
+      "negative_with_results": {
+        "count": 0,
+        "total": 2
+      },
+      "partial_match_queries": 3,
+      "search_to_render_ms": {
+        "samples": 18,
+        "p50": 199.10000002384186,
+        "p95": 261,
+        "max": 261
+      },
+      "click_to_article_ms": {
+        "samples": 10,
+        "p50": 93,
+        "p95": 96.10000002384186,
+        "max": 96.10000002384186
+      },
+      "submit_to_article_ms": {
+        "samples": 10,
+        "p50": 292.2999999523163,
+        "p95": 357.3000000715256,
+        "max": 357.3000000715256
+      }
+    }
+  },
+  "expansion_clicks": 15,
+  "including_expansion": {
+    "queries": 39,
+    "target_at_rank1": {
+      "count": 32,
+      "total": 36
+    },
+    "target_in_top5": {
+      "count": 36,
+      "total": 36
+    },
+    "clicked": 36,
+    "opened_correctly": 36,
+    "opened_wrong": 0,
+    "negative_with_results": {
+      "count": 1,
+      "total": 3
+    },
+    "partial_match_queries": 21,
+    "search_to_render_ms": {
+      "samples": 39,
+      "p50": 164.5,
+      "p95": 247,
+      "max": 261
+    },
+    "click_to_article_ms": {
+      "samples": 36,
+      "p50": 93.29999995231628,
+      "p95": 108,
+      "max": 122.80000007152557
+    },
+    "submit_to_article_ms": {
+      "samples": 36,
+      "p50": 324,
+      "p95": 464.6999999284744,
+      "max": 596.2000000476837
+    }
+  },
+  "rows": [
+    {
+      "split": "development",
+      "kind": "literal",
+      "query": "tấm bìa trắng",
+      "target": "M01",
+      "results": [
+        "M01"
+      ],
+      "rank": 1,
+      "ui_match_kind": "standard",
+      "can_expand": false,
+      "search_ms": 86.70000004768372,
+      "open": {
+        "correct": true,
+        "ms": 94.60000002384186,
+        "total_ms": 181.40000009536743
+      },
+      "expanded": null
+    },
+    {
+      "split": "development",
+      "kind": "memory",
+      "query": "mất đuôi câu nói",
+      "target": "M02",
+      "results": [],
+      "rank": null,
+      "ui_match_kind": "standard",
+      "can_expand": true,
+      "search_ms": 258.5,
+      "open": null,
+      "expanded": {
+        "results": [
+          "M02"
+        ],
+        "rank": 1,
+        "ui_match_kind": "partial",
+        "can_expand": false,
+        "search_ms": 92.89999997615814,
+        "open": {
+          "correct": true,
+          "ms": 100.60000002384186,
+          "total_ms": 452.60000002384186
+        }
+      }
+    },
+    {
+      "split": "development",
+      "kind": "memory",
+      "query": "hai camera da mặt khác màu",
+      "target": "M03",
+      "results": [],
+      "rank": null,
+      "ui_match_kind": "standard",
+      "can_expand": true,
+      "search_ms": 377.8000000715256,
+      "open": null,
+      "expanded": {
+        "results": [
+          "M13",
+          "M03"
+        ],
+        "rank": 2,
+        "ui_match_kind": "partial",
+        "can_expand": false,
+        "search_ms": 124.30000007152557,
+        "open": {
+          "correct": true,
+          "ms": 93.70000004768372,
+          "total_ms": 596.2000000476837
+        }
+      }
+    },
+    {
+      "split": "development",
+      "kind": "memory",
+      "query": "kiểm tra bản chép thẻ",
+      "target": "M04",
+      "results": [],
+      "rank": null,
+      "ui_match_kind": "standard",
+      "can_expand": true,
+      "search_ms": 270.39999997615814,
+      "open": null,
+      "expanded": {
+        "results": [
+          "M27",
+          "M04",
+          "M11",
+          "M31"
+        ],
+        "rank": 2,
+        "ui_match_kind": "partial",
+        "can_expand": false,
+        "search_ms": 84.60000002384186,
+        "open": {
+          "correct": true,
+          "ms": 96.30000007152557,
+          "total_ms": 451.60000002384186
+        }
+      }
+    },
+    {
+      "split": "development",
+      "kind": "memory",
+      "query": "trang in khác trang hiện trên màn hình",
+      "target": "M05",
+      "results": [],
+      "rank": null,
+      "ui_match_kind": "standard",
+      "can_expand": true,
+      "search_ms": 228.10000002384186,
+      "open": null,
+      "expanded": {
+        "results": [
+          "M05",
+          "M06",
+          "M22"
+        ],
+        "rank": 1,
+        "ui_match_kind": "partial",
+        "can_expand": false,
+        "search_ms": 94.29999995231628,
+        "open": {
+          "correct": true,
+          "ms": 93,
+          "total_ms": 415.60000002384186
+        }
+      }
+    },
+    {
+      "split": "development",
+      "kind": "literal",
+      "query": "dây song song",
+      "target": "M06",
+      "results": [
+        "M06"
+      ],
+      "rank": 1,
+      "ui_match_kind": "standard",
+      "can_expand": false,
+      "search_ms": 231.29999995231628,
+      "open": {
+        "correct": true,
+        "ms": 93,
+        "total_ms": 324.39999997615814
+      },
+      "expanded": null
+    },
+    {
+      "split": "holdout",
+      "kind": "unaccented",
+      "query": "bang trang bi loa",
+      "target": "M07",
+      "results": [],
+      "rank": null,
+      "ui_match_kind": "standard",
+      "can_expand": true,
+      "search_ms": 233.89999997615814,
+      "open": null,
+      "expanded": {
+        "results": [
+          "M07"
+        ],
+        "rank": 1,
+        "ui_match_kind": "partial",
+        "can_expand": false,
+        "search_ms": 107.79999995231628,
+        "open": {
+          "correct": true,
+          "ms": 122.80000007152557,
+          "total_ms": 464.6999999284744
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "kind": "literal",
+      "query": "vị trí chắn gió",
+      "target": "M08",
+      "results": [
+        "M08"
+      ],
+      "rank": 1,
+      "ui_match_kind": "standard",
+      "can_expand": false,
+      "search_ms": 196.29999995231628,
+      "open": {
+        "correct": true,
+        "ms": 93,
+        "total_ms": 289.39999997615814
+      },
+      "expanded": null
+    },
+    {
+      "split": "holdout",
+      "kind": "memory",
+      "query": "cắt cảnh quá sớm để đọc tên",
+      "target": "M09",
+      "results": [],
+      "rank": null,
+      "ui_match_kind": "standard",
+      "can_expand": true,
+      "search_ms": 229.10000002384186,
+      "open": null,
+      "expanded": {
+        "results": [
+          "M09",
+          "M23"
+        ],
+        "rank": 1,
+        "ui_match_kind": "partial",
+        "can_expand": false,
+        "search_ms": 89.39999997615814,
+        "open": {
+          "correct": true,
+          "ms": 108,
+          "total_ms": 426.7000000476837
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "kind": "unaccented",
+      "query": "goi hut am",
+      "target": "M10",
+      "results": [
+        "M10"
+      ],
+      "rank": 1,
+      "ui_match_kind": "standard",
+      "can_expand": false,
+      "search_ms": 157.10000002384186,
+      "open": {
+        "correct": true,
+        "ms": 91.80000007152557,
+        "total_ms": 249
+      },
+      "expanded": null
+    },
+    {
+      "split": "holdout",
+      "kind": "memory",
+      "query": "ai nói đoạn này và ai diễn giải",
+      "target": "M11",
+      "results": [],
+      "rank": null,
+      "ui_match_kind": "standard",
+      "can_expand": true,
+      "search_ms": 215.80000007152557,
+      "open": null,
+      "expanded": {
+        "results": [
+          "M11",
+          "M35"
+        ],
+        "rank": 1,
+        "ui_match_kind": "partial",
+        "can_expand": false,
+        "search_ms": 94.19999992847443,
+        "open": {
+          "correct": true,
+          "ms": 93.19999992847443,
+          "total_ms": 403.5
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "kind": "memory",
+      "query": "bóng dừng lệch lỗ trên dốc",
+      "target": "M12",
+      "results": [],
+      "rank": null,
+      "ui_match_kind": "standard",
+      "can_expand": true,
+      "search_ms": 171.40000009536743,
+      "open": null,
+      "expanded": {
+        "results": [
+          "M12",
+          "M05",
+          "M36"
+        ],
+        "rank": 1,
+        "ui_match_kind": "partial",
+        "can_expand": false,
+        "search_ms": 93.30000007152557,
+        "open": {
+          "correct": true,
+          "ms": 99.19999992847443,
+          "total_ms": 364.10000002384186
+        }
+      }
+    },
+    {
+      "split": "development",
+      "kind": "literal",
+      "query": "ổ màu cam",
+      "target": "M13",
+      "results": [
+        "M13"
+      ],
+      "rank": 1,
+      "ui_match_kind": "standard",
+      "can_expand": false,
+      "search_ms": 164.19999992847443,
+      "open": {
+        "correct": true,
+        "ms": 93.39999997615814,
+        "total_ms": 257.6999999284744
+      },
+      "expanded": null
+    },
+    {
+      "split": "development",
+      "kind": "memory",
+      "query": "tiền cọc thuê ghế",
+      "target": "M14",
+      "results": [
+        "M14"
+      ],
+      "rank": 1,
+      "ui_match_kind": "standard",
+      "can_expand": false,
+      "search_ms": 203.19999992847443,
+      "open": {
+        "correct": true,
+        "ms": 92.5,
+        "total_ms": 295.89999997615814
+      },
+      "expanded": null
+    },
+    {
+      "split": "development",
+      "kind": "memory",
+      "query": "ảnh bàn tay chuyển động bị mờ",
+      "target": "M15",
+      "results": [],
+      "rank": null,
+      "ui_match_kind": "standard",
+      "can_expand": true,
+      "search_ms": 234.10000002384186,
+      "open": null,
+      "expanded": {
+        "results": [
+          "M15",
+          "M10",
+          "M22",
+          "M23"
+        ],
+        "rank": 1,
+        "ui_match_kind": "partial",
+        "can_expand": false,
+        "search_ms": 94,
+        "open": {
+          "correct": true,
+          "ms": 107.19999992847443,
+          "total_ms": 435.5
+        }
+      }
+    },
+    {
+      "split": "development",
+      "kind": "memory",
+      "query": "hạ nhạc khi có lời",
+      "target": "M16",
+      "results": [
+        "M16"
+      ],
+      "rank": 1,
+      "ui_match_kind": "partial",
+      "can_expand": false,
+      "search_ms": 184.39999997615814,
+      "open": {
+        "correct": true,
+        "ms": 103.19999992847443,
+        "total_ms": 287.6999999284744
+      },
+      "expanded": null
+    },
+    {
+      "split": "development",
+      "kind": "unaccented",
+      "query": "ngay truy cap bai bao",
+      "target": "M17",
+      "results": [
+        "M17"
+      ],
+      "rank": 1,
+      "ui_match_kind": "standard",
+      "can_expand": false,
+      "search_ms": 194.60000002384186,
+      "open": {
+        "correct": true,
+        "ms": 93.60000002384186,
+        "total_ms": 288.40000009536743
+      },
+      "expanded": null
+    },
+    {
+      "split": "development",
+      "kind": "memory",
+      "query": "âm nền căn phòng trống",
+      "target": "M18",
+      "results": [
+        "M18"
+      ],
+      "rank": 1,
+      "ui_match_kind": "partial",
+      "can_expand": true,
+      "search_ms": 204.5,
+      "open": {
+        "correct": true,
+        "ms": 93.29999995231628,
+        "total_ms": 297.89999997615814
+      },
+      "expanded": null
+    },
+    {
+      "split": "development",
+      "kind": "literal",
+      "query": "chia tiền trà",
+      "target": "M19",
+      "results": [
+        "M19"
+      ],
+      "rank": 1,
+      "ui_match_kind": "standard",
+      "can_expand": false,
+      "search_ms": 180.80000007152557,
+      "open": {
+        "correct": true,
+        "ms": 84.30000007152557,
+        "total_ms": 265.2000000476837
+      },
+      "expanded": null
+    },
+    {
+      "split": "development",
+      "kind": "memory",
+      "query": "mất những thay đổi mới hơn bản chép",
+      "target": "M20",
+      "results": [],
+      "rank": null,
+      "ui_match_kind": "standard",
+      "can_expand": true,
+      "search_ms": 136.60000002384186,
+      "open": null,
+      "expanded": {
+        "results": [
+          "M11",
+          "M02",
+          "M04",
+          "M20",
+          "M22",
+          "M28",
+          "M09"
+        ],
+        "rank": 4,
+        "ui_match_kind": "partial",
+        "can_expand": false,
+        "search_ms": 101.39999997615814,
+        "open": {
+          "correct": true,
+          "ms": 85.79999995231628,
+          "total_ms": 324
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "kind": "unaccented",
+      "query": "mep bay cat",
+      "target": "M21",
+      "results": [
+        "M21"
+      ],
+      "rank": 1,
+      "ui_match_kind": "standard",
+      "can_expand": false,
+      "search_ms": 213.89999997615814,
+      "open": {
+        "correct": true,
+        "ms": 83.20000004768372,
+        "total_ms": 297.2000000476837
+      },
+      "expanded": null
+    },
+    {
+      "split": "holdout",
+      "kind": "memory",
+      "query": "hình minh họa bị mất sau chuyển máy",
+      "target": "M22",
+      "results": [
+        "M22"
+      ],
+      "rank": 1,
+      "ui_match_kind": "partial",
+      "can_expand": true,
+      "search_ms": 230.89999997615814,
+      "open": {
+        "correct": true,
+        "ms": 93.70000004768372,
+        "total_ms": 324.7000000476837
+      },
+      "expanded": null
+    },
+    {
+      "split": "holdout",
+      "kind": "literal",
+      "query": "bàn chân chạm đất",
+      "target": "M23",
+      "results": [
+        "M23"
+      ],
+      "rank": 1,
+      "ui_match_kind": "standard",
+      "can_expand": false,
+      "search_ms": 169.5,
+      "open": {
+        "correct": true,
+        "ms": 93.5,
+        "total_ms": 263.10000002384186
+      },
+      "expanded": null
+    },
+    {
+      "split": "holdout",
+      "kind": "unaccented",
+      "query": "gio tra chia khoa",
+      "target": "M24",
+      "results": [
+        "M24"
+      ],
+      "rank": 1,
+      "ui_match_kind": "standard",
+      "can_expand": false,
+      "search_ms": 199.10000002384186,
+      "open": {
+        "correct": true,
+        "ms": 93.09999990463257,
+        "total_ms": 292.2999999523163
+      },
+      "expanded": null
+    },
+    {
+      "split": "holdout",
+      "kind": "memory",
+      "query": "phút và giây người nói",
+      "target": "M25",
+      "results": [
+        "M25"
+      ],
+      "rank": 1,
+      "ui_match_kind": "standard",
+      "can_expand": false,
+      "search_ms": 203.89999997615814,
+      "open": {
+        "correct": true,
+        "ms": 93.19999992847443,
+        "total_ms": 297.2999999523163
+      },
+      "expanded": null
+    },
+    {
+      "split": "holdout",
+      "kind": "literal",
+      "query": "vệt tối chạy ngang",
+      "target": "M26",
+      "results": [
+        "M26"
+      ],
+      "rank": 1,
+      "ui_match_kind": "standard",
+      "can_expand": false,
+      "search_ms": 261,
+      "open": {
+        "correct": true,
+        "ms": 96.10000002384186,
+        "total_ms": 357.3000000715256
+      },
+      "expanded": null
+    },
+    {
+      "split": "development",
+      "kind": "memory",
+      "query": "máy tính bắt âm của webcam",
+      "target": "M27",
+      "results": [],
+      "rank": null,
+      "ui_match_kind": "standard",
+      "can_expand": true,
+      "search_ms": 204.79999995231628,
+      "open": null,
+      "expanded": {
+        "results": [
+          "M35",
+          "M27",
+          "M20"
+        ],
+        "rank": 2,
+        "ui_match_kind": "partial",
+        "can_expand": false,
+        "search_ms": 80.80000007152557,
+        "open": {
+          "correct": true,
+          "ms": 106.40000009536743,
+          "total_ms": 392.2000000476837
+        }
+      }
+    },
+    {
+      "split": "development",
+      "kind": "literal",
+      "query": "mã sửa đổi bản vẽ",
+      "target": "M28",
+      "results": [
+        "M28"
+      ],
+      "rank": 1,
+      "ui_match_kind": "standard",
+      "can_expand": false,
+      "search_ms": 222.69999992847443,
+      "open": {
+        "correct": true,
+        "ms": 92.5,
+        "total_ms": 315.1999999284744
+      },
+      "expanded": null
+    },
+    {
+      "split": "development",
+      "kind": "memory",
+      "query": "lọc nhầm tiếng vỗ tay",
+      "target": "M29",
+      "results": [
+        "M29"
+      ],
+      "rank": 1,
+      "ui_match_kind": "standard",
+      "can_expand": false,
+      "search_ms": 224.60000002384186,
+      "open": {
+        "correct": true,
+        "ms": 102.19999992847443,
+        "total_ms": 326.89999997615814
+      },
+      "expanded": null
+    },
+    {
+      "split": "development",
+      "kind": "literal",
+      "query": "hai đồng xu",
+      "target": "M30",
+      "results": [
+        "M30"
+      ],
+      "rank": 1,
+      "ui_match_kind": "standard",
+      "can_expand": false,
+      "search_ms": 164.5,
+      "open": {
+        "correct": true,
+        "ms": 93.20000004768372,
+        "total_ms": 257.7999999523163
+      },
+      "expanded": null
+    },
+    {
+      "split": "development",
+      "kind": "memory",
+      "query": "từ cầu gỗ trong bản in nào",
+      "target": "M31",
+      "results": [],
+      "rank": null,
+      "ui_match_kind": "standard",
+      "can_expand": true,
+      "search_ms": 244.10000002384186,
+      "open": null,
+      "expanded": {
+        "results": [
+          "M31",
+          "M11",
+          "M02",
+          "M16",
+          "M05"
+        ],
+        "rank": 1,
+        "ui_match_kind": "partial",
+        "can_expand": false,
+        "search_ms": 81.60000002384186,
+        "open": {
+          "correct": true,
+          "ms": 103.70000004768372,
+          "total_ms": 429.5
+        }
+      }
+    },
+    {
+      "split": "development",
+      "kind": "memory",
+      "query": "phim nhạt màu trên điện thoại",
+      "target": "M32",
+      "results": [
+        "M32"
+      ],
+      "rank": 1,
+      "ui_match_kind": "partial",
+      "can_expand": false,
+      "search_ms": 169.69999992847443,
+      "open": {
+        "correct": true,
+        "ms": 91.10000002384186,
+        "total_ms": 261
+      },
+      "expanded": null
+    },
+    {
+      "split": "holdout",
+      "kind": "memory",
+      "query": "bắt nét sẵn chờ xe tới",
+      "target": "M33",
+      "results": [],
+      "rank": null,
+      "ui_match_kind": "standard",
+      "can_expand": true,
+      "search_ms": 164.39999997615814,
+      "open": null,
+      "expanded": {
+        "results": [
+          "M33"
+        ],
+        "rank": 1,
+        "ui_match_kind": "partial",
+        "can_expand": false,
+        "search_ms": 90.39999997615814,
+        "open": {
+          "correct": true,
+          "ms": 93,
+          "total_ms": 347.89999997615814
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "kind": "literal",
+      "query": "đường dẫn để xem sau",
+      "target": "M34",
+      "results": [
+        "M34"
+      ],
+      "rank": 1,
+      "ui_match_kind": "partial",
+      "can_expand": true,
+      "search_ms": 247,
+      "open": {
+        "correct": true,
+        "ms": 81.20000004768372,
+        "total_ms": 328.5
+      },
+      "expanded": null
+    },
+    {
+      "split": "holdout",
+      "kind": "memory",
+      "query": "tiếng khán giả khi cúi chào",
+      "target": "M35",
+      "results": [
+        "M35"
+      ],
+      "rank": 1,
+      "ui_match_kind": "partial",
+      "can_expand": false,
+      "search_ms": 181.59999990463257,
+      "open": {
+        "correct": true,
+        "ms": 92.20000004768372,
+        "total_ms": 273.89999997615814
+      },
+      "expanded": null
+    },
+    {
+      "split": "holdout",
+      "kind": "memory",
+      "query": "canh lực đánh cho bóng lăn xa gần",
+      "target": "M36",
+      "results": [],
+      "rank": null,
+      "ui_match_kind": "standard",
+      "can_expand": true,
+      "search_ms": 217.70000004768372,
+      "open": null,
+      "expanded": {
+        "results": [
+          "M36",
+          "M12"
+        ],
+        "rank": 1,
+        "ui_match_kind": "partial",
+        "can_expand": false,
+        "search_ms": 89.29999995231628,
+        "open": {
+          "correct": true,
+          "ms": 93.39999997615814,
+          "total_ms": 400.60000002384186
+        }
+      }
+    },
+    {
+      "split": "development",
+      "kind": "negative",
+      "query": "keo dán đế giày chạy bộ",
+      "target": null,
+      "results": [],
+      "rank": null,
+      "ui_match_kind": "standard",
+      "can_expand": false,
+      "search_ms": 232.70000004768372,
+      "open": null,
+      "expanded": null
+    },
+    {
+      "split": "holdout",
+      "kind": "negative",
+      "query": "nhiệt kế cho bể cá",
+      "target": null,
+      "results": [],
+      "rank": null,
+      "ui_match_kind": "standard",
+      "can_expand": false,
+      "search_ms": 91.69999992847443,
+      "open": null,
+      "expanded": null
+    },
+    {
+      "split": "holdout",
+      "kind": "negative",
+      "query": "biểu đồ độ mặn nước ao",
+      "target": null,
+      "results": [],
+      "rank": null,
+      "ui_match_kind": "standard",
+      "can_expand": true,
+      "search_ms": 109.79999995231628,
+      "open": null,
+      "expanded": {
+        "results": [
+          "M19"
+        ],
+        "rank": null,
+        "ui_match_kind": "partial",
+        "can_expand": false,
+        "search_ms": 81.20000004768372,
+        "open": null
+      }
+    }
+  ]
+}

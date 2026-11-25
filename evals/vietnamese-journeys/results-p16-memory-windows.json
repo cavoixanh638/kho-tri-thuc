@@ -1,0 +1,114 @@
+{
+  "tested_application_sha": "a0c7dc588c98683877835aadd3669f4314813bae",
+  "search_mode": "default",
+  "status": "MEASURED_SYNTHETIC_PG",
+  "query_count": 86,
+  "positive_queries": 73,
+  "negative_queries": 13,
+  "recall_at_5": 0.948051948051948,
+  "precision_at_5": 0.9605263157894737,
+  "recall_formula": "sum(|top5(q) intersection gold(q)|)/sum(|gold(q)|), positive gold only",
+  "precision_formula": "sum(|top5(q) intersection gold(q)|)/sum(|top5(q)|), positive gold only",
+  "negative_violations": {},
+  "missing_gold": {
+    "S01": [
+      "a_energy"
+    ],
+    "S02": [
+      "a_rail"
+    ],
+    "S03": [
+      "a_island"
+    ],
+    "S04": [
+      "a_health"
+    ]
+  },
+  "evidence_errors": [],
+  "p95_ms": 11.8836,
+  "latency_count": 86,
+  "category_metrics": {
+    "capture": {
+      "positive_queries": 1,
+      "recall_at_5": 1.0,
+      "precision_at_5": 1.0
+    },
+    "derived": {
+      "positive_queries": 5,
+      "recall_at_5": 1.0,
+      "precision_at_5": 1.0
+    },
+    "duplicate": {
+      "positive_queries": 1,
+      "recall_at_5": 1.0,
+      "precision_at_5": 1.0
+    },
+    "identifier": {
+      "positive_queries": 1,
+      "recall_at_5": 1.0,
+      "precision_at_5": 1.0
+    },
+    "nfd_upper": {
+      "positive_queries": 16,
+      "recall_at_5": 1.0,
+      "precision_at_5": 0.9444444444444444
+    },
+    "note": {
+      "positive_queries": 6,
+      "recall_at_5": 1.0,
+      "precision_at_5": 1.0
+    },
+    "owner_private": {
+      "positive_queries": 2,
+      "recall_at_5": 1.0,
+      "precision_at_5": 1.0
+    },
+    "project_filter": {
+      "positive_queries": 1,
+      "recall_at_5": 1.0,
+      "precision_at_5": 1.0
+    },
+    "semantic": {
+      "positive_queries": 4,
+      "recall_at_5": 0.0,
+      "precision_at_5": null
+    },
+    "tag_filter": {
+      "positive_queries": 1,
+      "recall_at_5": 1.0,
+      "precision_at_5": 1.0
+    },
+    "title": {
+      "positive_queries": 16,
+      "recall_at_5": 1.0,
+      "precision_at_5": 0.9444444444444444
+    },
+    "topic_multi": {
+      "positive_queries": 2,
+      "recall_at_5": 1.0,
+      "precision_at_5": 1.0
+    },
+    "typo": {
+      "positive_queries": 1,
+      "recall_at_5": 1.0,
+      "precision_at_5": 1.0
+    },
+    "unaccented": {
+      "positive_queries": 16,
+      "recall_at_5": 1.0,
+      "precision_at_5": 0.9444444444444444
+    }
+  },
+  "no_leak": true,
+  "limitations": [
+    "Synthetic author-defined gold is not independent human relevance judgment.",
+    "Semantic examples are challenges, not a requirement for current lexical FTS.",
+    "P95 measures warm local Service.search calls only, not network/UI or cold-cache.",
+    "No real-world corpus, Drive readback, or production data used."
+  ],
+  "db_backend": "postgresql",
+  "test_database": "p16_rc25",
+  "item_count": 28,
+  "p95_scope": "single warm in-process SearchService.search call; 86 sequential samples",
+  "fixture_transaction": "ROLLBACK"
+}
