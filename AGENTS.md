@@ -14,6 +14,15 @@
 
 **G00 kiểm toán lại đầy đủ kết quả 17 nghiên cứu (20/11/2026):** Đọc [ma trận 38 năng lực](docs/workstreams/notes-ux-20261120/G00-FEATURE-TRACEABILITY.md) trước khi mô tả “áp dụng toàn bộ”. Không đánh đồng thư mục Topic với File Explorer chứa Note; RelatedItems với structural parent; List/Table/Card với Smart Collections; Textarea+Preview với full Obsidian inline Live Preview; gắn URL với clipping trích dẫn; export từng Item với vault portable; suggestion thủ công với AI thật. Mã còn thiếu KT-122–129 và sổ hoãn KT-130, E2E nghiệm thu KT-128; chỉ xem code và test trong PR57 là candidate chưa merge. Giao AI nhánh riêng base HEAD PR57, không cùng sửa App/ItemScreen/LibraryScreen khi nhiều task chạy, G00 ghép, không deploy.
 
+## Cổng đối chiếu kế hoạch và bằng chứng (bổ sung 22/11/2026)
+
+**BẮT BUỘC trước/sau mỗi PR hoặc checkpoint:** đọc [bảng đối chiếu yêu cầu–tiến độ–nghiệm thu](docs/operations/RELEASE_READINESS_20261122.md). Dùng bản v4.7 trong `MASTER_PLAN` làm nguồn phạm vi, `ROADMAP_AND_TESTS` làm tiêu chí, `CURRENT_STATE` làm trạng thái đã kiểm, không tự đổi chuẩn để hợp thức hóa kết quả. Sau mỗi lần triển khai, rà lại từng hàng liên quan và ghi delta.
+
+- Mọi PR **phải** có: mã task KT/Pxx, mốc A/B/C/D; tác động lên mục tiêu gốc; Code SHA và Tested SHA; test mock vs browser vs Drive/provider thật; PASS/FAIL/NOT_RUN + lý do từng ca chưa chạy; điều kiện rollback; các cổng bị ảnh hưởng; NEXT. Dùng [mẫu PR](.github/pull_request_template.md).
+- **Không dùng riêng dấu xanh GitHub Actions để đánh dấu release PASS.** Kiểm kết quả của các step có `continue-on-error` và P08/P15 browser-acceptance ledger; ghi `9 PASS + 4 NOT_RUN` là INCOMPLETE, không gọi toàn P08 thành công. Gate release phải phân biệt với CI build.
+- **Ưu tiên P0 trước mở rộng:** bản ứng viên thống nhất từ main mới nhất, dữ liệu Drive/backup/restore, thu thập media, tìm kiếm/auto-group tiếng Việt, 10k test và hành trình người dùng. Gemini OCR đã được người dùng yêu cầu, nhưng vẫn là pilot, không tự bật API/cost/consent. Android được hoãn theo chỉ đạo hiện tại.
+- Khi nhiều nhánh/PR cùng mở, xác định chuỗi phụ thuộc và `ahead/behind` với main, không gộp lại chỉ vì `mergeable=true`. Chỉ G00 cập nhật `CURRENT_STATE.md` sau review, tránh đồng sửa. Không tự merge/deploy.
+
 ## Ngữ cảnh và thứ tự đọc
 1. Đọc `README.md` và `docs/README.md` để biết nguồn tài liệu chuẩn.
 2. Đọc `docs/CURRENT_STATE.md` để biết **sự thật hiện tại** và phần chưa test, không dựa vào lịch sử chat.
