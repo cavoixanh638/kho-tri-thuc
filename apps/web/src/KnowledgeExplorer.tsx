@@ -81,7 +81,9 @@ function BranchReveal({ open, children }: {open: boolean; children: ReactNode}) 
 
 function Branch({ context, folder, parent, unfiled = false }: { context: Context; folder?: number | null; parent?: string; unfiled?: boolean }) {
   const scope = JSON.stringify([folder,parent,unfiled,context.revision]);
-  const [page, setPage] = useState<Page>(() => context.cache.get(scope)!);
+  const [page, setPage] = useState<Page | undefined>(() => context.cache.get(scope));
+  const pageRef = useRef(page);
+  pageRef.current = page;
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const current = useRef(0);
@@ -94,19 +96,21 @@ function Branch({ context, folder, parent, unfiled = false }: { context: Context
     try {
       const next = await request<Page>('/explorer/children?' + query, {signal});
       if(!Array.isArray(next.folders)||!Array.isArray(next.notes))throw Error('invalid_explorer_page');
-      if(run === current.current) setPage(previous => {
+      if(run === current.current) {
+        const previous = pageRef.current;
         const value = offset && previous ? {folders:[...previous.folders,...next.folders],notes:[...previous.notes,...next.notes],next_offset:next.next_offset} : next;
         context.cache.set(scope,value);
         if (context.cache.size > 160) {
           const first = context.cache.keys().next().value;
           if (first !== undefined) context.cache.delete(first);
         }
-        return value;
-      });
+        pageRef.current=value;
+        setPage(value);
+      }
     } catch(error) { if(!signal?.aborted && run === current.current) setError(failure(error)); }
     finally { if(run === current.current) setBusy(false); }
   }
-  useEffect(()=>{const controller=new AbortController();const cached=context.cache.get(scope);if(cached)setPage(cached);else void load(0,controller.signal);return()=>{controller.abort();current.current++;};},[scope]);
+  useEffect(()=>{const controller=new AbortController();const cached=context.cache.get(scope);if(cached){pageRef.current=cached;setPage(cached);}else void load(0,controller.signal);return()=>{controller.abort();current.current++;};},[scope]);
   async function drop(event: DragEvent, target: Folder) {
     event.preventDefault(); event.stopPropagation(); setError('');
     try {
