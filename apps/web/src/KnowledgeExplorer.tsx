@@ -5,6 +5,7 @@ import { NodeEditor, knowledgeNodeHref, nodeKindLabels, type Editor, type Knowle
 import { Empty, ErrorNotice, itemHref, Loading } from './views';
 import './KnowledgeExplorer.css';
 import { StructureParentEditor } from './ItemStructurePanel';
+import { ExplorerSearch } from './ExplorerSearch';
 
 export type ExplorerNote = { item_id: string; title: string; kind: string; home_topic_id: number | null; parent_item_id: string | null; sort_order: number; structure_version: number; child_count: number; shortcut: boolean; source_fetch: string; asset_storage: string };
 type Folder = Pick<KnowledgeNode, 'id' | 'name' | 'node_kind' | 'parent_id' | 'sort_order' | 'direct_count'>;
@@ -143,7 +144,7 @@ function Branch({ context, folder, parent, unfiled = false }: { context: Context
       return <li key={key} role="treeitem" aria-expanded={note.child_count ? open : undefined} className="explorer-tree-item explorer-note-item" tabIndex={0}>
         <div className="explorer-row" draggable onDragStart={(event)=>{event.stopPropagation();event.dataTransfer.setData('application/x-kho-tri-thuc',JSON.stringify({kind:'note',id:note.item_id,version:note.structure_version}));}}>
           {note.child_count>0?<button type="button" aria-label={(open?'Thu gọn bài ':'Mở bài con ')+note.title} onClick={()=>context.toggle(key)}><ExplorerIcon kind="chevron" open={open}/></button>:<span className="explorer-leaf-spacer" aria-hidden="true"/>}
-          <a href={itemHref(note.item_id)} aria-current={context.selectedNote===note.item_id?'page':undefined} title={note.title + (note.shortcut?' · Lối tắt':'') }><ExplorerIcon kind={note.kind==='link'?'link':'note'}/><span className="explorer-name">{note.title}</span>{note.shortcut&&<span className="explorer-shortcut" role="img" aria-label="Lối tắt · cùng một bài" title="Lối tắt · cùng một bài">↗</span>}</a>
+          <a href={itemHref(note.item_id)} data-explorer-primary={note.shortcut?undefined:'true'} aria-current={context.selectedNote===note.item_id?'page':undefined} title={note.title + (note.shortcut?' · Lối tắt':'') }><ExplorerIcon kind={note.kind==='link'?'link':'note'}/><span className="explorer-name">{note.title}</span>{note.shortcut&&<span className="explorer-shortcut" role="img" aria-label="Lối tắt · cùng một bài" title="Lối tắt · cùng một bài">↗</span>}</a>
         </div>
         <NoteMenu note={note} context={context}/>
         {note.child_count>0 && <BranchReveal open={open}><Branch context={context} parent={note.item_id}/></BranchReveal>}
@@ -207,6 +208,7 @@ export function KnowledgeExplorer({ data, error, onRetry, selectedId, selectedNo
   return <aside className="knowledge-tree-column knowledge-explorer" aria-label="Thư mục và ghi chú">
     <section className="panel knowledge-tree-panel">
       <div className="panel-heading"><h2>Thư mục và ghi chú</h2><Button size="compact-sm" variant="default" onClick={()=>setEditor({parentId:null})}>Thêm kho con</Button></div>
+      <ExplorerSearch nodes={nodes}/>
       <a className="knowledge-tree-root" href="#/thu-vien" aria-current={selectedId==null&&!unfiled&&!selectedNoteId?'page':undefined}>Toàn bộ tri thức</a><a className="knowledge-tree-root" href="#/thu-vien?unfiled=1" aria-current={unfiled&&!selectedNoteId?'page':undefined}>Chưa xếp thư mục</a>
       <div className="explorer-actions"><Button size="compact-sm" variant="default" onClick={()=>context.create({folder:selectedId,label:selected?.name??'Chưa xếp thư mục'})}>Thêm ghi chú tại đây</Button>{selected && <><Button size="compact-sm" variant="default" onClick={()=>setEditor({parentId:selected.id})}>Thêm nhánh con</Button><Button size="compact-sm" variant="subtle" onClick={()=>setEditor({node:selected,parentId:selected.parent_id})}>Đổi tên / chuyển nhánh</Button><Button size="compact-sm" variant="subtle" disabled={busy} onClick={()=>void archive()}>Ẩn thư mục và nhánh con</Button></>}</div>
       <p className="list-meta">Kéo bài vào thư mục để chuyển vị trí chính; giữ Ctrl để thêm lối tắt. Menu Thao tác có các lựa chọn tương đương.</p>

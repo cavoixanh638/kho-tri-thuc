@@ -68,6 +68,36 @@ export function KnowledgeWorkspace({path, csrf, children}: {path?: string; csrf:
   const sidebarRef=useRef<HTMLElement>(null);
   const resize=useRef<{pointerId:number;startX:number;startWidth:number}|undefined>(undefined);
   useEffect(()=>{try{window.sessionStorage.setItem(widthKey,String(sidebarWidth));}catch{/* optional preference */}},[sidebarWidth]);
+  // Observe only the navigator until the canonical note arrives through lazy
+  // branches. Scroll the sidebar, never the reading page or the editor focus.
+  useEffect(()=>{
+    const shell=sidebarRef.current;
+    if(!itemId||!shell)return;
+    const compact=window.matchMedia?.('(max-width:900px)').matches??false;
+    if(compact&&!narrowOpen)return;
+    let timer:number|undefined,done=false;
+    const seek=()=>{
+      if(done||timer!==undefined)return;
+      const anchor=shell.querySelector<HTMLElement>('a[data-explorer-primary="true"][aria-current="page"]');
+      if(!anchor||anchor.closest('[inert]'))return;
+      timer=window.setTimeout(()=>{
+        timer=undefined;
+        if(!anchor.isConnected||anchor.getAttribute('aria-current')!=='page'||anchor.closest('[inert]')){seek();return;}
+        const area=compact?shell.querySelector<HTMLElement>('.library-tree-content'):shell;
+        if(!area)return;
+        const viewport=area.getBoundingClientRect(),row=anchor.getBoundingClientRect();
+        if(viewport.height<=0||row.height<=0)return;
+        const pad=8;
+        if(row.top<viewport.top+pad)area.scrollTop+=row.top-viewport.top-pad;
+        else if(row.bottom>viewport.bottom-pad)area.scrollTop+=row.bottom-viewport.bottom+pad;
+        done=true;observer.disconnect();
+      },window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?0:210);
+    };
+    const observer=new window.MutationObserver(seek);
+    observer.observe(shell,{childList:true,subtree:true,attributes:true,attributeFilter:['aria-current','aria-hidden','class']});
+    seek();
+    return()=>{done=true;observer.disconnect();window.clearTimeout(timer);};
+  },[itemId,narrowOpen]);
   const style={'--kt-explorer-width':sidebarWidth+'px'} as CSSProperties;
   return <WorkspaceContext.Provider value={{tree, revision}}>
     <div className="knowledge-library-layout knowledge-workspace" style={style} onClick={event => {

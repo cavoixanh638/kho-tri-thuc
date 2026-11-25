@@ -87,3 +87,13 @@
 @media(prefers-reduced-motion:reduce) {
   .knowledge-explorer .explorer-branch-reveal,.knowledge-explorer .explorer-icon-chevron { transition:none; }
 }
+
+/* Search is an independent bounded result list, not a replacement tree. */
+.explorer-search { margin-block:6px; min-width:0; }
+.explorer-search label { display:block; font-size:12px; color:var(--muted); margin-bottom:3px; }
+.explorer-search input { width:100%; min-width:0; padding:6px 8px; border:1px solid var(--border,#ccc); border-radius:5px; font:inherit; color:inherit; background:var(--surface,#fff); }
+.explorer-search-results { margin-top:4px; max-height:230px; overflow:auto; overscroll-behavior:contain; border:1px solid var(--border,#ddd); border-radius:5px; padding:4px; }
+.explorer-search-results ul { list-style:none; padding:0; margin:0; }
+.explorer-search-results a { display:block; padding:5px 7px; border-radius:4px; font-size:12px; overflow-wrap:anywhere; text-decoration:none; }
+.explorer-search-results a:hover,.explorer-search-results a:focus-visible { background:var(--ground); }
+.explorer-search-results small,.explorer-search-results p { display:block; font-size:11px; color:var(--muted); margin:4px 2px; }

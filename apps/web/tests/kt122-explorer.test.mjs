@@ -31,6 +31,7 @@ beforeEach(()=>{
   if(url.pathname.endsWith('/structure'))return Response.json({item_id:id,parent_item_id:null,home_topic_id:1,sort_order:0,structure_version:0,origin:'user',ancestors:[],children:[{...note,item_id:child,title:'Chương con',parent_item_id:id,child_count:0}]});
   if(url.pathname.endsWith('/knowledge-tree'))return Response.json({nodes:[folder]});
   if(url.pathname.endsWith('/collections'))return Response.json({results:[]});
+  if(url.pathname.endsWith('/navigation'))return Response.json({items:[{item_id:id,title:note.title,saved_at:'2026-11-21T00:00:00Z'}],folders:[{id:1,name:folder.name,parent_id:null}],next_offset:null});
   if(url.pathname.endsWith('/explorer/find'))return Response.json({results:[{...note,item_id:child,title:'Bài cha đã chọn'}]});
   return Response.json({user_edit_version:4});
  };
@@ -171,4 +172,36 @@ test('WS-02 sidebar resize by keyboard, pointer, reset and persistence across re
  await render(ui.KnowledgeWorkspace,{...props,key:'remounted'});assert.equal(width(),'300px');
  await ui.act(async()=>{container.querySelector('.workspace-divider').dispatchEvent(new window.MouseEvent('dblclick',{bubbles:true}));await settle();});
  assert.equal(width(),'286px');window.sessionStorage.removeItem('kt-explorer-width');
+});
+
+
+test('TREE-09 quick search uses bounded navigation and keeps the original tree mounted',async()=>{
+ await render();await click('Mở Sách tiếng Việt');
+ const row=container.querySelector('.explorer-folder-item');
+ await input('input[aria-label="Tìm trong cây"]','Tiếng Việt');
+ await ui.act(async()=>{await new Promise(r=>setTimeout(r,180));});
+ assert.ok(calls.some(path=>path.includes('/navigation?')&&decodeURIComponent(path).includes('Tiếng Việt')));
+ const results=container.querySelector('.explorer-search-results');
+ assert.ok(results.querySelector('a[href="#/muc/'+id+'"]'));
+ assert.ok(results.querySelector('a[href="#/thu-vien?node=1"]'));
+ assert.equal(container.querySelector('.explorer-folder-item'),row);
+ assert.equal(row.getAttribute('aria-expanded'),'true');
+ assert.equal(mutations.length,0);
+ await ui.act(async()=>{container.querySelector('input[aria-label="Tìm trong cây"]').dispatchEvent(new window.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));await settle();});
+ assert.equal(container.querySelector('.explorer-search-results'),null);
+ assert.equal(container.querySelector('.explorer-folder-item'),row);
+});
+test('TREE-06 active canonical note scrolls the navigator only after lazy expansion',async()=>{
+ const draw=path=>render(ui.KnowledgeWorkspace,{path,csrf:'fixture-csrf',children:ui.createElement('article',null,'Content')});
+ await draw('#/thu-vien?node=1');
+ await draw('#/muc/'+id);
+ const shell=container.querySelector('.library-tree-shell');
+ const anchor=shell.querySelector('a[data-explorer-primary="true"][aria-current="page"]');
+ assert.ok(anchor);
+ shell.getBoundingClientRect=()=>({top:0,bottom:100,height:100});
+ anchor.getBoundingClientRect=()=>({top:230,bottom:250,height:20});
+ shell.scrollTop=0;
+ await ui.act(async()=>{await new Promise(r=>setTimeout(r,240));});
+ assert.equal(shell.scrollTop,158);
+ assert.equal(container.querySelector('.workspace-content article').textContent,'Content');
 });
