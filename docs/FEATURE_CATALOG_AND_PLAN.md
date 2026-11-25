@@ -18,7 +18,7 @@ Ngày 25/11/2026. **Nguồn chuẩn theo dõi ưu điểm của 17 nghiên cứu
 | ID | Trạng thái | Chức năng | Nguồn | Tiêu chí / giới hạn |
 | --- | --- | --- | --- | --- |
 | WS-01 | MỘT PHẦN | Sidebar cố định, cuộn độc lập và giữ DOM khi mở bài | G17+ | Chuyển route giữ sidebar, scroll, nhánh; #101 còn 2 test lỗi |
-| WS-02 | THIẾU | Kéo đường biên để resize, lưu chiều rộng, hỗ trợ bàn phím | G17+ | 240–480px, reload, 390px không tràn |
+| WS-02 | CÓ MÃ | Kéo đường biên để resize, lưu chiều rộng, hỗ trợ bàn phím | G17+ | 240–480px, reload, 390px không tràn |
 | WS-03 | THIẾU | Mở nhiều tab, đóng và mở lại tab | G17+ G14+ | Cùng UUID, không mất draft |
 | WS-04 | THIẾU | Ghim, sắp xếp tab, mở bài trong tab mới | G17+ | Không mất editor state |
 | WS-05 | THIẾU | Chia pane ngang/dọc, mở nguồn cạnh bài | G05.5 G17+ | Hai pane độc lập, mobile fallback |
@@ -40,8 +40,8 @@ Ngày 25/11/2026. **Nguồn chuẩn theo dõi ưu điểm của 17 nghiên cứu
 | TREE-04 | CÓ MÃ | Bài cha–con, đổi cha, sắp thứ tự | G05+ G14+ G17+ | Không dùng related giả parent |
 | TREE-05 | MỘT PHẦN | Animation, chevron/icon, đường cấp, cache | G17+ | 180ms, reduced motion, không giật |
 | TREE-06 | MỘT PHẦN | Mở tổ tiên, active note, tự cuộn tới bài | G17+ | Deep link 5 tầng |
-| TREE-07 | THIẾU | Thu gọn tất cả và mở lại nhánh | G17+ | Không remount root, keyboard |
-| TREE-08 | MỘT PHẦN | Giữ root khi lọc unfiled, cô lập lỗi API sidebar | G17+ | Không sập capture/login; test malformed response |
+| TREE-07 | CÓ MÃ | Thu gọn tất cả và mở lại nhánh | G17+ | Không remount root, keyboard |
+| TREE-08 | CÓ MÃ | Giữ root khi lọc unfiled, cô lập lỗi API sidebar | G17+ | Không sập capture/login; test malformed response |
 | TREE-09 | THIẾU | Tìm nhanh folder/note trong cây | G17+ | 10k không tải hết note |
 | TREE-10 | MỘT PHẦN | Outliner indent/outdent, move bằng phím, zoom node | G14+ | Undo, không sửa raw |
 | TREE-11 | MỘT PHẦN | Reference/node tái sử dụng nhiều vị trí | G14+ G16+ | Shortcut có; block ref còn thiếu |
@@ -304,7 +304,7 @@ Ngày 25/11/2026. **Nguồn chuẩn theo dõi ưu điểm của 17 nghiên cứu
 | GATE-06 | HOÃN CÓ ĐIỀU KIỆN | Android thực theo chỉ đạo | G01–G17 | Hoãn, không PASS |
 | GATE-07 | MỘT PHẦN | Gold search/auto-group Việt độc lập | G01–G17 | Synthetic có; người dùng chưa chạy |
 | GATE-08 | MỘT PHẦN | Giữ raw/UUID/Event/idempotency/consent | G01–G17 | Regression mỗi PR, backup trước migration |
-| GATE-09 | THIẾU | Ledger feature ID/code SHA/tested SHA/DEPLOY | G01–G17 | Không drop row, cập nhật mỗi checkpoint |
+| GATE-09 | MỘT PHẦN | Ledger feature ID/code SHA/tested SHA/DEPLOY | G01–G17 | Không drop row, cập nhật mỗi checkpoint |
 
 ## Ma trận truy ngược 94 đề xuất gốc
 
@@ -407,7 +407,7 @@ Các đề xuất A–E, P1–P5, I01–I06 quy đổi số theo thứ tự xu�
 | [G17 Obsidian #30](https://github.com/cavoixanh638/kho-tri-thuc/pull/30) | G17.5 Vault | PORT-01, PORT-02, PORT-03, PORT-05 |
 | [G17 Obsidian #30](https://github.com/cavoixanh638/kho-tri-thuc/pull/30) | G17.6 Canvas | VIS-01, VIS-05 |
 
-**Kiểm kê:** 176 ID trong 17 nhóm, 94/94 đề xuất gốc có ánh xạ. MỘT PHẦN: 49; THIẾU: 75; CÓ MÃ: 29; HOÃN CÓ ĐIỀU KIỆN: 23. Đây là số dòng, không phải tỷ lệ hoàn thành sản phẩm. Nguồn [INDEX 17 nghiên cứu](research/notes-apps-20261120/INDEX.md), [ma trận 38 nhóm cũ](workstreams/notes-ux-20261120/G00-FEATURE-TRACEABILITY.md), [G00 #47](https://github.com/cavoixanh638/kho-tri-thuc/pull/47).
+**Kiểm kê:** 176 ID trong 17 nhóm, 94/94 đề xuất gốc có ánh xạ. MỘT PHẦN: 49; THIẾU: 72; CÓ MÃ: 32; HOÃN CÓ ĐIỀU KIỆN: 23. Đây là số dòng, không phải tỷ lệ hoàn thành sản phẩm. Nguồn [INDEX 17 nghiên cứu](research/notes-apps-20261120/INDEX.md), [ma trận 38 nhóm cũ](workstreams/notes-ux-20261120/G00-FEATURE-TRACEABILITY.md), [G00 #47](https://github.com/cavoixanh638/kho-tri-thuc/pull/47).
 
 ## Thứ tự triển khai và ownership
 
@@ -429,5 +429,6 @@ Mỗi nhóm có thể chia thành PR nhỏ theo ID và file sở hữu, không g
 | Ngày | ID | Code SHA / Tested SHA | Trạng thái / giới hạn / NEXT |
 | --- | --- | --- | --- |
 | 25/11/2026 | ALL | baseline a820a6d / NOT_RUN mới | Kế hoạch lập; 94/94 truy vết; bắt đầu TREE-08 và WS-02; chưa merge/deploy |
+| 25/11/2026 | WS-02, TREE-07, TREE-08, GATE-01/09 | 94be069ab7753e46a65b1021482bd113b8ad1d40 / NOT_RUN | CODE checkpoint: separator resize 240–480, keyboard/pointer, reload preference (sessionStorage, CSS cap viewport), collapse/reopen cache, root tree bền qua unfiled, malformed payload retry, shortcut accessible label; test DOM thêm/sửa. Docs README và AGENTS bắt buộc ledger. Chưa xác nhận CI/browser/Windows. Rollback: revert commit frontend + docs (không migration). NEXT: chạy CI đúng HEAD; kiểm pointer thật ở 4 viewport; sau PASS tiếp TREE-06/09, WS-03, EDIT-10. |
 
 **Prompt chuyển tiếp:** Vào repo, đọc file này + AGENTS.md + CURRENT_STATE; kiểm HEAD và PR đang mở, chọn đúng ID, thực hiện code, regression, cập nhật ID + checkpoint, commit/PR, không tự merge/deploy. Giữ tất cả ánh xạ và dòng chưa làm/hoãn.
