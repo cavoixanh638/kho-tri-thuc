@@ -1,0 +1,228 @@
+{
+  "topics": [
+    "kỹ thuật ảnh",
+    "thu âm",
+    "dựng video",
+    "sao lưu dữ liệu",
+    "trích dẫn nguồn",
+    "tập golf"
+  ],
+  "items": [
+    {
+      "id": "M01",
+      "split": "development",
+      "title": "Ánh sáng trong ảnh chân dung",
+      "note": "Khi chụp người trước cửa sổ, tôi dùng tấm bìa trắng hắt sáng bên tối và giữ một khoảng nhỏ giữa mẫu với rèm."
+    },
+    {
+      "id": "M02",
+      "split": "development",
+      "title": "Âm cuối lời bị cụt",
+      "note": "Trong bản thu giọng, từ cuối mỗi câu biến mất vì tôi nhả nút ghi sớm. Để máy chạy thêm hai nhịp rồi mới dừng."
+    },
+    {
+      "id": "M03",
+      "split": "development",
+      "title": "Hai khung hình lệch màu",
+      "note": "Khi dựng video phỏng vấn hãy cân sắc da giữa hai máy trước khi ghép góc cận với góc rộng."
+    },
+    {
+      "id": "M04",
+      "split": "development",
+      "title": "Chép xong vẫn cần mở thử",
+      "note": "Sao lưu dữ liệu ảnh thẻ nhớ vào hai ổ. Mở ngẫu nhiên vài tệp ở ổ thứ hai trước khi cất bản gốc."
+    },
+    {
+      "id": "M05",
+      "split": "development",
+      "title": "Vì sao giữ nguyên số trang",
+      "note": "Trích dẫn nguồn trong bài nghiên cứu cần ghi đúng số trang in trên giấy. Trình đọc đếm thêm bìa nên số hiển thị thường lệch."
+    },
+    {
+      "id": "M06",
+      "split": "development",
+      "title": "Trên thảm tập",
+      "note": "Trong buổi tập golf tôi đặt dây song song với hướng nhắm để phát hiện lúc bàn chân vô tình xoay vào trong."
+    },
+    {
+      "id": "M07",
+      "split": "holdout",
+      "title": "Bảng trắng ngoài trời",
+      "note": "Kỹ thuật ảnh trong buổi chụp bảng trắng là đổi góc máy để vệt lóe không che chữ bằng bút xanh."
+    },
+    {
+      "id": "M08",
+      "split": "holdout",
+      "title": "Gió luồn qua đầu mic",
+      "note": "Khi thu âm ở sân, tôi thử hai vị trí chắn gió. Góc bên bức tường vẫn nghe rõ tiếng người ngồi đối diện."
+    },
+    {
+      "id": "M09",
+      "split": "holdout",
+      "title": "Khoảng trống trước cú cắt",
+      "note": "Một nhịp im trước khi đổi cảnh giúp người xem kịp đọc biển tên nhân vật. Bản thử thứ hai giữ thêm nửa giây."
+    },
+    {
+      "id": "M10",
+      "split": "holdout",
+      "title": "Tủ hồ sơ bị ẩm",
+      "note": "Nhóm chuyển phong bì giấy sang kệ cao. Cần thay gói hút ẩm cuối mùa mưa; chưa có tài liệu điện tử trong việc này."
+    },
+    {
+      "id": "M11",
+      "split": "holdout",
+      "title": "Bản ghi lời dẫn hay lời tác giả",
+      "note": "Trong bản chép buổi trao đổi, lời dẫn của người phỏng vấn nằm ở cột trái, ý diễn giải của người viết ở cột phải."
+    },
+    {
+      "id": "M12",
+      "split": "holdout",
+      "title": "Theo dõi đường lăn",
+      "note": "Tôi đánh ba quả trên cùng một dốc nhẹ rồi ghi lại chúng dừng bên trái hay bên phải lỗ. Lần sau chỉ đổi lực tay."
+    },
+    {
+      "id": "M13",
+      "split": "development",
+      "title": "Thứ tự hai chiếc đĩa",
+      "note": "Ổ màu cam mang sang phòng khác mỗi thứ sáu. Ổ màu xám giữ ở nhà để khôi phục các bản vẽ tuần trước."
+    },
+    {
+      "id": "M14",
+      "split": "development",
+      "title": "Loa ở phòng hội thảo",
+      "note": "Tấm biển cạnh chân loa in dòng “Thu âm” vì phòng bên cho thuê micro. Ghi chú này chỉ dùng để nhận ghế và trả tiền đặt cọc."
+    },
+    {
+      "id": "M15",
+      "split": "development",
+      "title": "Khi trời tối mà mẫu vẫn di chuyển",
+      "note": "Tôi chấp nhận hạt nhiễu để tay người đang múa không bị nhòe. Ghi lại tấm rõ nhất cho lần chụp sân khấu sau."
+    },
+    {
+      "id": "M16",
+      "split": "development",
+      "title": "Tách lời nói khỏi nhạc nền",
+      "note": "Dựng video bài giảng cần hạ nhạc lúc người hướng dẫn nói; giữ riêng đường tiếng trong bản dựng để dễ sửa."
+    },
+    {
+      "id": "M17",
+      "split": "development",
+      "title": "Ghi ngày truy cập",
+      "note": "Đường dẫn của bài báo vẫn vậy dù tòa soạn đổi tiêu đề. Phiếu trích dẫn nguồn lưu ngày truy cập và nguyên văn câu đã dùng."
+    },
+    {
+      "id": "M18",
+      "split": "development",
+      "title": "Âm thanh giữa hai câu",
+      "note": "Thu âm mười giây căn phòng trống ở cuối buổi để lấp khoảng gãy khi cắt lời lặp. Gắn nhãn tiếng phòng cho tệp này."
+    },
+    {
+      "id": "M19",
+      "split": "development",
+      "title": "Phiếu đồ uống sân tập",
+      "note": "Hóa đơn ghi “Tập golf” là tên quầy nước. Khoản thanh toán này chỉ cần giữ để chia tiền trà cho cả nhóm."
+    },
+    {
+      "id": "M20",
+      "split": "development",
+      "title": "Một đêm mất điện",
+      "note": "Sau khi máy tắt, thư mục làm việc trống. Bản sao hôm thứ tư mở được nhưng thiếu bảng tính vừa sửa vào tối thứ năm."
+    },
+    {
+      "id": "M21",
+      "split": "holdout",
+      "title": "Bóng nằm dưới vành cỏ",
+      "note": "Tập golf ở mép bẫy cát, tôi chụp lại vị trí bóng và hướng mặt gậy sau mỗi lần thử để so với buổi sau."
+    },
+    {
+      "id": "M22",
+      "split": "holdout",
+      "title": "Bản sao ghi chú không có hình",
+      "note": "Trang đọc được sau khi chuyển máy nhưng hình minh họa báo mất. Tôi bổ sung thư mục ảnh vào danh sách sao lưu dữ liệu."
+    },
+    {
+      "id": "M23",
+      "split": "holdout",
+      "title": "Nhịp bước của nhân vật",
+      "note": "Khi cắt đoạn nhân vật bước qua cửa, chọn điểm bàn chân chạm đất ở cả hai góc quay để chuyển cảnh trông liền."
+    },
+    {
+      "id": "M24",
+      "split": "holdout",
+      "title": "Mượn phòng biên tập",
+      "note": "Lớp “Dựng video” đã trả chìa khóa. Tôi nhận phòng để họp câu lạc bộ sách và cần nhắn bảo vệ giờ đóng cửa."
+    },
+    {
+      "id": "M25",
+      "split": "holdout",
+      "title": "Chèn nguồn ở phút thứ ba",
+      "note": "Trích dẫn nguồn cho phóng sự âm thanh có mốc phút và giây. Tôi giữ thêm tên người nói vì hai khách mời kể cùng sự kiện."
+    },
+    {
+      "id": "M26",
+      "split": "holdout",
+      "title": "Sọc ngang trên áo",
+      "note": "Kỹ thuật ảnh dưới đèn sân khấu cần một ảnh thử trước khi biểu diễn. Phóng to vùng áo trắng sẽ thấy các vệt tối chạy ngang."
+    },
+    {
+      "id": "M27",
+      "split": "development",
+      "title": "Ghi rõ thiết bị đầu vào",
+      "note": "Máy họp báo đã chọn nhầm micro của webcam. Bản thử có tiếng quạt lớn; chạm nhẹ vào mic cài áo để kiểm tra đầu vào."
+    },
+    {
+      "id": "M28",
+      "split": "development",
+      "title": "Hai bản vẽ đều mang tên cuối",
+      "note": "Trước khi gửi cho xưởng, tôi chụp lại mã sửa đổi của từng bản vẽ để hỏi người duyệt. Chưa biết bản nào là file bàn giao."
+    },
+    {
+      "id": "M29",
+      "split": "development",
+      "title": "Giữ bản ghi trước khi lọc tiếng",
+      "note": "Tôi để riêng bản gốc buổi thu âm và đưa cả hai phiên bản vào lịch sao lưu dữ liệu. Khi lọc nhầm tiếng vỗ tay có thể quay lại."
+    },
+    {
+      "id": "M30",
+      "split": "development",
+      "title": "Đưa bóng qua cổng hẹp",
+      "note": "Bài tập golf dùng hai đồng xu làm cổng trước quả bóng. Ghi số lần bóng đi qua mà không chạm đồng xu bên phải."
+    },
+    {
+      "id": "M31",
+      "split": "development",
+      "title": "Một câu nằm ở hai ấn bản",
+      "note": "Tôi tra lại đoạn văn về bến tàu trong bản in cũ và bản tái bản; chỉ bản cũ dùng từ “cầu gỗ”, nên cần nêu ấn bản."
+    },
+    {
+      "id": "M32",
+      "split": "development",
+      "title": "Màu trời sau khi xuất phim",
+      "note": "Bản dựng video xem trên điện thoại bị bạc màu. Giữ lại đoạn xuất thử và tên chế độ màu để các lần so sánh dùng cùng máy."
+    },
+    {
+      "id": "M33",
+      "split": "holdout",
+      "title": "Nét vào người đi xe",
+      "note": "Tôi đặt điểm lấy nét ở một cột ven đường rồi chờ người đi xe lọt vào đúng vùng đó trước khi bấm máy."
+    },
+    {
+      "id": "M34",
+      "split": "holdout",
+      "title": "Bài gửi chưa có ghi chú",
+      "note": "Đây là đường dẫn được chuyển tiếp kèm lời nhắn “để xem sau”. Chưa rõ nội dung, người gửi cũng chưa giới thiệu chủ đề."
+    },
+    {
+      "id": "M35",
+      "split": "holdout",
+      "title": "Giữ nguyên tiếng vỗ tay",
+      "note": "Bản dựng video buổi biểu diễn dùng đúng đoạn thu âm tại khán phòng. Tôi đánh dấu chỗ tiếng vỗ tay bắt đầu để khớp hình cúi chào."
+    },
+    {
+      "id": "M36",
+      "split": "holdout",
+      "title": "Lực tay ở ba khoảng cách",
+      "note": "Tôi chia vùng cỏ phẳng thành ba đích gần, vừa và xa; ghi bóng đầu tiên dừng cách mỗi đích bao nhiêu gang tay."
+    }
+  ]
+}

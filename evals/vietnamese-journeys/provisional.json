@@ -1,0 +1,297 @@
+{
+  "origin": "model_authored_provisional",
+  "judgments": [
+    {
+      "id": "M01",
+      "topics": [
+        "kỹ thuật ảnh"
+      ],
+      "query": "tấm bìa trắng",
+      "query_kind": "literal"
+    },
+    {
+      "id": "M02",
+      "topics": [
+        "thu âm"
+      ],
+      "query": "mất đuôi câu nói",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M03",
+      "topics": [
+        "dựng video"
+      ],
+      "query": "hai camera da mặt khác màu",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M04",
+      "topics": [
+        "sao lưu dữ liệu"
+      ],
+      "query": "kiểm tra bản chép thẻ",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M05",
+      "topics": [
+        "trích dẫn nguồn"
+      ],
+      "query": "trang in khác trang hiện trên màn hình",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M06",
+      "topics": [
+        "tập golf"
+      ],
+      "query": "dây song song",
+      "query_kind": "literal"
+    },
+    {
+      "id": "M07",
+      "topics": [
+        "kỹ thuật ảnh"
+      ],
+      "query": "bang trang bi loa",
+      "query_kind": "unaccented"
+    },
+    {
+      "id": "M08",
+      "topics": [
+        "thu âm"
+      ],
+      "query": "vị trí chắn gió",
+      "query_kind": "literal"
+    },
+    {
+      "id": "M09",
+      "topics": [
+        "dựng video"
+      ],
+      "query": "cắt cảnh quá sớm để đọc tên",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M10",
+      "topics": [],
+      "query": "goi hut am",
+      "query_kind": "unaccented"
+    },
+    {
+      "id": "M11",
+      "topics": [
+        "trích dẫn nguồn"
+      ],
+      "query": "ai nói đoạn này và ai diễn giải",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M12",
+      "topics": [
+        "tập golf"
+      ],
+      "query": "bóng dừng lệch lỗ trên dốc",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M13",
+      "topics": [
+        "sao lưu dữ liệu"
+      ],
+      "query": "ổ màu cam",
+      "query_kind": "literal"
+    },
+    {
+      "id": "M14",
+      "topics": [],
+      "query": "tiền cọc thuê ghế",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M15",
+      "topics": [
+        "kỹ thuật ảnh"
+      ],
+      "query": "ảnh bàn tay chuyển động bị mờ",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M16",
+      "topics": [
+        "dựng video"
+      ],
+      "query": "hạ nhạc khi có lời",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M17",
+      "topics": [
+        "trích dẫn nguồn"
+      ],
+      "query": "ngay truy cap bai bao",
+      "query_kind": "unaccented"
+    },
+    {
+      "id": "M18",
+      "topics": [
+        "thu âm"
+      ],
+      "query": "âm nền căn phòng trống",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M19",
+      "topics": [],
+      "query": "chia tiền trà",
+      "query_kind": "literal"
+    },
+    {
+      "id": "M20",
+      "topics": [
+        "sao lưu dữ liệu"
+      ],
+      "query": "mất những thay đổi mới hơn bản chép",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M21",
+      "topics": [
+        "tập golf"
+      ],
+      "query": "mep bay cat",
+      "query_kind": "unaccented"
+    },
+    {
+      "id": "M22",
+      "topics": [
+        "sao lưu dữ liệu"
+      ],
+      "query": "hình minh họa bị mất sau chuyển máy",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M23",
+      "topics": [
+        "dựng video"
+      ],
+      "query": "bàn chân chạm đất",
+      "query_kind": "literal"
+    },
+    {
+      "id": "M24",
+      "topics": [],
+      "query": "gio tra chia khoa",
+      "query_kind": "unaccented"
+    },
+    {
+      "id": "M25",
+      "topics": [
+        "trích dẫn nguồn"
+      ],
+      "query": "phút và giây người nói",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M26",
+      "topics": [
+        "kỹ thuật ảnh"
+      ],
+      "query": "vệt tối chạy ngang",
+      "query_kind": "literal"
+    },
+    {
+      "id": "M27",
+      "topics": [
+        "thu âm"
+      ],
+      "query": "máy tính bắt âm của webcam",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M28",
+      "topics": [],
+      "query": "mã sửa đổi bản vẽ",
+      "query_kind": "literal"
+    },
+    {
+      "id": "M29",
+      "topics": [
+        "thu âm",
+        "sao lưu dữ liệu"
+      ],
+      "query": "lọc nhầm tiếng vỗ tay",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M30",
+      "topics": [
+        "tập golf"
+      ],
+      "query": "hai đồng xu",
+      "query_kind": "literal"
+    },
+    {
+      "id": "M31",
+      "topics": [
+        "trích dẫn nguồn"
+      ],
+      "query": "từ cầu gỗ trong bản in nào",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M32",
+      "topics": [
+        "dựng video"
+      ],
+      "query": "phim nhạt màu trên điện thoại",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M33",
+      "topics": [
+        "kỹ thuật ảnh"
+      ],
+      "query": "bắt nét sẵn chờ xe tới",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M34",
+      "topics": [],
+      "query": "đường dẫn để xem sau",
+      "query_kind": "literal"
+    },
+    {
+      "id": "M35",
+      "topics": [
+        "dựng video",
+        "thu âm"
+      ],
+      "query": "tiếng khán giả khi cúi chào",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M36",
+      "topics": [
+        "tập golf"
+      ],
+      "query": "canh lực đánh cho bóng lăn xa gần",
+      "query_kind": "memory"
+    }
+  ],
+  "negative_queries": [
+    {
+      "split": "development",
+      "query": "keo dán đế giày chạy bộ"
+    },
+    {
+      "split": "holdout",
+      "query": "nhiệt kế cho bể cá"
+    },
+    {
+      "split": "holdout",
+      "query": "biểu đồ độ mặn nước ao"
+    }
+  ]
+}
