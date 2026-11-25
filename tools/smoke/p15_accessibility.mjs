@@ -246,6 +246,13 @@ async function browserAudit() {
       undefined, 'loaded synthetic tree before keyboard checks');
       // A synthetic QA account has one top-level P08 folder. Expand first to
       // reveal its children BEFORE testing roving ArrowDown/ArrowUp navigation.
+      // Route transitions now retain tree state. Start this keyboard exercise
+      // from a deterministically collapsed visible root, not a remount.
+      await page.eval(() => {
+        const root=document.querySelector('.knowledge-explorer nav[role="tree"] > .explorer-list > .explorer-folder-item');
+        if(root?.getAttribute('aria-expanded')==='true')root.querySelector('.explorer-row > button')?.click();
+      });
+      await waitFor(() => !!document.querySelector('.knowledge-explorer nav[role="tree"] > .explorer-list > .explorer-folder-item[aria-expanded="false"]'),undefined,'root collapsed for explicit keyboard expand');
       const expandable = await page.eval(() =>
         !!document.querySelector('.knowledge-explorer [role="treeitem"][aria-expanded="false"]'));
       if (expandable) {
