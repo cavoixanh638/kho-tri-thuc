@@ -1,0 +1,171 @@
+{
+  "application_sha": "a0c7dc588c98683877835aadd3669f4314813bae",
+  "search_code_clean": true,
+  "database": "kt_p08_scale",
+  "owner_items": 10000,
+  "owner_topics": 1000,
+  "samples_per_case": 20,
+  "scope": "Read-only, warm SearchService and local PostgreSQL; 10k repetitive synthetic notes, not a user library.",
+  "cases": {
+    "exact_id": {
+      "query": "KTJ9TERM05678",
+      "results_returned": 1,
+      "target_rank": 1,
+      "median_ms": 4.18,
+      "p95_ms": 5.47,
+      "select_plans": [
+        {
+          "execution_ms": 0.98,
+          "item_seq_rows_examined": 0,
+          "indexes_used": [
+            "capture_owner_received_idx",
+            "catalog_item_pkey",
+            "derived_item_kind_active_idx",
+            "ingestion_captureevent_pkey",
+            "kt_item_fts_gin",
+            "kt_item_trgm_gin",
+            "processing_derivedcontent_pkey"
+          ],
+          "shared_blocks_hit": 66,
+          "shared_blocks_read": 0
+        }
+      ]
+    },
+    "common_phrase": {
+      "query": "kiểm thử phân trang",
+      "results_returned": 5,
+      "target_rank": null,
+      "median_ms": 716.24,
+      "p95_ms": 814.18,
+      "select_plans": [
+        {
+          "execution_ms": 901.17,
+          "item_seq_rows_examined": 0,
+          "indexes_used": [
+            "capture_owner_received_idx",
+            "catalog_item_pkey",
+            "derived_item_kind_active_idx",
+            "ingestion_captureevent_pkey",
+            "kt_item_fts_gin",
+            "kt_item_trgm_gin",
+            "processing_derivedcontent_pkey"
+          ],
+          "shared_blocks_hit": 30774,
+          "shared_blocks_read": 0
+        }
+      ]
+    },
+    "remembered_with_id": {
+      "query": "tôi nhớ bài KTJ9TERM05678 nói về cách phân trang",
+      "results_returned": 1,
+      "target_rank": 1,
+      "median_ms": 8.43,
+      "p95_ms": 12.43,
+      "select_plans": [
+        {
+          "execution_ms": 1.11,
+          "item_seq_rows_examined": 0,
+          "indexes_used": [
+            "capture_owner_received_idx",
+            "derived_item_kind_active_idx",
+            "kt_item_fts_gin",
+            "kt_item_trgm_gin"
+          ],
+          "shared_blocks_hit": 167,
+          "shared_blocks_read": 0
+        },
+        {
+          "execution_ms": 2.81,
+          "item_seq_rows_examined": 0,
+          "indexes_used": [
+            "catalog_item_pkey",
+            "kt_item_fts_gin"
+          ],
+          "shared_blocks_hit": 46,
+          "shared_blocks_read": 0
+        }
+      ]
+    },
+    "common_near_miss": {
+      "query": "hướng dẫn phục hồi lịch uống thuốc sau phẫu thuật",
+      "results_returned": 0,
+      "target_rank": null,
+      "median_ms": 8.79,
+      "p95_ms": 10.81,
+      "select_plans": [
+        {
+          "execution_ms": 1.75,
+          "item_seq_rows_examined": 0,
+          "indexes_used": [
+            "capture_owner_received_idx",
+            "derived_item_kind_active_idx",
+            "kt_item_fts_gin",
+            "kt_item_trgm_gin"
+          ],
+          "shared_blocks_hit": 135,
+          "shared_blocks_read": 0
+        },
+        {
+          "execution_ms": 2.15,
+          "item_seq_rows_examined": 0,
+          "indexes_used": [
+            "kt_item_fts_gin"
+          ],
+          "shared_blocks_hit": 44,
+          "shared_blocks_read": 0
+        }
+      ]
+    },
+    "unrelated": {
+      "query": "cánh diều tre trong mùa gió chướng",
+      "results_returned": 0,
+      "target_rank": null,
+      "median_ms": 6.62,
+      "p95_ms": 8.93,
+      "select_plans": [
+        {
+          "execution_ms": 0.73,
+          "item_seq_rows_examined": 0,
+          "indexes_used": [
+            "capture_owner_received_idx",
+            "derived_item_kind_active_idx",
+            "kt_item_fts_gin",
+            "kt_item_trgm_gin"
+          ],
+          "shared_blocks_hit": 87,
+          "shared_blocks_read": 0
+        },
+        {
+          "execution_ms": 0.39,
+          "item_seq_rows_examined": 0,
+          "indexes_used": [
+            "kt_item_fts_gin"
+          ],
+          "shared_blocks_hit": 21,
+          "shared_blocks_read": 0
+        }
+      ]
+    },
+    "foreign_id": {
+      "query": "KTJ9PRIVATEOTHEROWNER",
+      "results_returned": 0,
+      "target_rank": null,
+      "median_ms": 3.74,
+      "p95_ms": 4.87,
+      "select_plans": [
+        {
+          "execution_ms": 0.4,
+          "item_seq_rows_examined": 0,
+          "indexes_used": [
+            "capture_owner_received_idx",
+            "derived_item_kind_active_idx",
+            "kt_item_fts_gin",
+            "kt_item_trgm_gin"
+          ],
+          "shared_blocks_hit": 55,
+          "shared_blocks_read": 0
+        }
+      ]
+    }
+  }
+}
