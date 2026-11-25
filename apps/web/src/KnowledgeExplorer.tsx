@@ -1,5 +1,5 @@
 import { Button, Textarea, TextInput } from '@mantine/core';
-import { useEffect, useId, useRef, useState, type DragEvent, type KeyboardEvent } from 'react';
+import { useEffect, useId, useRef, useState, type DragEvent, type KeyboardEvent, type ReactNode } from 'react';
 import { ApiError, request, type Receipt } from './api';
 import { NodeEditor, knowledgeNodeHref, nodeKindLabels, type Editor, type KnowledgeNode, type KnowledgeTreeData } from './KnowledgeTree';
 import { Empty, ErrorNotice, itemHref, Loading } from './views';
@@ -10,7 +10,7 @@ export type ExplorerNote = { item_id: string; title: string; kind: string; home_
 type Folder = Pick<KnowledgeNode, 'id' | 'name' | 'node_kind' | 'parent_id' | 'sort_order' | 'direct_count'>;
 type Page = { folders: Folder[]; notes: ExplorerNote[]; next_offset: number | null };
 type CreateAt = { folder: number | null; parent?: string; label: string };
-type Context = { csrf: string; nodes: KnowledgeNode[]; selected: number | null; revision: number; onChanged: () => void; editFolder: (node: KnowledgeNode) => void; create: (at: CreateAt) => void; expanded: Set<string>; toggle: (key: string, open?: boolean) => void; selectedPath: number[] };
+type Context = { csrf: string; nodes: KnowledgeNode[]; selected: number | null; selectedNote?: string; revision: number; cache: Map<string, Page>; onChanged: () => void; editFolder: (node: KnowledgeNode) => void; create: (at: CreateAt) => void; expanded: Set<string>; toggle: (key: string, open?: boolean) => void; selectedPath: number[] };
 const failure = (error: unknown) => error instanceof ApiError && error.status === 409 ? 'Cấu trúc đã đổi ở phiên khác. Tải lại cây rồi thử lại.' : 'Chưa thực hiện được. Kiểm tra quyền, vị trí hoặc chu trình; nội dung vẫn được giữ.';
 
 function NoteMenu({ note, context }: { note: ExplorerNote; context: Context }) {
@@ -35,7 +35,7 @@ function NoteMenu({ note, context }: { note: ExplorerNote; context: Context }) {
       context.onChanged();
     } catch(error) { setError(failure(error)); } finally { setBusy(false); }
   }
-  return <details onToggle={(event)=>setMenuOpen(event.currentTarget.open)}><summary aria-label={'Thao tác ghi chú ' + note.title}>Thao tác</summary>{menuOpen && <div className="explorer-menu">
+  return <details className="explorer-note-menu" onToggle={(event)=>setMenuOpen(event.currentTarget.open)}><summary aria-label={'Thao tác ghi chú ' + note.title}>Thao tác</summary>{menuOpen && <div className="explorer-menu">
     <a href={itemHref(note.item_id)}>Mở ghi chú</a>
     <label>Đổi tên ghi chú<input value={title} maxLength={512} disabled={busy} onChange={(event)=>setTitle(event.currentTarget.value)}/></label>
     <Button size="compact-sm" variant="default" disabled={busy || !title.trim()} onClick={()=>void rename()}>Lưu tên</Button>
@@ -50,12 +50,41 @@ function NoteMenu({ note, context }: { note: ExplorerNote; context: Context }) {
   </div>}</details>;
 }
 
+function ExplorerIcon({ kind, open = false }: {kind: 'folder' | 'note' | 'link' | 'chevron'; open?: boolean}) {
+  return <svg className={'explorer-icon explorer-icon-' + kind + (open ? ' is-open' : '')}
+    width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    {kind === 'chevron' ? <path d="m9 6 6 6-6 6"/> :
+      kind === 'folder' ? (open ? <path d="M3 7h7l2 2h9l-3 11H3z M3 7V4h7l2 3h8v2"/> : <path d="M3 6h7l2 2h9v12H3z"/>) :
+      kind === 'link' ? <path d="M7 17 17 7M7 7h10v10"/> : <path d="M6 3h8l4 4v14H6z M14 3v5h4 M9 12h6 M9 16h6"/>}
+  </svg>;
+}
+
+/** Animate intrinsic height, never a guessed max-height. Unmount a closed
+ * branch after the transition; the bounded in-memory page cache makes reopening
+ * immediate. Closing content cannot receive focus or keyboard navigation. */
+function BranchReveal({ open, children }: {open: boolean; children: ReactNode}) {
+  const [retained, setRetained] = useState(open);
+  useEffect(() => {
+    if (open) { setRetained(true); return; }
+    if (!retained) return;
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+      setRetained(false); return;
+    }
+    const timer = window.setTimeout(() => setRetained(false), 190);
+    return () => window.clearTimeout(timer);
+  }, [open, retained]);
+  return <div className={'explorer-branch-reveal' + (open ? ' is-open' : '')} aria-hidden={!open} inert={!open}>
+    <div className="explorer-branch-inner">{(open || retained) && children}</div>
+  </div>;
+}
+
 function Branch({ context, folder, parent, unfiled = false }: { context: Context; folder?: number | null; parent?: string; unfiled?: boolean }) {
-  const [page, setPage] = useState<Page>();
+  const scope = JSON.stringify([folder,parent,unfiled,context.revision]);
+  const [page, setPage] = useState<Page>(() => context.cache.get(scope)!);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const current = useRef(0);
-  const scope = JSON.stringify([folder,parent,unfiled,context.revision]);
   async function load(offset = 0, signal?: AbortSignal) {
     const run = ++current.current; setBusy(true); setError('');
     const query = new URLSearchParams({offset:String(offset),limit:'50'});
@@ -65,11 +94,19 @@ function Branch({ context, folder, parent, unfiled = false }: { context: Context
     try {
       const next = await request<Page>('/explorer/children?' + query, {signal});
       if(!Array.isArray(next.folders)||!Array.isArray(next.notes))throw Error('invalid_explorer_page');
-      if(run === current.current) setPage((previous)=>offset && previous ? {folders:[...previous.folders,...next.folders],notes:[...previous.notes,...next.notes],next_offset:next.next_offset} : next);
+      if(run === current.current) setPage(previous => {
+        const value = offset && previous ? {folders:[...previous.folders,...next.folders],notes:[...previous.notes,...next.notes],next_offset:next.next_offset} : next;
+        context.cache.set(scope,value);
+        if (context.cache.size > 160) {
+          const first = context.cache.keys().next().value;
+          if (first !== undefined) context.cache.delete(first);
+        }
+        return value;
+      });
     } catch(error) { if(!signal?.aborted && run === current.current) setError(failure(error)); }
     finally { if(run === current.current) setBusy(false); }
   }
-  useEffect(()=>{const controller=new AbortController();setPage(undefined);void load(0,controller.signal);return()=>{controller.abort();current.current++;};},[scope]);
+  useEffect(()=>{const controller=new AbortController();const cached=context.cache.get(scope);if(cached)setPage(cached);else void load(0,controller.signal);return()=>{controller.abort();current.current++;};},[scope]);
   async function drop(event: DragEvent, target: Folder) {
     event.preventDefault(); event.stopPropagation(); setError('');
     try {
@@ -87,25 +124,25 @@ function Branch({ context, folder, parent, unfiled = false }: { context: Context
   return <>{error && <ErrorNotice retry={()=>void load()}>{error}</ErrorNotice>}<ul className="explorer-list" role="group">
     {page?.folders.map((node)=>{
       const key='folder:'+node.id,open=context.expanded.has(key);
-      return <li key={key} role="treeitem" aria-expanded={open} className="explorer-tree-item" tabIndex={0}>
+      return <li key={key} role="treeitem" aria-expanded={open} className="explorer-tree-item explorer-folder-item" tabIndex={0}>
         <div className="explorer-row" onDragOver={(event)=>event.preventDefault()} onDrop={(event)=>void drop(event,node)} draggable onDragStart={(event)=>{event.stopPropagation();event.dataTransfer.setData('application/x-kho-tri-thuc',JSON.stringify({kind:'folder',id:node.id}));}}>
-          <button type="button" aria-label={(open?'Thu gọn ':'Mở ')+node.name} onClick={()=>context.toggle(key,!open)}>{open?'⌄':'›'}</button>
-          <a href={knowledgeNodeHref(node.id)} aria-current={context.selected===node.id?'page':undefined}><span aria-hidden="true">▱ </span>{node.name}<small>{nodeKindLabels[node.node_kind]}</small></a>
+          <button type="button" aria-label={(open?'Thu gọn ':'Mở ')+node.name} onClick={()=>context.toggle(key,!open)}><ExplorerIcon kind="chevron" open={open}/></button>
+          <a href={knowledgeNodeHref(node.id)} aria-current={context.selected===node.id&&!context.selectedNote?'page':undefined} title={node.name + " · " + nodeKindLabels[node.node_kind]}><ExplorerIcon kind="folder" open={open}/><span className="explorer-name">{node.name}</span></a>
           <span className="explorer-count">{context.nodes.find((entry)=>entry.id===node.id)?.item_count??node.direct_count}</span>
-          <button type="button" aria-label={'Chỉnh thư mục '+node.name} onClick={()=>{const full=context.nodes.find((entry)=>entry.id===node.id);if(full)context.editFolder(full);}}>Sửa</button>
+          <button type="button" aria-label={'Chỉnh thư mục '+node.name} onClick={()=>{const full=context.nodes.find((entry)=>entry.id===node.id);if(full)context.editFolder(full);}} className="explorer-edit">⋯</button>
         </div>
-        {open && <Branch context={context} folder={node.id}/>}
+        <BranchReveal open={open}><Branch context={context} folder={node.id}/></BranchReveal>
       </li>;
     })}
     {page?.notes.map((note)=>{
       const key='note:'+note.item_id,open=context.expanded.has(key);
-      return <li key={key} role="treeitem" aria-expanded={note.child_count ? open : undefined} className="explorer-tree-item" tabIndex={0}>
+      return <li key={key} role="treeitem" aria-expanded={note.child_count ? open : undefined} className="explorer-tree-item explorer-note-item" tabIndex={0}>
         <div className="explorer-row" draggable onDragStart={(event)=>{event.stopPropagation();event.dataTransfer.setData('application/x-kho-tri-thuc',JSON.stringify({kind:'note',id:note.item_id,version:note.structure_version}));}}>
-          {note.child_count>0?<button type="button" aria-label={(open?'Thu gọn bài ':'Mở bài con ')+note.title} onClick={()=>context.toggle(key)}>{open?'⌄':'›'}</button>:<span aria-hidden="true">·</span>}
-          <a href={itemHref(note.item_id)}><span aria-hidden="true">{note.kind==='text'?'▤ ':note.kind==='link'?'↗ ':'▧ '}</span>{note.title}<small>{note.shortcut?'Lối tắt · cùng một bài':'Bài chính'}{note.child_count?' · '+note.child_count+' bài con':''}</small></a>
+          {note.child_count>0?<button type="button" aria-label={(open?'Thu gọn bài ':'Mở bài con ')+note.title} onClick={()=>context.toggle(key)}><ExplorerIcon kind="chevron" open={open}/></button>:<span className="explorer-leaf-spacer" aria-hidden="true"/>}
+          <a href={itemHref(note.item_id)} aria-current={context.selectedNote===note.item_id?'page':undefined} title={note.title + (note.shortcut?' · Lối tắt':'') }><ExplorerIcon kind={note.kind==='link'?'link':'note'}/><span className="explorer-name">{note.title}</span>{note.shortcut&&<span className="explorer-shortcut" aria-label="Lối tắt">↗</span>}</a>
         </div>
         <NoteMenu note={note} context={context}/>
-        {open && note.child_count>0 && <Branch context={context} parent={note.item_id}/>}
+        {note.child_count>0 && <BranchReveal open={open}><Branch context={context} parent={note.item_id}/></BranchReveal>}
       </li>;
     })}
     {page && !page.folders.length && !page.notes.length && <li><Empty>Chưa có thư mục hoặc ghi chú tại đây.</Empty></li>}
@@ -113,13 +150,15 @@ function Branch({ context, folder, parent, unfiled = false }: { context: Context
   </ul></>;
 }
 
-export function KnowledgeExplorer({ data, error, onRetry, selectedId, unfiled, csrf, onSaved }: {
-  data?:KnowledgeTreeData;error?:boolean;onRetry:()=>void;selectedId:number|null;unfiled:boolean;csrf:string;onSaved:(node:KnowledgeNode)=>void;
+export function KnowledgeExplorer({ data, error, onRetry, selectedId, selectedNoteId, selectedNoteAncestors, refreshRevision, unfiled, csrf, onSaved }: {
+  data?:KnowledgeTreeData;error?:boolean;onRetry:()=>void;selectedId:number|null;selectedNoteId?:string;selectedNoteAncestors?:string[];refreshRevision?:number;unfiled:boolean;csrf:string;onSaved:(node:KnowledgeNode)=>void;
 }) {
   const [expanded,setExpanded]=useState<Set<string>>(()=>new Set());
   const [editor,setEditor]=useState<Editor>();
   const [createAt,setCreateAt]=useState<CreateAt>();
-  const [revision,setRevision]=useState(0);
+  const [localRevision,setRevision]=useState(0);
+  const revision=refreshRevision ?? localRevision;
+  const cache=useRef(new Map<string, Page>());
   const [newTitle,setNewTitle]=useState('');
   const [text,setText]=useState('');
   const [busy,setBusy]=useState(false);
@@ -130,8 +169,10 @@ export function KnowledgeExplorer({ data, error, onRetry, selectedId, unfiled, c
   const nodes=data?.nodes??[];
   const ancestorKey=selected?.path_ids.join(':')??'';
   useEffect(()=>{if(!ancestorKey)return;setExpanded((old)=>new Set([...old,...ancestorKey.split(':').map((id)=>'folder:'+id)]));},[ancestorKey]);
+  const noteAncestorKey=selectedNoteAncestors?.join(':')??'';
+  useEffect(()=>{if(!noteAncestorKey)return;setExpanded(old=>new Set([...old,...noteAncestorKey.split(':').map(id=>'note:'+id)]));},[noteAncestorKey]);
   const changed=()=>{setRevision((value)=>value+1);onRetry();};
-  const context:Context={csrf,nodes,selected:selectedId,revision,onChanged:changed,editFolder:(node)=>setEditor({node,parentId:node.parent_id}),create:(at)=>{setCreateAt(at);setText('');setNewTitle('');attempt.current=undefined;setFailure('');},expanded,toggle:(key,open)=>setExpanded((old)=>{const next=new Set(old);if(open??!next.has(key))next.add(key);else next.delete(key);return next;}),selectedPath:selected?.path_ids??[]};
+  const context:Context={csrf,nodes,selected:selectedId,selectedNote:selectedNoteId,revision,cache:cache.current,onChanged:changed,editFolder:(node)=>setEditor({node,parentId:node.parent_id}),create:(at)=>{setCreateAt(at);setText('');setNewTitle('');attempt.current=undefined;setFailure('');},expanded,toggle:(key,open)=>setExpanded((old)=>{const next=new Set(old);if(open??!next.has(key))next.add(key);else next.delete(key);return next;}),selectedPath:selected?.path_ids??[]};
   useEffect(()=>{const command=(event:Event)=>{const detail=(event as CustomEvent).detail;if(detail?.action==='create')context.create({folder:selectedId,label:selected?.name??'Chưa xếp thư mục'});};window.addEventListener('knowledge-command',command);return()=>window.removeEventListener('knowledge-command',command);},[selectedId,selected?.name]);
   async function submitNote() {
     if(busy||!createAt||!text.trim())return;
@@ -150,7 +191,7 @@ export function KnowledgeExplorer({ data, error, onRetry, selectedId, unfiled, c
     if(event.nativeEvent.isComposing || event.keyCode===229)return;
     if(event.target instanceof HTMLElement && event.target.matches('input,textarea,select,button,summary'))return;
     const row=(event.target as HTMLElement).closest<HTMLElement>('[role="treeitem"]');if(!row)return;
-    const rows=[...event.currentTarget.querySelectorAll<HTMLElement>('[role="treeitem"]')];
+    const rows=[...event.currentTarget.querySelectorAll<HTMLElement>('[role="treeitem"]')].filter(item=>!item.closest('[inert]'));
     const index=rows.indexOf(row);
     if(event.key==='ArrowDown'||event.key==='ArrowUp'){event.preventDefault();rows[Math.max(0,Math.min(rows.length-1,index+(event.key==='ArrowDown'?1:-1)))]?.focus();}
     if(event.key==='ArrowRight'||event.key==='ArrowLeft'){const expanded=row.getAttribute('aria-expanded');if(expanded!==null&&((event.key==='ArrowRight')!==(expanded==='true'))){event.preventDefault();row.querySelector<HTMLButtonElement>('.explorer-row > button')?.click();}}
@@ -160,7 +201,7 @@ export function KnowledgeExplorer({ data, error, onRetry, selectedId, unfiled, c
   return <aside className="knowledge-tree-column knowledge-explorer" aria-label="Thư mục và ghi chú">
     <section className="panel knowledge-tree-panel">
       <div className="panel-heading"><h2>Thư mục và ghi chú</h2><Button size="compact-sm" variant="default" onClick={()=>setEditor({parentId:null})}>Thêm kho con</Button></div>
-      <a className="knowledge-tree-root" href="#/thu-vien">Toàn bộ tri thức</a><a className="knowledge-tree-root" href="#/thu-vien?unfiled=1">Chưa xếp thư mục</a>
+      <a className="knowledge-tree-root" href="#/thu-vien" aria-current={selectedId==null&&!unfiled&&!selectedNoteId?'page':undefined}>Toàn bộ tri thức</a><a className="knowledge-tree-root" href="#/thu-vien?unfiled=1" aria-current={unfiled&&!selectedNoteId?'page':undefined}>Chưa xếp thư mục</a>
       <div className="explorer-actions"><Button size="compact-sm" variant="default" onClick={()=>context.create({folder:selectedId,label:selected?.name??'Chưa xếp thư mục'})}>Thêm ghi chú tại đây</Button>{selected && <><Button size="compact-sm" variant="default" onClick={()=>setEditor({parentId:selected.id})}>Thêm nhánh con</Button><Button size="compact-sm" variant="subtle" onClick={()=>setEditor({node:selected,parentId:selected.parent_id})}>Đổi tên / chuyển nhánh</Button><Button size="compact-sm" variant="subtle" disabled={busy} onClick={()=>void archive()}>Ẩn thư mục và nhánh con</Button></>}</div>
       <p className="list-meta">Kéo bài vào thư mục để chuyển vị trí chính; giữ Ctrl để thêm lối tắt. Menu Thao tác có các lựa chọn tương đương.</p>
       {error?<ErrorNotice retry={onRetry}>Chưa tải được mục lục.</ErrorNotice>:!data?<Loading/>:<nav aria-label="Cây thư mục và ghi chú" role="tree" onKeyDown={keyboard}><Branch context={context} unfiled={unfiled}/></nav>}
