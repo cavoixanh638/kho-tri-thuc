@@ -33,7 +33,7 @@ export function SavedCollectionsPanel() {
   return <section className="saved-collections-panel" aria-labelledby="saved-collections-title">
     <h2 id="saved-collections-title">Bộ sưu tập thông minh</h2>
     <p className="list-meta">Bộ lọc động; không di chuyển hay nhân bản bài.</p>
-    {data.error ? <ErrorNotice retry={data.retry}>Chưa tải được bộ sưu tập.</ErrorNotice> : !data.data ? <Loading /> :
+    {data.error || (data.data !== undefined && !Array.isArray(data.data?.results)) ? <ErrorNotice retry={data.retry}>Chưa tải được bộ sưu tập.</ErrorNotice> : !data.data ? <Loading /> :
       data.data.results.length ? <ul>{data.data.results.map((entry) => <li key={entry.id}><a href={collectionHref(entry.id)}><span aria-hidden="true">⌕ </span>{entry.name}<small>Bộ lọc đã lưu</small></a></li>)}</ul> : <p>Chưa có bộ lọc đã lưu.</p>}
     <a href={collectionHref('new')}>Tạo bộ sưu tập thông minh</a>
   </section>;

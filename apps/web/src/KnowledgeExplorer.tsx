@@ -143,7 +143,7 @@ function Branch({ context, folder, parent, unfiled = false }: { context: Context
       return <li key={key} role="treeitem" aria-expanded={note.child_count ? open : undefined} className="explorer-tree-item explorer-note-item" tabIndex={0}>
         <div className="explorer-row" draggable onDragStart={(event)=>{event.stopPropagation();event.dataTransfer.setData('application/x-kho-tri-thuc',JSON.stringify({kind:'note',id:note.item_id,version:note.structure_version}));}}>
           {note.child_count>0?<button type="button" aria-label={(open?'Thu gọn bài ':'Mở bài con ')+note.title} onClick={()=>context.toggle(key)}><ExplorerIcon kind="chevron" open={open}/></button>:<span className="explorer-leaf-spacer" aria-hidden="true"/>}
-          <a href={itemHref(note.item_id)} aria-current={context.selectedNote===note.item_id?'page':undefined} title={note.title + (note.shortcut?' · Lối tắt':'') }><ExplorerIcon kind={note.kind==='link'?'link':'note'}/><span className="explorer-name">{note.title}</span>{note.shortcut&&<span className="explorer-shortcut" aria-label="Lối tắt">↗</span>}</a>
+          <a href={itemHref(note.item_id)} aria-current={context.selectedNote===note.item_id?'page':undefined} title={note.title + (note.shortcut?' · Lối tắt':'') }><ExplorerIcon kind={note.kind==='link'?'link':'note'}/><span className="explorer-name">{note.title}</span>{note.shortcut&&<span className="explorer-shortcut" role="img" aria-label="Lối tắt · cùng một bài" title="Lối tắt · cùng một bài">↗</span>}</a>
         </div>
         <NoteMenu note={note} context={context}/>
         {note.child_count>0 && <BranchReveal open={open}><Branch context={context} parent={note.item_id}/></BranchReveal>}
@@ -158,6 +158,7 @@ export function KnowledgeExplorer({ data, error, onRetry, selectedId, selectedNo
   data?:KnowledgeTreeData;error?:boolean;onRetry:()=>void;selectedId:number|null;selectedNoteId?:string;selectedNoteAncestors?:string[];refreshRevision?:number;unfiled:boolean;csrf:string;onSaved:(node:KnowledgeNode)=>void;
 }) {
   const [expanded,setExpanded]=useState<Set<string>>(()=>new Set());
+  const [collapsedSnapshot,setCollapsedSnapshot]=useState<Set<string>>(()=>new Set());
   const [editor,setEditor]=useState<Editor>();
   const [createAt,setCreateAt]=useState<CreateAt>();
   const [localRevision,setRevision]=useState(0);
@@ -169,12 +170,13 @@ export function KnowledgeExplorer({ data, error, onRetry, selectedId, selectedNo
   const [notice,setNotice]=useState('');
   const [failureText,setFailure]=useState('');
   const attempt=useRef<string | undefined>(undefined);
-  const selected=data?.nodes.find((node)=>node.id===selectedId);
-  const nodes=data?.nodes??[];
+  const invalidTree = data !== undefined && !Array.isArray(data?.nodes);
+  const nodes = Array.isArray(data?.nodes) ? data.nodes : [];
+  const selected = nodes.find(node => node.id === selectedId);
   const ancestorKey=selected?.path_ids.join(':')??'';
-  useEffect(()=>{if(!ancestorKey)return;setExpanded((old)=>new Set([...old,...ancestorKey.split(':').map((id)=>'folder:'+id)]));},[ancestorKey]);
+  useEffect(()=>{if(!ancestorKey)return;setExpanded((old)=>new Set([...old,...ancestorKey.split(':').map((id)=>'folder:'+id)]));},[ancestorKey,selectedNoteId]);
   const noteAncestorKey=selectedNoteAncestors?.join(':')??'';
-  useEffect(()=>{if(!noteAncestorKey)return;setExpanded(old=>new Set([...old,...noteAncestorKey.split(':').map(id=>'note:'+id)]));},[noteAncestorKey]);
+  useEffect(()=>{if(!noteAncestorKey)return;setExpanded(old=>new Set([...old,...noteAncestorKey.split(':').map(id=>'note:'+id)]));},[noteAncestorKey,selectedNoteId]);
   const changed=()=>{setRevision((value)=>value+1);onRetry();};
   const context:Context={csrf,nodes,selected:selectedId,selectedNote:selectedNoteId,revision,cache:cache.current,onChanged:changed,editFolder:(node)=>setEditor({node,parentId:node.parent_id}),create:(at)=>{setCreateAt(at);setText('');setNewTitle('');attempt.current=undefined;setFailure('');},expanded,toggle:(key,open)=>setExpanded((old)=>{const next=new Set(old);if(open??!next.has(key))next.add(key);else next.delete(key);return next;}),selectedPath:selected?.path_ids??[]};
   useEffect(()=>{const command=(event:Event)=>{const detail=(event as CustomEvent).detail;if(detail?.action==='create')context.create({folder:selectedId,label:selected?.name??'Chưa xếp thư mục'});};window.addEventListener('knowledge-command',command);return()=>window.removeEventListener('knowledge-command',command);},[selectedId,selected?.name]);
@@ -208,7 +210,11 @@ export function KnowledgeExplorer({ data, error, onRetry, selectedId, selectedNo
       <a className="knowledge-tree-root" href="#/thu-vien" aria-current={selectedId==null&&!unfiled&&!selectedNoteId?'page':undefined}>Toàn bộ tri thức</a><a className="knowledge-tree-root" href="#/thu-vien?unfiled=1" aria-current={unfiled&&!selectedNoteId?'page':undefined}>Chưa xếp thư mục</a>
       <div className="explorer-actions"><Button size="compact-sm" variant="default" onClick={()=>context.create({folder:selectedId,label:selected?.name??'Chưa xếp thư mục'})}>Thêm ghi chú tại đây</Button>{selected && <><Button size="compact-sm" variant="default" onClick={()=>setEditor({parentId:selected.id})}>Thêm nhánh con</Button><Button size="compact-sm" variant="subtle" onClick={()=>setEditor({node:selected,parentId:selected.parent_id})}>Đổi tên / chuyển nhánh</Button><Button size="compact-sm" variant="subtle" disabled={busy} onClick={()=>void archive()}>Ẩn thư mục và nhánh con</Button></>}</div>
       <p className="list-meta">Kéo bài vào thư mục để chuyển vị trí chính; giữ Ctrl để thêm lối tắt. Menu Thao tác có các lựa chọn tương đương.</p>
-      {error?<ErrorNotice retry={onRetry}>Chưa tải được mục lục.</ErrorNotice>:!data?<Loading/>:<nav aria-label="Cây thư mục và ghi chú" role="tree" onKeyDown={keyboard}><Branch context={context} unfiled={unfiled}/></nav>}
+      <div className="explorer-fold-actions" role="group" aria-label="Mở và thu gọn cây">
+        <Button size="compact-sm" variant="subtle" disabled={!expanded.size} onClick={()=>{setCollapsedSnapshot(new Set(expanded));setExpanded(new Set());}}>Thu gọn tất cả</Button>
+        <Button size="compact-sm" variant="subtle" disabled={!collapsedSnapshot.size} onClick={()=>{setExpanded(old=>new Set([...old,...collapsedSnapshot]));setCollapsedSnapshot(new Set());}}>Mở lại nhánh vừa thu gọn</Button>
+      </div>
+      {error || invalidTree ? <ErrorNotice retry={onRetry}>Chưa tải được mục lục.</ErrorNotice> : !data ? <Loading/> : <nav aria-label="Cây thư mục và ghi chú" role="tree" onKeyDown={keyboard}><Branch context={context}/></nav>}
       {notice&&<p role="status">{notice}</p>}{failureText&&<ErrorNotice>{failureText}</ErrorNotice>}
     </section>
     {editor&&<NodeEditor nodes={nodes} editor={editor} csrf={csrf} onCancel={()=>setEditor(undefined)} onSaved={(node)=>{setEditor(undefined);changed();onSaved(node);}}/>}

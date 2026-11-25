@@ -105,8 +105,70 @@ test('workspace retains the same explorer DOM across library, note and other aut
  assert.equal(container.querySelector('.explorer-folder-item'),row);
  assert.equal(row.getAttribute('aria-expanded'),'true');
  assert.equal(container.querySelector('a[href="#/muc/'+id+'"]').getAttribute('aria-current'),'page');
+ await draw('#/thu-vien?unfiled=1');
+ assert.equal(container.querySelector('.library-tree-shell'),sidebar);
+ assert.equal(container.querySelector('.explorer-folder-item'),row);
+ assert.equal(row.getAttribute('aria-expanded'),'true');
  await draw('#/tim-kiem');
  assert.equal(container.querySelector('.library-tree-shell'),sidebar);
  assert.equal(row.getAttribute('aria-expanded'),'true');
  assert.equal(calls.filter(path=>path.includes('/explorer/children')).length,before);
+});
+
+
+test('TREE-07 collapse all and reopen cached expanded branches without duplicate fetch',async()=>{
+ await render();await click('Mở Sách tiếng Việt');await click('Mở bài con Bài Tiếng Việt');
+ const before=calls.filter(path=>path.includes('/explorer/children')).length;
+ await click('Thu gọn tất cả');
+ await ui.act(async()=>{await new Promise(r=>setTimeout(r,220));});
+ assert.equal(container.querySelector('.explorer-folder-item').getAttribute('aria-expanded'),'false');
+ assert.equal(container.querySelector('a[href="#/muc/'+child+'"]'),null);
+ await click('Mở lại nhánh vừa thu gọn');
+ assert.equal(container.querySelector('.explorer-folder-item').getAttribute('aria-expanded'),'true');
+ assert.ok(container.querySelector('a[href="#/muc/'+child+'"]'));
+ assert.equal(calls.filter(path=>path.includes('/explorer/children')).length,before);
+});
+test('TREE-08 malformed optional sidebar payloads do not crash current route; retry recovers',async()=>{
+ const fetchValid=globalThis.fetch;let incompatible=true;
+ globalThis.fetch=async(path,options)=>{
+  const url=new URL(path,'http://127.0.0.1');
+  if(incompatible&&(url.pathname.endsWith('/knowledge-tree')||url.pathname.endsWith('/collections')))return Response.json({unexpected:true});
+  return fetchValid(path,options);
+ };
+ await render(ui.KnowledgeWorkspace,{path:'#/gui',csrf:'fixture-csrf',children:ui.createElement('article',null,'Current capture content')});
+ assert.equal(container.querySelector('.workspace-content article').textContent,'Current capture content');
+ assert.match(container.querySelector('.knowledge-explorer').textContent,/Chưa tải được mục lục/);
+ assert.match(container.querySelector('.saved-collections-panel').textContent,/Chưa tải được bộ sưu tập/);
+ incompatible=false;
+ await ui.act(async()=>{
+  container.querySelector('.knowledge-explorer [role=alert] button').click();
+  container.querySelector('.saved-collections-panel [role=alert] button').click();
+  await new Promise(r=>setTimeout(r,40));
+ });
+ assert.ok(container.querySelector('.explorer-folder-item'));
+ assert.match(container.querySelector('.saved-collections-panel').textContent,/Chưa có bộ lọc đã lưu/);
+ assert.equal(container.querySelector('.workspace-content article').textContent,'Current capture content');
+});
+test('WS-02 sidebar resize by keyboard, pointer, reset and persistence across reload',async()=>{
+ window.sessionStorage.removeItem('kt-explorer-width');
+ const props={path:'#/thu-vien',csrf:'fixture-csrf',children:ui.createElement('article',null,'Content')};
+ await render(ui.KnowledgeWorkspace,props);
+ const divider=container.querySelector('.workspace-divider');
+ const width=()=>container.querySelector('.knowledge-workspace').style.getPropertyValue('--kt-explorer-width');
+ assert.equal(width(),'286px');
+ const press=async key=>ui.act(async()=>{divider.dispatchEvent(new window.KeyboardEvent('keydown',{key,bubbles:true}));await settle();});
+ await press('ArrowRight');assert.equal(width(),'306px');
+ await press('End');assert.equal(width(),'480px');await press('ArrowRight');assert.equal(width(),'480px');
+ await press('Home');assert.equal(width(),'240px');
+ await ui.act(async()=>{
+  for(const [type,x] of [['pointerdown',100],['pointermove',160],['pointerup',160]]){
+   const event=new window.MouseEvent(type,{clientX:x,button:0,bubbles:true,cancelable:true});
+   Object.defineProperty(event,'pointerId',{value:1});divider.dispatchEvent(event);
+  }
+  await settle();
+ });
+ assert.equal(width(),'300px');
+ await render(ui.KnowledgeWorkspace,{...props,key:'remounted'});assert.equal(width(),'300px');
+ await ui.act(async()=>{container.querySelector('.workspace-divider').dispatchEvent(new window.MouseEvent('dblclick',{bubbles:true}));await settle();});
+ assert.equal(width(),'286px');window.sessionStorage.removeItem('kt-explorer-width');
 });

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode, type CSSProperties } from 'react';
 import { request } from './api';
 import { KnowledgeExplorer } from './KnowledgeExplorer';
 import type { KnowledgeTreeData } from './KnowledgeTree';
@@ -12,6 +12,13 @@ const WorkspaceContext = createContext<{tree: TreeResource; revision: number} | 
 export const useKnowledgeWorkspace = () => useContext(WorkspaceContext);
 export const EXPLORER_CHANGED = 'knowledge-explorer-changed';
 type NoteLocation = {item_id: string; home_topic_id: number | null; ancestors: {item_id: string}[]};
+const DEFAULT_WIDTH=286, MIN_WIDTH=240, MAX_WIDTH=480;
+const widthKey='kt-explorer-width';
+const clampWidth=(value:number)=>Math.max(MIN_WIDTH,Math.min(MAX_WIDTH,Math.round(value)));
+function initialWidth(){
+  try { const raw=window.sessionStorage.getItem(widthKey); const value=raw===null?NaN:Number(raw); return Number.isFinite(value)?clampWidth(value):DEFAULT_WIDTH; }
+  catch { return DEFAULT_WIDTH; }
+}
 
 /** Keep the same explorer instance, scroll position and expansion state while
  * routing between library, individual notes and other authenticated screens. */
@@ -30,7 +37,10 @@ export function KnowledgeWorkspace({path, csrf, children}: {path?: string; csrf:
   useEffect(() => { if (inLibrary) lastLibrary.current = parseLibraryLocation(route); }, [route, inLibrary]);
   const [revision, setRevision] = useState(0);
   const [location, setLocation] = useState<NoteLocation>();
-  const tree = useResource<KnowledgeTreeData>('/knowledge-tree', {refreshKey: String(revision)});
+  const rawTree = useResource<KnowledgeTreeData>('/knowledge-tree', {refreshKey: String(revision)});
+  // A failed optional sidebar payload must not take down unrelated authenticated routes.
+  const tree: TreeResource = rawTree.data !== undefined && !Array.isArray(rawTree.data?.nodes)
+    ? {...rawTree, data: undefined, error: true} : rawTree;
   const refresh = () => setRevision(value => value + 1);
   useEffect(() => {
     window.addEventListener(EXPLORER_CHANGED, refresh);
@@ -47,15 +57,20 @@ export function KnowledgeWorkspace({path, csrf, children}: {path?: string; csrf:
   }, [itemId, revision]);
   const activeLocation = location?.item_id === itemId ? location : undefined;
   const selectedId = activeLocation ? activeLocation.home_topic_id : scope.id;
-  const unfiled = activeLocation?.home_topic_id != null ? false : scope.unfiled;
+  const unfiled = activeLocation ? activeLocation.home_topic_id == null : scope.unfiled;
   // Desktop never hides the sidebar. On narrow touch screens a compact toggle
   // avoids covering the reading area; its choice persists across routes.
   const [narrowOpen, setNarrowOpen] = useState(() => {
     try { return sessionStorage.getItem('kt-explorer-visible') === '1'; }
     catch { return false; }
   });
+  const [sidebarWidth,setSidebarWidth]=useState(initialWidth);
+  const sidebarRef=useRef<HTMLElement>(null);
+  const resize=useRef<{pointerId:number;startX:number;startWidth:number}|undefined>(undefined);
+  useEffect(()=>{try{window.sessionStorage.setItem(widthKey,String(sidebarWidth));}catch{/* optional preference */}},[sidebarWidth]);
+  const style={'--kt-explorer-width':sidebarWidth+'px'} as CSSProperties;
   return <WorkspaceContext.Provider value={{tree, revision}}>
-    <div className="knowledge-library-layout knowledge-workspace" onClick={event => {
+    <div className="knowledge-library-layout knowledge-workspace" style={style} onClick={event => {
       if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
       const target = event.target instanceof Element ? event.target.closest('a') : null;
       const href = target?.getAttribute('href');
@@ -64,7 +79,7 @@ export function KnowledgeWorkspace({path, csrf, children}: {path?: string; csrf:
         window.location.hash = libraryLocationHref({...parseLibraryLocation(href), view: scope.view});
       }
     }}>
-      <aside className={'library-tree-shell' + (narrowOpen ? ' is-open' : '')}>
+      <aside ref={sidebarRef} className={'library-tree-shell' + (narrowOpen ? ' is-open' : '')}>
         <button className="library-tree-toggle" type="button" aria-expanded={narrowOpen} aria-controls="library-tree-content"
           onClick={() => setNarrowOpen(value => {
             try { sessionStorage.setItem('kt-explorer-visible', value ? '0' : '1'); } catch { /* optional */ }
@@ -79,6 +94,24 @@ export function KnowledgeWorkspace({path, csrf, children}: {path?: string; csrf:
           <SavedCollectionsPanel />
         </div>
       </aside>
+      <div className="workspace-divider" role="separator" tabIndex={0} aria-label="Điều chỉnh độ rộng mục lục"
+        aria-orientation="vertical" aria-valuemin={MIN_WIDTH} aria-valuemax={MAX_WIDTH} aria-valuenow={sidebarWidth}
+        title="Kéo để đổi độ rộng; dùng phím mũi tên hoặc nhấp đúp để đặt lại"
+        onPointerDown={event=>{
+          if(event.button!==0)return;
+          resize.current={pointerId:event.pointerId,startX:event.clientX,startWidth:sidebarRef.current?.getBoundingClientRect().width||sidebarWidth};
+          event.currentTarget.setPointerCapture?.(event.pointerId);event.preventDefault();
+        }}
+        onPointerMove={event=>{
+          const drag=resize.current;
+          if(drag&&drag.pointerId===event.pointerId)setSidebarWidth(clampWidth(drag.startWidth+event.clientX-drag.startX));
+        }}
+        onPointerUp={()=>{resize.current=undefined;}} onPointerCancel={()=>{resize.current=undefined;}} onLostPointerCapture={()=>{resize.current=undefined;}}
+        onDoubleClick={()=>setSidebarWidth(DEFAULT_WIDTH)}
+        onKeyDown={event=>{
+          if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();setSidebarWidth(old=>clampWidth(old+(event.key==='ArrowLeft'?-20:20)));}
+          else if(event.key==='Home'||event.key==='End'){event.preventDefault();setSidebarWidth(event.key==='Home'?MIN_WIDTH:MAX_WIDTH);}
+        }} />
       <div className="workspace-content">{children}</div>
     </div>
   </WorkspaceContext.Provider>;

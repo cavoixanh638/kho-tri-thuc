@@ -23,6 +23,10 @@
 - **Ưu tiên P0 trước mở rộng:** bản ứng viên thống nhất từ main mới nhất, dữ liệu Drive/backup/restore, thu thập media, tìm kiếm/auto-group tiếng Việt, 10k test và hành trình người dùng. Gemini OCR đã được người dùng yêu cầu, nhưng vẫn là pilot, không tự bật API/cost/consent. Android được hoãn theo chỉ đạo hiện tại.
 - Khi nhiều nhánh/PR cùng mở, xác định chuỗi phụ thuộc và `ahead/behind` với main, không gộp lại chỉ vì `mergeable=true`. Chỉ G00 cập nhật `CURRENT_STATE.md` sau review, tránh đồng sửa. Không tự merge/deploy.
 
+## Cổng truy vết ưu điểm 17 nghiên cứu (25/11/2026)
+
+**Bắt buộc đọc và cập nhật [docs/FEATURE_CATALOG_AND_PLAN.md](docs/FEATURE_CATALOG_AND_PLAN.md)** trước/sau mọi checkpoint cải tiến UX/tri thức. Danh mục có ID chức năng riêng, ánh xạ 94 đề xuất gốc và ưu điểm bổ sung, gồm cả mục hoãn. Không xóa dòng khi gộp công việc; chỉ đóng từng ID bằng chứng cứ code/test đúng SHA và phân biệt runtime. Các mốc ưu tiên, quyền và gate dữ liệu hiện hành vẫn áp dụng; không tự merge/deploy hoặc bật AI trả phí. Kế hoạch nhánh mới dựa trên RC #100/#101; luôn tra HEAD hiện tại trước khi viết.
+
 ## Ngữ cảnh và thứ tự đọc
 1. Đọc `README.md` và `docs/README.md` để biết nguồn tài liệu chuẩn.
 2. Đọc `docs/CURRENT_STATE.md` để biết **sự thật hiện tại** và phần chưa test, không dựa vào lịch sử chat.

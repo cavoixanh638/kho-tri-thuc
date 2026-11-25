@@ -10,6 +10,7 @@ Trang điều hướng này chỉ **trỏ tới nguồn chuẩn**; không viết
 | KT-xxx, phụ thuộc, điều kiện PASS và U01–U23 | [ROADMAP_AND_TESTS.md](ROADMAP_AND_TESTS.md) |
 | **Giao AI sau nghiên cứu 17 ứng dụng (KT-114–KT-130), ranh giới file, prompt ngắn** | **[workstreams/notes-ux-20261120/INDEX.md](workstreams/notes-ux-20261120/INDEX.md)** |
 | **Nguồn thẩm định và các sửa sai của G00** | [PR #47 — báo cáo thẩm định và tổng hợp, chưa merge](https://github.com/cavoixanh638/kho-tri-thuc/pull/47) |
+| **Danh mục chức năng chi tiết và kế hoạch nâng cấp từ 17 nghiên cứu; bắt buộc cập nhật từng ID** | [FEATURE_CATALOG_AND_PLAN.md](FEATURE_CATALOG_AND_PLAN.md) |
 | **Trạng thái hiện tại, test thực sự chạy, blocker, việc kế tiếp** | [CURRENT_STATE.md](CURRENT_STATE.md) |
 | **Quy tắc đặt file và ranh giới Git/Drive/PostgreSQL/cache** | [REPOSITORY_LAYOUT.md](REPOSITORY_LAYOUT.md) |
 | Cây thư viện, bài văn bản, nguồn minh họa và chép lời Windows | [operations/KNOWLEDGE_TREE.md](operations/KNOWLEDGE_TREE.md) |
