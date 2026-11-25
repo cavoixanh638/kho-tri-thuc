@@ -7,7 +7,7 @@ type Criteria = { q: string } & Record<GroupFilter, string>;
 type Cursor = { score: number | string; item_id: string };
 type Evidence = { source: string; snippet: string; locator?: unknown; provenance?: unknown };
 type Result = { item_id: string; title: string; score: number | string; evidence: Evidence[] };
-type SearchPage = { results: Result[]; next_cursor: Cursor | null };
+type SearchPage = { results: Result[]; next_cursor: Cursor | null; match_kind?: 'standard' | 'partial' };
 
 const sourceLabels: Record<string, string> = {
   item: 'Mục thư viện',
@@ -60,12 +60,14 @@ function SearchResults({ criteria }: { criteria: Criteria }) {
     params.set('cursor_item_id', cursor.item_id);
   }
   const results = useResource<SearchPage>(`/search?${params}`);
+  const partial = results.data?.match_kind === 'partial' && results.data.results.length > 0;
 
   return <section className="panel search-results" aria-labelledby="search-results-title">
     <h2 id="search-results-title">{criteria.q.trim() ? 'Kết quả tìm kiếm' : 'Mục trong nhóm'}</h2>
+    {partial && <p id="search-partial-match" role="status">Ghi chú khớp một phần từ khóa</p>}
     {results.error ? <ErrorNotice retry={results.retry}>Chưa tải được kết quả tìm kiếm.</ErrorNotice>
       : !results.data ? <Loading />
-        : results.data.results.length ? <ol className="search-list">
+        : results.data.results.length ? <ol className="search-list" aria-describedby={partial ? 'search-partial-match' : undefined}>
           {results.data.results.map((result) => <li key={result.item_id} className="search-result">
             <h3><a href={itemHref(result.item_id)}>{result.title || 'Mở mục trong thư viện'}</a></h3>
             {result.evidence.map((evidence, index) => {

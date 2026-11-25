@@ -84,6 +84,42 @@ function Probe({ path = '/fixture', maxPollMs }) {
 }
 const probe = () => JSON.parse(container.querySelector('output').textContent);
 
+test('search explains partial matches on the same results page and only for a nonempty partial response', async () => {
+  const hit = { item_id: 'note-id', title: 'Ghi chú đã lưu', evidence: [] };
+  const pages = {
+    partial: { results: [hit], match_kind: 'partial' },
+    standard: { results: [hit], match_kind: 'standard' },
+    legacy: { results: [hit] },
+    empty: { results: [], match_kind: 'partial' },
+  };
+  globalThis.fetch = async path => {
+    const url = new URL(path, window.location.origin);
+    if (url.pathname === '/api/v1/groups') return response({ topics: [], projects: [], tags: [] });
+    assert.equal(url.pathname, '/api/v1/search');
+    return response({ ...pages[url.searchParams.get('q')], next_cursor: null });
+  };
+
+  for (const mode of Object.keys(pages)) {
+    await render(ui.SearchScreen, { path: '#/tim-kiem?q=' + mode });
+    const section = container.querySelector('[aria-labelledby="search-results-title"]');
+    assert.equal(section.querySelector('h2').textContent, 'Kết quả tìm kiếm');
+    const label = section.querySelector('[role="status"]');
+    const list = section.querySelector('ol');
+    if (mode === 'partial') {
+      assert.equal(label.textContent, 'Ghi chú khớp một phần từ khóa');
+      assert.equal(list.getAttribute('aria-describedby'), label.id);
+    } else {
+      assert.equal(label, null);
+      assert.equal(list?.hasAttribute('aria-describedby') ?? false, false);
+    }
+    if (mode === 'empty') {
+      assert.equal(section.querySelector('.empty-state').textContent, 'Không tìm thấy mục phù hợp.');
+    } else {
+      assert.equal(list.querySelector('a').getAttribute('href'), '#/muc/note-id');
+    }
+  }
+});
+
 test('pending resources poll sequentially and stop when processing completes', async () => {
   let calls = 0;
   globalThis.fetch = async () => response({ pending: ++calls === 1, value: calls });

@@ -49,6 +49,7 @@ function summarize(records) {
     opened_correctly: positive.filter(row => row.open?.correct).length,
     opened_wrong: positive.filter(row => row.open && !row.open.correct).length,
     negative_with_results: { count: negative.filter(row => row.results.length).length, total: negative.length },
+    partial_match_queries: records.filter(row => row.ui_match_kind === 'partial').length,
     search_to_render_ms: latency(records.map(row => row.search_ms)),
     click_to_article_ms: latency(records.flatMap(row => row.open?.correct ? [row.open.ms] : [])),
     submit_to_article_ms: latency(records.flatMap(row => row.open?.correct ? [row.open.total_ms] : [])),
@@ -113,9 +114,16 @@ try {
         return null;
       });
       const searchMs = performance.now() - started;
+      const list = document.querySelector('.search-results .search-list');
+      const notice = document.querySelector('.search-results #search-partial-match');
+      if (notice && (!notice.getClientRects().length || notice.textContent !== 'Ghi chú khớp một phần từ khóa'
+          || notice.getAttribute('role') !== 'status' || list?.getAttribute('aria-describedby') !== notice.id)) {
+        throw Error('Partial matches must be visibly labeled and described in the result list');
+      }
+      const uiMatchKind = notice ? 'partial' : 'standard';
       const matches = links.map(link => link.getAttribute('href').replace('#/muc/', ''));
       const rank = expected.id ? matches.indexOf(expected.id) + 1 : null;
-      if (!rank || rank > 5) return { matches, rank, searchMs, open: null };
+      if (!rank || rank > 5) return { matches, rank, searchMs, uiMatchKind, open: null };
       const clickedAt = performance.now();
       links[rank - 1].click();
       const article = await visible(() => {
@@ -125,7 +133,7 @@ try {
           note: detail.querySelector('.raw-knowledge pre')?.textContent ?? '' };
       });
       const ms = performance.now() - clickedAt;
-      return { matches, rank, searchMs, open: {
+      return { matches, rank, searchMs, uiMatchKind, open: {
         correct: article.hash === '#/muc/' + expected.id && article.title === expected.title && article.note === expected.note,
         ms, total_ms: performance.now() - started,
       } };
@@ -133,7 +141,7 @@ try {
     assert.ok(measurement.matches.every(id => knownIds.has(id)), 'Unexpected item returned in QA search');
     rows.push({ split: entry.split, kind: entry.query_kind ?? 'negative', query: entry.query, target: entry.id ?? null,
       results: measurement.matches.map(id => knownIds.get(id)), rank: measurement.rank || null,
-      search_ms: measurement.searchMs, open: measurement.open });
+      ui_match_kind: measurement.uiMatchKind, search_ms: measurement.searchMs, open: measurement.open });
   }
 
   const allNotes = '#/thu-vien';
@@ -213,7 +221,8 @@ try {
   assert.ok(assignments.some(Boolean), 'Pilot has no automated topic memberships');
 
   const summary = summarize(rows);
-  await writeFile(byName('results-browser-windows.json'), JSON.stringify({
+  const reportPath = process.env.KT_EVAL_BROWSER_REPORT || byName('results-browser-windows.json');
+  await writeFile(reportPath, JSON.stringify({
     tested_sha: codeSha, app_source_dirty: Boolean(status), corpus_sha256: hash(corpusBytes), labels_sha256: hash(labelBytes),
     harness_sha256: hash(await readFile(new URL(import.meta.url))),
     platform: process.platform, chromium: chromium.product, viewport: '1440x900', items: 36,

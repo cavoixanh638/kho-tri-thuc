@@ -4,6 +4,7 @@ export { MantineProvider } from '@mantine/core';
 export { useResource } from '../src/views';
 export { ItemScreen } from '../src/ItemScreen';
 export { LibraryScreen } from '../src/LibraryScreen';
+export { SearchScreen } from '../src/SearchScreen';
 export { CaptureScreen } from '../src/CaptureScreen';
 export { App } from '../src/App';
 export { readSharedCapture } from '../src/sharedCapture';
