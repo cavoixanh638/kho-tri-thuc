@@ -1,0 +1,210 @@
+{
+  "checked_at": "2026-11-21T01:20:50.118682+00:00",
+  "code_sha": "b54f892fb7abf6d15bd5eeea093ddfca96db0b80",
+  "scope": "Actual20 public Python documentation read+clip; isolated QA; noDrive",
+  "sources": [
+    {
+      "url": "https://docs.python.org/3/library/json.html",
+      "status": 200,
+      "verification": "current",
+      "characters": 25913,
+      "saved": 201,
+      "sha256": "fb9d46ed49749f13ef63a8304caeae006c2f4bc644f93aa5e7523071dcfa47ec",
+      "raw_note_preserved": true,
+      "source_excerpt_matches": true
+    },
+    {
+      "url": "https://docs.python.org/3/library/csv.html",
+      "status": 200,
+      "verification": "current",
+      "characters": 21547,
+      "saved": 201,
+      "sha256": "3dfb7f10b947abd55f63b2a004328ce9eaf53beaaf00ece1512e71771961737b",
+      "raw_note_preserved": true,
+      "source_excerpt_matches": true
+    },
+    {
+      "url": "https://docs.python.org/3/library/hashlib.html",
+      "status": 200,
+      "verification": "current",
+      "characters": 27558,
+      "saved": 201,
+      "sha256": "30ee851e6b9ac3004218fed903dba56264d1cbbe3a87f8d8a86663fcede0d8db",
+      "raw_note_preserved": true,
+      "source_excerpt_matches": true
+    },
+    {
+      "url": "https://docs.python.org/3/library/uuid.html",
+      "status": 200,
+      "verification": "current",
+      "characters": 13668,
+      "saved": 201,
+      "sha256": "94484d23632cb95aee05860458c855a77fcc1fba6363cfa560e4c6a9c93e10af",
+      "raw_note_preserved": true,
+      "source_excerpt_matches": true
+    },
+    {
+      "url": "https://docs.python.org/3/library/datetime.html",
+      "status": 200,
+      "verification": "current",
+      "characters": 60000,
+      "saved": 201,
+      "sha256": "2084b4c1055051f092b290bfcb57c4ff3d0361c4e98c821dcc4f7ae8766e7c5c",
+      "raw_note_preserved": true,
+      "source_excerpt_matches": true
+    },
+    {
+      "url": "https://docs.python.org/3/library/zoneinfo.html",
+      "status": 200,
+      "verification": "current",
+      "characters": 14666,
+      "saved": 201,
+      "sha256": "e12d1a0c249cc5b39c5e630e087be89099d002bbee8e3e93b6c5ee8888ca5272",
+      "raw_note_preserved": true,
+      "source_excerpt_matches": true
+    },
+    {
+      "url": "https://docs.python.org/3/library/pathlib.html",
+      "status": 200,
+      "verification": "current",
+      "characters": 57384,
+      "saved": 201,
+      "sha256": "96bd2e4b36f01703c3b142dd3ac933dede44197cca68ee2b12e67f1b6eb60500",
+      "raw_note_preserved": true,
+      "source_excerpt_matches": true
+    },
+    {
+      "url": "https://docs.python.org/3/library/zipfile.html",
+      "status": 200,
+      "verification": "current",
+      "characters": 31089,
+      "saved": 201,
+      "sha256": "2b915c1e08e58da8f34e7bd075ad6fc356866a4f4fbfd6d0335586e4df03798c",
+      "raw_note_preserved": true,
+      "source_excerpt_matches": true
+    },
+    {
+      "url": "https://docs.python.org/3/library/tempfile.html",
+      "status": 200,
+      "verification": "current",
+      "characters": 18596,
+      "saved": 201,
+      "sha256": "cbdffac81da58de2bffd6ff30e2fc501b8c3b1a2a66d8e5f5fce0917e141f03e",
+      "raw_note_preserved": true,
+      "source_excerpt_matches": true
+    },
+    {
+      "url": "https://docs.python.org/3/library/io.html",
+      "status": 200,
+      "verification": "current",
+      "characters": 40954,
+      "saved": 201,
+      "sha256": "0406ebc4c05ee343bff224f78298b7ac4b431e6eac321913c480ac2f245687dc",
+      "raw_note_preserved": true,
+      "source_excerpt_matches": true
+    },
+    {
+      "url": "https://docs.python.org/3/library/html.html",
+      "status": 200,
+      "verification": "current",
+      "characters": 2085,
+      "saved": 201,
+      "sha256": "44f2adc8a08f67f0bcff2370c4467f97e2e1e2200c2241798e6c7b37e632023f",
+      "raw_note_preserved": true,
+      "source_excerpt_matches": true
+    },
+    {
+      "url": "https://docs.python.org/3/library/html.parser.html",
+      "status": 200,
+      "verification": "current",
+      "characters": 11317,
+      "saved": 201,
+      "sha256": "3349c1079e39f4a48d8dcbd5531165b2f5d68a8948a901acafad1aab09d2dc9a",
+      "raw_note_preserved": true,
+      "source_excerpt_matches": true
+    },
+    {
+      "url": "https://docs.python.org/3/library/unicodedata.html",
+      "status": 200,
+      "verification": "current",
+      "characters": 9900,
+      "saved": 201,
+      "sha256": "928ac69b73144f3aa75831168678ee8a13e789d1626d8d03c181c6fff2799870",
+      "raw_note_preserved": true,
+      "source_excerpt_matches": true
+    },
+    {
+      "url": "https://docs.python.org/3/library/dataclasses.html",
+      "status": 200,
+      "verification": "current",
+      "characters": 29662,
+      "saved": 201,
+      "sha256": "bb1b5da20c82bba0c87405334bf85c16e0781907e997939f8eebab5141d5334a",
+      "raw_note_preserved": true,
+      "source_excerpt_matches": true
+    },
+    {
+      "url": "https://docs.python.org/3/library/enum.html",
+      "status": 200,
+      "verification": "current",
+      "characters": 27424,
+      "saved": 201,
+      "sha256": "789308eafd221c0492cfaba219edb49df6ca5908297ae2f07a833291a525f7f3",
+      "raw_note_preserved": true,
+      "source_excerpt_matches": true
+    },
+    {
+      "url": "https://docs.python.org/3/library/contextlib.html",
+      "status": 200,
+      "verification": "current",
+      "characters": 33860,
+      "saved": 201,
+      "sha256": "5fd499467d602c97dc9965e094e74b79fe4c1bd746d87e4e29a5fa1c49c1546d",
+      "raw_note_preserved": true,
+      "source_excerpt_matches": true
+    },
+    {
+      "url": "https://docs.python.org/3/library/functools.html",
+      "status": 200,
+      "verification": "current",
+      "characters": 27382,
+      "saved": 201,
+      "sha256": "7ae213af89ca8ded96d513227f8f70c3ea88714f87f08e612f800a130b236b4f",
+      "raw_note_preserved": true,
+      "source_excerpt_matches": true
+    },
+    {
+      "url": "https://docs.python.org/3/library/collections.html",
+      "status": 200,
+      "verification": "current",
+      "characters": 44393,
+      "saved": 201,
+      "sha256": "802137c81388e1f3469483615daa3b45fe517ab8a256c2d2ecb0afb7863e5f78",
+      "raw_note_preserved": true,
+      "source_excerpt_matches": true
+    },
+    {
+      "url": "https://docs.python.org/3/library/textwrap.html",
+      "status": 200,
+      "verification": "current",
+      "characters": 10357,
+      "saved": 201,
+      "sha256": "14a65f00c66e2204d60221a25c97052a0e5289b6c7c67dd82fc25fc99dd99725",
+      "raw_note_preserved": true,
+      "source_excerpt_matches": true
+    },
+    {
+      "url": "https://docs.python.org/3/library/urllib.parse.html",
+      "status": 200,
+      "verification": "current",
+      "characters": 29532,
+      "saved": 201,
+      "sha256": "4e011c4dabb5f31bdaf0d9602b8c939eeba4057acef618e01a2400fe183765bc",
+      "raw_note_preserved": true,
+      "source_excerpt_matches": true
+    }
+  ],
+  "passed": 20,
+  "executed": 20,
+  "status": "PASS"
+}

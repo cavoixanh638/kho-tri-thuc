@@ -9,6 +9,11 @@ on:
 permissions:
   contents: read
 
+# Prevent parallel SHA checkpoints on the same PR from burning Actions minutes.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   scaffold:
     runs-on: ubuntu-24.04
@@ -28,8 +33,14 @@ jobs:
           docker compose config --quiet
           docker compose up --detach --build --wait --wait-timeout 120
 
-      - name: Test frontend resource lifecycle and capture
+      - name: Test all frontend DOM and unit suites (native browser harnesses are separate)
         run: docker compose exec -T web npm test
+
+      - name: Check P13 share-target and Vietnamese IME source contracts
+        run: node tools/smoke/p13_share_contract.mjs
+
+      - name: Test readiness harness isolation without touching any database
+        run: python3 -m unittest discover -s tools/readiness -p test_safety.py -v
 
       - name: Test immutable backup archive and Drive retry behavior
         run: |
@@ -69,6 +80,36 @@ jobs:
           docker compose exec -T -e DJANGO_SUPERUSER_PASSWORD=kt-smoke-fixture-only api python manage.py createsuperuser --noinput --username kt-smoke --email kt-smoke@example.invalid
           python3 tools/smoke/capture.py
 
+      - name: Test P13 idempotent Android share through isolated QA PostgreSQL
+        env:
+          P13_QA_ISOLATED: 'YES'
+          P13_QA_USER: kt-smoke
+          P13_QA_PASSWORD: kt-smoke-fixture-only
+        run: node tools/smoke/p13_share_api.mjs
+
+      - name: Capture real built-App UI screenshots on synthetic CI data
+        env:
+          KT_PREVIEW_ISOLATED: 'YES'
+          KT_PREVIEW_URL: http://127.0.0.1:5173
+          KT_PREVIEW_USER: kt-smoke
+          KT_PREVIEW_PASSWORD: kt-smoke-fixture-only
+        run: |
+          browser="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || true)"
+          if [ -z "$browser" ]; then
+            echo "Chromium/Chrome unavailable on CI runner"; exit 1
+          fi
+          export KT_JOURNEY_CHROMIUM="$browser"
+          node tools/smoke/preview_capture.mjs
+
+      - name: Upload real-App screenshots and SHA evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: kho-tri-thuc-actual-ui
+          path: tmp/kt-preview-ui/
+          if-no-files-found: warn
+          retention-days: 14
+
       - name: Verify Compose backup and restore to a fresh database
         run: |
           bundle="$RUNNER_TEMP/kho-tri-thuc-backup"
@@ -84,3 +125,263 @@ jobs:
       - name: Stop test services
         if: always()
         run: docker compose down --volumes
+
+  browser_acceptance:
+    name: G2 browser acceptance with truthful NOT_RUN gate (not production UAT)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Verify the G2 verdict cannot turn NOT_RUN into PASS (offline unit)
+        run: node --test tools/smoke/release_acceptance_gate.test.mjs
+
+      - name: Prepare independent disposable PostgreSQL/React/Django QA project
+        run: |
+          cat > "$RUNNER_TEMP/kt-p08.env" <<'ENV'
+          DJANGO_DEBUG=0
+          DJANGO_SECRET_KEY=django-insecure-p08-ci-disposable-only
+          DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,api
+          POSTGRES_DB=kt_p08_journeys
+          POSTGRES_USER=kt_p08
+          POSTGRES_PASSWORD=p08-only-ci-db-fixture
+          API_PORT=62311
+          WEB_PORT=62310
+          SUGGESTION_REVIEW_POC_ENABLED=1
+          GOOGLE_DRIVE_CLIENT_ID=
+          GOOGLE_DRIVE_CLIENT_SECRET=
+          GOOGLE_DRIVE_REDIRECT_URI=
+          GOOGLE_DRIVE_TOKEN_KEY=
+          ENV
+          chmod 600 "$RUNNER_TEMP/kt-p08.env"
+          docker compose -p kt-p08-ci --env-file "$RUNNER_TEMP/kt-p08.env" config --quiet
+          docker compose -p kt-p08-ci --env-file "$RUNNER_TEMP/kt-p08.env" up --detach --build --wait --wait-timeout 180 db api worker web
+          docker compose -p kt-p08-ci --env-file "$RUNNER_TEMP/kt-p08.env" exec -T -e DJANGO_SUPERUSER_PASSWORD=p08-only-ci-user-fixture api python manage.py createsuperuser --noinput --username p08-fixture --email p08@example.invalid
+
+      - name: Run real browser acceptance with truthful PASS/FAIL/NOT_RUN ledger
+        continue-on-error: true
+        env:
+          KT_JOURNEY_URL: http://127.0.0.1:62310
+          KT_JOURNEY_DB_NAME: kt_p08_journeys
+          KT_JOURNEY_ISOLATED: 'YES'
+          # Explicit QA-only read of one public Python documentation page; no secrets,
+          # cookies or user content are transmitted. HTTP bounds enforced in source_fetch.
+          KT_JOURNEY_PUBLIC_NETWORK: 'YES'
+          KT_JOURNEY_USER: p08-fixture
+          KT_JOURNEY_PASSWORD: p08-only-ci-user-fixture
+          KT_JOURNEY_OUT: tmp/p08-kt128
+        run: |
+          browser="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || true)"
+          if [ -z "$browser" ]; then echo "NO_BROWSER_BINARY"; exit 2; fi
+          export KT_JOURNEY_CHROMIUM="$browser"
+          node --check tools/smoke/knowledge_journeys.mjs
+          node --test tools/smoke/p08_*.test.mjs
+          node tools/smoke/knowledge_journeys.mjs
+
+      # Extend J8 browser ZIP export/preview with a FULL import into a different
+      # freshly migrated PostgreSQL database (no Drive, media bytes or real user).
+      # Retain evidence even on failure; only the J8 reconciler may mark J8 PASS.
+      - name: Verify P08 J8 Vault clean-database roundtrip (synthetic, isolated)
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          qa() { docker compose -p kt-p08-ci --env-file "$RUNNER_TEMP/kt-p08.env" "$@"; }
+          test -s tmp/p08-kt128/p08-results.json
+          qa cp tools/smoke/p08_vault_clean_db.py api:/tmp/p08_vault_clean_db.py
+          qa exec -T -e P08_VAULT_ISOLATED=YES -e P08_VAULT_MODE=source api \
+            python manage.py shell -c "exec(compile(open('/tmp/p08_vault_clean_db.py',encoding='utf-8').read(),'/tmp/p08_vault_clean_db.py','exec'))"
+          qa exec -T db sh -ec 'createdb --no-password -U "$POSTGRES_USER" --template=template0 --encoding=UTF8 kt_p08_vault_clean'
+          qa exec -T -e POSTGRES_DB=kt_p08_vault_clean api python manage.py migrate --noinput
+          qa exec -T -e POSTGRES_DB=kt_p08_vault_clean -e P08_VAULT_ISOLATED=YES -e P08_VAULT_MODE=target api \
+            python manage.py shell -c "exec(compile(open('/tmp/p08_vault_clean_db.py',encoding='utf-8').read(),'/tmp/p08_vault_clean_db.py','exec'))"
+          qa cp api:/tmp/p08-vault-clean/source.json tmp/p08-kt128/p08-j8-source.json
+          qa cp api:/tmp/p08-vault-clean/result.json tmp/p08-kt128/p08-j8-clean-result.json
+          node tools/smoke/p08_reconcile_j8.mjs \
+            tmp/p08-kt128/p08-results.json \
+            tmp/p08-kt128/p08-j8-source.json \
+            tmp/p08-kt128/p08-j8-clean-result.json
+
+      - name: Evaluate P15 real-browser keyboard and responsive behavior
+        continue-on-error: true
+        env:
+          P15_QA_URL: http://127.0.0.1:62310
+          P15_SYNTHETIC_QA: '1'
+          P15_QA_USER: p08-fixture
+          P15_QA_PASSWORD: p08-only-ci-user-fixture
+          P15_CDP_MODULE: tools/smoke/p08_cdp.mjs
+        run: |
+          browser="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || true)"
+          if [ -z "$browser" ]; then echo "NO_BROWSER_BINARY"; exit 2; fi
+          export KT_JOURNEY_CHROMIUM="$browser"
+          node tools/smoke/p15_accessibility.mjs --browser
+
+      # J9 is a separate 10k/1k PostgreSQL synthetic QA database and clean
+      # restored database; run AFTER P15 so its UI inspection remains isolated.
+      # The existing job retains the normal hard release gate; never make G2
+      # green if the public source or native PDF/MP4 tests are still NOT_RUN.
+      - name: Verify P08 J9 at 10k Items and 1k folders with checked PG restore (isolated)
+        continue-on-error: true
+        timeout-minutes: 7
+        run: |
+          set -euo pipefail
+          qa() { docker compose -p kt-p08-ci --env-file "$RUNNER_TEMP/kt-p08.env" "$@"; }
+          test -s tmp/p08-kt128/p08-results.json
+          qa cp tools/smoke/p08_scale_10k.py api:/tmp/p08_scale_10k.py
+          qa exec -T db sh -ec 'createdb --no-password -U "$POSTGRES_USER" --template=template0 --encoding=UTF8 kt_p08_scale'
+          qa exec -T -e POSTGRES_DB=kt_p08_scale api python manage.py migrate --noinput
+          qa exec -T -e POSTGRES_DB=kt_p08_scale -e P08_J9_ISOLATED=YES -e P08_J9_MODE=source api \
+            python manage.py shell -c "exec(compile(open('/tmp/p08_scale_10k.py',encoding='utf-8').read(),'/tmp/p08_scale_10k.py','exec'))"
+
+          # PostgreSQL native custom-format dump with explicit SHA256 verification,
+          # then a single-transaction pg_restore into a fresh database. This is
+          # NOT a Drive backup or a full production disaster-recovery exercise.
+          qa exec -T db sh -ec \
+            'pg_dump --no-password -U "$POSTGRES_USER" --format=custom --file=/tmp/p08-j9-scale.dump kt_p08_scale && sha256sum /tmp/p08-j9-scale.dump > /tmp/p08-j9-scale.sha256 && sha256sum -c /tmp/p08-j9-scale.sha256'
+          digest="$(qa exec -T db sh -ec 'sha256sum /tmp/p08-j9-scale.dump' | awk '{print $1}')"
+          [[ "$digest" =~ ^[0-9a-f]{64}$ ]] || { echo "INVALID_BACKUP_SHA256"; exit 1; }
+          qa exec -T db sh -ec 'createdb --no-password -U "$POSTGRES_USER" --template=template0 --encoding=UTF8 kt_p08_scale_restored'
+          qa exec -T db sh -ec \
+            'pg_restore --no-password -U "$POSTGRES_USER" --single-transaction --exit-on-error --no-owner --no-privileges --dbname=kt_p08_scale_restored /tmp/p08-j9-scale.dump && sha256sum -c /tmp/p08-j9-scale.sha256'
+          qa exec -T -e POSTGRES_DB=kt_p08_scale_restored -e P08_J9_ISOLATED=YES \
+            -e P08_J9_MODE=restored -e P08_J9_BACKUP_SHA256="$digest" \
+            -e P08_J9_BACKUP_VERIFIED=YES api \
+            python manage.py shell -c "exec(compile(open('/tmp/p08_scale_10k.py',encoding='utf-8').read(),'/tmp/p08_scale_10k.py','exec'))"
+          qa cp api:/tmp/p08-j9-scale/source.json tmp/p08-kt128/p08-j9-source.json
+          qa cp api:/tmp/p08-j9-scale/restored.json tmp/p08-kt128/p08-j9-restored.json
+          node tools/smoke/p08_reconcile_j9.mjs \
+            tmp/p08-kt128/p08-results.json \
+            tmp/p08-kt128/p08-j9-source.json \
+            tmp/p08-kt128/p08-j9-restored.json
+
+      # Native media capability preflight with two ORIGINAL generated binary files.
+      # Isolated localhost server only, no private provider; J6B remains NOT_RUN
+      # until the actual PDF page and private authenticated viewer are verified.
+      - name: P08 J6B generated PDF/MP4 native Chromium preflight (not full release gate)
+        continue-on-error: true
+        timeout-minutes: 3
+        env:
+          KT_J6B_ISOLATED: 'YES'
+        run: |
+          browser="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || true)"
+          if [ -z "$browser" ]; then echo "NO_BROWSER_BINARY"; exit 2; fi
+          export KT_JOURNEY_CHROMIUM="$browser"
+          # Backend image already includes ffmpeg: don't install extra packages
+          # on hosted Actions runners, and don't upload generated MP4 as artifact.
+          qa() { docker compose -p kt-p08-ci --env-file "$RUNNER_TEMP/kt-p08.env" "$@"; }
+          qa exec -T api ffmpeg -nostdin -hide_banner -loglevel error \
+            -f lavfi -i testsrc=size=320x180:rate=15 -t 12 -an \
+            -c:v libx264 -preset ultrafast -pix_fmt yuv420p \
+            -movflags +faststart -y /tmp/kt-j6b-generated.mp4
+          export KT_J6B_MP4_PATH="$RUNNER_TEMP/kt-j6b-generated.mp4"
+          trap 'rm -f "$KT_J6B_MP4_PATH"' EXIT
+          qa cp api:/tmp/kt-j6b-generated.mp4 "$KT_J6B_MP4_PATH"
+          node --check tools/smoke/p08_j6b_native_preflight.mjs
+          node tools/smoke/p08_j6b_native_preflight.mjs
+
+      # Built React App + actual Django authenticated/private views, with an
+      # injected synthetic in-memory storage adapter in a separate QA WSGI
+      # process. No real Drive/Gemini credentials, no production file access.
+      - name: P08 J6B real App private PDF page + MP4 seek acceptance (synthetic)
+        continue-on-error: true
+        timeout-minutes: 5
+        env:
+          KT_J6B_ISOLATED: 'YES'
+          KT_J6B_WEB: http://127.0.0.1:62310
+        run: |
+          set -euo pipefail
+          qa() { docker compose -p kt-p08-ci --env-file "$RUNNER_TEMP/kt-p08.env" "$@"; }
+          browser="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || true)"
+          test -n "$browser" || { echo "NO_CHROMIUM"; exit 2; }
+          export KT_JOURNEY_CHROMIUM="$browser"
+          qa cp tools/smoke/p08_j6b_private_server.py api:/tmp/p08_j6b_private_server.py
+          qa exec -T api python -m py_compile /tmp/p08_j6b_private_server.py
+          qa exec -d -e KT_J6B_ISOLATED=YES api sh -c \
+            'exec python /tmp/p08_j6b_private_server.py > /tmp/p08-j6b-server.log 2>&1'
+          ready=0
+          for tick in $(seq 1 45); do
+            if qa exec -T api python -c \
+              "import urllib.request; assert urllib.request.urlopen('http://127.0.0.1:8152/api/v1/health',timeout=2).status == 200" >/dev/null 2>&1; then
+              ready=1; break
+            fi
+            sleep 1
+          done
+          if [ "$ready" != 1 ]; then
+            qa exec -T api sh -c 'tail -n 50 /tmp/p08-j6b-server.log' || true
+            echo "J6B_QA_FIXTURE_SERVER_NOT_READY"; exit 2
+          fi
+          mkdir -p tmp/p08-j6b-private
+          qa cp api:/tmp/p08-j6b-private-ci/fixture.json tmp/p08-j6b-private/fixture.json
+          api_id="$(qa ps -q api)"
+          api_ip="$(docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$api_id")"
+          export KT_J6B_API_URL="http://$api_ip:8152"
+          export KT_J6B_FIXTURE="tmp/p08-j6b-private/fixture.json"
+          # Docker bridge IP is not on Django's host allowlist and can be
+          # misrouted via HTTP_PROXY; use an explicit allowed Host and no proxy.
+          curl --noproxy '*' -H 'Host: 127.0.0.1:8152' -fsS "$KT_J6B_API_URL/api/v1/health" >/dev/null
+          node --check tools/smoke/p08_j6b_private_acceptance.mjs
+          node tools/smoke/p08_j6b_private_acceptance.mjs
+          node tools/smoke/p08_reconcile_j6b.mjs \
+            tmp/p08-kt128/p08-results.json \
+            tmp/p08-j6b-private/fixture.json \
+            tmp/p08-j6b-private/results.json
+
+      - name: Publish P08 J6B private API/browser screenshots and evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: kt-p08-j6b-private-end-to-end
+          path: tmp/p08-j6b-private/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Upload P08 J6B native preflight and manual PDF screenshot
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: kt-p08-j6b-native-preflight
+          path: tmp/p08-j6b-native/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Publish P15 browser screenshots and keyboard findings
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: kt-p15-browser-accessibility
+          path: tmp/p15-accessibility/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Publish real-browser evidence (private artifact only)
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: kt-p08-real-browser-ledger
+          path: tmp/p08-kt128/
+          if-no-files-found: warn
+          retention-days: 14
+
+      # Leave the diagnostic P08/P15 steps continue-on-error to retain both
+      # artefacts, then fail this one existing job if either gate is incomplete.
+      # No extra Actions runner, provider API or test DB is started by this step.
+      - name: Enforce G2 release-candidate browser evidence (fail on NOT_RUN)
+        if: always()
+        run: |
+          node tools/smoke/release_acceptance_gate.mjs \
+            --p08 tmp/p08-kt128/p08-results.json \
+            --p15 tmp/p15-accessibility/browser-results.json
+
+      - name: Shut down only P08 disposable containers and test volumes
+        if: always()
+        run: |
+          if [ -f "$RUNNER_TEMP/kt-p08.env" ]; then
+            docker compose -p kt-p08-ci --env-file "$RUNNER_TEMP/kt-p08.env" down --volumes --remove-orphans
+            rm -f "$RUNNER_TEMP/kt-p08.env"
+          fi

@@ -7,6 +7,7 @@ import { ItemScreen } from './ItemScreen';
 import { LibraryScreen } from './LibraryScreen';
 import { SearchScreen } from './SearchScreen';
 import { SettingsScreen } from './SettingsScreen';
+import { KnowledgeCommandPalette } from './KnowledgeCommandPalette';
 import { ErrorNotice, Loading, PageTitle } from './views';
 
 const links = [
@@ -93,7 +94,7 @@ function Login({ csrf, onLogin }: { csrf: string; onLogin: (session: Session) =>
 }
 
 function activePath() {
-  return location.hash || '#/gui';
+  return window.location.hash || '#/gui';
 }
 
 export function App() {
@@ -163,8 +164,17 @@ export function App() {
   const authenticated = session?.authenticated === true;
 
   return <>
+    <a className="skip-link" href="#main-content">Bỏ qua điều hướng, đến nội dung chính</a>
     <Header path={path} username={session?.username} onLogout={authenticated ? () => void logout() : undefined} signingOut={signingOut} />
-    <main className="shell canvas">
+    <main id="main-content" className="shell canvas" tabIndex={-1}>
+      {authenticated && <KnowledgeCommandPalette currentItemId={itemId} onAction={(action) => {
+        if (action === 'day') window.location.hash = '#/thu-vien?view=timeline';
+        else if (action === 'create') {
+          if (path.startsWith('#/thu-vien')) window.dispatchEvent(new CustomEvent('knowledge-command', { detail: { action } }));
+          else window.location.hash = '#/gui';
+        } else if (itemId) window.dispatchEvent(new CustomEvent('knowledge-command', { detail: { action, itemId } }));
+        else window.location.hash = '#/thu-vien';
+      }} />}
       {logoutError && <ErrorNotice retry={() => void logout()}>Chưa đăng xuất được.</ErrorNotice>}
       {!session && <>
         <PageTitle title="Kho Tri Thức" />

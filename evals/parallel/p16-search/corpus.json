@@ -1,0 +1,1209 @@
+{
+  "schema_version": 1,
+  "fixture_kind": "synthetic_model_authored_not_human_validated",
+  "description": "P16: independently declared synthetic relevance judgments; results must never be described as real user search quality.",
+  "owners": [
+    "A",
+    "B"
+  ],
+  "item_seed_note": "IDs stable in gold; Django UUIDs generated per isolated test run.",
+  "items": [
+    {
+      "id": "a_port",
+      "owner": "A",
+      "title": "Cảng Lạch Huyện",
+      "description": "Sản lượng container khu bến cảng",
+      "note": "Bến cảng nước sâu phục vụ vận tải biển.",
+      "topics": [
+        "Logistics",
+        "Kinh tế biển"
+      ],
+      "derived": [
+        {
+          "kind": "pdf_text",
+          "text": "Báo cáo khảo sát địa chất bến tàu.",
+          "locator": {
+            "page": 12
+          },
+          "status": "active"
+        }
+      ],
+      "sources": [
+        {
+          "metadata": {
+            "quoted_claim": "Cảng có một triệu chuyến",
+            "source_locator": {
+              "page": 999
+            },
+            "trust": "unverified"
+          }
+        }
+      ]
+    },
+    {
+      "id": "a_industry",
+      "owner": "A",
+      "title": "Khu công nghiệp Tràng Duệ",
+      "note": "Kế hoạch giải phóng mặt bằng và tái định cư.",
+      "topics": [
+        "Công nghiệp"
+      ]
+    },
+    {
+      "id": "a_digital",
+      "owner": "A",
+      "title": "Hệ thống bệnh án điện tử",
+      "note": "Chuyển đổi số cơ sở khám bệnh.",
+      "topics": [
+        "Y tế"
+      ]
+    },
+    {
+      "id": "a_island",
+      "owner": "A",
+      "title": "Vườn quốc gia Cát Bà",
+      "note": "Khu sinh quyển và bảo tồn đa dạng sinh học.",
+      "topics": [
+        "Du lịch",
+        "Môi trường"
+      ]
+    },
+    {
+      "id": "a_energy",
+      "owner": "A",
+      "title": "Điện mặt trời mái nhà",
+      "note": "Nguồn năng lượng tái tạo có thể tích hợp lưới.",
+      "topics": [
+        "Năng lượng"
+      ]
+    },
+    {
+      "id": "a_school",
+      "owner": "A",
+      "title": "Kỳ thi đánh giá năng lực",
+      "note": "Bài giảng hàm số và lịch ôn tập học sinh.",
+      "topics": [
+        "Giáo dục"
+      ]
+    },
+    {
+      "id": "a_urban",
+      "owner": "A",
+      "title": "Nghiên cứu vành đai đô thị",
+      "note": "Nút giao khác mức bảo đảm dòng xe.",
+      "topics": [
+        "Giao thông"
+      ],
+      "derived": [
+        {
+          "kind": "pdf_text",
+          "text": "Thuyết minh bản vẽ mặt cắt đường trục.",
+          "locator": {
+            "page": 7
+          },
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "a_environment",
+      "owner": "A",
+      "title": "Quan trắc nước thải",
+      "note": "Giám sát chất lượng dòng nước ở nhà máy.",
+      "topics": [
+        "Môi trường",
+        "Công nghiệp"
+      ],
+      "derived": [
+        {
+          "kind": "pdf_text",
+          "text": "Biên bản kiểm tra khí thải phân xưởng.",
+          "locator": {
+            "page": 4
+          },
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "id": "a_law",
+      "owner": "A",
+      "title": "Nghị quyết 226 về chính sách",
+      "note": "Theo dõi thẩm quyền đề xuất cơ chế mới.",
+      "topics": [
+        "Pháp luật"
+      ]
+    },
+    {
+      "id": "a_trade",
+      "owner": "A",
+      "title": "Khu thương mại tự do",
+      "description": "Đề án phân vùng chức năng",
+      "note": "Xúc tiến dịch vụ xuyên biên giới.",
+      "topics": [
+        "Kinh tế biển"
+      ]
+    },
+    {
+      "id": "a_heritage",
+      "owner": "A",
+      "title": "Bảo tàng thành phố",
+      "note": "Kho tư liệu hiện vật lịch sử.",
+      "topics": [
+        "Văn hóa"
+      ]
+    },
+    {
+      "id": "a_rail",
+      "owner": "A",
+      "title": "Đường sắt liên vận",
+      "note": "Kết nối ga hàng hóa với hành lang vận tải.",
+      "topics": [
+        "Giao thông"
+      ]
+    },
+    {
+      "id": "a_farming",
+      "owner": "A",
+      "title": "Nông nghiệp tuần hoàn",
+      "note": "Phụ phẩm nông trại trở thành phân bón.",
+      "topics": [
+        "Nông nghiệp"
+      ]
+    },
+    {
+      "id": "a_logistics",
+      "owner": "A",
+      "title": "Đề án logistics xanh",
+      "note": "Hạ tầng kho thông minh và xe vận tải ít phát thải.",
+      "topics": [
+        "Logistics",
+        "Môi trường"
+      ],
+      "projects": [
+        "Kế hoạch cảng"
+      ],
+      "tags": [
+        "Ưu tiên"
+      ]
+    },
+    {
+      "id": "a_flood",
+      "owner": "A",
+      "title": "Kế hoạch đê biển",
+      "note": "Gia cố kè đá chống xói lở.",
+      "topics": [
+        "Kinh tế biển"
+      ]
+    },
+    {
+      "id": "a_health",
+      "owner": "A",
+      "title": "Khám chữa từ xa",
+      "note": "Hỗ trợ bác sĩ tư vấn qua cuộc gọi.",
+      "topics": [
+        "Y tế"
+      ]
+    },
+    {
+      "id": "a_trade_copy",
+      "owner": "A",
+      "title": "Khu thương mại tự do",
+      "description": "Tài liệu nhập trùng có Item UUID khác.",
+      "note": "Bản lưu phiên nhận thứ hai.",
+      "topics": [
+        "Kinh tế biển"
+      ]
+    },
+    {
+      "id": "a_identifier",
+      "owner": "A",
+      "title": "Quyết định 123/QĐ-UBND",
+      "note": "Sổ tay handbook về ký hiệu văn bản.",
+      "topics": [
+        "Pháp luật"
+      ]
+    },
+    {
+      "id": "a_nfd",
+      "owner": "A",
+      "title": "Địa điểm Đà Nẵng",
+      "note": "Văn bản nhập dưới dạng Unicode phân rã.",
+      "topics": [
+        "Du lịch"
+      ],
+      "title_form": "NFD"
+    },
+    {
+      "id": "a_note",
+      "owner": "A",
+      "title": "Ghi chép riêng",
+      "note": "Bản thảo phân tích mật độ đô thị.",
+      "derived": [
+        {
+          "kind": "web_text",
+          "text": "Bài viết gốc nói về mật độ dân số.",
+          "locator": {
+            "section": "body"
+          },
+          "status": "active"
+        }
+      ],
+      "topics": [
+        "Giao thông"
+      ]
+    },
+    {
+      "id": "a_capture",
+      "owner": "A",
+      "title": "Đường dẫn họp báo",
+      "kind": "link",
+      "captures": [
+        {
+          "raw_kind": "link",
+          "raw_text": "Chú thích: hải đồ tỷ lệ lớn.",
+          "original_url": "https://example.invalid/press"
+        }
+      ],
+      "topics": [
+        "Kinh tế biển"
+      ]
+    },
+    {
+      "id": "a_source_only",
+      "owner": "A",
+      "title": "Nguồn chỉ có đường dẫn",
+      "sources": [
+        {
+          "metadata": {
+            "title": "Từ khóa bịa photogrammetrytent",
+            "snippet": "Mã sentinel KIMTACH",
+            "source_locator": {
+              "page": 999
+            },
+            "verified": false
+          }
+        }
+      ],
+      "topics": [
+        "Văn hóa"
+      ]
+    },
+    {
+      "id": "a_stale",
+      "owner": "A",
+      "title": "Tệp trích xuất cũ",
+      "derived": [
+        {
+          "kind": "pdf_text",
+          "text": "Phiên bản ngừng hiệu lực và bị hủy.",
+          "locator": {
+            "page": 91
+          },
+          "status": "stale"
+        },
+        {
+          "kind": "pdf_text",
+          "text": "Bản đã kiểm tra hiện hành.",
+          "locator": {
+            "page": 2
+          },
+          "status": "active"
+        }
+      ],
+      "topics": [
+        "Pháp luật"
+      ]
+    },
+    {
+      "id": "a_text_capture",
+      "owner": "A",
+      "title": "Văn bản nhập tay",
+      "captures": [
+        {
+          "raw_kind": "text",
+          "raw_text": "Bản nháp riêng tư qua capture text.",
+          "original_url": ""
+        }
+      ],
+      "topics": [
+        "Văn hóa"
+      ]
+    },
+    {
+      "id": "a_deleted",
+      "owner": "A",
+      "title": "Gói thầu đã xóa",
+      "deleted": true,
+      "note": "Thông tin nhạy cảm không được trả về.",
+      "topics": [
+        "Công nghiệp"
+      ]
+    },
+    {
+      "id": "b_port",
+      "owner": "B",
+      "title": "Cảng Lạch Huyện",
+      "note": "Hồ sơ chủ sở hữu thứ hai.",
+      "topics": [
+        "Logistics"
+      ]
+    },
+    {
+      "id": "b_secret",
+      "owner": "B",
+      "title": "Hồ sơ tối mật hải trình",
+      "note": "Dấu hiệu chủ B duy nhất.",
+      "derived": [
+        {
+          "kind": "pdf_text",
+          "text": "Mật mã vùng neo đậu độc lập.",
+          "locator": {
+            "page": 99
+          },
+          "status": "active"
+        }
+      ],
+      "topics": [
+        "An ninh"
+      ]
+    },
+    {
+      "id": "b_capture",
+      "owner": "B",
+      "title": "Bình luận bí mật",
+      "captures": [
+        {
+          "raw_kind": "link",
+          "raw_text": "Thông tin giới hạn tổ chức B.",
+          "original_url": "https://example.invalid/b"
+        }
+      ],
+      "topics": [
+        "An ninh"
+      ]
+    }
+  ],
+  "related": [
+    {
+      "a": "a_port",
+      "b": "a_logistics",
+      "reason": "lý do liên kết chỉ nằm trong RelatedItem"
+    }
+  ],
+  "queries": [
+    {
+      "id": "T01-accent",
+      "owner": "A",
+      "query": "Lạch Huyện",
+      "gold": [
+        "a_port"
+      ],
+      "category": "title"
+    },
+    {
+      "id": "T01-fold",
+      "owner": "A",
+      "query": "Lach Huyen",
+      "gold": [
+        "a_port"
+      ],
+      "category": "unaccented"
+    },
+    {
+      "id": "T01-nfd",
+      "owner": "A",
+      "query": "LẠCH HUYỆN",
+      "gold": [
+        "a_port"
+      ],
+      "category": "nfd_upper"
+    },
+    {
+      "id": "T02-accent",
+      "owner": "A",
+      "query": "Tràng Duệ",
+      "gold": [
+        "a_industry"
+      ],
+      "category": "title"
+    },
+    {
+      "id": "T02-fold",
+      "owner": "A",
+      "query": "Trang Due",
+      "gold": [
+        "a_industry"
+      ],
+      "category": "unaccented"
+    },
+    {
+      "id": "T02-nfd",
+      "owner": "A",
+      "query": "TRÀNG DUỆ",
+      "gold": [
+        "a_industry"
+      ],
+      "category": "nfd_upper"
+    },
+    {
+      "id": "T03-accent",
+      "owner": "A",
+      "query": "bệnh án điện tử",
+      "gold": [
+        "a_digital"
+      ],
+      "category": "title"
+    },
+    {
+      "id": "T03-fold",
+      "owner": "A",
+      "query": "benh an dien tu",
+      "gold": [
+        "a_digital"
+      ],
+      "category": "unaccented"
+    },
+    {
+      "id": "T03-nfd",
+      "owner": "A",
+      "query": "BỆNH ÁN ĐIỆN TỬ",
+      "gold": [
+        "a_digital"
+      ],
+      "category": "nfd_upper"
+    },
+    {
+      "id": "T04-accent",
+      "owner": "A",
+      "query": "Cát Bà",
+      "gold": [
+        "a_island"
+      ],
+      "category": "title"
+    },
+    {
+      "id": "T04-fold",
+      "owner": "A",
+      "query": "Cat Ba",
+      "gold": [
+        "a_island"
+      ],
+      "category": "unaccented"
+    },
+    {
+      "id": "T04-nfd",
+      "owner": "A",
+      "query": "CÁT BÀ",
+      "gold": [
+        "a_island"
+      ],
+      "category": "nfd_upper"
+    },
+    {
+      "id": "T05-accent",
+      "owner": "A",
+      "query": "điện mặt trời",
+      "gold": [
+        "a_energy"
+      ],
+      "category": "title"
+    },
+    {
+      "id": "T05-fold",
+      "owner": "A",
+      "query": "dien mat troi",
+      "gold": [
+        "a_energy"
+      ],
+      "category": "unaccented"
+    },
+    {
+      "id": "T05-nfd",
+      "owner": "A",
+      "query": "ĐIỆN MẶT TRỜI",
+      "gold": [
+        "a_energy"
+      ],
+      "category": "nfd_upper"
+    },
+    {
+      "id": "T06-accent",
+      "owner": "A",
+      "query": "đánh giá năng lực",
+      "gold": [
+        "a_school"
+      ],
+      "category": "title"
+    },
+    {
+      "id": "T06-fold",
+      "owner": "A",
+      "query": "danh gia nang luc",
+      "gold": [
+        "a_school"
+      ],
+      "category": "unaccented"
+    },
+    {
+      "id": "T06-nfd",
+      "owner": "A",
+      "query": "ĐÁNH GIÁ NĂNG LỰC",
+      "gold": [
+        "a_school"
+      ],
+      "category": "nfd_upper"
+    },
+    {
+      "id": "T07-accent",
+      "owner": "A",
+      "query": "vành đai đô thị",
+      "gold": [
+        "a_urban"
+      ],
+      "category": "title"
+    },
+    {
+      "id": "T07-fold",
+      "owner": "A",
+      "query": "vanh dai do thi",
+      "gold": [
+        "a_urban"
+      ],
+      "category": "unaccented"
+    },
+    {
+      "id": "T07-nfd",
+      "owner": "A",
+      "query": "VÀNH ĐAI ĐÔ THỊ",
+      "gold": [
+        "a_urban"
+      ],
+      "category": "nfd_upper"
+    },
+    {
+      "id": "T08-accent",
+      "owner": "A",
+      "query": "quan trắc nước thải",
+      "gold": [
+        "a_environment"
+      ],
+      "category": "title"
+    },
+    {
+      "id": "T08-fold",
+      "owner": "A",
+      "query": "quan trac nuoc thai",
+      "gold": [
+        "a_environment"
+      ],
+      "category": "unaccented"
+    },
+    {
+      "id": "T08-nfd",
+      "owner": "A",
+      "query": "QUAN TRẮC NƯỚC THẢI",
+      "gold": [
+        "a_environment"
+      ],
+      "category": "nfd_upper"
+    },
+    {
+      "id": "T09-accent",
+      "owner": "A",
+      "query": "nghị quyết 226",
+      "gold": [
+        "a_law"
+      ],
+      "category": "title"
+    },
+    {
+      "id": "T09-fold",
+      "owner": "A",
+      "query": "nghi quyet 226",
+      "gold": [
+        "a_law"
+      ],
+      "category": "unaccented"
+    },
+    {
+      "id": "T09-nfd",
+      "owner": "A",
+      "query": "NGHỊ QUYẾT 226",
+      "gold": [
+        "a_law"
+      ],
+      "category": "nfd_upper"
+    },
+    {
+      "id": "T10-accent",
+      "owner": "A",
+      "query": "thương mại tự do",
+      "gold": [
+        "a_trade",
+        "a_trade_copy"
+      ],
+      "category": "title"
+    },
+    {
+      "id": "T10-fold",
+      "owner": "A",
+      "query": "thuong mai tu do",
+      "gold": [
+        "a_trade",
+        "a_trade_copy"
+      ],
+      "category": "unaccented"
+    },
+    {
+      "id": "T10-nfd",
+      "owner": "A",
+      "query": "THƯƠNG MẠI TỰ DO",
+      "gold": [
+        "a_trade",
+        "a_trade_copy"
+      ],
+      "category": "nfd_upper"
+    },
+    {
+      "id": "T11-accent",
+      "owner": "A",
+      "query": "bảo tàng thành phố",
+      "gold": [
+        "a_heritage"
+      ],
+      "category": "title"
+    },
+    {
+      "id": "T11-fold",
+      "owner": "A",
+      "query": "bao tang thanh pho",
+      "gold": [
+        "a_heritage"
+      ],
+      "category": "unaccented"
+    },
+    {
+      "id": "T11-nfd",
+      "owner": "A",
+      "query": "BẢO TÀNG THÀNH PHỐ",
+      "gold": [
+        "a_heritage"
+      ],
+      "category": "nfd_upper"
+    },
+    {
+      "id": "T12-accent",
+      "owner": "A",
+      "query": "đường sắt liên vận",
+      "gold": [
+        "a_rail"
+      ],
+      "category": "title"
+    },
+    {
+      "id": "T12-fold",
+      "owner": "A",
+      "query": "duong sat lien van",
+      "gold": [
+        "a_rail"
+      ],
+      "category": "unaccented"
+    },
+    {
+      "id": "T12-nfd",
+      "owner": "A",
+      "query": "ĐƯỜNG SẮT LIÊN VẬN",
+      "gold": [
+        "a_rail"
+      ],
+      "category": "nfd_upper"
+    },
+    {
+      "id": "T13-accent",
+      "owner": "A",
+      "query": "nông nghiệp tuần hoàn",
+      "gold": [
+        "a_farming"
+      ],
+      "category": "title"
+    },
+    {
+      "id": "T13-fold",
+      "owner": "A",
+      "query": "nong nghiep tuan hoan",
+      "gold": [
+        "a_farming"
+      ],
+      "category": "unaccented"
+    },
+    {
+      "id": "T13-nfd",
+      "owner": "A",
+      "query": "NÔNG NGHIỆP TUẦN HOÀN",
+      "gold": [
+        "a_farming"
+      ],
+      "category": "nfd_upper"
+    },
+    {
+      "id": "T14-accent",
+      "owner": "A",
+      "query": "logistics xanh",
+      "gold": [
+        "a_logistics"
+      ],
+      "category": "title"
+    },
+    {
+      "id": "T14-fold",
+      "owner": "A",
+      "query": "logistics xanh",
+      "gold": [
+        "a_logistics"
+      ],
+      "category": "unaccented"
+    },
+    {
+      "id": "T14-nfd",
+      "owner": "A",
+      "query": "LOGISTICS XANH",
+      "gold": [
+        "a_logistics"
+      ],
+      "category": "nfd_upper"
+    },
+    {
+      "id": "T15-accent",
+      "owner": "A",
+      "query": "đê biển",
+      "gold": [
+        "a_flood"
+      ],
+      "category": "title"
+    },
+    {
+      "id": "T15-fold",
+      "owner": "A",
+      "query": "de bien",
+      "gold": [
+        "a_flood"
+      ],
+      "category": "unaccented"
+    },
+    {
+      "id": "T15-nfd",
+      "owner": "A",
+      "query": "ĐÊ BIỂN",
+      "gold": [
+        "a_flood"
+      ],
+      "category": "nfd_upper"
+    },
+    {
+      "id": "T16-accent",
+      "owner": "A",
+      "query": "khám chữa từ xa",
+      "gold": [
+        "a_health"
+      ],
+      "category": "title"
+    },
+    {
+      "id": "T16-fold",
+      "owner": "A",
+      "query": "kham chua tu xa",
+      "gold": [
+        "a_health"
+      ],
+      "category": "unaccented"
+    },
+    {
+      "id": "T16-nfd",
+      "owner": "A",
+      "query": "KHÁM CHỮA TỪ XA",
+      "gold": [
+        "a_health"
+      ],
+      "category": "nfd_upper"
+    },
+    {
+      "id": "N01",
+      "owner": "A",
+      "query": "bến cảng nước sâu",
+      "gold": [
+        "a_port"
+      ],
+      "category": "note",
+      "expected_source": "item"
+    },
+    {
+      "id": "N02",
+      "owner": "A",
+      "query": "khảo sát địa chất bến tàu",
+      "gold": [
+        "a_port"
+      ],
+      "category": "derived",
+      "expected_source": "derived_content"
+    },
+    {
+      "id": "N03",
+      "owner": "A",
+      "query": "giải phóng mặt bằng",
+      "gold": [
+        "a_industry"
+      ],
+      "category": "note",
+      "expected_source": "item"
+    },
+    {
+      "id": "N04",
+      "owner": "A",
+      "query": "kiểm tra khí thải phân xưởng",
+      "gold": [
+        "a_environment"
+      ],
+      "category": "derived",
+      "expected_source": "derived_content"
+    },
+    {
+      "id": "N05",
+      "owner": "A",
+      "query": "bài giảng hàm số",
+      "gold": [
+        "a_school"
+      ],
+      "category": "note",
+      "expected_source": "item"
+    },
+    {
+      "id": "N06",
+      "owner": "A",
+      "query": "bản vẽ mặt cắt đường trục",
+      "gold": [
+        "a_urban"
+      ],
+      "category": "derived",
+      "expected_source": "derived_content"
+    },
+    {
+      "id": "N07",
+      "owner": "A",
+      "query": "bảo tồn đa dạng sinh học",
+      "gold": [
+        "a_island"
+      ],
+      "category": "note",
+      "expected_source": "item"
+    },
+    {
+      "id": "N08",
+      "owner": "A",
+      "query": "hạ tầng kho thông minh",
+      "gold": [
+        "a_logistics"
+      ],
+      "category": "note",
+      "expected_source": "item"
+    },
+    {
+      "id": "N09",
+      "owner": "A",
+      "query": "hải đồ tỷ lệ lớn",
+      "gold": [
+        "a_capture"
+      ],
+      "category": "capture",
+      "expected_source": "capture_event"
+    },
+    {
+      "id": "N10",
+      "owner": "A",
+      "query": "mật độ đô thị",
+      "gold": [
+        "a_note"
+      ],
+      "category": "note",
+      "expected_source": "item"
+    },
+    {
+      "id": "N11",
+      "owner": "A",
+      "query": "mật độ dân số",
+      "gold": [
+        "a_note"
+      ],
+      "category": "derived",
+      "expected_source": "derived_content"
+    },
+    {
+      "id": "N12",
+      "owner": "A",
+      "query": "bản đã kiểm tra hiện hành",
+      "gold": [
+        "a_stale"
+      ],
+      "category": "derived",
+      "expected_source": "derived_content"
+    },
+    {
+      "id": "F01",
+      "owner": "A",
+      "query": "logistics xanh",
+      "gold": [
+        "a_logistics"
+      ],
+      "category": "topic_multi",
+      "filters": {
+        "topic": {
+          "owner": "A",
+          "name": "Logistics"
+        }
+      }
+    },
+    {
+      "id": "F02",
+      "owner": "A",
+      "query": "logistics xanh",
+      "gold": [
+        "a_logistics"
+      ],
+      "category": "topic_multi",
+      "filters": {
+        "topic": {
+          "owner": "A",
+          "name": "Môi trường"
+        }
+      }
+    },
+    {
+      "id": "F03",
+      "owner": "A",
+      "query": "logistics xanh",
+      "gold": [],
+      "category": "topic_excluded",
+      "filters": {
+        "topic": {
+          "owner": "A",
+          "name": "Giáo dục"
+        }
+      }
+    },
+    {
+      "id": "F04",
+      "owner": "A",
+      "query": "logistics xanh",
+      "gold": [
+        "a_logistics"
+      ],
+      "category": "project_filter",
+      "filters": {
+        "project": {
+          "owner": "A",
+          "name": "Kế hoạch cảng"
+        }
+      }
+    },
+    {
+      "id": "F05",
+      "owner": "A",
+      "query": "logistics xanh",
+      "gold": [
+        "a_logistics"
+      ],
+      "category": "tag_filter",
+      "filters": {
+        "tag": {
+          "owner": "A",
+          "name": "Ưu tiên"
+        }
+      }
+    },
+    {
+      "id": "F06",
+      "owner": "A",
+      "query": "logistics xanh",
+      "gold": [],
+      "category": "tag_excluded",
+      "filters": {
+        "tag": {
+          "owner": "A",
+          "name": "Không liên quan"
+        }
+      }
+    },
+    {
+      "id": "F07",
+      "owner": "A",
+      "query": "logistics xanh",
+      "gold": [],
+      "category": "cross_owner_filter",
+      "filters": {
+        "topic": {
+          "owner": "B",
+          "name": "Logistics"
+        }
+      }
+    },
+    {
+      "id": "F08",
+      "owner": "B",
+      "query": "Lạch Huyện",
+      "gold": [
+        "b_port"
+      ],
+      "category": "owner_private",
+      "filters": {}
+    },
+    {
+      "id": "F09",
+      "owner": "A",
+      "query": "Hồ sơ tối mật hải trình",
+      "gold": [],
+      "category": "owner_private"
+    },
+    {
+      "id": "F10",
+      "owner": "B",
+      "query": "Hồ sơ tối mật hải trình",
+      "gold": [
+        "b_secret"
+      ],
+      "category": "owner_private",
+      "filters": {}
+    },
+    {
+      "id": "F11",
+      "owner": "B",
+      "query": "nghị quyết 226",
+      "gold": [],
+      "category": "owner_private",
+      "filters": {}
+    },
+    {
+      "id": "F12",
+      "owner": "A",
+      "query": "gói thầu đã xóa",
+      "gold": [],
+      "category": "deleted"
+    },
+    {
+      "id": "F13",
+      "owner": "A",
+      "query": "khu thuong mai tu do",
+      "gold": [
+        "a_trade",
+        "a_trade_copy"
+      ],
+      "category": "duplicate"
+    },
+    {
+      "id": "F14",
+      "owner": "A",
+      "query": "123/QD-UB",
+      "gold": [
+        "a_identifier"
+      ],
+      "category": "identifier"
+    },
+    {
+      "id": "F15",
+      "owner": "A",
+      "query": "handbok",
+      "gold": [
+        "a_identifier"
+      ],
+      "category": "typo"
+    },
+    {
+      "id": "F16",
+      "owner": "A",
+      "query": "123/%UB",
+      "gold": [],
+      "category": "literal_negative"
+    },
+    {
+      "id": "X01",
+      "owner": "A",
+      "query": "photogrammetrytent",
+      "gold": [],
+      "category": "negative_provenance"
+    },
+    {
+      "id": "X02",
+      "owner": "A",
+      "query": "KIMTACH",
+      "gold": [],
+      "category": "negative_provenance"
+    },
+    {
+      "id": "X03",
+      "owner": "A",
+      "query": "phiên bản ngừng hiệu lực",
+      "gold": [],
+      "category": "negative_provenance"
+    },
+    {
+      "id": "X04",
+      "owner": "A",
+      "query": "bản nháp riêng tư",
+      "gold": [],
+      "category": "negative_provenance"
+    },
+    {
+      "id": "X05",
+      "owner": "A",
+      "query": "thông tin giới hạn tổ chức B",
+      "gold": [],
+      "category": "negative_provenance"
+    },
+    {
+      "id": "X06",
+      "owner": "A",
+      "query": "lý do liên kết chỉ nằm trong RelatedItem",
+      "gold": [],
+      "category": "negative_provenance"
+    },
+    {
+      "id": "S01",
+      "owner": "A",
+      "query": "năng lượng sạch trên mái",
+      "gold": [
+        "a_energy"
+      ],
+      "category": "semantic"
+    },
+    {
+      "id": "S02",
+      "owner": "A",
+      "query": "giao thông công cộng đường ray",
+      "gold": [
+        "a_rail"
+      ],
+      "category": "semantic"
+    },
+    {
+      "id": "S03",
+      "owner": "A",
+      "query": "bảo vệ hệ sinh thái biển",
+      "gold": [
+        "a_island"
+      ],
+      "category": "semantic"
+    },
+    {
+      "id": "S04",
+      "owner": "A",
+      "query": "hồ sơ chăm sóc sức khỏe trực tuyến",
+      "gold": [
+        "a_health"
+      ],
+      "category": "semantic"
+    }
+  ],
+  "evaluation": {
+    "top_k": 5,
+    "notes": "Positive-query recall=|top5 ∩ gold|/|gold|; precision=|top5 ∩ gold|/|top5|; empty-gold queries evaluated as negative safety checks. The overall recall/precision are micro-averaged over positive queries only."
+  }
+}

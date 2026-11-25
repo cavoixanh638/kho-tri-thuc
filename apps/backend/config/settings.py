@@ -92,3 +92,27 @@ WEB_DIST = os.getenv("WEB_DIST", "")
 FFMPEG_BINARY = os.getenv("FFMPEG_BINARY", "ffmpeg")
 FFPROBE_BINARY = os.getenv("FFPROBE_BINARY", "ffprobe")
 LOCAL_ASR_MODEL_DIR = os.getenv("LOCAL_ASR_MODEL_DIR", "")
+# Explicit development opt-in. This enables manual review only, never an AI provider.
+SUGGESTION_REVIEW_POC_ENABLED = os.getenv("SUGGESTION_REVIEW_POC_ENABLED", "0") == "1"
+
+# Provider credentials live only on the server. Discovery is read-only.
+# Future OCR requests MUST be opt-in with an explicit cost/usage policy.
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+GEMINI_ALLOW_PREMIUM_MODELS = os.getenv("GEMINI_ALLOW_PREMIUM_MODELS", "0") == "1"
+GEMINI_OCR_ENABLED = os.getenv("GEMINI_OCR_ENABLED", "0") == "1"
+GEMINI_MAX_LOCAL_REQUESTS_PER_DAY = max(
+    0, min(100_000, int(os.getenv("GEMINI_MAX_LOCAL_REQUESTS_PER_DAY", "80")))
+)
+
+# Separate consent to transmit private image pixels to an external provider.
+# Both flags must be enabled explicitly; defaults make zero Gemini image calls.
+GEMINI_OCR_EXTERNAL_PROCESSING_ALLOWED = os.getenv(
+    "GEMINI_OCR_EXTERNAL_PROCESSING_ALLOWED", "0"
+) == "1"
+
+# Model IDs require a successful OCR quality benchmark & explicit operator approval.
+# PR82 reviewed model profiles alone do not authorize external inference.
+GEMINI_OCR_APPROVED_MODELS = frozenset(
+    item.strip() for item in os.getenv("GEMINI_OCR_APPROVED_MODELS", "").split(",")
+    if item.strip()
+)

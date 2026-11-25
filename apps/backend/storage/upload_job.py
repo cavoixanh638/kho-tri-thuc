@@ -4,6 +4,8 @@ from uuid import UUID
 from catalog.models import Item
 from django.conf import settings
 from jobs.handlers import JobFailure
+from jobs.repository import JobRepository
+from processing.models import DerivedContent
 from processing.document_job import extract_from_staging
 from processing.thumbnail_integration import thumbnail_from_staging
 
@@ -70,6 +72,22 @@ def upload_asset(job):
         source_fetch="not_applicable"
     )
     thumbnail_from_staging(asset, path)
+    # Only operator-approved, verified, bounded images create external OCR jobs.
+    from processing.gemini_ocr_job import enqueue_image_ocr
+
+    enqueue_image_ocr(asset)
+    # Images and other formats without extractable text still need a first
+    # conservative classification pass (filename and authored caption). When
+    # document extraction produced text it has already queued this job.
+    if not DerivedContent.objects.filter(
+        asset=asset, kind="document_text", status=DerivedContent.Status.ACTIVE
+    ).exists():
+        JobRepository.enqueue(
+            kind="organize",
+            idempotency_key=f"asset:{asset.pk}:metadata:{asset.sha256}",
+            item=asset.item,
+            input_ref={"item_id": str(asset.item_id)},
+        )
 
     try:
         path.unlink(missing_ok=True)

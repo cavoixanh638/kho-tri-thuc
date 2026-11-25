@@ -1,0 +1,487 @@
+{
+  "scope": "Actual Django session-authenticated viewer API, injected synthetic StoragePort; no Drive traffic",
+  "audio": [
+    {
+      "target": 0,
+      "actual": 0,
+      "duration": 30,
+      "tag": "AUDIO",
+      "width": null,
+      "height": null,
+      "url": "/api/v1/assets/62193caf-c73f-4c08-b920-b981743ed14c/content/1/a0bf159aaa9278a5ee217f8a8a8f9ffac66db36919159cded25d062d67f1a7b7",
+      "status": "Đã đến 0:00."
+    },
+    {
+      "target": 0.125,
+      "actual": 0.125,
+      "duration": 30,
+      "tag": "AUDIO",
+      "width": null,
+      "height": null,
+      "url": "/api/v1/assets/62193caf-c73f-4c08-b920-b981743ed14c/content/1/a0bf159aaa9278a5ee217f8a8a8f9ffac66db36919159cded25d062d67f1a7b7",
+      "status": "Đã đến 0:00.125."
+    },
+    {
+      "target": 0.5,
+      "actual": 0.5,
+      "duration": 30,
+      "tag": "AUDIO",
+      "width": null,
+      "height": null,
+      "url": "/api/v1/assets/62193caf-c73f-4c08-b920-b981743ed14c/content/1/a0bf159aaa9278a5ee217f8a8a8f9ffac66db36919159cded25d062d67f1a7b7",
+      "status": "Đã đến 0:00.5."
+    },
+    {
+      "target": 1,
+      "actual": 1,
+      "duration": 30,
+      "tag": "AUDIO",
+      "width": null,
+      "height": null,
+      "url": "/api/v1/assets/62193caf-c73f-4c08-b920-b981743ed14c/content/1/a0bf159aaa9278a5ee217f8a8a8f9ffac66db36919159cded25d062d67f1a7b7",
+      "status": "Đã đến 0:01."
+    },
+    {
+      "target": 1.25,
+      "actual": 1.25,
+      "duration": 30,
+      "tag": "AUDIO",
+      "width": null,
+      "height": null,
+      "url": "/api/v1/assets/62193caf-c73f-4c08-b920-b981743ed14c/content/1/a0bf159aaa9278a5ee217f8a8a8f9ffac66db36919159cded25d062d67f1a7b7",
+      "status": "Đã đến 0:01.25."
+    },
+    {
+      "target": 2.5,
+      "actual": 2.5,
+      "duration": 30,
+      "tag": "AUDIO",
+      "width": null,
+      "height": null,
+      "url": "/api/v1/assets/62193caf-c73f-4c08-b920-b981743ed14c/content/1/a0bf159aaa9278a5ee217f8a8a8f9ffac66db36919159cded25d062d67f1a7b7",
+      "status": "Đã đến 0:02.5."
+    },
+    {
+      "target": 3,
+      "actual": 3,
+      "duration": 30,
+      "tag": "AUDIO",
+      "width": null,
+      "height": null,
+      "url": "/api/v1/assets/62193caf-c73f-4c08-b920-b981743ed14c/content/1/a0bf159aaa9278a5ee217f8a8a8f9ffac66db36919159cded25d062d67f1a7b7",
+      "status": "Đã đến 0:03."
+    },
+    {
+      "target": 4.125,
+      "actual": 4.125,
+      "duration": 30,
+      "tag": "AUDIO",
+      "width": null,
+      "height": null,
+      "url": "/api/v1/assets/62193caf-c73f-4c08-b920-b981743ed14c/content/1/a0bf159aaa9278a5ee217f8a8a8f9ffac66db36919159cded25d062d67f1a7b7",
+      "status": "Đã đến 0:04.125."
+    },
+    {
+      "target": 5,
+      "actual": 5,
+      "duration": 30,
+      "tag": "AUDIO",
+      "width": null,
+      "height": null,
+      "url": "/api/v1/assets/62193caf-c73f-4c08-b920-b981743ed14c/content/1/a0bf159aaa9278a5ee217f8a8a8f9ffac66db36919159cded25d062d67f1a7b7",
+      "status": "Đã đến 0:05."
+    },
+    {
+      "target": 6.5,
+      "actual": 6.5,
+      "duration": 30,
+      "tag": "AUDIO",
+      "width": null,
+      "height": null,
+      "url": "/api/v1/assets/62193caf-c73f-4c08-b920-b981743ed14c/content/1/a0bf159aaa9278a5ee217f8a8a8f9ffac66db36919159cded25d062d67f1a7b7",
+      "status": "Đã đến 0:06.5."
+    },
+    {
+      "target": 7.75,
+      "actual": 7.75,
+      "duration": 30,
+      "tag": "AUDIO",
+      "width": null,
+      "height": null,
+      "url": "/api/v1/assets/62193caf-c73f-4c08-b920-b981743ed14c/content/1/a0bf159aaa9278a5ee217f8a8a8f9ffac66db36919159cded25d062d67f1a7b7",
+      "status": "Đã đến 0:07.75."
+    },
+    {
+      "target": 8,
+      "actual": 8,
+      "duration": 30,
+      "tag": "AUDIO",
+      "width": null,
+      "height": null,
+      "url": "/api/v1/assets/62193caf-c73f-4c08-b920-b981743ed14c/content/1/a0bf159aaa9278a5ee217f8a8a8f9ffac66db36919159cded25d062d67f1a7b7",
+      "status": "Đã đến 0:08."
+    },
+    {
+      "target": 9.5,
+      "actual": 9.5,
+      "duration": 30,
+      "tag": "AUDIO",
+      "width": null,
+      "height": null,
+      "url": "/api/v1/assets/62193caf-c73f-4c08-b920-b981743ed14c/content/1/a0bf159aaa9278a5ee217f8a8a8f9ffac66db36919159cded25d062d67f1a7b7",
+      "status": "Đã đến 0:09.5."
+    },
+    {
+      "target": 10.25,
+      "actual": 10.25,
+      "duration": 30,
+      "tag": "AUDIO",
+      "width": null,
+      "height": null,
+      "url": "/api/v1/assets/62193caf-c73f-4c08-b920-b981743ed14c/content/1/a0bf159aaa9278a5ee217f8a8a8f9ffac66db36919159cded25d062d67f1a7b7",
+      "status": "Đã đến 0:10.25."
+    },
+    {
+      "target": 11,
+      "actual": 11,
+      "duration": 30,
+      "tag": "AUDIO",
+      "width": null,
+      "height": null,
+      "url": "/api/v1/assets/62193caf-c73f-4c08-b920-b981743ed14c/content/1/a0bf159aaa9278a5ee217f8a8a8f9ffac66db36919159cded25d062d67f1a7b7",
+      "status": "Đã đến 0:11."
+    },
+    {
+      "target": 12.5,
+      "actual": 12.5,
+      "duration": 30,
+      "tag": "AUDIO",
+      "width": null,
+      "height": null,
+      "url": "/api/v1/assets/62193caf-c73f-4c08-b920-b981743ed14c/content/1/a0bf159aaa9278a5ee217f8a8a8f9ffac66db36919159cded25d062d67f1a7b7",
+      "status": "Đã đến 0:12.5."
+    },
+    {
+      "target": 14,
+      "actual": 14,
+      "duration": 30,
+      "tag": "AUDIO",
+      "width": null,
+      "height": null,
+      "url": "/api/v1/assets/62193caf-c73f-4c08-b920-b981743ed14c/content/1/a0bf159aaa9278a5ee217f8a8a8f9ffac66db36919159cded25d062d67f1a7b7",
+      "status": "Đã đến 0:14."
+    },
+    {
+      "target": 16.25,
+      "actual": 16.25,
+      "duration": 30,
+      "tag": "AUDIO",
+      "width": null,
+      "height": null,
+      "url": "/api/v1/assets/62193caf-c73f-4c08-b920-b981743ed14c/content/1/a0bf159aaa9278a5ee217f8a8a8f9ffac66db36919159cded25d062d67f1a7b7",
+      "status": "Đã đến 0:16.25."
+    },
+    {
+      "target": 18,
+      "actual": 18,
+      "duration": 30,
+      "tag": "AUDIO",
+      "width": null,
+      "height": null,
+      "url": "/api/v1/assets/62193caf-c73f-4c08-b920-b981743ed14c/content/1/a0bf159aaa9278a5ee217f8a8a8f9ffac66db36919159cded25d062d67f1a7b7",
+      "status": "Đã đến 0:18."
+    },
+    {
+      "target": 20,
+      "actual": 20,
+      "duration": 30,
+      "tag": "AUDIO",
+      "width": null,
+      "height": null,
+      "url": "/api/v1/assets/62193caf-c73f-4c08-b920-b981743ed14c/content/1/a0bf159aaa9278a5ee217f8a8a8f9ffac66db36919159cded25d062d67f1a7b7",
+      "status": "Đã đến 0:20."
+    },
+    {
+      "target": 24,
+      "actual": 24,
+      "duration": 30,
+      "tag": "AUDIO",
+      "width": null,
+      "height": null,
+      "url": "/api/v1/assets/62193caf-c73f-4c08-b920-b981743ed14c/content/1/a0bf159aaa9278a5ee217f8a8a8f9ffac66db36919159cded25d062d67f1a7b7",
+      "status": "Đã đến 0:24."
+    },
+    {
+      "target": 26,
+      "actual": 26,
+      "duration": 30,
+      "tag": "AUDIO",
+      "width": null,
+      "height": null,
+      "url": "/api/v1/assets/62193caf-c73f-4c08-b920-b981743ed14c/content/1/a0bf159aaa9278a5ee217f8a8a8f9ffac66db36919159cded25d062d67f1a7b7",
+      "status": "Đã đến 0:26."
+    },
+    {
+      "target": 28,
+      "actual": 28,
+      "duration": 30,
+      "tag": "AUDIO",
+      "width": null,
+      "height": null,
+      "url": "/api/v1/assets/62193caf-c73f-4c08-b920-b981743ed14c/content/1/a0bf159aaa9278a5ee217f8a8a8f9ffac66db36919159cded25d062d67f1a7b7",
+      "status": "Đã đến 0:28."
+    }
+  ],
+  "video": [
+    {
+      "target": 0,
+      "actual": 0,
+      "duration": 22,
+      "tag": "VIDEO",
+      "width": 320,
+      "height": 180,
+      "url": "/api/v1/assets/0ab23990-49cf-4b43-97a8-3892eccd44fb/content/1/1c4e314f035133f425f9e129b5a90ba045dcb9e2b17c69368af63db2625cbfbc",
+      "status": "Đã đến 0:00."
+    },
+    {
+      "target": 0.125,
+      "actual": 0.125,
+      "duration": 22,
+      "tag": "VIDEO",
+      "width": 320,
+      "height": 180,
+      "url": "/api/v1/assets/0ab23990-49cf-4b43-97a8-3892eccd44fb/content/1/1c4e314f035133f425f9e129b5a90ba045dcb9e2b17c69368af63db2625cbfbc",
+      "status": "Đã đến 0:00.125."
+    },
+    {
+      "target": 0.5,
+      "actual": 0.5,
+      "duration": 22,
+      "tag": "VIDEO",
+      "width": 320,
+      "height": 180,
+      "url": "/api/v1/assets/0ab23990-49cf-4b43-97a8-3892eccd44fb/content/1/1c4e314f035133f425f9e129b5a90ba045dcb9e2b17c69368af63db2625cbfbc",
+      "status": "Đã đến 0:00.5."
+    },
+    {
+      "target": 1,
+      "actual": 1,
+      "duration": 22,
+      "tag": "VIDEO",
+      "width": 320,
+      "height": 180,
+      "url": "/api/v1/assets/0ab23990-49cf-4b43-97a8-3892eccd44fb/content/1/1c4e314f035133f425f9e129b5a90ba045dcb9e2b17c69368af63db2625cbfbc",
+      "status": "Đã đến 0:01."
+    },
+    {
+      "target": 1.25,
+      "actual": 1.25,
+      "duration": 22,
+      "tag": "VIDEO",
+      "width": 320,
+      "height": 180,
+      "url": "/api/v1/assets/0ab23990-49cf-4b43-97a8-3892eccd44fb/content/1/1c4e314f035133f425f9e129b5a90ba045dcb9e2b17c69368af63db2625cbfbc",
+      "status": "Đã đến 0:01.25."
+    },
+    {
+      "target": 2.5,
+      "actual": 2.5,
+      "duration": 22,
+      "tag": "VIDEO",
+      "width": 320,
+      "height": 180,
+      "url": "/api/v1/assets/0ab23990-49cf-4b43-97a8-3892eccd44fb/content/1/1c4e314f035133f425f9e129b5a90ba045dcb9e2b17c69368af63db2625cbfbc",
+      "status": "Đã đến 0:02.5."
+    },
+    {
+      "target": 3,
+      "actual": 3,
+      "duration": 22,
+      "tag": "VIDEO",
+      "width": 320,
+      "height": 180,
+      "url": "/api/v1/assets/0ab23990-49cf-4b43-97a8-3892eccd44fb/content/1/1c4e314f035133f425f9e129b5a90ba045dcb9e2b17c69368af63db2625cbfbc",
+      "status": "Đã đến 0:03."
+    },
+    {
+      "target": 4.125,
+      "actual": 4.125,
+      "duration": 22,
+      "tag": "VIDEO",
+      "width": 320,
+      "height": 180,
+      "url": "/api/v1/assets/0ab23990-49cf-4b43-97a8-3892eccd44fb/content/1/1c4e314f035133f425f9e129b5a90ba045dcb9e2b17c69368af63db2625cbfbc",
+      "status": "Đã đến 0:04.125."
+    },
+    {
+      "target": 5,
+      "actual": 5,
+      "duration": 22,
+      "tag": "VIDEO",
+      "width": 320,
+      "height": 180,
+      "url": "/api/v1/assets/0ab23990-49cf-4b43-97a8-3892eccd44fb/content/1/1c4e314f035133f425f9e129b5a90ba045dcb9e2b17c69368af63db2625cbfbc",
+      "status": "Đã đến 0:05."
+    },
+    {
+      "target": 6.5,
+      "actual": 6.5,
+      "duration": 22,
+      "tag": "VIDEO",
+      "width": 320,
+      "height": 180,
+      "url": "/api/v1/assets/0ab23990-49cf-4b43-97a8-3892eccd44fb/content/1/1c4e314f035133f425f9e129b5a90ba045dcb9e2b17c69368af63db2625cbfbc",
+      "status": "Đã đến 0:06.5."
+    },
+    {
+      "target": 7.75,
+      "actual": 7.75,
+      "duration": 22,
+      "tag": "VIDEO",
+      "width": 320,
+      "height": 180,
+      "url": "/api/v1/assets/0ab23990-49cf-4b43-97a8-3892eccd44fb/content/1/1c4e314f035133f425f9e129b5a90ba045dcb9e2b17c69368af63db2625cbfbc",
+      "status": "Đã đến 0:07.75."
+    },
+    {
+      "target": 8,
+      "actual": 8,
+      "duration": 22,
+      "tag": "VIDEO",
+      "width": 320,
+      "height": 180,
+      "url": "/api/v1/assets/0ab23990-49cf-4b43-97a8-3892eccd44fb/content/1/1c4e314f035133f425f9e129b5a90ba045dcb9e2b17c69368af63db2625cbfbc",
+      "status": "Đã đến 0:08."
+    },
+    {
+      "target": 9.5,
+      "actual": 9.5,
+      "duration": 22,
+      "tag": "VIDEO",
+      "width": 320,
+      "height": 180,
+      "url": "/api/v1/assets/0ab23990-49cf-4b43-97a8-3892eccd44fb/content/1/1c4e314f035133f425f9e129b5a90ba045dcb9e2b17c69368af63db2625cbfbc",
+      "status": "Đã đến 0:09.5."
+    },
+    {
+      "target": 10.25,
+      "actual": 10.25,
+      "duration": 22,
+      "tag": "VIDEO",
+      "width": 320,
+      "height": 180,
+      "url": "/api/v1/assets/0ab23990-49cf-4b43-97a8-3892eccd44fb/content/1/1c4e314f035133f425f9e129b5a90ba045dcb9e2b17c69368af63db2625cbfbc",
+      "status": "Đã đến 0:10.25."
+    },
+    {
+      "target": 11,
+      "actual": 11,
+      "duration": 22,
+      "tag": "VIDEO",
+      "width": 320,
+      "height": 180,
+      "url": "/api/v1/assets/0ab23990-49cf-4b43-97a8-3892eccd44fb/content/1/1c4e314f035133f425f9e129b5a90ba045dcb9e2b17c69368af63db2625cbfbc",
+      "status": "Đã đến 0:11."
+    },
+    {
+      "target": 12.5,
+      "actual": 12.5,
+      "duration": 22,
+      "tag": "VIDEO",
+      "width": 320,
+      "height": 180,
+      "url": "/api/v1/assets/0ab23990-49cf-4b43-97a8-3892eccd44fb/content/1/1c4e314f035133f425f9e129b5a90ba045dcb9e2b17c69368af63db2625cbfbc",
+      "status": "Đã đến 0:12.5."
+    },
+    {
+      "target": 14,
+      "actual": 14,
+      "duration": 22,
+      "tag": "VIDEO",
+      "width": 320,
+      "height": 180,
+      "url": "/api/v1/assets/0ab23990-49cf-4b43-97a8-3892eccd44fb/content/1/1c4e314f035133f425f9e129b5a90ba045dcb9e2b17c69368af63db2625cbfbc",
+      "status": "Đã đến 0:14."
+    },
+    {
+      "target": 16.25,
+      "actual": 16.25,
+      "duration": 22,
+      "tag": "VIDEO",
+      "width": 320,
+      "height": 180,
+      "url": "/api/v1/assets/0ab23990-49cf-4b43-97a8-3892eccd44fb/content/1/1c4e314f035133f425f9e129b5a90ba045dcb9e2b17c69368af63db2625cbfbc",
+      "status": "Đã đến 0:16.25."
+    },
+    {
+      "target": 18,
+      "actual": 18,
+      "duration": 22,
+      "tag": "VIDEO",
+      "width": 320,
+      "height": 180,
+      "url": "/api/v1/assets/0ab23990-49cf-4b43-97a8-3892eccd44fb/content/1/1c4e314f035133f425f9e129b5a90ba045dcb9e2b17c69368af63db2625cbfbc",
+      "status": "Đã đến 0:18."
+    },
+    {
+      "target": 20,
+      "actual": 20,
+      "duration": 22,
+      "tag": "VIDEO",
+      "width": 320,
+      "height": 180,
+      "url": "/api/v1/assets/0ab23990-49cf-4b43-97a8-3892eccd44fb/content/1/1c4e314f035133f425f9e129b5a90ba045dcb9e2b17c69368af63db2625cbfbc",
+      "status": "Đã đến 0:20."
+    }
+  ],
+  "ranges": [
+    {
+      "mime": "audio/wav",
+      "requested": "bytes=0-31",
+      "status": 206,
+      "range": "bytes 0-31/5760044",
+      "size": 32
+    },
+    {
+      "mime": "audio/wav",
+      "requested": "bytes=0-",
+      "status": 206,
+      "range": "bytes 0-4194303/5760044",
+      "size": 4194304
+    },
+    {
+      "mime": "audio/wav",
+      "requested": "bytes=5759944-",
+      "status": 206,
+      "range": "bytes 5759944-5760043/5760044",
+      "size": 100
+    },
+    {
+      "mime": "video/webm",
+      "requested": "bytes=0-31",
+      "status": 206,
+      "range": "bytes 0-31/341890",
+      "size": 32
+    },
+    {
+      "mime": "video/webm",
+      "requested": "bytes=0-",
+      "status": 206,
+      "range": "bytes 0-341889/341890",
+      "size": 341890
+    },
+    {
+      "mime": "video/webm",
+      "requested": "bytes=341790-",
+      "status": 206,
+      "range": "bytes 341790-341889/341890",
+      "size": 100
+    }
+  ],
+  "tolerance_seconds": 1,
+  "production_drive": "NOT_RUN",
+  "pdf_page_navigation": "NOT_RUN",
+  "android": "NOT_RUN",
+  "browser": "Chrome/157.0.8103.79",
+  "max_error_seconds": 0
+}

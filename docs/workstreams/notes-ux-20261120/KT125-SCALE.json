@@ -1,0 +1,18 @@
+{
+  "code_sha": "754710b47b04988411e221aaeb81e0e6a4f92255",
+  "scope": "Actual HTTP Django testclient, synthetic PostgreSQL18 loopback62224",
+  "items": 10000,
+  "other_owner_items": 1,
+  "groups": 100,
+  "saved_queries": 5,
+  "samples": 301,
+  "p95_formula": "sorted(samples)[ceil(0.95*n)-1]",
+  "p95_ms": 117.28,
+  "median_ms": 38.29,
+  "max_db_queries_per_http_page": 7,
+  "missing_or_duplicate_item_ids": 0,
+  "full_backend": {"discovered": 267, "passed": 264, "skipped_opt_in": 3, "failed": 0, "seconds": 48.366},
+  "frontend": {"passed": 238, "failed": 0, "skipped": 0},
+  "statistics_policy": "ANALYZE synthetic fixture tables before timing; uncommitted TestCase bulk rows cannot be analyzed by autovacuum",
+  "production_sla": "NOT_RUN"
+}

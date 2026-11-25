@@ -1,30 +1,52 @@
-import { knowledgePreview } from './KnowledgeText';
-import { KnowledgeTree, knowledgeNodeHref, nodeKindLabels, type KnowledgeNode, type KnowledgeTreeData } from './KnowledgeTree';
+import { LibraryViews, libraryModes, libraryLocationHref, parseLibraryLocation, type LibraryLocation, type LibraryFilter } from './LibraryViews';
+import { knowledgeNodeHref, nodeKindLabels, type KnowledgeNode, type KnowledgeTreeData } from './KnowledgeTree';
+import { KnowledgeExplorer } from './KnowledgeExplorer';
+import { SavedCollectionsPanel, SavedCollectionScreen, collectionIdFromHash } from './SavedCollections';
 import { Button, SegmentedControl } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import type { Item, Page } from './api';
 import { itemNeedsRefresh } from './itemProcessing';
-import { Empty, ErrorNotice, itemHref, itemTitle, kindLabels, Loading, PageControls, PageTitle, ServerTime, useResource } from './views';
-
-type Filter = 'all' | 'unclassified' | 'favorite' | 'deleted';
-
-function locationScope() {
-  const params = new URLSearchParams(window.location.hash.split('?')[1] ?? '');
-  const node = params.get('node');
-  const id = node && /^[1-9]\d{0,14}$/.test(node) ? Number(node) : null;
-  return { id, unfiled: id == null && params.get('unfiled') === '1' };
-}
+import { Empty, ErrorNotice, Loading, PageControls, PageTitle, useResource } from './views';
 
 export function LibraryScreen({ csrf = '' }: { csrf?: string }) {
-  const [filter, setFilter] = useState<Filter>('all');
-  const [offset, setOffset] = useState(0);
-  const [scope, setScope] = useState(locationScope);
+  const [scope, setScope] = useState(() => parseLibraryLocation(window.location.hash));
+  const { filter, offset, view } = scope;
+  const collectionId = collectionIdFromHash(window.location.hash);
   const [revision, setRevision] = useState(0);
+  const [treeExpanded, setTreeExpanded] = useState(() => {
+    const narrow = typeof window.matchMedia === 'function'
+      && window.matchMedia('(max-width: 1100px)').matches;
+    // Let a user's explicit choice persist. Otherwise show the library list
+    // first on mobile/tablet, where the tall folder tree hid all note results.
+    try {
+      const saved = sessionStorage.getItem('kt-explorer-visible');
+      return saved === null ? !narrow : saved !== '0';
+    } catch { return !narrow; }
+  });
   useEffect(() => {
-    function changeScope() { setScope(locationScope()); setOffset(0); setFilter('all'); }
+    // When resizing an already-open desktop browser to mobile, follow the
+    // responsive default unless the user explicitly toggled the tree.
+    const media = window.matchMedia?.('(max-width: 1100px)');
+    if (!media) return;
+    const update = () => {
+      try {
+        if (sessionStorage.getItem('kt-explorer-visible') !== null) return;
+      } catch { /* no persisted preference */ }
+      setTreeExpanded(!media.matches);
+    };
+    media.addEventListener?.('change', update);
+    return () => media.removeEventListener?.('change', update);
+  }, []);
+  useEffect(() => {
+    function changeScope() { setScope(parseLibraryLocation(window.location.hash)); }
     window.addEventListener('hashchange', changeScope);
     return () => window.removeEventListener('hashchange', changeScope);
   }, []);
+  function navigate(patch: Partial<LibraryLocation>) {
+    const next = { ...scope, ...patch };
+    setScope(next);
+    window.location.hash = libraryLocationHref(next);
+  }
   const tree = useResource<KnowledgeTreeData>('/knowledge-tree', { refreshKey: String(revision) });
   const nodes = tree.data?.nodes ?? [];
   const selected = nodes.find((node) => node.id === scope.id);
@@ -39,15 +61,26 @@ export function LibraryScreen({ csrf = '' }: { csrf?: string }) {
 
   function saved(node: KnowledgeNode) {
     setRevision((value) => value + 1);
-    setScope({ id: node.id, unfiled: false }); setOffset(0); setFilter('all');
-    window.location.hash = knowledgeNodeHref(node.id);
+    navigate({ id: node.id, unfiled: false, offset: 0, filter: 'all' });
   }
 
   return <>
     <PageTitle title="Thư viện" description="Đi từ kho con, lĩnh vực đến bộ sách, chương và từng bài tri thức. Một bài có thể xuất hiện trong nhiều nhánh." />
-    <div className="knowledge-library-layout">
-    <KnowledgeTree data={tree.data} error={tree.error} onRetry={tree.retry} selectedId={scope.id} unfiled={scope.unfiled} csrf={csrf} onSaved={saved} />
-    <section className="panel knowledge-library-content" aria-label="Danh sách mục">
+    <div className="knowledge-library-layout" onClick={(event) => {
+      if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      const target = event.target instanceof Element ? event.target.closest('a') : null;
+      const href = target?.getAttribute('href');
+      if (href?.startsWith('#/thu-vien') && !href.includes('collection=')) {
+        event.preventDefault();
+        const next = parseLibraryLocation(href);
+        navigate({ ...next, view });
+      }
+    }}>
+    <aside className={'library-tree-shell' + (treeExpanded ? ' is-open' : '')}>
+      <button className="library-tree-toggle" type="button" aria-expanded={treeExpanded} aria-controls="library-tree-content" onClick={() => setTreeExpanded((value) => {try{sessionStorage.setItem('kt-explorer-visible',value?'0':'1');}catch{/* preference is optional */}return !value;})}>{treeExpanded ? 'Thu gọn thư mục và ghi chú' : 'Mở thư mục và ghi chú'}</button>
+      <div className="library-tree-content" id="library-tree-content"><KnowledgeExplorer data={tree.data} error={tree.error} onRetry={()=>{tree.retry();library.retry();}} selectedId={scope.id} unfiled={scope.unfiled} csrf={csrf} onSaved={saved} /><SavedCollectionsPanel /></div>
+    </aside>
+    {collectionId ? <SavedCollectionScreen csrf={csrf} id={collectionId === 'new' ? undefined : collectionId} /> : <section className="panel knowledge-library-content" aria-label="Danh sách mục">
       <nav className="knowledge-breadcrumb" aria-label="Đường dẫn mục lục">
         <a href={knowledgeNodeHref()}>Kho Tri Thức</a>
         {ancestors.map((node) => <span key={node.id}><span aria-hidden="true"> / </span><a href={knowledgeNodeHref(node.id)} aria-current={node.id === scope.id ? 'page' : undefined}>{node.name}</a></span>)}
@@ -56,15 +89,18 @@ export function LibraryScreen({ csrf = '' }: { csrf?: string }) {
       <div className="panel-heading"><h2>{selected?.name ?? (scope.id != null ? (tree.data ? 'Nhánh không còn truy cập được' : 'Đang tải nhánh') : scope.unfiled ? 'Chưa xếp mục lục' : 'Tất cả bài tri thức')}</h2>
         {selected && <span className="list-meta">{selected.item_count} bài trong nhánh · {selected.direct_count} bài xếp trực tiếp</span>}
       </div>
-      {selected && <p className="list-meta">Bao gồm bài ở các nhánh con. Để xếp bài, mở bài và chọn Chỉnh nhóm.</p>}
+      {selected && <p className="list-meta">Bao gồm bài ở các nhánh con. Tạo hoặc chuyển ghi chú ngay trong cây thư mục; các lối tắt vẫn mở cùng một bài.</p>}
       {!scope.unfiled && children.length > 0 && <nav className="knowledge-child-branches" aria-label="Các nhánh con">
         {children.map((node) => <a key={node.id} href={knowledgeNodeHref(node.id)}><span><small>{nodeKindLabels[node.node_kind]}</small>{node.name}</span><span className="list-meta">{node.item_count} bài <span aria-hidden="true">›</span></span></a>)}
       </nav>}
-      <div className="filters">
+      <div className="filters library-view-toolbar">
         <SegmentedControl value={filter} aria-label="Lọc thư viện" onChange={(value) => {
-          setOffset(0);
-          setFilter(value as Filter);
+          navigate({ offset: 0, filter: value as LibraryFilter });
         }} data={[{ label: 'Tất cả', value: 'all' }, { label: 'Chưa phân loại', value: 'unclassified' }, { label: 'Yêu thích', value: 'favorite' }, { label: 'Thùng rác', value: 'deleted' }]} />
+        <label>Cách xem <select aria-label="Cách xem thư viện" value={view} onChange={(event) => {
+          const mode = libraryModes.find((entry) => entry.value === event.currentTarget.value);
+          if (mode) navigate({ view: mode.value });
+        }}>{libraryModes.map((mode) => <option key={mode.value} value={mode.value}>{mode.label}</option>)}</select></label>
       </div>
       {library.data && library.refreshError && <ErrorNotice retry={library.retry}>Chưa cập nhật được danh sách mới. Các mục đang hiển thị là lần kiểm tra trước.</ErrorNotice>}
       {library.data && library.pollingPaused && !library.refreshError && <div className="notice" role="status">
@@ -73,22 +109,10 @@ export function LibraryScreen({ csrf = '' }: { csrf?: string }) {
       </div>}
       {library.error ? <ErrorNotice retry={library.retry}>Chưa tải được thư viện.</ErrorNotice>
         : !library.data ? <Loading />
-          : library.data.results.length ? <ul className="library-list">
-            {library.data.results.map((item) => <li key={item.item_id}>
-              <a href={itemHref(item.item_id)} className="library-entry">
-                <span className="library-entry-text">
-                  <span className="capture-kind">{kindLabels[item.kind]}</span>
-                  <span className="library-entry-title">{itemTitle(item)}</span>
-                  {(item.note || item.knowledge_excerpt) && <span className="library-knowledge-preview">{knowledgePreview(item.note || item.knowledge_excerpt || '')}</span>}
-                  {item.assets.length > 0 && <span className="list-meta">{item.assets.length} tệp nguồn / minh họa</span>}
-                </span>
-                <span className="library-entry-time"><span className="list-meta">Nhận lần đầu</span><ServerTime value={item.saved_at} /></span>
-              </a>
-            </li>)}
-          </ul>
+          : library.data.results.length ? <LibraryViews items={library.data.results} mode={view} />
             : <Empty>{filter === 'favorite' ? 'Chưa có mục yêu thích.' : filter === 'deleted' ? 'Thùng rác trống.' : <span>Chưa có mục nào. <a href="#/gui">Gửi vào kho</a></span>}</Empty>}
-      {library.data && <PageControls offset={offset} nextOffset={library.data.next_offset} onChange={setOffset} />}
-    </section>
+      {library.data && <PageControls offset={offset} nextOffset={library.data.next_offset} onChange={(value) => navigate({ offset: value })} />}
+    </section>}
     </div>
   </>;
 }

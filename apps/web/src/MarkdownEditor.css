@@ -1,0 +1,15 @@
+.markdown-editor { min-width: 0; }
+.markdown-editor-modes { display: flex; gap: 4px; flex-wrap: wrap; }
+.markdown-editor-modes button { min-height: 44px; padding-inline: 10px; }
+.markdown-editor-modes button[aria-pressed='true'] { background: var(--raised, #eee); color: var(--text, #171717); }
+.markdown-editor-help { color: var(--muted, #646464); margin-block: 10px; font-size: 14px; }
+.markdown-editor-panes { display: grid; gap: 16px; min-width: 0; }
+.markdown-editor-panes > * { min-width: 0; }
+.markdown-editor label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+.markdown-editor textarea { width: 100%; box-sizing: border-box; resize: vertical; min-height: 280px; padding: 10px; border: 1px solid var(--control, #d4d4d4); border-radius: 4px; font: inherit; font-size: 16px; line-height: 1.6; color: var(--text, #171717); background: var(--surface, #fff); }
+.markdown-editor-preview { background: var(--ground, #f4f4f3); padding: 12px; border-radius: 4px; overflow-wrap: anywhere; }
+.markdown-editor-preview > p { margin: 0; }
+.markdown-editor-preview .knowledge-text { margin-top: 0; }
+.markdown-item-detail button:disabled { color: #646464; background: #e9ecef; opacity: 1; }
+/* The detail column is narrow; split only when each pane can hold readable text. */
+@media (min-width: 1100px) { .markdown-editor-split { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
