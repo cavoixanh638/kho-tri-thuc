@@ -102,46 +102,61 @@ try {
         }
         throw Error('Search or article did not render');
       };
+      const expandLink = () => [...document.querySelectorAll('.search-results a')].find(a => a.textContent === 'Tìm gần đúng');
       const started = performance.now();
-      form.querySelector('button[type="submit"]').click();
-      const links = await visible(() => {
-        const panel = document.querySelector('.search-results');
-        if (!panel || !location.hash.includes('?') || !panel.querySelector('#search-results-title')) return null;
-        if (panel.querySelector('.notice-error')) throw Error('Search API displayed an error');
-        const results = [...panel.querySelectorAll('.search-list .search-result h3 a')];
-        if (results.length) return results;
-        if (panel.querySelector('.empty-state')) return [];
-        return null;
-      });
-      const searchMs = performance.now() - started;
-      const list = document.querySelector('.search-results .search-list');
-      const notice = document.querySelector('.search-results #search-partial-match');
-      if (notice && (!notice.getClientRects().length || notice.textContent !== 'Ghi chú khớp một phần từ khóa'
-          || notice.getAttribute('role') !== 'status' || list?.getAttribute('aria-describedby') !== notice.id)) {
-        throw Error('Partial matches must be visibly labeled and described in the result list');
+      async function readPass(expanded, submitted) {
+        const links = await visible(() => {
+          const panel = document.querySelector('.search-results');
+          if (!location.hash.includes('?') || !panel?.querySelector('#search-results-title')) return null;
+          if (expanded && ![...panel.querySelectorAll('a')].some(a => a.textContent === 'Về kết quả ban đầu')) return null;
+          const params = new URLSearchParams(location.hash.split('?')[1]);
+          if (params.get('q') !== expected.query || (params.get('expand') === 'true') !== expanded) return null;
+          if (panel.querySelector('.notice-error')) throw Error('Search API displayed an error');
+          const hits = [...panel.querySelectorAll('.search-list .search-result h3 a')];
+          return hits.length || panel.querySelector('.empty-state') ? hits : null;
+        });
+        const searchMs = performance.now() - submitted;
+        const list = document.querySelector('.search-results .search-list');
+        const notice = document.querySelector('.search-results #search-partial-match');
+        if ((expanded && links.length && !notice) || (notice && (!notice.getClientRects().length
+            || notice.textContent !== 'Ghi chú khớp một phần từ khóa' || notice.getAttribute('role') !== 'status'
+            || list?.getAttribute('aria-describedby') !== notice.id))) {
+          throw Error('Partial matches must be visibly labeled and described in the result list');
+        }
+        const matches = links.map(link => link.getAttribute('href').replace('#/muc/', ''));
+        const rank = expected.id ? matches.indexOf(expected.id) + 1 : null;
+        const pass = { matches, rank, searchMs, uiMatchKind: notice ? 'partial' : 'standard', canExpand: Boolean(expandLink()), open: null };
+        if (expanded && pass.canExpand) throw Error('Expanded results offered a second expansion');
+        if (!rank || rank > 5) return pass;
+        const clickedAt = performance.now();
+        links[rank - 1].click();
+        const article = await visible(() => {
+          const detail = document.querySelector('.markdown-item-detail');
+          if (!detail?.querySelector('.knowledge-text')?.textContent?.trim()) return null;
+          return { hash: location.hash, title: document.querySelector('main h1')?.textContent ?? '',
+            note: detail.querySelector('.raw-knowledge pre')?.textContent ?? '' };
+        });
+        pass.open = { correct: article.hash === '#/muc/' + expected.id && article.title === expected.title
+          && article.note === expected.note, ms: performance.now() - clickedAt, total_ms: performance.now() - started };
+        return pass;
       }
-      const uiMatchKind = notice ? 'partial' : 'standard';
-      const matches = links.map(link => link.getAttribute('href').replace('#/muc/', ''));
-      const rank = expected.id ? matches.indexOf(expected.id) + 1 : null;
-      if (!rank || rank > 5) return { matches, rank, searchMs, uiMatchKind, open: null };
-      const clickedAt = performance.now();
-      links[rank - 1].click();
-      const article = await visible(() => {
-        const detail = document.querySelector('.markdown-item-detail');
-        if (!detail?.querySelector('.knowledge-text')?.textContent?.trim()) return null;
-        return { hash: location.hash, title: document.querySelector('main h1')?.textContent ?? '',
-          note: detail.querySelector('.raw-knowledge pre')?.textContent ?? '' };
-      });
-      const ms = performance.now() - clickedAt;
-      return { matches, rank, searchMs, uiMatchKind, open: {
-        correct: article.hash === '#/muc/' + expected.id && article.title === expected.title && article.note === expected.note,
-        ms, total_ms: performance.now() - started,
-      } };
+      form.querySelector('button[type="submit"]').click();
+      const initial = await readPass(false, started);
+      let expanded = null;
+      if (!initial.open && initial.canExpand) {
+        const clickedAt = performance.now();
+        expandLink().click();
+        expanded = await readPass(true, clickedAt);
+      }
+      return { initial, expanded };
     }, { query: entry.query, id: seed.items[entry.id] ?? null, title: targetItem?.title, note: targetItem?.note });
-    assert.ok(measurement.matches.every(id => knownIds.has(id)), 'Unexpected item returned in QA search');
+    function resultRow(pass) {
+      assert.ok(pass.matches.every(id => knownIds.has(id)), 'Unexpected item returned in QA search');
+      return { results: pass.matches.map(id => knownIds.get(id)), rank: pass.rank || null,
+        ui_match_kind: pass.uiMatchKind, can_expand: pass.canExpand, search_ms: pass.searchMs, open: pass.open };
+    }
     rows.push({ split: entry.split, kind: entry.query_kind ?? 'negative', query: entry.query, target: entry.id ?? null,
-      results: measurement.matches.map(id => knownIds.get(id)), rank: measurement.rank || null,
-      ui_match_kind: measurement.uiMatchKind, search_ms: measurement.searchMs, open: measurement.open });
+      ...resultRow(measurement.initial), expanded: measurement.expanded ? resultRow(measurement.expanded) : null });
   }
 
   const allNotes = '#/thu-vien';
@@ -221,21 +236,24 @@ try {
   assert.ok(assignments.some(Boolean), 'Pilot has no automated topic memberships');
 
   const summary = summarize(rows);
+  const finalRows = rows.map(row => row.expanded ? { ...row, ...row.expanded } : row);
+  const includingExpansion = summarize(finalRows);
   const reportPath = process.env.KT_EVAL_BROWSER_REPORT || byName('results-browser-windows.json');
   await writeFile(reportPath, JSON.stringify({
     tested_sha: codeSha, app_source_dirty: Boolean(status), corpus_sha256: hash(corpusBytes), labels_sha256: hash(labelBytes),
     harness_sha256: hash(await readFile(new URL(import.meta.url))),
     platform: process.platform, chromium: chromium.product, viewport: '1440x900', items: 36,
     answer_origin: labels.origin, created_at: new Date().toISOString(),
-    measurement: 'One loopback browser session. Measured from search button click to first animation frame with new list or empty state, and from target link click to rendered article. Typing and time spent choosing a result excluded. Percentiles use nearest rank.',
+    measurement: 'One loopback browser session. summary measures the initial submit. If the target is absent from the first five, the runner clicks Tìm gần đúng when offered and including_expansion reports the resulting path. Search latency starts at the submit or expansion click for that stage; total article time starts at the first submit. Typing and time spent choosing a result excluded. Percentiles use nearest rank.',
     pilot: { login: 'PASS', library_open_exact: knownIds.size, topics: topics.length, topics_in_placement_ui: editableTopics.length,
       auto_memberships: assignments.reduce((total, count) => total + count, 0),
       notes_with_auto_memberships: assignments.filter(Boolean).length, correction },
     summary, by_split: Object.fromEntries(['development', 'holdout'].map(split => [split, summarize(rows.filter(row => row.split === split))])),
+    expansion_clicks: rows.filter(row => row.expanded).length, including_expansion: includingExpansion,
     rows,
   }, null, 2) + '\n');
-  console.log(JSON.stringify(summary));
-  if (summary.opened_wrong) process.exitCode = 1;
+  console.log(JSON.stringify({ initial: summary, including_expansion: includingExpansion }));
+  if (summary.opened_wrong || includingExpansion.opened_wrong) process.exitCode = 1;
 } finally {
   await browser.close();
 }

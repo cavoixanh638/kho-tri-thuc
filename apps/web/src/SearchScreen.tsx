@@ -7,7 +7,12 @@ type Criteria = { q: string } & Record<GroupFilter, string>;
 type Cursor = { score: number | string; item_id: string };
 type Evidence = { source: string; snippet: string; locator?: unknown; provenance?: unknown };
 type Result = { item_id: string; title: string; score: number | string; evidence: Evidence[] };
-type SearchPage = { results: Result[]; next_cursor: Cursor | null; match_kind?: 'standard' | 'partial' };
+type SearchPage = {
+  results: Result[];
+  next_cursor: Cursor | null;
+  match_kind?: 'standard' | 'partial';
+  can_expand?: boolean;
+};
 
 const sourceLabels: Record<string, string> = {
   item: 'Mục thư viện',
@@ -34,11 +39,12 @@ function hasCriteria(criteria: Criteria) {
   return Boolean(criteria.q.trim() || groupKinds.some((group) => criteria[group.filter]));
 }
 
-function parameters(criteria: Criteria) {
+function parameters(criteria: Criteria, expanded = false) {
   const params = new URLSearchParams({ q: criteria.q.trim() });
   for (const group of groupKinds) {
     if (criteria[group.filter]) params.set(group.filter, criteria[group.filter]);
   }
+  if (expanded) params.set('expand', 'true');
   return params;
 }
 
@@ -50,10 +56,10 @@ function formatLocator(value: unknown) {
   }
 }
 
-function SearchResults({ criteria }: { criteria: Criteria }) {
+function SearchResults({ criteria, expanded }: { criteria: Criteria; expanded: boolean }) {
   const [cursors, setCursors] = useState<(Cursor | null)[]>([null]);
   const cursor = cursors.at(-1);
-  const params = parameters(criteria);
+  const params = parameters(criteria, expanded);
   params.set('limit', '25');
   if (cursor) {
     params.set('cursor_score', String(cursor.score));
@@ -80,6 +86,10 @@ function SearchResults({ criteria }: { criteria: Criteria }) {
             })}
           </li>)}
         </ol> : <Empty>Không tìm thấy mục phù hợp.</Empty>}
+    {expanded
+      ? <Button component="a" variant="subtle" href={`#/tim-kiem?${parameters(criteria)}`}>Về kết quả ban đầu</Button>
+      : results.data?.can_expand && <Button component="a" variant="default"
+        href={`#/tim-kiem?${parameters(criteria, true)}`}>Tìm gần đúng</Button>}
     {results.data && (cursors.length > 1 || results.data.next_cursor !== null) && <nav aria-label="Phân trang" className="paging">
       <Button variant="default" disabled={cursors.length === 1} onClick={() => setCursors((current) => current.slice(0, -1))}>Trang trước</Button>
       <Button variant="default" disabled={results.data.next_cursor === null} onClick={() => {
@@ -92,6 +102,7 @@ function SearchResults({ criteria }: { criteria: Criteria }) {
 
 export function SearchScreen({ path }: { path: string }) {
   const criteria = criteriaFor(path);
+  const expanded = new URLSearchParams(path.split('?', 2)[1]).get('expand') === 'true';
   const [draft, setDraft] = useState(criteria);
   const groups = useResource<Groups>('/groups');
 
@@ -132,7 +143,7 @@ export function SearchScreen({ path }: { path: string }) {
       </form>
     </section>
     {hasCriteria(criteria)
-      ? <SearchResults criteria={criteria} />
+      ? <SearchResults criteria={criteria} expanded={expanded} />
       : <section className="panel search-results" aria-label="Kết quả tìm kiếm"><Empty>Nhập từ khóa hoặc chọn một nhóm để tìm mục.</Empty></section>}
   </>;
 }

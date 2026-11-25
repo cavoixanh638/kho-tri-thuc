@@ -120,6 +120,50 @@ test('search explains partial matches on the same results page and only for a no
   }
 });
 
+test('approximate search is explicit and keeps group filters and pagination in the chosen mode', async () => {
+  const requested = [];
+  const next = { score: 3, item_id: 'first' };
+  globalThis.fetch = async path => {
+    const url = new URL(path, window.location.origin);
+    if (url.pathname === '/api/v1/groups') return response({ topics: [], projects: [], tags: [] });
+    const params = url.searchParams;
+    requested.push(params);
+    if (params.get('expand') !== 'true') return response({ results: [], next_cursor: null, can_expand: true });
+    const id = params.has('cursor_item_id') ? 'second' : 'first';
+    return response({ match_kind: 'partial', can_expand: true,
+      results: [{ item_id: id, title: id, evidence: [] }], next_cursor: id === 'first' ? next : null });
+  };
+  const route = async hash => render(ui.SearchScreen, { key: hash, path: hash });
+  const action = label => [...container.querySelectorAll('.search-results a')].find(link => link.textContent === label);
+  await route('#/tim-kiem?q=tr%C3%AD+nh%E1%BB%9B&topic_id=4&project_id=8&tag_id=2');
+  assert.equal(requested.at(-1).has('expand'), false);
+  assert.ok(container.querySelector('.empty-state'));
+  const expand = action('Tìm gần đúng');
+  assert.ok(expand);
+  await route(expand.hash);
+  const params = requested.at(-1);
+  assert.equal(params.get('expand'), 'true');
+  assert.equal(params.get('q'), 'trí nhớ');
+  for (const [key, value] of Object.entries({ topic_id: '4', project_id: '8', tag_id: '2' })) {
+    assert.equal(params.get(key), value);
+  }
+  assert.equal(params.has('cursor_item_id'), false);
+  assert.equal(action('Tìm gần đúng'), undefined);
+  assert.ok(container.querySelector('ol[aria-describedby="search-partial-match"]'));
+  await click('Trang sau');
+  assert.equal(requested.at(-1).get('expand'), 'true');
+  assert.equal(requested.at(-1).get('cursor_item_id'), 'first');
+  assert.equal(requested.at(-1).get('cursor_score'), '3');
+  assert.equal(container.querySelector('ol a').textContent, 'second');
+
+  const back = action('Về kết quả ban đầu');
+  assert.ok(back);
+  await route(back.hash);
+  assert.equal(requested.at(-1).has('expand'), false);
+  assert.equal(requested.at(-1).has('cursor_item_id'), false);
+  assert.ok(container.querySelector('.empty-state'));
+});
+
 test('pending resources poll sequentially and stop when processing completes', async () => {
   let calls = 0;
   globalThis.fetch = async () => response({ pending: ++calls === 1, value: calls });
