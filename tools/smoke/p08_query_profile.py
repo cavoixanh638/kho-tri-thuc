@@ -12,6 +12,7 @@ import math
 import os
 import time
 from pathlib import Path
+from tempfile import gettempdir
 
 from django.contrib.auth import get_user_model
 from django.db import connection, transaction
@@ -22,7 +23,7 @@ from search.services import SearchFilters, SearchService
 
 DATABASE = "kt_p08_scale"
 USERNAME = "p08-j9-scale-fixture"
-OUT = Path("/tmp/p08-j9-scale/query-profile.json")
+OUT = Path(gettempdir()) / "p08-j9-scale" / "query-profile.json"
 
 
 def require(ok, code):

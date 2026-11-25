@@ -13,6 +13,7 @@ import os
 import re
 import time
 from pathlib import Path
+from tempfile import gettempdir
 from uuid import UUID
 
 from django.contrib.auth import get_user_model
@@ -31,7 +32,7 @@ SOURCE_DB = "kt_p08_scale"
 RESTORED_DB = "kt_p08_scale_restored"
 OWNER = "p08-j9-scale-fixture"
 FOREIGN_OWNER = "p08-j9-foreign-fixture"
-ROOT = Path("/tmp/p08-j9-scale")
+ROOT = Path(gettempdir()) / "p08-j9-scale"
 ITEMS = 10000
 NODES = 1000
 PAGE_SIZE = 100

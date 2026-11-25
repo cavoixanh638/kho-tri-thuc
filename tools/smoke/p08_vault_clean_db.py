@@ -9,6 +9,7 @@ import json
 import os
 from datetime import datetime
 from pathlib import Path
+from tempfile import gettempdir
 
 from django.contrib.auth import get_user_model
 from django.db import connection
@@ -17,7 +18,7 @@ from catalog.vault import apply_import, export_vault, parse_vault, preview_impor
 from ingestion.models import CaptureEvent
 from storage.models import Asset
 
-ROOT = Path("/tmp/p08-vault-clean")
+ROOT = Path(gettempdir()) / "p08-vault-clean"
 SOURCE_DB = "kt_p08_journeys"
 TARGET_DB = "kt_p08_vault_clean"
 USER = "p08-fixture"

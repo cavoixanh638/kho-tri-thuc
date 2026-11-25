@@ -12,12 +12,17 @@ sys.path.insert(0, '/app')  # isolated QA script copied to /tmp; Django modules 
 import subprocess
 import threading
 from pathlib import Path
+from tempfile import gettempdir
 from socketserver import ThreadingMixIn
 from wsgiref.simple_server import WSGIServer, WSGIRequestHandler, make_server
 
 assert os.getenv("KT_J6B_ISOLATED") == "YES"
 assert os.getenv("POSTGRES_DB") == "kt_p08_journeys"
-assert os.getenv("POSTGRES_HOST") == "db"
+db_host = os.environ["POSTGRES_HOST"]
+assert db_host == "db" or (
+    db_host == "127.0.0.1" and os.environ.get("POSTGRES_USER") == "kt_qa"
+    and os.environ.get("POSTGRES_PORT") not in (None, "", "5432")
+)
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 
 import django
@@ -34,7 +39,7 @@ from storage import viewer_api, pdf_page_api
 
 assert connection.vendor == "postgresql"
 assert connection.settings_dict["NAME"] == "kt_p08_journeys"
-ROOT = Path("/tmp/p08-j6b-private-ci")
+ROOT = Path(gettempdir()) / "p08-j6b-private-ci"
 ROOT.mkdir(mode=0o700, exist_ok=True)
 PASS = "j6b-only-fixture-password"
 PORT = 8152
@@ -140,6 +145,7 @@ class ThreadedWSGIServer(ThreadingMixIn, WSGIServer):
 
 application = get_wsgi_application()
 print("P08_J6B_PRIVATE_QA_STARTED", json.dumps({"port": PORT, "items": metadata["items"]}), flush=True)
-with make_server("0.0.0.0", PORT, application, server_class=ThreadedWSGIServer,
+bind_host = "0.0.0.0" if db_host == "db" else "127.0.0.1"
+with make_server(bind_host, PORT, application, server_class=ThreadedWSGIServer,
                  handler_class=WSGIRequestHandler) as httpd:
     httpd.serve_forever()
