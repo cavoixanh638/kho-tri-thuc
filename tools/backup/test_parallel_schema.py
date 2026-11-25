@@ -60,9 +60,9 @@ class ParallelSchemaUnitTests(unittest.TestCase):
                 root = Path(directory) / str(version)
                 expected = make_bundle(root, version)
                 self.assertEqual(backup.verify_bundle(root), expected["collections"])
-                tampered = json.loads((root / backup.MANIFEST).read_text())
+                tampered = json.loads((root / backup.MANIFEST).read_text(encoding="utf-8"))
                 tampered["collections"]["items"].append({"id": "synthetic"})
-                (root / backup.MANIFEST).write_text(json.dumps(tampered))
+                (root / backup.MANIFEST).write_text(json.dumps(tampered), encoding="utf-8")
                 with self.assertRaisesRegex(backup.BackupError, "checksum mismatch"):
                     backup.verify_bundle(root)
 
@@ -74,8 +74,8 @@ class ParallelSchemaUnitTests(unittest.TestCase):
                 (root / backup.DUMP).write_bytes(b"data")
                 (root / backup.MANIFEST).write_text(json.dumps({
                     "schema_version": version, "postgres_major": 18, "collections": {},
-                }))
-                (root / backup.CHECKSUMS).write_text(backup.checksum_lines(root))
+                }), encoding="utf-8")
+                (root / backup.CHECKSUMS).write_text(backup.checksum_lines(root), encoding="ascii")
                 with self.assertRaises(backup.BackupError):
                     backup.verify_bundle(root)
             for change in ("removed", "extra"):
@@ -85,8 +85,8 @@ class ParallelSchemaUnitTests(unittest.TestCase):
                     payload["collections"].pop("clip_annotations")
                 else:
                     payload["collections"]["unexpected"] = []
-                (root / backup.MANIFEST).write_text(json.dumps(payload))
-                (root / backup.CHECKSUMS).write_text(backup.checksum_lines(root))
+                (root / backup.MANIFEST).write_text(json.dumps(payload), encoding="utf-8")
+                (root / backup.CHECKSUMS).write_text(backup.checksum_lines(root), encoding="ascii")
                 with self.assertRaisesRegex(backup.BackupError, "collections"):
                     backup.verify_bundle(root)
 
@@ -210,10 +210,10 @@ class ParallelSchemaPostgresTests(unittest.TestCase):
         self.assertFalse(DriveAccount.objects.using(alias).exists())
 
     def test_mismatch_aborts_restore_and_leaves_target_empty(self):
-        manifest = json.loads((self.bundle / backup.MANIFEST).read_text())
+        manifest = json.loads((self.bundle / backup.MANIFEST).read_text(encoding="utf-8"))
         manifest["collections"]["items"][0]["title"] = "injected mismatch"
-        (self.bundle / backup.MANIFEST).write_text(json.dumps(manifest))
-        (self.bundle / backup.CHECKSUMS).write_text(backup.checksum_lines(self.bundle))
+        (self.bundle / backup.MANIFEST).write_text(json.dumps(manifest), encoding="utf-8")
+        (self.bundle / backup.CHECKSUMS).write_text(backup.checksum_lines(self.bundle), encoding="ascii")
         with self.assertRaises(backup.BackupError):
             backup.restore(backup.Postgres(False), self.bundle, self.target)
         self.assertEqual(backup.Postgres(False).psql(backup.EMPTY_DATABASE, self.target), b"t")
