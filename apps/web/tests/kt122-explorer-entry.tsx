@@ -3,3 +3,4 @@ export { createRoot } from 'react-dom/client';
 export { MantineProvider } from '@mantine/core';
 export { KnowledgeExplorer } from '../src/KnowledgeExplorer';
 export { ItemStructurePanel } from '../src/ItemStructurePanel';
+export { KnowledgeWorkspace } from '../src/KnowledgeWorkspace';
