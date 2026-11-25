@@ -14,7 +14,7 @@ from .models import Asset, StorageLocation
 from .oauth import client_for_owner
 
 DRIVE_PROVIDER = "google_drive"
-BLOB_FIELDS = "id,size,sha256Checksum,md5Checksum,mimeType,version,modifiedTime,trashed,appProperties"
+BLOB_FIELDS = "id,size,sha256Checksum,md5Checksum,mimeType,version,headRevisionId,modifiedTime,trashed,appProperties"
 
 
 @dataclass(frozen=True, slots=True)
@@ -26,6 +26,24 @@ class RemoteFile:
     revision: str
     sha256: str
     md5: str
+    head_revision_id: str = ""
+
+    def accepts_version(self, previous):
+        if self.revision and self.revision == previous:
+            return True
+        # Drive file.version includes metadata-only changes after upload. For
+        # binary files with a headRevisionId, allow only forward version drift.
+        return bool(self.head_revision_id and previous.isascii() and previous.isdigit()
+                    and self.revision.isascii() and self.revision.isdigit()
+                    and int(self.revision) > int(previous))
+
+    def same_read_source(self, before):
+        if not before.head_revision_id:
+            return self == before
+        return (self.accepts_version(before.revision)
+                and self.head_revision_id == before.head_revision_id
+                and self.file_id == before.file_id and self.size == before.size
+                and self.mime == before.mime and self.sha256 == before.sha256)
 
 
 class StoragePort(Protocol):
@@ -50,6 +68,10 @@ def fingerprint(stream):
 
 
 class DriveStorage:
+    # Every read_range verifies download permission and the full asset SHA in
+    # current Drive metadata, then checks that the binary did not change.
+    verifies_range_source = True
+
     def __init__(self, client, account):
         self.client = client
         self.account = account
@@ -100,6 +122,7 @@ class DriveStorage:
             revision=str(content.get("version", "")),
             sha256=content.get("sha256Checksum", ""),
             md5=content.get("md5Checksum", ""),
+            head_revision_id=content.get("headRevisionId", ""),
         )
 
     def _record_verified(self, asset, location, remote, *, md5=""):
@@ -180,9 +203,10 @@ class DriveStorage:
     def read_range(self, asset, start, end):
         """Fail closed if the verified original changes around a bounded read.
 
-        A provider's metadata version is monotonic, so a replacement during the
-        read cannot be accepted even if it later has the original bytes again.
-        No location/asset or verification timestamps are modified by viewing.
+        Bind each slice to the verified asset SHA and to a single binary head
+        revision across the read. Drive may advance the metadata version even
+        when the binary has not changed. Legacy metadata with no head revision
+        keeps the strict version check. Viewing does not update the catalogue.
         """
         location = self._locate(asset)
         if location.status != StorageLocation.Status.VERIFIED:
@@ -195,12 +219,12 @@ class DriveStorage:
             or before.size != asset.size
             or before.mime != asset.mime
             or before.sha256 != asset.sha256
-            or before.revision != location.provider_revision
+            or not before.accepts_version(location.provider_revision)
         ):
             raise DriveError("viewer_source_changed")
         payload = self.client.read_blob_range(before.file_id, start, end, before.size)
         after = self._read(asset, location.provider_file_id)
-        if after != before:
+        if not after.same_read_source(before):
             raise DriveError("viewer_source_changed")
         if len(payload) != end - start + 1:
             raise DriveError("viewer_range_size_mismatch")

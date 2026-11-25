@@ -6,10 +6,12 @@ from unittest.mock import patch
 from PIL import Image
 from catalog.models import Item
 from django.contrib.auth import get_user_model
-from django.test import TestCase
+from django.test import SimpleTestCase, TestCase
 from django.utils import timezone
 
+from .drive import DriveError
 from .models import Asset, StorageLocation
+from .pdf_source_cache import VerifiedPdfCache
 from .pdf_page_api import MAX_PDF_BYTES
 
 
@@ -128,3 +130,55 @@ class PrivatePdfPageTests(TestCase):
         self.asset.mime = "video/mp4"
         self.asset.save(update_fields=["mime"])
         self.assertEqual(self.client.get(self.path).status_code, 409)
+
+    def test_cached_source_needs_fresh_permission_and_a_matching_version(self):
+        storage = self.mock.return_value
+        storage.verifies_range_source = True
+        self.assertEqual(self.client.get(self.path).status_code, 200)
+        self.assertEqual(self.client.get(self.path[:-1] + "3").status_code, 200)
+        self.assertEqual(self.calls, [(0, len(self.body) - 1), (0, 0)])
+
+        storage.read_range.side_effect = DriveError("viewer_source_unavailable", status=403)
+        self.assertEqual(self.client.get(self.path).status_code, 409)
+        storage.read_range.side_effect = DriveError("drive_unavailable", retryable=True)
+        self.assertEqual(self.client.get(self.path).status_code, 503)
+        storage.read_range.side_effect = lambda *_: b"!"
+        self.assertEqual(self.client.get(self.path).status_code, 409)
+        # A different owner or stale URL must stop before even the probe.
+        storage.read_range.reset_mock()
+        self.client.force_login(self.other)
+        self.assertEqual(self.client.get(self.path).status_code, 404)
+        self.client.force_login(self.owner)
+        self.asset.content_version += 1
+        self.asset.save(update_fields=["content_version"])
+        self.assertEqual(self.client.get(self.path).status_code, 409)
+        storage.read_range.assert_not_called()
+        self.assertEqual(self.client.get(self.path.replace("/pdf-page/2/", "/pdf-page/3/")).status_code, 502)
+        storage.read_range.assert_called_once_with(self.asset, 0, len(self.body) - 1)
+
+    def test_cache_never_remembers_a_source_that_failed_digest_verification(self):
+        storage = self.mock.return_value
+        storage.verifies_range_source = True
+        storage.read_range.side_effect = lambda *_: b"x" * len(self.body)
+        self.assertEqual(self.client.get(self.path).status_code, 409)
+        storage.read_range.side_effect = lambda asset, start, end: self.body[start:end + 1]
+        self.assertEqual(self.client.get(self.path).status_code, 200)
+        self.assertEqual(storage.read_range.call_count, 2)
+        storage.read_range.assert_called_with(self.asset, 0, len(self.body) - 1)
+
+
+class PdfCacheBoundsTests(SimpleTestCase):
+    def test_evicts_by_capacity_and_releases_sources_when_idle(self):
+        cache = VerifiedPdfCache()
+        with patch("storage.pdf_source_cache.Timer") as timer, patch("storage.pdf_source_cache.monotonic", return_value=10):
+            for key in (1, 2, 3):
+                cache.remember(key, b"verified source")
+            self.assertIsNone(cache.get(1))
+            self.assertEqual(cache.get(2), b"verified source")
+            self.assertEqual(cache.get(3), b"verified source")
+            # Simulate the idle expiry callback for the third insertion.
+            timer.call_args.args[1](*timer.call_args.kwargs["args"])
+            self.assertIsNone(cache.get(3))
+        # No stale hit even if an expiry timer has not yet run.
+        with patch("storage.pdf_source_cache.monotonic", return_value=101):
+            self.assertIsNone(cache.get(2))

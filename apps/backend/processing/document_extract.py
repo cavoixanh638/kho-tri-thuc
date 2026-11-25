@@ -6,6 +6,8 @@ import sys
 from pathlib import Path
 from zipfile import ZipFile
 
+from .pdfium_lock import PDFIUM_LOCK
+
 MAX_PARTS = 1000
 MAX_TEXT = 1_000_000
 MAX_EXPANDED = 32 * 1024 * 1024
@@ -41,7 +43,7 @@ def pdfium_parts(path):
     import pypdfium2 as pdfium
 
     parts = []
-    with pdfium.PdfDocument(path) as document:
+    with PDFIUM_LOCK, pdfium.PdfDocument(path) as document:
         state = "partial" if len(document) > 200 else "done"
         for index in range(min(len(document), 200)):
             page = document[index]

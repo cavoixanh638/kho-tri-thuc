@@ -256,6 +256,20 @@ class DriveRangeProvenanceTests(TestCase):
         ):
             self.storage.read_range(self.asset, 2, 4)
 
+    def test_metadata_version_can_advance_only_around_a_stable_binary_head(self):
+        before = replace(self.remote, revision="8", head_revision_id="binary-A")
+        after = replace(before, revision="9")
+        self.client.read_blob_range.return_value = b"234"
+        with patch.object(self.storage, "_read", side_effect=[before, after]):
+            self.assertEqual(self.storage.read_range(self.asset, 2, 4), b"234")
+        for unsafe in (replace(after, head_revision_id="binary-B"),
+                       replace(after, sha256="b" * 64),
+                       replace(after, revision="6"),
+                       replace(after, head_revision_id="")):
+            with self.subTest(unsafe=unsafe), patch.object(self.storage, "_read", side_effect=[before, unsafe]):
+                with self.assertRaisesRegex(DriveError, "viewer_source_changed"):
+                    self.storage.read_range(self.asset, 2, 4)
+
 
 class DriveRangeTransportTests(SimpleTestCase):
     def make_client(self):

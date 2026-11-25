@@ -5,20 +5,21 @@ Unlike an iframe #page fragment, this endpoint proves which PDF page was
 actually parsed. Never leaks Drive IDs or embeds a bearer URL.
 """
 import hashlib
+from contextlib import closing
 from io import BytesIO
 
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
 from ninja import Router
 from ninja.security import django_auth
+from processing.pdfium_lock import PDFIUM_LOCK
 
 from .drive import DriveError
-from .models import Asset
+from .pdf_source_cache import MAX_PDF_BYTES, VerifiedPdfCache
 from .viewer_api import MAX_RANGE, error, owned_asset, private, storage_error, supported
 from .service import storage_for_owner
 
 router = Router(auth=django_auth, tags=["Private PDF pages"])
-MAX_PDF_BYTES = 24 * 1024 * 1024
+_sources = VerifiedPdfCache()
 MAX_PDF_PAGES = 2000
 MAX_PAGE_PIXELS = 4_000_000
 MAX_PNG_BYTES = 5 * 1024 * 1024
@@ -37,27 +38,36 @@ def pdf_page(request, asset_id: str, version: int, sha256: str, page_number: int
     if asset.size > MAX_PDF_BYTES:
         return error("viewer_pdf_too_large", 413)
 
-    source = bytearray()
-    checksum = hashlib.sha256()
-    storage = storage_for_owner(request.user.pk)
     try:
-        for offset in range(0, asset.size, MAX_RANGE):
-            end = min(offset + MAX_RANGE, asset.size) - 1
-            chunk = storage.read_range(asset, offset, end)
-            if not isinstance(chunk, bytes) or len(chunk) != end - offset + 1:
-                return error("viewer_range_size_mismatch", 502)
-            source.extend(chunk)
-            checksum.update(chunk)
+        storage = storage_for_owner(request.user.pk)
+        # Only an adapter that validates the entire remote identity and SHA on
+        # *each* range can replace a full refetch with an authorized byte probe.
+        can_probe = getattr(storage, "verifies_range_source", False) is True
+        key = (request.user.pk, asset.pk, version, sha256, asset.size)
+        source = _sources.get(key) if can_probe else None
+        if source is not None:
+            if storage.read_range(asset, 0, 0) != source[:1]:
+                return error("viewer_source_changed", 409)
+        else:
+            data = bytearray()
+            for offset in range(0, asset.size, MAX_RANGE):
+                end = min(offset + MAX_RANGE, asset.size) - 1
+                chunk = storage.read_range(asset, offset, end)
+                if not isinstance(chunk, bytes) or len(chunk) != end - offset + 1:
+                    return error("viewer_range_size_mismatch", 502)
+                data.extend(chunk)
+            if hashlib.sha256(data).hexdigest() != sha256:
+                return error("viewer_source_changed", 409)
+            source = bytes(data)
+            if can_probe:
+                _sources.remember(key, source)
     except DriveError as exc:
         return storage_error(exc)
-    if checksum.hexdigest() != asset.sha256:
-        return error("viewer_source_changed", 409)
 
     try:
         import pypdfium2 as pdfium
 
-        pdf = pdfium.PdfDocument(bytes(source))
-        try:
+        with PDFIUM_LOCK, closing(pdfium.PdfDocument(source)) as pdf:
             if page_number > len(pdf):
                 return error("viewer_page_out_of_range", 416)
             page = pdf[page_number - 1]
@@ -79,8 +89,6 @@ def pdf_page(request, asset_id: str, version: int, sha256: str, page_number: int
                     bitmap.close()
             finally:
                 page.close()
-        finally:
-            pdf.close()
     except (ValueError, RuntimeError, OSError, MemoryError):
         return error("viewer_pdf_unreadable", 422)
 
