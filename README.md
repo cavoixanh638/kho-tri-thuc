@@ -1,5 +1,7 @@
 # Kho Tri Thức — Lưu khoa học, mở rộng bền vững
 
+**Bản thử Windows ngày 25/11/2026.** Nhánh `rc/windows-20261125` ghép giao diện, tìm kiếm và khôi phục từ các PR #85, #98, #94 với `main`. [Kết quả nghiệm thu và phần còn mở](docs/CURRENT_STATE.md#ung-vien-windows-20261125) · [Mở kho thử 36 ghi chú tiếng Việt](evals/vietnamese-journeys/README-browser.md)
+
 **Kế hoạch hiện hành: V4.7 (18/11/2026) — tiếp nhận tức thì, tự tổ chức và bảo toàn lịch sử; PostgreSQL đã chốt.**
 **Trạng thái triển khai và kết quả kiểm thử:** [CURRENT_STATE.md](docs/CURRENT_STATE.md). **Đối chiếu kế hoạch–mã nguồn–nghiệm thu 22/11/2026:** [Bảng kiểm toán G00](docs/operations/RELEASE_READINESS_20261122.md). **Chạy scaffold:** [LOCAL_SETUP.md](docs/operations/LOCAL_SETUP.md).
 

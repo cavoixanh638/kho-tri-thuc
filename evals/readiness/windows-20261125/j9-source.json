@@ -1,0 +1,38 @@
+{
+  "counts": {
+    "events": 2,
+    "foreign_items": 1,
+    "items": 10000,
+    "jobs": 1,
+    "memberships": 10000,
+    "sources": 1,
+    "topics": 1000
+  },
+  "explorer_mixed_pagination": true,
+  "external_calls": 0,
+  "fingerprint_sha256": "0c07480d21b5cda4b736cedd600dd2c42864bf2a038ec6fa39ce9a7b40383fc8",
+  "first_page_stable": true,
+  "latency_scope": "isolated warm Django in-process Client and SQL; not production HTTP",
+  "limitations": [
+    "10,000 synthetic text Items, not 10,000 downloaded videos or 100GB Drive",
+    "Search expected-token coverage, not relevance/semantic gold",
+    "Full PostgreSQL database dump+restore/sha256 gate runs outside this script"
+  ],
+  "page_http_p95_ms": 1417.755,
+  "rest_page_size": 100,
+  "rest_pages_verified": 100,
+  "rest_unique_item_ids": 10000,
+  "restore_database": "kt_p08_scale_restored",
+  "retry_new_send_adds_one_event": true,
+  "retry_no_duplicate_source_job": true,
+  "retry_same_key_same_event": true,
+  "search_owner_isolated": true,
+  "search_queries_verified": 10,
+  "search_service_p95_ms": 19.163,
+  "source_database": "kt_p08_scale",
+  "stage": "source",
+  "status": "PASS",
+  "synthetic_only": true,
+  "task": "P08/J9",
+  "tree_nodes_verified": 1000
+}

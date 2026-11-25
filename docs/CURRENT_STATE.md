@@ -1,6 +1,27 @@
 # HIỆN TRẠNG THỰC TẾ — KHO TRI THỨC
 
-## Chú ý — GitHub snapshot mới ngày 22/11/2026 (chưa tích hợp vào main)
+<a id="ung-vien-windows-20261125"></a>
+
+## Bản ứng viên Windows ngày 25/11/2026
+
+**Đủ để dùng thử trên máy này với 36 ghi chú tự soạn. Điểm yếu lớn nhất là tìm lại một bài khi chỉ nhớ ý.** Nhánh cục bộ `rc/windows-20261125` tích hợp kế hoạch, kiểm thử trình duyệt và tối ưu tìm kiếm từ các PR dưới đây. Mã ứng dụng đã chạy là `376d51d5bf78404b5f22c042c555b059225bd92a`. Nhánh `main` trên GitHub vẫn ở `1f64f50`. [Kế hoạch #85](https://github.com/cavoixanh638/kho-tri-thuc/pull/85) · [Trình duyệt #98](https://github.com/cavoixanh638/kho-tri-thuc/pull/98) · [Tìm kiếm #94](https://github.com/cavoixanh638/kho-tri-thuc/pull/94) · [Hướng dẫn mở pilot](../evals/vietnamese-journeys/README-browser.md)
+
+| Phần đã kiểm | Kết quả trên bản ứng viên | Ý nghĩa khi dùng |
+| --- | --- | --- |
+| Tìm lại ghi chú tiếng Việt | Chromium mở đúng cả 36 bài từ Thư viện. Với 36 câu tìm một bài cụ thể, 16 bài xuất hiện ở vị trí đầu và 20 bài vắng khỏi 5 kết quả đầu. Trong 16 câu giữ lại, tìm trúng 7. Ba câu không có bài phù hợp đều trả rỗng. | Tìm trúng 9/10 câu dùng từ trong bài, 4/5 câu không dấu, chỉ 3/21 câu diễn đạt theo trí nhớ. [Kết quả trình duyệt](../evals/vietnamese-journeys/results-browser-windows.json) · [Phân tích theo loại truy vấn](../evals/vietnamese-journeys/results-windows-after.json) |
+| Tự xếp nhóm | Trước khi sửa tay, 19/22 nhãn tự gán đúng. Máy tìm được 19/32 nhãn cần có, 16/36 bài cần thêm hoặc bỏ ít nhất một nhãn. | Đã sửa lỗi tự gán lại nhãn người dùng vừa bỏ. M14 ghi tiền cọc thuê ghế bị xếp nhầm vào “thu âm”. Sau khi bỏ nhãn trong cây thư mục và chạy lại phân nhóm, lựa chọn vẫn được giữ. Thử ghim nhãn cho M01 cũng đạt. [Bộ thử và kết quả trước/sau](../evals/vietnamese-journeys/README.md) |
+| Đọc đúng nguồn trên Drive | Hai PDF tự sinh hiển thị đúng màu cả 6 trang. MP4 trả đúng đoạn byte, Chromium tua đến 2,5 và 9,5 giây. Đã sửa lỗi từ chối nhầm khi Drive chỉ đổi metadata. | Với PDF 5 MiB, ba lần mở đọc 5.244.465 / 1 / 1 byte. Hai trang sau nhanh hơn, nhưng tổng một lần đo tăng từ 14,99 lên 17,60 giây. PDF trên 24 MiB vẫn vượt giới hạn xem đúng trang. [Số đo Drive thật](../evals/media-viewer/README.md) |
+| Giao diện, quy mô và phục hồi | 13/13 hành trình trình duyệt và 104/104 thao tác bàn phím đạt ở bốn độ rộng. Đã phân trang đủ 10.000 ghi chú văn bản, 1.000 chủ đề và khôi phục vào DB sạch với kết quả đối chiếu trùng khớp. Vault nhập lại hai lần giữ nguyên số bản ghi. | Trên dữ liệu thử, phân trang P95 là 1,42 giây, tìm 10 mã mẫu P95 là 19 ms, đo qua Django cục bộ. Khả năng đọc màn hình bằng công nghệ hỗ trợ và tải thư viện video lớn còn chưa đo. [Cổng trình duyệt](../evals/readiness/windows-20261125/gate.json) · [Quy mô](../evals/readiness/windows-20261125/j9-source.json) · [Khôi phục PostgreSQL](../evals/readiness/windows-20261125/j9-restored.json) · [Vault](../evals/readiness/windows-20261125/j8-restored.json) |
+
+Frontend đạt 333/333. Django ghi nhận 407 ca, trong đó 398 đạt và 9 bỏ qua. Ba bộ sao lưu đạt 20/20 trên Windows. Đã khôi phục thêm một bản sao lưu v4 do công cụ cũ tạo và chạy migration mới trên DB QA. Cả 17 tập dữ liệu cũ khớp sau đối chiếu, gồm 10.001 bản ghi của hai tài khoản. Bộ thử hồi quy tìm kiếm PostgreSQL đạt Recall@5 73/77 trên 86 truy vấn. Cả bốn câu diễn đạt lại theo nghĩa của bộ này đều trượt. [Kiểm thử Windows và dữ liệu phục hồi](../evals/readiness/windows-20261125/windows-tests.json) · [Kết quả 86 truy vấn](../evals/readiness/windows-20261125/p16-search.json)
+
+### Việc nên làm tiếp theo
+
+1. **Ưu tiên tìm theo trí nhớ.** Phép thử ngoại tuyến thêm gợi ý dựa trên các từ chung sau một lượt tìm rỗng đã đưa đúng bài vào top 5 cho 21/21 câu nhớ ý, đồng thời gợi ý sai cho cả 3 câu không có bài phù hợp. Đề xuất cho người dùng chủ động chọn “Tìm gần đúng”, rồi đo lượt mở đúng và gợi ý sai trên bộ câu hỏi độc lập. [Cách đo và số liệu](../evals/vietnamese-journeys/README.md)
+2. **Đo công sửa nhãn trên tài liệu sử dụng hàng ngày.** Nhờ người dùng đánh dấu nhóm mong muốn và tự tìm lại bài sau vài ngày. Ghi số bài phải sửa, số lần mở đúng trong năm kết quả đầu và thời gian mở đúng bài. Bộ hiện tại có đáp án do người soạn đặt trước. Đợt dùng thử độc lập với người dùng và dữ liệu của họ còn ở trạng thái `NOT_RUN`. [Phiếu đánh giá độc lập](../evals/vietnamese-journeys/README.md)
+3. **Đo chi phí mở trang PDF đầu.** Lặp lại với nhiều tệp và nhiều lượt trên Drive, ghi riêng thời gian trang đầu và trang tiếp theo trước khi điều chỉnh giới hạn 24 MiB. [Hai lượt đo đối chiếu](../evals/media-viewer/README.md)
+
+## Đối chiếu GitHub ngày 22/11/2026
 
 **Nguồn:** [bảng kiểm toán đối chiếu](operations/RELEASE_READINESS_20261122.md), kiểm trực tiếp GitHub HEAD, PR, Actions. Phần dưới đây giữ **lịch sử đã kiểm trên Windows/main**, không xóa thông tin trước đó.
 

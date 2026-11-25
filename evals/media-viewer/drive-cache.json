@@ -1,0 +1,239 @@
+{
+  "environment": "Windows, separate ephemeral PostgreSQL; Django test client; Chromium video element",
+  "storage_mode": "drive",
+  "sources": {
+    "pdf_small": {
+      "source_bytes": 1206,
+      "samples": [
+        {
+          "page_or_byte_offset": 1,
+          "http": 200,
+          "elapsed_ms": 2456.6,
+          "range_requests": 1,
+          "range_reads": 1,
+          "source_bytes_read": 1206,
+          "pixel_rgb": [
+            255,
+            0,
+            0
+          ]
+        },
+        {
+          "page_or_byte_offset": 2,
+          "http": 200,
+          "elapsed_ms": 1730.2,
+          "range_requests": 1,
+          "range_reads": 1,
+          "source_bytes_read": 1,
+          "pixel_rgb": [
+            0,
+            255,
+            0
+          ]
+        },
+        {
+          "page_or_byte_offset": 3,
+          "http": 200,
+          "elapsed_ms": 1682.3,
+          "range_requests": 1,
+          "range_reads": 1,
+          "source_bytes_read": 1,
+          "pixel_rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      ],
+      "foreign_owner_and_stale_denied_before_read": true
+    },
+    "pdf_medium": {
+      "source_bytes": 5244465,
+      "samples": [
+        {
+          "page_or_byte_offset": 1,
+          "http": 200,
+          "elapsed_ms": 12095.7,
+          "range_requests": 2,
+          "range_reads": 2,
+          "source_bytes_read": 5244465,
+          "pixel_rgb": [
+            255,
+            0,
+            0
+          ]
+        },
+        {
+          "page_or_byte_offset": 2,
+          "http": 200,
+          "elapsed_ms": 2554.6,
+          "range_requests": 1,
+          "range_reads": 1,
+          "source_bytes_read": 1,
+          "pixel_rgb": [
+            0,
+            255,
+            0
+          ]
+        },
+        {
+          "page_or_byte_offset": 3,
+          "http": 200,
+          "elapsed_ms": 2946.7,
+          "range_requests": 1,
+          "range_reads": 1,
+          "source_bytes_read": 1,
+          "pixel_rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      ],
+      "foreign_owner_and_stale_denied_before_read": true
+    },
+    "pdf_over_limit": {
+      "source_bytes": 26215987,
+      "samples": [
+        {
+          "page_or_byte_offset": 1,
+          "http": 413,
+          "elapsed_ms": 3.8,
+          "range_requests": 0,
+          "range_reads": 0,
+          "source_bytes_read": 0
+        },
+        {
+          "page_or_byte_offset": 2,
+          "http": 413,
+          "elapsed_ms": 3.4,
+          "range_requests": 0,
+          "range_reads": 0,
+          "source_bytes_read": 0
+        },
+        {
+          "page_or_byte_offset": 3,
+          "http": 413,
+          "elapsed_ms": 3.9,
+          "range_requests": 0,
+          "range_reads": 0,
+          "source_bytes_read": 0
+        }
+      ],
+      "foreign_owner_and_stale_denied_before_read": true
+    },
+    "mp4": {
+      "source_bytes": 140549,
+      "samples": [
+        {
+          "page_or_byte_offset": 0,
+          "http": 206,
+          "elapsed_ms": 1635.6,
+          "range_requests": 1,
+          "range_reads": 1,
+          "source_bytes_read": 512
+        },
+        {
+          "page_or_byte_offset": 70274,
+          "http": 206,
+          "elapsed_ms": 1621.7,
+          "range_requests": 1,
+          "range_reads": 1,
+          "source_bytes_read": 512
+        }
+      ],
+      "foreign_owner_and_stale_denied_before_read": true,
+      "browser": {
+        "duration_s": 12,
+        "seeks": [
+          {
+            "target_s": 2.5,
+            "actual_s": 2.5,
+            "elapsed_ms": 8
+          },
+          {
+            "target_s": 9.5,
+            "actual_s": 9.5,
+            "elapsed_ms": 12
+          }
+        ]
+      }
+    }
+  },
+  "status": "PASS",
+  "failed_checks": [],
+  "source_sha256": {
+    "apps/backend/storage/pdf_page_api.py": "7e14ea9113bdcfb41cd93825a9a81f345d571dc088e0e04c485442ca04c2c920",
+    "apps/backend/storage/viewer_api.py": "305fc09f84256f56455162faa1d406f2ab47294f2b027d8304f9dfb886d7fdb6",
+    "apps/backend/storage/drive.py": "07809e972478ea6af879ec7445ef75a68114c39b38f7f6dd719fe1931cb658a9",
+    "apps/backend/storage/service.py": "bb7d8c4f78ac34b17f873faab411fcb5ae3b0f58b7bf2f1e7ae29629dbb76986",
+    "apps/backend/storage/pdf_source_cache.py": "0374341cdb8ee091c3a0af68969d9ac99345ce7eee2294d6659ea40c829dc843",
+    "apps/backend/processing/pdfium_lock.py": "d5834710c10b91dfc99bddfc149bfac7fe82551e3917492945dac6b99da318f3",
+    "tools/smoke/windows_media_probe.py": "19d90f34e52c95c2d5c10d4ba6becfc03f75f2a5b8d72bf8d55df47f27aa68d4",
+    "tools/smoke/windows_media_seek.mjs": "d168ed0adcfd273de36303aeaabc471dee7730950238647812bf4533a7439cfb"
+  },
+  "qa_folder_created": true,
+  "http_range_examples": [
+    {
+      "status": 206,
+      "content_range": "bytes 0-1205/1206",
+      "length": "1206",
+      "encoding": null
+    },
+    {
+      "status": 206,
+      "content_range": "bytes 0-0/1206",
+      "length": "1",
+      "encoding": null
+    },
+    {
+      "status": 206,
+      "content_range": "bytes 0-0/1206",
+      "length": "1",
+      "encoding": null
+    },
+    {
+      "status": 206,
+      "content_range": "bytes 0-4194303/5244465",
+      "length": "4194304",
+      "encoding": null
+    },
+    {
+      "status": 206,
+      "content_range": "bytes 4194304-5244464/5244465",
+      "length": "1050161",
+      "encoding": null
+    },
+    {
+      "status": 206,
+      "content_range": "bytes 0-0/5244465",
+      "length": "1",
+      "encoding": null
+    },
+    {
+      "status": 206,
+      "content_range": "bytes 0-0/5244465",
+      "length": "1",
+      "encoding": null
+    },
+    {
+      "status": 206,
+      "content_range": "bytes 0-511/140549",
+      "length": "512",
+      "encoding": null
+    },
+    {
+      "status": 206,
+      "content_range": "bytes 70274-70785/140549",
+      "length": "512",
+      "encoding": null
+    },
+    {
+      "status": 206,
+      "content_range": "bytes 0-140548/140549",
+      "length": "140549",
+      "encoding": null
+    }
+  ],
+  "qa_folder_trashed": true
+}

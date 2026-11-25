@@ -1,0 +1,44 @@
+{
+  "platform": "Windows",
+  "database": "PostgreSQL 18 QA",
+  "tested_application_sha": "376d51d5bf78404b5f22c042c555b059225bd92a",
+  "django": {
+    "run": 407,
+    "passed": 398,
+    "skipped": 9
+  },
+  "frontend": {
+    "tests": 333,
+    "pass": 333,
+    "fail": 0,
+    "skipped": 0
+  },
+  "backup_suites": {
+    "test_backup.py": {
+      "run": 3,
+      "passed": 3,
+      "skipped": 0
+    },
+    "test_parallel_schema.py": {
+      "run": 8,
+      "passed": 8,
+      "skipped": 0
+    },
+    "test_drive_bundle.py": {
+      "run": 9,
+      "passed": 9,
+      "skipped": 0
+    }
+  },
+  "legacy_restore": {
+    "backup_tool_sha": "d4b06f67d0406e66adf71f75cda012752ddc6acb",
+    "manifest_version_before": 4,
+    "manifest_version_after": 5,
+    "restored_to_clean_database": true,
+    "compared_after_migration": true,
+    "collections_with_identical_rows": 17,
+    "items_all_test_owners": 10001,
+    "new_topic_exclusions": 0,
+    "source_dump_sha256": "7d2a65db30bc129e339b9e4060a30f106e02eea5ddb1c8c6d05faef942b5bb73"
+  }
+}

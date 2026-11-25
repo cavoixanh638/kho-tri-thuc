@@ -1,5 +1,7 @@
 # KIỂM TOÁN VÀ ĐỐI CHIẾU KẾ HOẠCH — CHECKPOINT 22/11/2026
 
+Xem [kết quả trên bản ứng viên Windows ngày 25/11](../CURRENT_STATE.md#ung-vien-windows-20261125) để chọn việc tiếp theo. Các số liệu dưới đây ghi lại tiến độ ngày 22/11.
+
 > **Bản ghi tiến độ, không phải giấy chứng nhận phát hành.** Căn cứ: `MASTER_PLAN.md` v4.7, `ROADMAP_AND_TESTS.md`, `CAPTURE_AND_ORGANIZE.md`, `CURRENT_STATE.md`, ma trận 38 năng lực G00 và HEAD/Actions GitHub đọc ngày 22/11/2026. Các thông số ở đây là ảnh chụp tại thời điểm kiểm tra, **không tự cập nhật** nếu không chạy lại kiểm toán.
 
 ## 1. Kế hoạch gốc vẫn là chuẩn

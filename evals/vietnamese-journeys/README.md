@@ -28,6 +28,12 @@ Runner chạy `organize_item` và truy vấn các gán tự động thật trong
 
 SearchService chạy với tất cả mục cùng một chủ sở hữu, trên toàn bộ kho ở cả hai split. Một truy vấn dương đạt khi Item đích xuất hiện trong năm kết quả đầu. Có thể có thêm các mục hữu ích khác, nên báo cáo chỉ chấm khả năng tìm lại mục đích. Thời gian đo cho lời gọi dịch vụ trong process. Thời gian đọc trên trình duyệt và mở đúng đoạn nguồn cần phép thử riêng.
 
-Sau khi chấm xong, runner thử bổ sung một chủ đề bị thiếu qua API, chạy lại job và đọc lại. Runner cũng gửi danh sách chủ đề mong muốn cho một mục có nhãn tự động sai, kiểm lại ngay sau PATCH và sau job. Mỗi thao tác có kết quả riêng. Nếu một thao tác sửa thất bại, runner vẫn xuất báo cáo rồi trả exit code 1. Đây là phép thử hành trình dùng thực tế trên API, kể cả khi endpoint PATCH hiện chỉ được thiết kế quản lý các gán do người dùng tạo.
+Sau khi chấm, runner thử hai thao tác. Với M01, người dùng ghim một chủ đề còn thiếu. Với M14, người dùng chọn **Bỏ khỏi nhánh** để gỡ chủ đề “thu âm” khỏi ghi chú về tiền cọc thuê ghế. Runner đọc lại dữ liệu ngay sau thao tác và sau khi chạy lại bộ phân nhóm. Trên bản ứng viên, cả hai lựa chọn đều được giữ. Nếu một thao tác thất bại, runner xuất báo cáo và trả exit code 1. [Trước khi sửa](results-windows.json) · [Sau khi sửa](results-windows-after.json)
 
-Kết quả Windows đã ghi trong `results-windows.json`, kèm mã nguồn, hash corpus/nhãn/evaluator và từng ca. Không suy số liệu của bộ tổng hợp thành chất lượng trên ghi chú cá nhân.
+Qua giao diện Windows, có thể đọc cả 36 bài và lặp lại phép thử bằng tài khoản pilot. Bộ chuẩn tạm có 36 câu hỏi tìm một bài xác định và 3 câu không có bài phù hợp. Câu hỏi được soạn trước phép đo. Người dùng chưa tự đặt câu hỏi sau một khoảng thời gian sử dụng. [Mở pilot và đọc kết quả trình duyệt](README-browser.md)
+
+### Thử tìm theo một phần cụm từ
+
+Lệnh `python evals/vietnamese-journeys/compare_partial_match.py` giữ nguyên mọi kết quả tìm kiếm đã có. Với truy vấn trả rỗng, phép thử xét các bài có ít nhất hai từ chung với câu hỏi sau khi bỏ dấu, ưu tiên từ hiếm trong bộ 36 bài. Số bài đích vào top 5 tăng từ 16/36 lên 36/36, trong đó nhóm nhớ ý tăng từ 3/21 lên 21/21. Cả 3 câu hỏi đáng lẽ trả rỗng cũng nhận gợi ý sai. Trong 16 bài giữ lại, số tìm trúng tăng từ 7 lên 16 và cả 2 câu âm đều có kết quả.
+
+Đây là phép so sánh ngoại tuyến trên tiêu đề và nội dung ghi chú tự soạn. Đợt thử tiếp theo nên cho người dùng chủ động chọn “Tìm gần đúng” sau một lần tìm rỗng, rồi đo số lần gợi ý giúp họ mở đúng bài trên một bộ câu hỏi mới. Kết quả hiện tại đủ để thử cách đó trước khi cân nhắc tìm kiếm vector. Bản pilot đang dùng cách tìm mặc định đã đo qua trình duyệt.
