@@ -318,7 +318,8 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
 export function ItemScreen({ id, csrf }: { id: string; csrf: string }) {
   const item = useResource<Item>(`/items/${encodeURIComponent(id)}`, { pollWhile: itemNeedsRefresh });
   if (item.data) return <ItemContent key={item.data.item_id} item={item.data} csrf={csrf}
-    onUpdated={item.replace} onRefresh={item.retry} refreshError={item.refreshError} pollingPaused={item.pollingPaused} />;
+    onUpdated={value => { item.replace(value); window.dispatchEvent(new Event('knowledge-explorer-changed')); }}
+    onRefresh={() => { item.retry(); window.dispatchEvent(new Event('knowledge-explorer-changed')); }} refreshError={item.refreshError} pollingPaused={item.pollingPaused} />;
   return <>
     <a className="back-link" href="#/thu-vien">‹ Thư viện</a>
     <PageTitle title="Chi tiết mục" />
