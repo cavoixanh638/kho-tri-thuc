@@ -174,6 +174,7 @@ export function CaptureScreen({ csrf }: { csrf: string }) {
     setSaving(true);
     inFlight.current = true;
     setError(undefined);
+    let explorerChanged = false;
     // Preserve receipts for files acknowledged before a partial batch failure.
     // The next retry only sends files that remain in the pending queue.
     await ownerReady.current;
@@ -196,6 +197,7 @@ export function CaptureScreen({ csrf }: { csrf: string }) {
           persistDraft();
           return;
         }
+        explorerChanged = true;
         setUploadReceipts(previous => [...previous, {
           filename: row.file.name, itemId: received.item_id, assetId: received.asset_id,
           state: received.state,
@@ -211,6 +213,7 @@ export function CaptureScreen({ csrf }: { csrf: string }) {
       if (ownerRef.current) clearCaptureDraft(ownerRef.current);
       recent.retry();
     } finally {
+      if (explorerChanged) window.dispatchEvent(new Event('knowledge-explorer-changed'));
       inFlight.current = false;
       setSaving(false);
     }
@@ -253,6 +256,7 @@ export function CaptureScreen({ csrf }: { csrf: string }) {
         method: 'POST', csrf, body, idempotencyKey: attempt.current.key,
       });
       setReceipt(received);
+      window.dispatchEvent(new Event('knowledge-explorer-changed'));
       setAckMs(Math.max(0, Date.now() - started));
       setLastSend({ kind: decision.kind, url: decision.kind === 'link' ? decision.url : '', text: content });
       attempt.current = null;
