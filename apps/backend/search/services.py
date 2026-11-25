@@ -52,6 +52,7 @@ class SearchPage:
     hits: tuple[SearchHit, ...] = ()
     next_cursor: SearchCursor | None = None
     match_kind: Literal["standard", "partial"] = "standard"
+    can_expand: bool = False
 
 
 class SearchService:
@@ -63,6 +64,7 @@ class SearchService:
         *,
         limit: int = 20,
         allow_partial: bool = True,
+        expand: bool = False,
     ) -> SearchPage:
         """Return visible items in rank order with the best match per source.
 
@@ -81,6 +83,7 @@ class SearchService:
 
         params = _search_params(filters, query, cursor, limit)
         match_kind = "standard"
+        can_expand = False
         with connection.cursor() as db_cursor:
             db_cursor.execute(SEARCH_SQL, params)
             rows = db_cursor.fetchall()
@@ -93,7 +96,9 @@ class SearchService:
                     if db_cursor.fetchone():
                         return SearchPage()
                 db_cursor.execute(RECALL_SQL, {**params, **partial})
-                rows = db_cursor.fetchall()
+                candidates = db_cursor.fetchall()
+                can_expand = not expand and any(not row[-1] for row in candidates)
+                rows = [row[:-1] for row in candidates if expand or row[-1]]
                 if rows:
                     match_kind = "partial"
 
@@ -115,7 +120,7 @@ class SearchService:
         if len(hits) > limit:
             hits = hits[:limit]
             next_cursor = SearchCursor(hits[-1].score, hits[-1].item_id)
-        return SearchPage(hits, next_cursor, match_kind)
+        return SearchPage(hits, next_cursor, match_kind, can_expand)
 
 
 def _search_params(filters, query, cursor, limit):

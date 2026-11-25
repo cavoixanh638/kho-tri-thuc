@@ -120,7 +120,7 @@ def summarize(rows, negatives):
     }
 
 
-def measure(repo, data, gold):
+def measure(repo, data, gold, follow_suggestions=False):
     # Reject an unintended endpoint before Django initializes or any DB call runs.
     database = os.environ.get("POSTGRES_DB", "")
     if (os.environ.get("KT_EVAL_ALLOW_DISPOSABLE") != "1"
@@ -167,27 +167,33 @@ def measure(repo, data, gold):
         filters = SearchFilters(owner_id=owner.pk)
         service = SearchService()
 
-        def top5(query):
+        def top5(query, target):
             start = time.perf_counter()
             page = service.search(filters, query, limit=5)
             elapsed = (time.perf_counter() - start) * 1000
-            return [reverse[hit.item_id] for hit in page.hits], round(elapsed, 3)
+            found = [reverse[hit.item_id] for hit in page.hits]
+            detail = {"default_top5": found, "expanded": False} if follow_suggestions else {}
+            if follow_suggestions and target not in found and getattr(page, "can_expand", False):
+                expanded = service.search(filters, query, limit=5, expand=True)
+                found = [reverse[hit.item_id] for hit in expanded.hits]
+                detail["expanded"] = True
+            return {"top5": found, "service_ms": round(elapsed, 3), **detail}
 
         measured = []
         for source in data["items"]:
             key = source["id"]
             label = labels[key]
             actual = ItemTopic.objects.filter(item=items[key], origin="auto").values_list("topic__name", flat=True)
-            found, ms = top5(label["query"])
+            result = top5(label["query"], key)
+            found = result["top5"]
             measured.append({
                 "id": key, "split": source["split"], "expected": sorted(label["topics"]),
-                "actual": sorted(actual), "kind": label["query_kind"], "top5": found,
-                "rank": found.index(key) + 1 if key in found else None, "service_ms": ms,
+                "actual": sorted(actual), "kind": label["query_kind"], **result,
+                "rank": found.index(key) + 1 if key in found else None,
             })
         negatives = []
         for n, q in enumerate(gold["negative_queries"], 1):
-            found, ms = top5(q["query"])
-            negatives.append({"id": f"N{n:02}", "split": q["split"], "top5": found, "service_ms": ms})
+            negatives.append({"id": f"N{n:02}", "split": q["split"], **top5(q["query"], None)})
         # Probe the actual PATCH path after collecting scores, then rerun the job.
         correction = {"status": "NOT_RUN_NO_MISSING_TOPIC"}
         for row in measured:
@@ -242,13 +248,21 @@ def measure(repo, data, gold):
             }
             break
         transaction.set_rollback(True)
-    return {
+    report = {
         "by_split": {split: summarize([r for r in measured if r["split"] == split],
                                       [r for r in negatives if r["split"] == split]) for split in SPLITS},
         "overall": summarize(measured, negatives), "correction_probe": correction,
         "remove_wrong_auto_topic_probe": remove_wrong,
         "diagnostics": measured, "negative_queries": negatives,
     }
+    if follow_suggestions:
+        defaults = [{**r, "top5": r["default_top5"],
+                     "rank": r["default_top5"].index(r["id"]) + 1 if r["id"] in r["default_top5"] else None}
+                    for r in measured]
+        plain_negatives = [{**r, "top5": r["default_top5"]} for r in negatives]
+        report["before_expanding"] = summarize(defaults, plain_negatives)["search"]
+        report["suggestion_policy"] = "Expand only when offered and target missing from first five; default-call latency."
+    return report
 
 
 def main():
@@ -260,6 +274,7 @@ def main():
     args.add_argument("--repo", type=Path, default=HERE.parents[1])
     args.add_argument("--corpus", type=Path, default=HERE / "corpus.json")
     args.add_argument("--gold", type=Path, default=HERE / "provisional.json")
+    args.add_argument("--follow-suggestions", action="store_true", help="Also measure the optional second search.")
     opts = args.parse_args()
     corpus = read(opts.corpus)
     validate_corpus(corpus)
@@ -277,7 +292,7 @@ def main():
     backend_status = subprocess.check_output(
         ["git", "-C", str(repo), "status", "--porcelain", "--", "apps/backend"], text=True,
     )
-    report = measure(repo, corpus, gold)
+    report = measure(repo, corpus, gold, follow_suggestions=opts.follow_suggestions)
     report.update({"code_sha": sha, "backend_tree_clean": not bool(backend_status.strip()),
                    "corpus_sha256": corpus_hash, "gold_sha256": fingerprint(opts.gold),
                    "evaluator_sha256": fingerprint(Path(__file__)), "gold_origin": gold["origin"],

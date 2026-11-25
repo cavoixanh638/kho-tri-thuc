@@ -35,6 +35,7 @@ class Page(Schema):
     results: list[Hit]
     next_cursor: Cursor | None
     match_kind: str = "standard"
+    can_expand: bool = False
 
 
 class Error(Schema):
@@ -73,6 +74,7 @@ def search(
     cursor_score: float | None = None,
     cursor_item_id: UUID | None = None,
     limit: int = 20,
+    expand: bool = False,
 ):
     if (
         (cursor_score is None) != (cursor_item_id is None)
@@ -107,11 +109,13 @@ def search(
             q,
             cursor,
             limit=limit,
+            expand=expand,
         )
         return {
             "results": [asdict(hit) for hit in page.hits],
             "next_cursor": asdict(page.next_cursor) if page.next_cursor else None,
             "match_kind": page.match_kind,
+            "can_expand": page.can_expand,
         }
     except (ValueError, UnicodeError):
         return Status(422, {"code": "invalid_search"})

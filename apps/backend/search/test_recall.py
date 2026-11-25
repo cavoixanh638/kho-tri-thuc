@@ -46,8 +46,11 @@ class RememberedNoteTests(TestCase):
         filters = SearchFilters(self.owner.pk, topic_id=topic.pk, exclude_item_id=good[0].pk)
         service = SearchService()
         query = "dây buồm mạn thuyền"
-        first = service.search(filters, query, limit=1)
-        second = service.search(filters, query, first.next_cursor, limit=1)
+        offered = service.search(filters, query, limit=1)
+        self.assertEqual(offered.hits, ())
+        self.assertTrue(offered.can_expand)
+        first = service.search(filters, query, limit=1, expand=True)
+        second = service.search(filters, query, first.next_cursor, limit=1, expand=True)
         self.assertEqual((first.match_kind, second.match_kind), ("partial", "partial"))
         self.assertIsNone(second.next_cursor)
         self.assertEqual({first.hits[0].item_id, second.hits[0].item_id}, {good[1].pk, good[2].pk})
@@ -68,7 +71,7 @@ class RememberedNoteTests(TestCase):
         target = self.note("Gấp vải màu chàm")
         with patch("search.recall.MAX_POSTINGS_PER_TERM", 2):
             self.assertFalse(self.search("gấp vải ngăn kéo").hits)
-            page = self.search("gấp vải chàm ngăn kéo")
+            page = self.search("gấp vải chàm ngăn kéo", expand=True)
         self.assertEqual([hit.item_id for hit in page.hits], [target.pk])
 
     def test_query_numbers_and_identifiers_must_be_present(self):
@@ -76,4 +79,16 @@ class RememberedNoteTests(TestCase):
         self.assertEqual(self.search("mình nhớ ghi chú AX173 hôm nào").hits[0].item_id, target.pk)
         for query in ("sổ thay lốp AX179", "sổ thay lốp 17", "sổ lốp AX/179"):
             with self.subTest(query=query):
-                self.assertFalse(self.search(query).hits)
+                self.assertFalse(self.search(query, expand=True).hits)
+
+    def test_weak_overlap_is_offered_only_on_request(self):
+        target = self.note("Sổ tay đi biển", note="Xếp áo phao trên bờ.")
+        query = "mình tìm áo nổi để xuống bờ"
+        self.client.force_login(self.owner)
+        default = self.client.get("/api/v1/search", {"q": query}).json()
+        self.assertEqual(default["results"], [])
+        self.assertTrue(default["can_expand"])
+        expanded = self.client.get("/api/v1/search", {"q": query, "expand": "true"}).json()
+        self.assertEqual([r["item_id"] for r in expanded["results"]], [str(target.pk)])
+        self.assertEqual(expanded["match_kind"], "partial")
+        self.assertFalse(expanded["can_expand"])

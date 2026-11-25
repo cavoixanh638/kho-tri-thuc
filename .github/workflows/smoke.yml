@@ -385,11 +385,11 @@ jobs:
           python3 - <<'PY'
           import json
           report = json.load(open('tmp/p08-kt128/p16-search-report.json', encoding='utf-8'))
-          print(json.dumps({key: report.get(key) for key in ('status', 'query_count', 'latency_count', 'recall_at_5', 'precision_at_5', 'no_leak', 'evidence_errors')}, ensure_ascii=False))
+          print(json.dumps({key: report.get(key) for key in ('status', 'query_count', 'latency_count', 'recall_at_5', 'precision_at_5', 'no_leak', 'negative_violations', 'evidence_errors')}, ensure_ascii=False))
           assert report['status'] == 'MEASURED_SYNTHETIC_PG'
           assert report['query_count'] == 86 and report['latency_count'] == 86
           assert report['recall_at_5'] >= 0.948 and report['precision_at_5'] >= 0.960
-          assert report['no_leak'] and not report['evidence_errors']
+          assert report['no_leak'] and not report['negative_violations'] and not report['evidence_errors']
           PY
 
       - name: Publish P15 browser screenshots and keyboard findings
