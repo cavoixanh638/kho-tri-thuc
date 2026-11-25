@@ -4,13 +4,15 @@ import { spawnSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 test('without guarded isolated PostgreSQL and QA URL, driver reports NOT_RUN, never false-PASS', () => {
   const tmp = mkdtempSync(join(tmpdir(), 'kt128-p08-safety-'));
   try {
     const env = { ...process.env, KT_JOURNEY_URL: 'https://example.org', KT_JOURNEY_DB_NAME: 'postgres',
       KT_JOURNEY_USER: 'fake', KT_JOURNEY_PASSWORD: 'fake', KT_JOURNEY_ISOLATED: 'YES', KT_JOURNEY_OUT: tmp };
-    const run = spawnSync(process.execPath, [new URL('./knowledge_journeys.mjs', import.meta.url).pathname], { env, encoding: 'utf8', timeout: 7000 });
+    const driverPath = fileURLToPath(new URL('./knowledge_journeys.mjs', import.meta.url));
+    const run = spawnSync(process.execPath, [driverPath], { env, encoding: 'utf8', timeout: 7000 });
     assert.equal(run.status, 2, run.stderr);
     const report = JSON.parse(readFileSync(join(tmp, 'p08-results.json'), 'utf8'));
     assert.equal(report.status, 'NOT_RUN');
