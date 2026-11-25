@@ -1,4 +1,4 @@
-"""P03 regression: v1-v4 wire formats, v4 relationships, atomic rollback.
+"""P03 regression: v1-v5 wire formats, relationships and atomic rollback.
 
 Run unit tests unconditionally; for real PG18 round-trips:
   KT_BACKUP_TEST=1 PGHOST=... PGUSER=... python -m unittest discover -s tools/backup -p 'test_parallel_schema*.py' -v
@@ -51,10 +51,12 @@ class ParallelSchemaUnitTests(unittest.TestCase):
         self.assertIn("query", current["saved_collections"][1])
         self.assertEqual(current["capture_events"], old["capture_events"])
         self.assertEqual(current["assets"], old["assets"])
+        self.assertNotIn("excluded_topics", current)
+        self.assertEqual(set(backup.collections_for_version(5)), {*current, "excluded_topics"})
 
     def test_legacy_and_current_bundle_checksums(self):
         with tempfile.TemporaryDirectory() as directory:
-            for version in range(1, 5):
+            for version in backup.SUPPORTED_SCHEMA_VERSIONS:
                 root = Path(directory) / str(version)
                 expected = make_bundle(root, version)
                 self.assertEqual(backup.verify_bundle(root), expected["collections"])
@@ -66,7 +68,7 @@ class ParallelSchemaUnitTests(unittest.TestCase):
 
     def test_incompatible_versions_and_missing_or_extra_collections_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
-            for version in (0, 5):
+            for version in (0, 6):
                 root = Path(directory) / str(version)
                 root.mkdir()
                 (root / backup.DUMP).write_bytes(b"data")
@@ -138,10 +140,11 @@ class ParallelSchemaPostgresTests(unittest.TestCase):
         cls.addClassCleanup(connections.close_all)
         call_command("migrate", interactive=False, verbosity=0)
         cls.fixtures = seed_database()
-        from catalog.models import Item, Topic, SavedCollection
+        from catalog.models import Item, ItemTopicExclusion, Topic, SavedCollection
         from processing.models import ClipAnnotation
         note, link = cls.fixtures.note, cls.fixtures.link
         topic = Topic.objects.get(name="Chủ đề")
+        cls.exclusion = ItemTopicExclusion.objects.create(item=link, topic=topic.parent)
         Item.objects.filter(pk=note.pk).update(home_topic=topic, outline_order=17,
                                                structure_version=3, structure_origin="user")
         Item.objects.filter(pk=link.pk).update(parent_item=note, outline_order=9,
@@ -165,14 +168,15 @@ class ParallelSchemaPostgresTests(unittest.TestCase):
         self.bundle = self.directory / "source"
         backup.create(backup.Postgres(False), self.bundle)
 
-    def test_v4_full_restore_exact_uuids_timestamps_and_structure(self):
-        from catalog.models import Item, SavedCollection
+    def test_full_restore_exact_uuids_timestamps_structure_and_exclusions(self):
+        from catalog.models import Item, ItemTopicExclusion, SavedCollection
         from ingestion.models import CaptureEvent
         from processing.models import ClipAnnotation
         from django.db import connections
         from storage.models import Asset, DriveAccount
         expected = backup.verify_bundle(self.bundle)
-        self.assertEqual(len(expected), 17)
+        self.assertEqual(len(expected), 18)
+        self.assertEqual(len(expected["excluded_topics"]), 1)
         self.assertEqual(len(expected["saved_collections"]), 1)
         self.assertEqual(len(expected["clip_annotations"]), 1)
         self.assertEqual(expected["clip_annotations"][0]["locator"],
@@ -180,13 +184,17 @@ class ParallelSchemaPostgresTests(unittest.TestCase):
         self.assertEqual(expected["items"][0].keys() >= {
             "home_topic_id", "parent_item_id", "structure_version", "outline_order",
         }, True)
-        backup.restore(backup.Postgres(False), self.bundle, self.target)
+        pg = backup.Postgres(False)
+        pg.psql(f"""ALTER DATABASE "{self.target}" SET timezone TO 'Asia/Ho_Chi_Minh'""".encode())
+        backup.restore(pg, self.bundle, self.target)
         alias = "p03_restored"
         connections.databases[alias] = {
             **connections.databases["default"], "NAME": self.target,
         }
         self.addCleanup(connections[alias].close)
         self.assertEqual(SavedCollection.objects.using(alias).get().pk, self.collection.pk)
+        restored = ItemTopicExclusion.objects.using(alias).get()
+        self.assertEqual((restored.item_id, restored.topic_id), (self.exclusion.item_id, self.exclusion.topic_id))
         self.assertEqual(ClipAnnotation.objects.using(alias).get().pk, self.clip.pk)
         self.assertEqual(ClipAnnotation.objects.using(alias).get().capture_id,
                          self.fixtures.event.pk)
@@ -210,15 +218,17 @@ class ParallelSchemaPostgresTests(unittest.TestCase):
             backup.restore(backup.Postgres(False), self.bundle, self.target)
         self.assertEqual(backup.Postgres(False).psql(backup.EMPTY_DATABASE, self.target), b"t")
 
-    def test_v1_v2_v3_query_projection_against_new_schema(self):
+    def test_legacy_projections_against_new_schema(self):
         pg = backup.Postgres(False)
-        for version in (1, 2, 3):
+        for version in (1, 2, 3, 4):
             expected = json.loads(pg.psql(backup.TRANSACTION + backup.manifest_query(
                 schema_version=version,
             ), self.source))
             self.assertEqual(set(expected), set(backup.collections_for_version(version)))
-            self.assertNotIn("home_topic_id", expected["items"][0])
-            self.assertNotIn("clip_annotations", expected)
+            self.assertNotIn("excluded_topics", expected)
+            if version < 4:
+                self.assertNotIn("home_topic_id", expected["items"][0])
+                self.assertNotIn("clip_annotations", expected)
 
 
 if __name__ == "__main__":

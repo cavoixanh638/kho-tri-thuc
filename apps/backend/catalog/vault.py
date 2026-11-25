@@ -26,10 +26,10 @@ from django.utils import timezone
 from ingestion.models import CaptureEvent
 from storage.models import Asset
 
-from .models import Item, ItemTopic, Source, Topic
+from .models import Item, ItemTopic, ItemTopicExclusion, Source, Topic
 
 FORMAT = "kt-markdown-vault"
-VERSION = 1
+VERSION = 2
 MANIFEST = "vault-manifest.json"
 SALT = "kt-p02-vault-preview-v1"
 MAX_ZIP = 32 * 1024 * 1024
@@ -302,12 +302,14 @@ def _check_tree(rows, parent_key, depth_limit=MAX_DEPTH):
 
 
 def _validate(data):
+    version = data.get("schema_version")
+    sections = (*SECTIONS, "excluded_topics") if version == VERSION else SECTIONS
     if (
         not isinstance(data, dict)
-        or data.get("format") != FORMAT or data.get("schema_version") != VERSION
+        or data.get("format") != FORMAT or type(version) is not int or version not in (1, VERSION)
         or data.get("media_included") is not False
-        or any(not isinstance(data.get(key), list) for key in SECTIONS)
-        or set(data) != {*SECTIONS, "format", "schema_version", "media_included", "created_at"}
+        or any(not isinstance(data.get(key), list) for key in sections)
+        or set(data) != {*sections, "format", "schema_version", "media_included", "created_at"}
     ):
         raise VaultError("unsupported_vault_format")
     _timestamp(data["created_at"])
@@ -315,6 +317,7 @@ def _validate(data):
         len(data["items"]) > MAX_ITEMS or len(data["topics"]) > MAX_TOPICS
         or len(data["assets"]) > MAX_ASSETS or len(data["events"]) > MAX_EVENTS
         or len(data["item_topics"]) > MAX_ITEMS * 20
+        or len(data.get("excluded_topics", [])) > MAX_ITEMS * 20
         or len(data["sources"]) > MAX_ITEMS * 20
     ):
         raise VaultError("vault_collection_limit")
@@ -365,9 +368,12 @@ def _validate(data):
     if len(folder_ids) != len(data["topics"]):
         raise VaultError("duplicate_vault_identity")
     _check_tree(data["topics"], "parent_id")
+    homes = set()
     for row in data["items"]:
         if row["home_topic_id"] is not None and row["home_topic_id"] not in folder_ids:
             raise VaultError("invalid_home_topic")
+        if row["home_topic_id"] is not None:
+            homes.add((row["id"], row["home_topic_id"]))
     assigned = set()
     for row in data["item_topics"]:
         pair = (row.get("item_id"), row.get("topic_id"))
@@ -383,6 +389,12 @@ def _validate(data):
             or not 0 <= row["confidence"] <= 1
         ):
             raise VaultError("invalid_item_membership")
+    for row in data.get("excluded_topics", []):
+        pair = (row.get("item_id"), row.get("topic_id"))
+        if (set(row) != {"item_id", "topic_id"} or type(pair[1]) is not int
+                or pair[0] not in ids or pair[1] not in folder_ids or pair in assigned or pair in homes):
+            raise VaultError("invalid_excluded_topic")
+        assigned.add(pair)
     for row in data["sources"]:
         if row.get("item_id") not in ids:
             raise VaultError("unresolved_item")
@@ -443,6 +455,8 @@ def export_vault(owner) -> bytes:
     ids = [row["id"] for row in notes]
     topics = _plain(list(Topic.objects.filter(owner=owner).order_by("id").values(*TOPIC_FIELDS)))
     placements = _plain(list(ItemTopic.objects.filter(item_id__in=ids, topic__owner=owner).order_by("item_id", "topic_id").values(*ASSIGN_FIELDS)))
+    exclusions = _plain(list(ItemTopicExclusion.objects.filter(item_id__in=ids, topic__owner=owner)
+                             .order_by("item_id", "topic_id").values("item_id", "topic_id")))
     # Source.metadata is uncontrolled extractor JSON and may carry cookies or
     # provider identifiers. Portable format exports only allowlisted safe fields.
     sources = _plain(list(Source.objects.filter(item_id__in=ids).order_by("item_id", "id").values(*SOURCE_FIELDS)))
@@ -498,6 +512,7 @@ def export_vault(owner) -> bytes:
         })
     manifest = {
         "format": FORMAT, "schema_version": VERSION, "media_included": False,
+        "excluded_topics": exclusions,
         "created_at": timezone.now().isoformat(), "items": items,
         "topics": topics, "item_topics": placements, "sources": sources,
         "assets": assets, "events": events,
@@ -612,7 +627,9 @@ def _fingerprint(owner, ids):
         "home_topic_id", "parent_item_id",
     ))
     relations = list(ItemTopic.objects.filter(item__owner=owner, item_id__in=ids).order_by("item_id", "topic_id").values_list("item_id", "topic_id", "user_pinned"))
-    return digest(_json({"items": rows, "relations": relations}))
+    exclusions = list(ItemTopicExclusion.objects.filter(item__owner=owner, item_id__in=ids)
+                      .order_by("item_id", "topic_id").values_list("item_id", "topic_id"))
+    return digest(_json({"items": rows, "relations": relations, "excluded_topics": exclusions}))
 
 
 def _statuses(owner, data):
@@ -718,6 +735,8 @@ def _selected_topic_rows(data, chosen, statuses):
               if row["id"] in affected and row["home_topic_id"] is not None}
     wanted.update(row["topic_id"] for row in data["item_topics"]
                   if row["item_id"] in affected)
+    wanted.update(row["topic_id"] for row in data.get("excluded_topics", [])
+                  if row["item_id"] in affected)
     by_id = {row["id"]: row for row in data["topics"]}
     needed = set()
     for topic_id in wanted:
@@ -809,20 +828,41 @@ def apply_import(owner, archive: bytes, receipt: str, selected: list[str]):
                 values["updated_at"] = timezone.now()
             Item.objects.filter(pk=key, owner=owner).update(**values)
             updated += 1
+    local_exclusions = {
+        (str(item_id), topic_id) for item_id, topic_id in
+        ItemTopicExclusion.objects.filter(item__owner=owner, item_id__in=chosen).values_list("item_id", "topic_id")
+    }
     for row in data["items"]:
         if row["id"] in chosen and statuses[row["id"]] != "unchanged":
+            home = folders.get(row["home_topic_id"])
+            if (row["id"], home) in local_exclusions:
+                ItemTopicExclusion.objects.filter(item_id=row["id"], topic_id=home).delete()
+                local_exclusions.remove((row["id"], home))
             Item.objects.filter(pk=row["id"], owner=owner).update(
                 parent_item_id=row["parent_item_id"],
-                home_topic_id=folders.get(row["home_topic_id"]),
+                home_topic_id=home,
             )
     for row in data["item_topics"]:
         if row["item_id"] not in chosen or statuses[row["item_id"]] == "unchanged":
             continue
+        mapped_id = folders[row["topic_id"]]
+        if (row["item_id"], mapped_id) in local_exclusions:
+            if row["origin"] == "auto" and not row["user_pinned"]:
+                continue
+            ItemTopicExclusion.objects.filter(item_id=row["item_id"], topic_id=mapped_id).delete()
         ItemTopic.objects.get_or_create(
-            item_id=row["item_id"], topic_id=folders[row["topic_id"]],
+            item_id=row["item_id"], topic_id=mapped_id,
             defaults={field: row[field] for field in ASSIGN_FIELDS
                       if field not in ("item_id", "topic_id")},
         )
+    for row in data.get("excluded_topics", []):
+        if row["item_id"] not in chosen or statuses[row["item_id"]] == "unchanged":
+            continue
+        pair = {"item_id": row["item_id"], "topic_id": folders[row["topic_id"]]}
+        memberships = ItemTopic.objects.filter(**pair)
+        memberships.filter(origin="auto", user_pinned=False).delete()
+        if not memberships.exists():
+            ItemTopicExclusion.objects.get_or_create(**pair)
     for row in data["sources"]:
         if row["item_id"] not in chosen or statuses[row["item_id"]] == "unchanged":
             continue

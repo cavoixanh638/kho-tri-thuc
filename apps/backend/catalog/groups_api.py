@@ -18,6 +18,7 @@ from .models import (
     ItemProject,
     ItemTag,
     ItemTopic,
+    ItemTopicExclusion,
     Project,
     RelatedItem,
     Tag,
@@ -211,6 +212,8 @@ def change_assignments(request, item_id: UUID, patch: OrganizationPatch):
                 item.structure_version += 1
                 item.save(update_fields=["home_topic", "structure_version", "updated_at"])
             id_field = f"{field}_id"
+            if field == "topic" and ids:
+                ItemTopicExclusion.objects.filter(item=item, topic_id__in=ids).delete()
             rows = assignments.objects.filter(item=item)
             rows.filter(Q(origin=Assignment.Origin.USER) | Q(user_pinned=True)).exclude(
                 **{f"{id_field}__in": ids}

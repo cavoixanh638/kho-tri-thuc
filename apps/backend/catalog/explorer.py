@@ -6,7 +6,7 @@ from django.db.models import Count, Exists, IntegerField, OuterRef, Q, Subquery
 from django.db.models.functions import Coalesce, Substr
 from ingestion.services import CaptureSubmission, submit_capture
 
-from .models import Item, ItemTopic, Topic
+from .models import Item, ItemTopic, ItemTopicExclusion, Topic
 
 MAX_DEPTH = 64
 
@@ -245,6 +245,7 @@ def placement(item):
 def set_home(item, folder):
     item.home_topic = folder
     if folder:
+        ItemTopicExclusion.objects.filter(item=item, topic=folder).delete()
         ItemTopic.objects.update_or_create(
             item=item,
             topic=folder,
@@ -266,6 +267,7 @@ def place(owner_id, item_id, *, action, folder_id, expected_version):
     if action == "move":
         set_home(item, folder)
     elif action == "add" and folder:
+        ItemTopicExclusion.objects.filter(item=item, topic=folder).delete()
         ItemTopic.objects.update_or_create(
             item=item,
             topic=folder,
@@ -276,7 +278,9 @@ def place(owner_id, item_id, *, action, folder_id, expected_version):
             },
         )
     elif action == "remove" and folder:
-        ItemTopic.objects.filter(item=item, topic=folder).delete()
+        count, _ = ItemTopic.objects.filter(item=item, topic=folder).delete()
+        if count:
+            ItemTopicExclusion.objects.get_or_create(item=item, topic=folder)
         if item.home_topic_id == folder.pk:
             item.home_topic = None
     else:

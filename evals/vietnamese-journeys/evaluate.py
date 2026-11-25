@@ -220,21 +220,23 @@ def measure(repo, data, gold):
             item, topic = items[row["id"]], topics[wrong[0]]
             client = Client(HTTP_HOST="localhost")
             client.force_login(owner)
-            path = f"/api/v1/items/{item.pk}/organization"
-            wanted = [str(topics[name].pk) for name in row["expected"]]
-            res = client.patch(path, {"topic_ids": wanted}, content_type="application/json")
+            path = f"/api/v1/items/{item.pk}/placement"
+            current = client.get(path).json()
+            res = client.patch(path, {"action": "remove", "folder_id": topic.pk,
+                                      "expected_version": current["structure_version"]},
+                               content_type="application/json")
             if res.status_code != 200:
                 raise RuntimeError(f"Organization PATCH failed: {res.status_code}")
-            present_after_patch = any(str(g["id"]) == str(topic.pk) for g in res.json()["topics"])
+            present_after_patch = any(g["folder_id"] == topic.pk for g in res.json()["memberships"])
             organize_item(jobs[row["id"]])
             check = client.get(path)
             if check.status_code != 200:
                 raise RuntimeError(f"Organization GET failed: {check.status_code}")
-            present_after_job = any(str(g["id"]) == str(topic.pk) for g in check.json()["topics"])
+            present_after_job = any(g["folder_id"] == topic.pk for g in check.json()["memberships"])
             remove_wrong = {
                 "status": "FAIL" if present_after_patch or present_after_job else "PASS",
                 "item_id": row["id"], "topic": wrong[0], "patch_http": res.status_code,
-                "action": "submit_expected_topics_then_reorganize_and_get",
+                "action": "explorer_remove_then_reorganize_and_get",
                 "wrong_topic_present_after_patch": present_after_patch,
                 "wrong_topic_present_after_job": present_after_job,
             }

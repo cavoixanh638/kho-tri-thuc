@@ -19,6 +19,7 @@ from .models import (
     ItemProject,
     ItemTag,
     ItemTopic,
+    ItemTopicExclusion,
     Project,
     RelatedItem,
     Tag,
@@ -170,6 +171,10 @@ class OrganizationService:
                 for group_id, name in names
                 if counts[name] == 1 and rules.supports(group_type, name)
             }
+            if group_type == "topic" and matches:
+                matches.difference_update(ItemTopicExclusion.objects.filter(
+                    item=item, topic_id__in=matches,
+                ).values_list("topic_id", flat=True))
             has_auto_assignment = _sync_assignments(
                 item, assignment_model, group_type, matches, evidence.version
             )

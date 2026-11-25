@@ -11,7 +11,7 @@ from django.utils import timezone
 from ingestion.models import CaptureEvent
 from storage.models import Asset
 
-from .models import Item, ItemTopic, Source, Topic
+from .models import Item, ItemTopic, ItemTopicExclusion, Source, Topic
 from .vault import (
     MANIFEST, VaultError, apply_import, digest, export_vault,
     parse_vault, preview_import,
@@ -205,10 +205,50 @@ class ParallelVaultTests(TestCase):
         with self.assertRaisesRegex(VaultError, "unsupported_vault_format"):
             parse_vault(hostile)
         manifest["schema_version"] = 1
+        del manifest["excluded_topics"]
+        parse_vault(edit_zip(archive, {MANIFEST: json.dumps(manifest).encode()}))
         manifest["items"][0]["parent_item_id"] = str(uuid4())
         hostile = edit_zip(archive, {MANIFEST: json.dumps(manifest).encode()})
         with self.assertRaisesRegex(VaultError, "invalid_vault_hierarchy"):
             parse_vault(hostile)
+
+    def test_removed_topic_roundtrips_with_remapped_folder_id(self):
+        item = self.seed(items=1, topics=1, media=0)[0]
+        removed = Topic.objects.create(owner=self.owner, name="Phòng thu âm")
+        ItemTopicExclusion.objects.create(item=item, topic=removed)
+        archive = export_vault(self.owner)
+        CaptureEvent.objects.filter(item=item).delete()
+        key = item.pk
+        item.delete()
+        removed_id = removed.pk
+        removed.delete()
+        preview = preview_import(self.owner, archive)
+        apply_import(self.owner, archive, preview["receipt"], [str(key)])
+        restored = ItemTopicExclusion.objects.get(item_id=key)
+        self.assertEqual(restored.topic.name, "Phòng thu âm")
+        self.assertNotEqual(restored.topic_id, removed_id)
+        self.assertFalse(ItemTopic.objects.filter(item_id=key, topic=restored.topic).exists())
+
+    def test_import_of_legacy_automatic_membership_respects_local_exclusion(self):
+        item = self.seed(items=1, topics=1, media=0)[0]
+        topic = Topic.objects.create(owner=self.owner, name="Thu âm")
+        link = ItemTopic.objects.create(item=item, topic=topic, origin="auto")
+        archive = export_vault(self.owner)
+        with zipfile.ZipFile(io.BytesIO(archive)) as reader:
+            manifest = json.loads(reader.read(MANIFEST))
+        del manifest["excluded_topics"]
+        manifest["schema_version"] = 1
+        manifest["items"][0]["description"] = "Mô tả đã sửa ở bản xuất."
+        archive = edit_zip(archive, {MANIFEST: json.dumps(manifest).encode()})
+        link.delete()
+        ItemTopicExclusion.objects.create(item=item, topic=topic)
+        preview = preview_import(self.owner, archive)
+        self.assertEqual(preview["counts"]["update"], 1)
+        apply_import(self.owner, archive, preview["receipt"], [str(item.pk)])
+        item.refresh_from_db()
+        self.assertEqual(item.description, manifest["items"][0]["description"])
+        self.assertTrue(ItemTopicExclusion.objects.filter(item=item, topic=topic).exists())
+        self.assertFalse(ItemTopic.objects.filter(item=item, topic=topic).exists())
 
     def test_zip_bomb_rejected_before_inflation(self):
         self.seed(items=1, topics=1, media=0)

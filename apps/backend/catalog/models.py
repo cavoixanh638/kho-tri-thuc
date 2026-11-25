@@ -153,6 +153,18 @@ class ItemTopic(Assignment):
         ]
 
 
+class ItemTopicExclusion(models.Model):
+    """A user's explicit removal stays in effect until they add the folder back."""
+
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["item", "topic"], name="item_topic_exclusion_uniq"),
+        ]
+
+
 class ItemProject(Assignment):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
 

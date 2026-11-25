@@ -14,8 +14,8 @@ ROOT = Path(__file__).resolve().parents[2]
 DUMP = "database.dump"
 MANIFEST = "manifest.json"
 CHECKSUMS = "SHA256SUMS"
-SCHEMA_VERSION = 4
-SUPPORTED_SCHEMA_VERSIONS = (1, 2, 3, 4)
+SCHEMA_VERSION = 5
+SUPPORTED_SCHEMA_VERSIONS = (1, 2, 3, 4, 5)
 PG_MAJOR = 18
 
 # The projection is part of the versioned format. Keep credential tables and
@@ -120,6 +120,8 @@ def collections_for_version(schema_version):
     if schema_version >= 4:
         projection["items"] = V4_ITEM_FIELDS
         projection.update(V4_COLLECTIONS)
+    if schema_version >= 5:
+        projection["excluded_topics"] = ("catalog_itemtopicexclusion", "id, item_id, topic_id")
     return projection
 
 
@@ -350,7 +352,10 @@ def restore_assertion_sql(expected, schema_version):
     ).encode("utf-8").hex()
     select = manifest_select(expected, schema_version)
     return (
-        "\nDO $kt_backup_assert$\nBEGIN\n"
+        # Compare timestamp strings in the same representation used at capture.
+        # The target database can have a different time zone or date style.
+        "\nSET LOCAL TIME ZONE 'UTC';\nSET LOCAL DateStyle TO 'ISO, YMD';\n"
+        "DO $kt_backup_assert$\nBEGIN\n"
         "    IF (" + select + ")::jsonb IS DISTINCT FROM "
         "convert_from(decode('" + expected_json + "', 'hex'), 'UTF8')::jsonb THEN\n"
         "        RAISE EXCEPTION 'Restore manifest projection mismatch';\n"

@@ -19,7 +19,8 @@ from storage.models import Asset
 
 from . import explorer
 from .knowledge_tree import save_node, tree
-from .models import Item, ItemTopic, Topic
+from .models import Item, ItemTopic, ItemTopicExclusion, Topic
+from .organization_job import organize_item
 
 
 class ExplorerTests(TransactionTestCase):
@@ -43,6 +44,31 @@ class ExplorerTests(TransactionTestCase):
         return self.client.patch(
             "/api/v1" + path, body, content_type="application/json"
         )
+
+    def test_explicit_remove_survives_worker_until_user_adds_it_back(self):
+        topic = Topic.objects.create(owner=self.owner, name="Thu âm")
+        self.item.note = "Quầy Thu âm chỉ cho thuê ghế."
+        self.item.save(update_fields=["note"])
+        job = Job.objects.create(kind="organize", item=self.item, idempotency_key="remove-probe")
+        organize_item(job)
+        memberships = ItemTopic.objects.filter(item=self.item, topic=topic)
+        self.assertEqual(memberships.get().origin, "auto")
+        path = f"/items/{self.item.pk}/placement"
+        remove = {"action": "remove", "folder_id": topic.pk, "expected_version": 0}
+        foreign = Topic.objects.create(owner=self.other, name="Phòng riêng")
+        self.assertEqual(self.patch(path, {**remove, "folder_id": foreign.pk}).status_code, 404)
+        self.assertEqual(self.patch(path, {**remove, "expected_version": 1}).status_code, 409)
+        self.assertFalse(ItemTopicExclusion.objects.exists())
+        self.assertEqual(self.patch(path, remove).status_code, 200)
+        organize_item(job)
+        self.assertFalse(memberships.exists())
+        review = self.client.get(f"/api/v1/items/{self.item.pk}/organization-review").json()
+        self.assertNotIn(topic.pk, [p["group_id"] for p in review["proposals"] if p["kind"] == "topic"])
+        self.assertTrue(ItemTopic.objects.filter(item=self.item, topic=self.folder, user_pinned=True).exists())
+        self.assertEqual(self.patch(path, {**remove, "action": "add", "expected_version": 1}).status_code, 200)
+        organize_item(job)
+        self.assertTrue(memberships.get().user_pinned)
+        self.assertFalse(ItemTopicExclusion.objects.filter(item=self.item, topic=topic).exists())
 
     def create(self, text="Nội dung", folder=None, parent=None, key="fixture-create"):
         return self.client.post(

@@ -15,7 +15,7 @@ from django.core import signing
 from django.db import transaction
 from processing.models import DerivedContent
 
-from .models import Assignment, Item, ItemProject, ItemTag, ItemTopic, Project, Tag, Topic
+from .models import Assignment, Item, ItemProject, ItemTag, ItemTopic, ItemTopicExclusion, Project, Tag, Topic
 from .organization_rules import GroupEvidence, normalize_phrase
 
 METHOD = "kt129-catalog-rule-review-v1"
@@ -223,6 +223,7 @@ def _build(item, session=None):
     rejected = set(_dismissals(session))
     proposed = []
     current = []
+    excluded_topics = set(ItemTopicExclusion.objects.filter(item=item).values_list("topic_id", flat=True))
     for kind, (model, assignment_model) in GROUPS.items():
         visible = model.objects.filter(owner_id=item.owner_id)
         if kind != "tag":
@@ -247,6 +248,8 @@ def _build(item, session=None):
                 ),
             })
         for group_id, group_name in catalog:
+            if kind == "topic" and group_id in excluded_topics:
+                continue
             phrase = normalize_phrase(group_name)
             if not phrase or counts[phrase] != 1:
                 continue  # Ambiguous taxonomy names must not be guessed.

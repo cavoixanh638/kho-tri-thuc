@@ -1,5 +1,5 @@
 import { Button, Textarea, TextInput } from '@mantine/core';
-import { useEffect, useRef, useState, type DragEvent, type KeyboardEvent } from 'react';
+import { useEffect, useId, useRef, useState, type DragEvent, type KeyboardEvent } from 'react';
 import { ApiError, request, type Receipt } from './api';
 import { NodeEditor, knowledgeNodeHref, nodeKindLabels, type Editor, type KnowledgeNode, type KnowledgeTreeData } from './KnowledgeTree';
 import { Empty, ErrorNotice, itemHref, Loading } from './views';
@@ -14,6 +14,7 @@ type Context = { csrf: string; nodes: KnowledgeNode[]; selected: number | null; 
 const failure = (error: unknown) => error instanceof ApiError && error.status === 409 ? 'Cấu trúc đã đổi ở phiên khác. Tải lại cây rồi thử lại.' : 'Chưa thực hiện được. Kiểm tra quyền, vị trí hoặc chu trình; nội dung vẫn được giữ.';
 
 function NoteMenu({ note, context }: { note: ExplorerNote; context: Context }) {
+  const removeHint = useId();
   const [menuOpen, setMenuOpen] = useState(false);
   const [folder, setFolder] = useState('');
   const [title, setTitle] = useState(note.title);
@@ -41,7 +42,8 @@ function NoteMenu({ note, context }: { note: ExplorerNote; context: Context }) {
     <label>Thư mục đích<select value={folder} disabled={busy} onChange={(event)=>setFolder(event.currentTarget.value)}><option value="">Chưa xếp thư mục</option>{context.nodes.map((node)=><option key={node.id} value={node.id}>{node.path}</option>)}</select></label>
     <Button size="compact-sm" variant="default" disabled={busy} onClick={()=>void move('move')}>Chuyển vị trí chính</Button>
     <Button size="compact-sm" variant="default" disabled={busy || !folder} onClick={()=>void move('add')}>Thêm vào nhánh khác</Button>
-    <Button size="compact-sm" variant="default" disabled={busy || !folder} onClick={()=>void move('remove')}>Bỏ khỏi nhánh đã chọn</Button>
+    <Button size="compact-sm" variant="default" disabled={busy || !folder} aria-describedby={removeHint} onClick={()=>void move('remove')}>Bỏ khỏi nhánh đã chọn</Button>
+    <small id={removeHint}>Sau khi gỡ, hệ thống sẽ đợi bạn thêm lại ghi chú vào nhánh đó.</small>
     <Button size="compact-sm" variant="default" disabled={busy} onClick={()=>context.create({folder:note.home_topic_id,parent:note.item_id,label:note.title})}>Tạo ghi chú con</Button>
     <StructureParentEditor id={note.item_id} version={note.structure_version} currentParent={note.parent_item_id} csrf={context.csrf} onSaved={context.onChanged}/>
     {error && <ErrorNotice>{error}</ErrorNotice>}
