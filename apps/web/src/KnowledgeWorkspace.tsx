@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { request } from './api';
 import { KnowledgeExplorer } from './KnowledgeExplorer';
-import { knowledgeNodeHref, type KnowledgeTreeData } from './KnowledgeTree';
+import type { KnowledgeTreeData } from './KnowledgeTree';
 import { libraryLocationHref, parseLibraryLocation } from './LibraryViews';
 import { SavedCollectionsPanel } from './SavedCollections';
 import { useResource } from './views';
