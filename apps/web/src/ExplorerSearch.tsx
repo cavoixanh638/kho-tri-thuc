@@ -11,6 +11,7 @@ export function ExplorerSearch({nodes}:{nodes:KnowledgeNode[]}){
   const [composing,setComposing]=useState(false);
   const [response,setResponse]=useState<{term:string;data:Result}>();
   const [failure,setFailure]=useState<string>();
+  const [retry,setRetry]=useState(0);
   const input=useRef<HTMLInputElement>(null);
   const results=useRef<HTMLElement>(null);
   const id=useId(),term=query.trim();
@@ -29,12 +30,12 @@ export function ExplorerSearch({nodes}:{nodes:KnowledgeNode[]}){
         }).catch(()=>{if(!controller.signal.aborted)setFailure(term);});
     },120);
     return()=>{window.clearTimeout(timer);controller.abort();};
-  },[term,composing]);
+  },[term,composing,retry]);
   return <div className="explorer-search">
     <label htmlFor={id}>Tìm nhanh trong cây</label>
-    <input ref={input} id={id} type="search" aria-label="Tìm trong cây" aria-controls={term&&!composing?id+'-results':undefined}
+    <input ref={input} id={id} type="search" aria-label="Tìm nhanh trong cây" aria-controls={term&&!composing?id+'-results':undefined}
       maxLength={200} value={query} placeholder="Tên thư mục hoặc bài…" autoComplete="off"
-      onChange={e=>{setQuery(e.currentTarget.value);setResponse(undefined);setFailure(undefined);}}
+      onChange={e=>setQuery(e.currentTarget.value)}
       onCompositionStart={()=>setComposing(true)} onCompositionEnd={()=>setComposing(false)}
       onKeyDown={e=>{
         if(composing||e.nativeEvent.isComposing||e.keyCode===229)return;
@@ -44,7 +45,7 @@ export function ExplorerSearch({nodes}:{nodes:KnowledgeNode[]}){
       }}/>
     {term&&!composing&&<nav ref={results} id={id+'-results'} className="explorer-search-results" aria-label="Kết quả tìm trong cây"
       onKeyDown={e=>{if(e.key==='Escape'){e.preventDefault();clear();input.current?.focus();}}}>
-      {failure===term?<p role="alert">Chưa tìm được dữ liệu. Hãy thử lại hoặc thay từ khóa.</p>:!data?<p role="status">Đang tìm…</p>:<>
+      {failure===term?<p role="alert">Chưa tìm được dữ liệu. <button type="button" onClick={()=>setRetry(n=>n+1)}>Thử lại</button></p>:!data?<p role="status">Đang tìm…</p>:<>
         <ul>
           {data.folders.map(row=><li key={'folder:'+row.id}><a href={knowledgeNodeHref(row.id)} onClick={e=>{if(!e.ctrlKey&&!e.metaKey&&!e.shiftKey&&!e.altKey)clear();}}>Thư mục · {row.name}<small>{nodes.find(n=>n.id===row.id)?.path||row.name}</small></a></li>)}
           {data.items.map(row=><li key={'note:'+row.item_id}><a href={itemHref(row.item_id)} onClick={e=>{if(!e.ctrlKey&&!e.metaKey&&!e.shiftKey&&!e.altKey)clear();}}>Bài · {row.title||'Chưa đặt tên'}</a></li>)}

@@ -405,6 +405,7 @@ if (prerequisitesReady) {
           if (mobileToggle) await page.eval(() => { const el = document.querySelector('.library-tree-toggle'); if (el.getAttribute('aria-expanded') !== 'true') el.click(); });
           await wait(() => !!document.querySelector('.library-tree-content') && document.querySelector('.library-tree-content').getBoundingClientRect().height > 0, undefined, 'tree visible ' + width);
           assert.equal(await page.eval(() => document.documentElement.scrollWidth > innerWidth), false, 'overflow at ' + width);
+          assert.equal(await page.eval(()=>getComputedStyle(document.querySelector('.workspace-divider')).display!=='none'),width>900,'resize handle visibility '+width);
           assert.equal(await page.eval(() => matchMedia('(prefers-reduced-motion: reduce)').matches), true);
           let idsBaseline;
           for (const view of ['list', 'table', 'card', 'timeline']) {
@@ -434,8 +435,39 @@ if (prerequisitesReady) {
         assert.equal(await page.eval(()=>window.__ktWorkspaceSidebar===document.querySelector('.library-tree-shell')&&window.__ktWorkspaceFolder?.isConnected&&window.__ktWorkspaceFolder?.getAttribute('aria-expanded')==='true'),true);
         assert.equal(await page.eval(()=>document.documentElement.scrollWidth>innerWidth),false,'detail workspace overflow');
         const detailEvidence=await screenshot('p08-persistent-explorer-detail.png');
+        // Real Chromium pointer capture, not a synthetic React event.
+        await page.eval(()=>window.scrollTo(0,0));
+        const start=await page.eval(()=>{
+          const divider=document.querySelector('.workspace-divider');
+          const r=divider.getBoundingClientRect();
+          const x=r.left+r.width/2,y=Math.min(innerHeight-40,Math.max(90,r.top+r.height/2));
+          return {x,y,hit:!!document.elementFromPoint(x,y)?.closest('.workspace-divider'),width:document.querySelector('.library-tree-shell').getBoundingClientRect().width,value:Number(divider.getAttribute('aria-valuenow'))};
+        });
+        assert.ok(start.hit&&start.value===286,JSON.stringify(start));
+        await page.send('Input.dispatchMouseEvent',{type:'mousePressed',x:start.x,y:start.y,button:'left',buttons:1,clickCount:1});
+        await page.send('Input.dispatchMouseEvent',{type:'mouseMoved',x:start.x+70,y:start.y,button:'left',buttons:1});
+        await page.send('Input.dispatchMouseEvent',{type:'mouseReleased',x:start.x+70,y:start.y,button:'left',buttons:0,clickCount:1});
+        await wait(before=>document.querySelector('.library-tree-shell').getBoundingClientRect().width>=before+50,start.width,'real workspace resize');
+        const resized=await page.eval(()=>({width:document.querySelector('.library-tree-shell').getBoundingClientRect().width,value:Number(document.querySelector('.workspace-divider').getAttribute('aria-valuenow')),saved:Number(sessionStorage.getItem('kt-explorer-width'))}));
+        assert.ok(resized.width>start.width&&resized.value>=start.value+50&&resized.saved===resized.value,JSON.stringify(resized));
+        assert.equal(await page.eval(()=>document.documentElement.scrollWidth>innerWidth),false,'resize overflow');
+        await page.eval(()=>document.querySelector('.workspace-divider').focus());
+        await page.send('Input.dispatchKeyEvent',{type:'keyDown',key:'ArrowLeft',code:'ArrowLeft',windowsVirtualKeyCode:37});
+        await page.send('Input.dispatchKeyEvent',{type:'keyUp',key:'ArrowLeft',code:'ArrowLeft',windowsVirtualKeyCode:37});
+        await wait(value=>Number(document.querySelector('.workspace-divider').getAttribute('aria-valuenow'))===value-20,resized.value,'keyboard sidebar resize');
+        await page.eval(()=>document.querySelector('.workspace-divider').dispatchEvent(new MouseEvent('dblclick',{bubbles:true})));
+        await wait(()=>document.querySelector('.workspace-divider').getAttribute('aria-valuenow')==='286',undefined,'sidebar reset');
+        await input('Tìm nhanh trong cây','P08 Giáo trình','.knowledge-explorer');
+        await wait(id=>!!document.querySelector('.explorer-search-results a[href="#/muc/'+id+'"]'),context.parent,'real explorer search');
+        assert.equal(await page.eval(()=>window.__ktWorkspaceSidebar===document.querySelector('.library-tree-shell')),true);
+        await page.eval(id=>document.querySelector('.explorer-search-results a[href="#/muc/'+id+'"]').click(),context.parent);
+        await wait(()=>!document.querySelector('.explorer-search-results'),undefined,'quick search clears after selection');
         await route('#/thu-vien?node='+context.folder);
         assert.equal(await page.eval(()=>window.__ktWorkspaceSidebar===document.querySelector('.library-tree-shell')),true);
+        await click('Thu gọn tất cả','.knowledge-explorer');
+        await wait(()=>![...document.querySelectorAll('.knowledge-explorer [role="treeitem"]')].some(row=>row.getAttribute('aria-expanded')==='true'),undefined,'collapse all');
+        await click('Mở lại nhánh vừa thu gọn','.knowledge-explorer');
+        await wait(id=>!!document.querySelector('.knowledge-explorer a[href="#/muc/'+id+'"]'),context.parent,'restore collapsed branches');
         await page.send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'no-preference'}]});
         const animation=await page.eval(async folder=>{
           const row=document.querySelector('.knowledge-explorer a[href="#/thu-vien?node='+folder+'"]').closest('[role="treeitem"]');
@@ -450,9 +482,9 @@ if (prerequisitesReady) {
         },context.folder);
         assert.ok(animation.closed<2&&animation.open>10&&animation.ariaExpanded==='true'&&animation.transition.split(',').some(v=>parseFloat(v)>0),JSON.stringify(animation));
         await page.send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});
-        report.persistent_explorer={same_dom_across_route:true,active_note:true,expanded_folder_preserved:true,animation,detail_screenshot:detailEvidence.filename};
+        report.persistent_explorer={same_dom_across_route:true,active_note:true,expanded_folder_preserved:true,animation,resize:{before:start.width,after:resized.width,keyboard:true,pointer_capture:true},quick_search:true,collapse_restore:true,detail_screenshot:detailEvidence.filename};
         persist();
-        return { status: 'PASS', actual: '4 widths and four views, same Item IDs, persistent explorer across note route, animated folder and no overflow', evidence: [...report.viewports.map((row) => row.screenshot),detailEvidence.filename] };
+        return { status: 'PASS', actual: '4 widths and four views, same Item IDs, persistent explorer across note route, real pointer/keyboard resize, quick search, collapse/restore, animated folder and no overflow', evidence: [...report.viewports.map((row) => row.screenshot),detailEvidence.filename] };
       });
       await attempt('J8', async () => {
         if (!context.parent || !context.child) return {

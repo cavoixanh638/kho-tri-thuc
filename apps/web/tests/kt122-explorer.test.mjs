@@ -178,7 +178,7 @@ test('WS-02 sidebar resize by keyboard, pointer, reset and persistence across re
 test('TREE-09 quick search uses bounded navigation and keeps the original tree mounted',async()=>{
  await render();await click('Mở Sách tiếng Việt');
  const row=container.querySelector('.explorer-folder-item');
- await input('input[aria-label="Tìm trong cây"]','Tiếng Việt');
+ await input('input[aria-label="Tìm nhanh trong cây"]','Tiếng Việt');
  await ui.act(async()=>{await new Promise(r=>setTimeout(r,180));});
  assert.ok(calls.some(path=>path.includes('/navigation?')&&decodeURIComponent(path).includes('Tiếng Việt')));
  const results=container.querySelector('.explorer-search-results');
@@ -187,7 +187,7 @@ test('TREE-09 quick search uses bounded navigation and keeps the original tree m
  assert.equal(container.querySelector('.explorer-folder-item'),row);
  assert.equal(row.getAttribute('aria-expanded'),'true');
  assert.equal(mutations.length,0);
- await ui.act(async()=>{container.querySelector('input[aria-label="Tìm trong cây"]').dispatchEvent(new window.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));await settle();});
+ await ui.act(async()=>{container.querySelector('input[aria-label="Tìm nhanh trong cây"]').dispatchEvent(new window.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));await settle();});
  assert.equal(container.querySelector('.explorer-search-results'),null);
  assert.equal(container.querySelector('.explorer-folder-item'),row);
 });
