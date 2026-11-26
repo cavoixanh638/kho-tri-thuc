@@ -164,6 +164,36 @@ test('approximate search is explicit and keeps group filters and pagination in t
   assert.ok(container.querySelector('.empty-state'));
 });
 
+test('a late expanded search cannot replace the current filtered query or its exact result', async () => {
+  let finishOld, oldSignal;
+  globalThis.fetch = async (path, options) => {
+    const url = new URL(path, window.location.origin);
+    if (url.pathname === '/api/v1/groups') return response({ topics: [{ id: 4, name: 'Ảnh' }], projects: [], tags: [] });
+    if (url.searchParams.get('expand') === 'true') {
+      oldSignal = options.signal;
+      return new Promise(resolve => { finishOld = () => resolve(response({
+        results: [{ item_id: 'older', title: 'Kết quả đến muộn', evidence: [] }], next_cursor: null, match_kind: 'partial',
+      })); });
+    }
+    assert.equal(url.searchParams.get('topic_id'), '4');
+    assert.equal(url.searchParams.get('q'), 'mục mới');
+    return response({ results: [{ item_id: 'current', title: 'Kết quả hiện tại', evidence: [] }], next_cursor: null });
+  };
+  const oldPath = '#/tim-kiem?q=nh%E1%BB%9B&expand=true';
+  const newPath = '#/tim-kiem?q=m%E1%BB%A5c+m%E1%BB%9Bi&topic_id=4';
+  await render(ui.SearchScreen, { path: oldPath, key: oldPath });
+  assert.ok(container.querySelector('.search-results .loading'));
+  await render(ui.SearchScreen, { path: newPath, key: newPath });
+  assert.equal(oldSignal.aborted, true);
+  const resultList = container.querySelector('.search-results ol');
+  assert.equal(resultList.querySelector('a').getAttribute('href'), '#/muc/current');
+  await ui.act(async () => { finishOld(); await settle(); });
+  assert.equal(container.querySelector('.search-results ol'), resultList);
+  assert.equal(resultList.querySelector('a').textContent, 'Kết quả hiện tại');
+  assert.equal(container.querySelector('#search-partial-match'), null);
+  assert.equal(container.querySelector('.search-form select').value, '4');
+});
+
 test('pending resources poll sequentially and stop when processing completes', async () => {
   let calls = 0;
   globalThis.fetch = async () => response({ pending: ++calls === 1, value: calls });

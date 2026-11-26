@@ -87,7 +87,7 @@ def start(state, python):
         cwd=BACKEND, env=env)
 
 
-def measure(state, chromium):
+def measure(state, chromium, *, navigation=False):
     credentials = {}
     for line in (state / "pilot-login.txt").read_text(encoding="utf-8-sig").splitlines():
         name, _, value = line.partition(":")
@@ -105,7 +105,10 @@ def measure(state, chromium):
         "KT_EVAL_BROWSER_CORRECTION": "verify",
         "KT_JOURNEY_CHROMIUM": str(chromium),
     }
-    run(["node", EVAL / "measure_browser.mjs"], cwd=REPO, env=env)
+    command = ["node", EVAL / "measure_browser.mjs"]
+    if navigation:
+        command.append("--navigation-only")
+    run(command, cwd=REPO, env=env)
 
 
 def main():
@@ -115,15 +118,18 @@ def main():
                         "KhoTriThuc" / "venv" / "Scripts" / "python.exe")
     parser.add_argument("--chromium", type=Path, default=Path(
         "C:/Program Files/Google/Chrome/Application/chrome.exe"))
-    parser.add_argument("--measure", action="store_true", help="Remeasure the running pilot in Chromium.")
+    modes = parser.add_mutually_exclusive_group()
+    modes.add_argument("--measure", action="store_true", help="Remeasure the running pilot in Chromium.")
+    modes.add_argument("--measure-navigation", action="store_true",
+                       help="Check search filters and browser history on the running pilot.")
     args = parser.parse_args()
     state = args.state.resolve(strict=True)
     if state.name.casefold() != "ktt-rc25-qa" or not all(
         (state / name).is_file() for name in ("qa-password", "pilot-login.txt", "pilot-seed-map.json")
     ):
         parser.error("Choose the existing ktt-rc25-qa directory with its pilot files.")
-    if args.measure:
-        measure(state, args.chromium)
+    if args.measure or args.measure_navigation:
+        measure(state, args.chromium, navigation=args.measure_navigation)
     else:
         start(state, args.python.resolve(strict=True))
 

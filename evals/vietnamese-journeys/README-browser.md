@@ -22,6 +22,12 @@ python tools/windows/start_synthetic_pilot.py --measure
 
 Để giữ lại báo cáo của phiên bản trước, đặt `$env:KT_EVAL_BROWSER_REPORT` thành đường dẫn JSON mới trước khi chạy. Mỗi truy vấn được gửi một lần từ ô tìm kiếm. Nếu bài đích vắng khỏi năm kết quả đầu hoặc câu hỏi không có bài phù hợp, Chromium bấm **Tìm gần đúng** khi giao diện đưa ra lựa chọn này. `summary` ghi kết quả lượt đầu, `including_expansion` ghi kết quả sau bước tùy chọn, và `expansion_clicks` đếm số lượt thực sự bấm. `ui_match_kind` ghi `partial` khi màn hình có nhãn **Ghi chú khớp một phần từ khóa**. Bộ đo kiểm tra nhãn hiển thị và liên kết với danh sách cho trình đọc màn hình.
 
+Để kiểm tra điều hướng riêng, chạy lệnh dưới đây trên pilot đang mở. Chromium nhập câu tìm M02 và M14 qua ô tìm kiếm, chọn mục lục “thu âm” bằng bàn phím, bấm tìm, mở bài rồi quay lại và tiến tới trong lịch sử trình duyệt. Mỗi bước so khớp câu hỏi, mục lục, chế độ mở rộng trong URL và trạng thái hiển thị. Lượt mở bài còn so địa chỉ, tiêu đề và nguyên văn ghi chú. Có thể dùng cùng biến `KT_EVAL_BROWSER_REPORT` để chọn nơi lưu JSON.
+
+```powershell
+python tools/windows/start_synthetic_pilot.py --measure-navigation
+```
+
 Phép đo đọc mật khẩu đăng nhập từ tệp riêng và kiểm tra `thu âm` vẫn vắng mặt trên M14. Kết quả `VERIFIED_ABSENT` xác nhận trạng thái của lần đo đó. Nếu cần tái hiện thao tác gỡ trên một bộ mẫu mới, đặt `KT_EVAL_BROWSER_CORRECTION=1` khi gọi trực tiếp `measure_browser.mjs`. Runner sẽ thử gỡ từ menu **Thao tác** trong cây thư mục và lưu sửa đổi đó.
 
 Để tạo bộ mẫu mới với Django đã trỏ đúng DB QA, đặt `KT_EVAL_BROWSER_QA=1`, `KT_EVAL_BROWSER_USER` (tiền tố `kt-browser-eval-`), `KT_EVAL_BROWSER_PASSWORD` và `KT_EVAL_BROWSER_SEED` (đường dẫn seed map ngoài repo), rồi chạy `python apps/backend/manage.py shell -c "import runpy; runpy.run_path('evals/vietnamese-journeys/seed_browser.py')"`. Chỉ đặt `KT_EVAL_BROWSER_REUSE=1` nếu muốn chạy lại organizer trên bộ mẫu đã có. Seeder kiểm tra tài khoản, ID và nguyên văn của tất cả ghi chú trước khi gán lại.

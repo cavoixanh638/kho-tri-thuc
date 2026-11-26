@@ -57,7 +57,7 @@ function summarize(records) {
 }
 
 const browser = await Browser.launch();
-try {
+async function runPilot() {
   const page = await browser.newPage({ width: 1440, height: 900 });
   const chromium = await page.send('Browser.getVersion');
   const wait = async (predicate, argument) => {
@@ -83,6 +83,19 @@ try {
   assert.ok(session.username === process.env.KT_EVAL_BROWSER_USER, 'Unexpected QA session');
   const inventory = await page.eval(async () => (await fetch('/api/v1/items?limit=50')).json());
   assert.deepEqual(new Set(inventory.results.map(item => item.item_id)), new Set(knownIds.keys()), 'Unexpected items for QA account');
+
+  if (process.argv.includes('--navigation-only')) {
+    const { checkSearchNavigation } = await import('./search-navigation.mjs');
+    const steps = await checkSearchNavigation({ page, wait, items, labels, seed, knownIds });
+    const reportPath = process.env.KT_EVAL_BROWSER_REPORT || byName('results-browser-navigation-windows.json');
+    const report = { tested_sha: codeSha, app_source_dirty: Boolean(status), platform: process.platform,
+      chromium: chromium.product, corpus_sha256: hash(corpusBytes),
+      navigation_sha256: hash(await readFile(byName('search-navigation.mjs'))),
+      steps_passed: steps.length, steps };
+    await writeFile(reportPath, JSON.stringify(report, null, 2) + '\n');
+    console.log(JSON.stringify({ steps_passed: steps.length, tested_sha: codeSha }));
+    return;
+  }
 
   const cases = [...labels.judgments.map(label => ({ ...label, split: items.get(label.id).split })), ...labels.negative_queries];
   for (const entry of cases) {
@@ -254,6 +267,10 @@ try {
   }, null, 2) + '\n');
   console.log(JSON.stringify({ initial: summary, including_expansion: includingExpansion }));
   if (summary.opened_wrong || includingExpansion.opened_wrong) process.exitCode = 1;
+}
+
+try {
+  await runPilot();
 } finally {
   await browser.close();
 }
