@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { itemHref } from './views';
+import { request } from './api';
 
 export const TAB_NAVIGATION_EVENT='knowledge-before-tab-navigation';
 export const TAB_TITLE_EVENT='knowledge-tab-title';
@@ -55,6 +56,26 @@ export function WorkspaceTabs({activeId,owner,fallbackHref}:{activeId?:string;ow
     }
     commit({tabs:[...tabs,{id:activeId,pinned:false}],closed});
   },[activeId]);
+  // Restore display labels from an owner-scoped bounded metadata endpoint;
+  // don't persist private titles or refetch full Item bodies for inactive tabs.
+  const ids=model.tabs.map(tab=>tab.id).join(',');
+  useEffect(()=>{
+    if(!owner||!ids)return;
+    const missing=ids.split(',').filter(id=>!Object.hasOwn(labels,id));
+    if(!missing.length)return;
+    const controller=new AbortController();
+    void request<{items:{item_id:string;title:string}[]}>('/navigation/tabs?ids='+encodeURIComponent(missing.join(',')),{signal:controller.signal})
+      .then(value=>{
+        if(controller.signal.aborted||!Array.isArray(value?.items))return;
+        const known=new Map(value.items.filter(row=>row&&validId(row.item_id)&&typeof row.title==='string'&&missing.includes(row.item_id)).map(row=>[row.item_id,row.title.slice(0,160)]));
+        setLabels(old=>{
+          const next={...old};
+          for(const id of missing)if(!Object.hasOwn(old,id))next[id]=known.get(id)||'Bài '+id.slice(0,8);
+          return Object.fromEntries(Object.entries(next).slice(-MAX*2));
+        });
+      }).catch(()=>{/* Tabs remain usable by ID if metadata is unavailable. */});
+    return()=>controller.abort();
+  },[ids,owner]);
   const title=(id:string)=>labels[id]||'Bài '+id.slice(0,8);
   function guard(){
     if(allowTabNavigation()){setNotice('');return true;}

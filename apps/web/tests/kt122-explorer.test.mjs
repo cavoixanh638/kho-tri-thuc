@@ -31,6 +31,7 @@ beforeEach(()=>{
   if(url.pathname.endsWith('/structure'))return Response.json({item_id:id,parent_item_id:null,home_topic_id:1,sort_order:0,structure_version:0,origin:'user',ancestors:[],children:[{...note,item_id:child,title:'Chương con',parent_item_id:id,child_count:0}]});
   if(url.pathname.endsWith('/knowledge-tree'))return Response.json({nodes:[folder]});
   if(url.pathname.endsWith('/collections'))return Response.json({results:[]});
+  if(url.pathname.endsWith('/navigation/tabs'))return Response.json({items:[]});
   if(url.pathname.endsWith('/navigation'))return Response.json({items:[{item_id:id,title:note.title,saved_at:'2026-11-21T00:00:00Z'}],folders:[{id:1,name:folder.name,parent_id:null}],next_offset:null});
   if(url.pathname.endsWith('/explorer/find'))return Response.json({results:[{...note,item_id:child,title:'Bài cha đã chọn'}]});
   return Response.json({user_edit_version:4});
@@ -224,6 +225,9 @@ test('WS-03/04/06 tabs select, pin, reorder, close, reopen, and persist UUIDs on
  await draw(id);await draw(child);
  const strip=container.querySelector('.workspace-tab-strip');
  assert.equal(strip.querySelectorAll('.workspace-tab').length,2);
+ const childButton=strip.querySelector('[data-tab-id="'+child+'"] .workspace-tab-open');
+ await ui.act(async()=>{childButton.dispatchEvent(new window.KeyboardEvent('keydown',{key:'ArrowLeft',altKey:true,bubbles:true,cancelable:true}));await settle();});
+ assert.equal(strip.querySelector('.workspace-tab').dataset.tabId,child);
  await ui.act(async()=>{window.dispatchEvent(new window.CustomEvent('knowledge-tab-title',{detail:{id,title:'Tiêu đề riêng'}}));await settle();});
  assert.ok(strip.textContent.includes('Tiêu đề riêng'));
  await click('Ghim Tiêu đề riêng');
@@ -242,8 +246,14 @@ test('WS-03/04/06 tabs select, pin, reorder, close, reopen, and persist UUIDs on
  const stored=window.sessionStorage.getItem('kt-workspace-tabs-v1:'+owner);
  assert.ok(stored.includes(id)&&stored.includes(child));assert.ok(!stored.includes('Tiêu đề riêng'));
  await ui.act(async()=>root.unmount());root=ui.createRoot(container);
+ const priorFetch=globalThis.fetch;
+ globalThis.fetch=async(path,options)=>{
+  if(String(path).includes('/navigation/tabs?'))return Response.json({items:[{item_id:id,title:'Tên đã khôi phục'},{item_id:child,title:'Bài con đã khôi phục'}]});
+  return priorFetch(path,options);
+ };
  await draw(child);assert.equal(container.querySelectorAll('.workspace-tab').length,2);
  assert.equal(container.querySelector('.workspace-tab').dataset.tabId,id);
+ assert.match(container.querySelector('.workspace-tab-strip').textContent,/Tên đã khôi phục/);
  await ui.act(async()=>root.unmount());root=ui.createRoot(container);
  await render(ui.WorkspaceTabs,{activeId:child,owner:'other-fixture',fallbackHref:'#/thu-vien'});
  assert.equal(container.querySelectorAll('.workspace-tab').length,1);

@@ -446,6 +446,30 @@ if (prerequisitesReady) {
         assert.equal(await page.eval(()=>window.__ktWorkspaceSidebar===document.querySelector('.library-tree-shell')&&window.__ktWorkspaceFolder?.isConnected&&window.__ktWorkspaceFolder?.getAttribute('aria-expanded')==='true'),true);
         assert.equal(await page.eval(()=>document.documentElement.scrollWidth>innerWidth),false,'detail workspace overflow');
         const detailEvidence=await screenshot('p08-persistent-explorer-detail.png');
+        // Switching actual routes via tabs must preserve an unsaved editor draft,
+        // not mount a second Item editor or create a new capture.
+        const authorBefore=(await get('/items/'+context.parent)).note;
+        const parentEvents=(await get('/items/'+context.parent+'/captures')).results.length;
+        await wait(({parent,child})=>!!document.querySelector('.workspace-tab[data-tab-id="'+parent+'"]')&&!!document.querySelector('.workspace-tab[data-tab-id="'+child+'"]'),{parent:context.parent,child:context.child},'two open note tabs');
+        await click('Chỉnh sửa','.markdown-item-detail');
+        await input('Nội dung tri thức (Markdown)',authorBefore+'\n\nNháp tab chưa lưu.','.markdown-editor');
+        await page.eval(id=>document.querySelector('.workspace-tab[data-tab-id="'+id+'"] .workspace-tab-open').click(),context.child);
+        await wait(id=>location.hash==='#/muc/'+id,context.child,'switch to second note tab');
+        await wait(()=>!!document.querySelector('.markdown-item-detail'),undefined,'second note detail');
+        await page.eval(id=>document.querySelector('.workspace-tab[data-tab-id="'+id+'"] .workspace-tab-open').click(),context.parent);
+        await wait(()=>document.querySelector('.markdown-editor textarea')?.value.endsWith('Nháp tab chưa lưu.'),undefined,'unsaved Markdown restored');
+        assert.equal((await get('/items/'+context.parent)).note,authorBefore);
+        assert.equal((await get('/items/'+context.parent+'/captures')).results.length,parentEvents);
+        await click('Hủy','.markdown-item-detail');await click('Bỏ bản nháp','.markdown-item-detail');
+        await wait(()=>!document.querySelector('.markdown-editor'),undefined,'discard synthetic tab draft');
+        await page.eval(id=>document.querySelector('.workspace-tab[data-tab-id="'+id+'"] button[aria-pressed]').click(),context.parent);
+        await wait(id=>document.querySelector('.workspace-tab[data-tab-id="'+id+'"] button[aria-pressed]')?.getAttribute('aria-pressed')==='true',context.parent,'pin tab');
+        await page.eval(id=>document.querySelector('.workspace-tab[data-tab-id="'+id+'"] button[aria-label^="Đóng tab"]').click(),context.child);
+        await wait(id=>!document.querySelector('.workspace-tab[data-tab-id="'+id+'"]'),context.child,'close inactive tab');
+        await click('Mở lại tab đã đóng','.workspace-tabs');
+        await wait(id=>location.hash==='#/muc/'+id&&!!document.querySelector('.workspace-tab[data-tab-id="'+id+'"]'),context.child,'reopen tab');
+        await route('#/muc/'+context.parent);
+        await wait(()=>!!document.querySelector('.markdown-item-detail'),undefined,'parent note after reopen');
         // Real Chromium pointer capture, not a synthetic React event.
         await page.eval(()=>window.scrollTo(0,0));
         const start=await page.eval(()=>{
@@ -493,9 +517,9 @@ if (prerequisitesReady) {
         },context.folder);
         assert.ok(animation.closed<2&&animation.open>10&&animation.ariaExpanded==='true'&&animation.transition.split(',').some(v=>parseFloat(v)>0),JSON.stringify(animation));
         await page.send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});
-        report.persistent_explorer={same_dom_across_route:true,active_note:true,expanded_folder_preserved:true,animation,resize:{before:start.width,after:resized.width,keyboard:true,pointer_capture:true},quick_search:true,collapse_restore:true,detail_screenshot:detailEvidence.filename};
+        report.persistent_explorer={same_dom_across_route:true,active_note:true,expanded_folder_preserved:true,animation,resize:{before:start.width,after:resized.width,keyboard:true,pointer_capture:true},quick_search:true,collapse_restore:true,tabs:{switched:true,draft_recovered:true,source_unchanged:true,close_reopen:true,pin:true},detail_screenshot:detailEvidence.filename};
         persist();
-        return { status: 'PASS', actual: '4 widths and four views, same Item IDs, persistent explorer across note route, real pointer/keyboard resize, quick search, collapse/restore, animated folder and no overflow', evidence: [...report.viewports.map((row) => row.screenshot),detailEvidence.filename] };
+        return { status: 'PASS', actual: '4 widths and four views, same Item IDs, persistent explorer across note route, real pointer/keyboard resize, quick search, collapse/restore, tabs with preserved draft, animated folder and no overflow', evidence: [...report.viewports.map((row) => row.screenshot),detailEvidence.filename] };
       });
       await attempt('J8', async () => {
         if (!context.parent || !context.child) return {

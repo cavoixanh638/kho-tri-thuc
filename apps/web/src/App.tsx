@@ -171,7 +171,7 @@ export function App() {
     <Header path={path} username={session?.username} onLogout={authenticated ? () => void logout() : undefined} signingOut={signingOut} />
     <main id="main-content" className={authenticated ? "shell canvas workspace-shell" : "shell canvas"} tabIndex={-1}>
       {authenticated && <KnowledgeCommandPalette currentItemId={itemId} onAction={(action) => {
-        if (!allowTabNavigation()) return;
+        if ((action === 'day' || (action === 'create' && !path.startsWith('#/thu-vien'))) && !allowTabNavigation()) return;
         if (action === 'day') window.location.hash = '#/thu-vien?view=timeline';
         else if (action === 'create') {
           if (path.startsWith('#/thu-vien')) window.dispatchEvent(new CustomEvent('knowledge-command', { detail: { action } }));

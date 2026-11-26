@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { request } from './api';
+import { allowTabNavigation } from './WorkspaceTabs';
 import './NoteNavigation.css';
 
 type NavigationPage = { items: { item_id: string; title: string; saved_at: string }[]; folders: { id: number; name: string }[]; next_offset: number | null };
@@ -35,6 +36,7 @@ export function KnowledgeCommandPalette({ currentItemId, onAction }: { currentIt
     trigger.current?.focus();
   }
   function choose(choice: Choice) {
+    if(choice.href&&choice.href!==window.location.hash&&!allowTabNavigation()){setError('Chưa chuyển bài. Hoàn tất nhập hoặc lưu bản nháp trước.');return;}
     close();
     if (choice.href) window.location.hash = choice.href;
     else if (choice.action) {
