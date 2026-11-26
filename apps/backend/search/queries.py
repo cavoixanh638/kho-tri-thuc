@@ -1,3 +1,6 @@
+from .identifiers import identifier_condition
+
+
 # Match the expressions and predicates in search.0001, including the config.
 ITEM_TEXT = "public.kt_search_item(i.title, i.description, i.note)"
 ITEM_VECTOR = f"to_tsvector('public.kt_vi', {ITEM_TEXT})"
@@ -42,11 +45,9 @@ WITH input AS NOT MATERIALIZED (
 fts_first_page AS MATERIALIZED (
     SELECT count(*) >= %(page_size)s AS enough
     FROM (
-        SELECT first_i.id
-        FROM visible_items first_i CROSS JOIN input
-        WHERE to_tsvector('public.kt_vi', public.kt_search_item(
-            first_i.title, first_i.description, first_i.note
-        )) @@ tsq
+        SELECT i.id
+        FROM visible_items i CROSS JOIN input
+        WHERE {ITEM_VECTOR} @@ tsq AND {identifier_condition(ITEM_TEXT)}
         LIMIT %(page_size)s
     ) qualified
 ),
@@ -63,14 +64,14 @@ matches AS (
            NULL::uuid AS capture_id, true AS fts, 1::real + ts_rank({ITEM_VECTOR}, tsq, 32) AS score,
            NULL::timestamptz AS received_at
     FROM visible_items i CROSS JOIN input
-    WHERE {ITEM_VECTOR} @@ tsq
+    WHERE {ITEM_VECTOR} @@ tsq AND {identifier_condition(ITEM_TEXT)}
 
     UNION ALL
     SELECT d.item_id, 'derived_content', d.id, NULL, true,
            1::real + ts_rank({DERIVED_VECTOR}, tsq, 32), NULL
     FROM processing_derivedcontent d
     JOIN visible_items i ON i.id = d.item_id CROSS JOIN input
-    WHERE d.status = 'active' AND {DERIVED_VECTOR} @@ tsq
+    WHERE d.status = 'active' AND {DERIVED_VECTOR} @@ tsq AND {identifier_condition(DERIVED_TEXT)}
 
     UNION ALL
     SELECT i.id, 'item', NULL, NULL, false,
@@ -84,6 +85,7 @@ matches AS (
            END, NULL
     FROM visible_items i CROSS JOIN input CROSS JOIN fts_first_page fts_page
     WHERE (%(cursor_id)s::uuid IS NOT NULL OR NOT fts_page.enough)
+      AND {identifier_condition(ITEM_TEXT)}
       AND ((%(substring)s AND {ITEM_FOLD} LIKE
                ('%%' || replace(replace(replace(folded, '!', '!!'), '%%', '!%%'), '_', '!_') || '%%')
                ESCAPE '!')
@@ -93,7 +95,7 @@ matches AS (
     SELECT c.item_id, 'capture_event', NULL, c.id, true,
            1::real + ts_rank({CAPTURE_VECTOR}, tsq, 32), r.server_received_at
     FROM recent_captures r JOIN ingestion_captureevent c ON c.id = r.id CROSS JOIN input
-    WHERE {CAPTURE_VECTOR} @@ tsq
+    WHERE {CAPTURE_VECTOR} @@ tsq AND {identifier_condition(CAPTURE_TEXT)}
 ),
 evidence AS MATERIALIZED (
     SELECT DISTINCT ON (item_id, source) item_id, source, derived_id, capture_id, fts, score
