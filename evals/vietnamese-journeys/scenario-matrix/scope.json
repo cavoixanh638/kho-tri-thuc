@@ -1,0 +1,587 @@
+{
+  "title": "Tìm ghi chú tiếng Việt theo phạm vi kho, tình trạng và bộ lọc",
+  "items": [
+    {
+      "id": "SN01",
+      "title": "Đo bề rộng lối thoát ở rạp ven sông",
+      "note": "Phiếu nghiệm thu lối thoát ở rạp ven sông ghi chỗ hẹp nhất tại cánh gà. Mở hết hai cánh cửa rồi mới đo khoảng lọt lòng.",
+      "topics": ["An toàn công trình", "Tiếp cận công cộng"],
+      "projects": ["Rạp ven sông", "Sơ đồ khu phố"],
+      "tags": ["Nghiệm thu", "Đo tại chỗ"]
+    },
+    {
+      "id": "SN02",
+      "title": "Biển chỉ lối thoát ở rạp ven sông",
+      "note": "Phiếu nghiệm thu lối thoát ghi phải hạ biển chỉ đường xuống dưới dầm gỗ. Từ cửa vào vẫn nhìn thấy mũi tên.",
+      "topics": ["Thiết kế biển chỉ dẫn"],
+      "projects": ["Rạp ven sông"],
+      "tags": ["Nghiệm thu"]
+    },
+    {
+      "id": "SN03",
+      "title": "Lối thoát của hội trường trên đồi",
+      "note": "Phiếu nghiệm thu lối thoát yêu cầu cất bục phát biểu tránh chắn cửa phía tây. Khi thử mở cửa, bục được đẩy vào kho.",
+      "topics": ["An toàn công trình"],
+      "projects": ["Hội trường trên đồi"],
+      "tags": ["Nghiệm thu"]
+    },
+    {
+      "id": "SN04",
+      "title": "Vạch dẫn lối thoát trong buổi diễn thử",
+      "note": "Bản nháp phiếu nghiệm thu lối thoát đề xuất dán vạch phản quang dọc chân tường. Chưa gửi tổ duyệt.",
+      "topics": ["An toàn công trình"],
+      "projects": ["Rạp ven sông"],
+      "tags": ["Đề xuất"]
+    },
+    {
+      "id": "SN05",
+      "title": "Bản đồ nổi của phòng học bên đồi",
+      "note": "Bản đồ nổi có đường gờ chấm để học sinh lần tay từ bậc thềm đến bàn giáo viên. In thử chú giải bằng chữ nổi.",
+      "topics": ["Giáo dục", "Tiếp cận công cộng"],
+      "projects": ["Tủ học liệu", "Sơ đồ khu phố"],
+      "tags": ["In thử", "Đồ dùng lớp học"]
+    },
+    {
+      "id": "SN06",
+      "title": "Bài học làm la bàn bằng giấy",
+      "note": "Ghim kim giấy lên vòng hướng rồi tô màu đỏ đầu chỉ bắc. In thử một bộ để cả lớp ráp trước buổi ngoại khóa.",
+      "topics": ["Giáo dục"],
+      "projects": ["Tủ học liệu"],
+      "tags": ["In thử", "Thực hành"]
+    },
+    {
+      "id": "SN07",
+      "title": "Chú giải bản đồ nổi của bến phà",
+      "note": "Bản đồ nổi dùng ba vòng tròn đồng tâm để đánh dấu bến phà. Cần chừa chỗ cho ngón tay tại góc bảng.",
+      "topics": ["Tiếp cận công cộng"],
+      "projects": ["Sơ đồ khu phố"],
+      "tags": ["Đề xuất", "Đồ dùng lớp học"]
+    },
+    {
+      "id": "SN08",
+      "title": "Khung mica cho tranh in ở hành lang",
+      "note": "Phiếu lắp khung mica ghi dùng miếng đệm nỉ màu xám. Giữ lại khe phía trên cho thẻ tên tranh.",
+      "topics": ["Trưng bày"],
+      "projects": ["Tuần thủ công"],
+      "tags": ["Đã duyệt"]
+    },
+    {
+      "id": "SN09",
+      "title": "Khung mica cho mẫu dệt cổ",
+      "note": "Phiếu lắp khung mica ghi dùng chốt lò xo bằng đồng. Mẫu dệt nằm giữa hai tấm trong suốt.",
+      "owner": "guest",
+      "topics": ["Trưng bày"],
+      "projects": ["Tuần thủ công"],
+      "tags": ["Đã duyệt"]
+    },
+    {
+      "id": "SN10",
+      "title": "Tủ chìa khóa nhà thuyền – sổ hiện hành",
+      "note": "Tủ chìa khóa nhà thuyền chuyển sang phòng trực. Treo chìa dự phòng lên móc số 6 và bàn giao chìa chính khi đổi ca.",
+      "topics": ["Trực vận hành"],
+      "projects": ["Nhà thuyền"],
+      "tags": ["Hướng dẫn"]
+    },
+    {
+      "id": "SN11",
+      "title": "Tủ chìa khóa nhà thuyền – sổ đã thay thế",
+      "note": "Tủ chìa khóa nhà thuyền ở cạnh bồn rửa. Treo chìa dự phòng vào móc số 2 cho ca sớm.",
+      "trashed": true,
+      "topics": ["Trực vận hành"],
+      "projects": ["Nhà thuyền"],
+      "tags": ["Hướng dẫn"]
+    },
+    {
+      "id": "SN12",
+      "title": "Biên nhận hoàn cọc xuồng nan",
+      "note": "Biên nhận số XN702 ghi hoàn tiền cọc xuồng nan sau khi nhận lại đôi mái chèo có vết mực tím.",
+      "trashed": true,
+      "topics": ["Trực vận hành"],
+      "projects": ["Nhà thuyền"],
+      "tags": ["Kế toán"]
+    },
+    {
+      "id": "SN13",
+      "title": "Bảo dưỡng đồng hồ nước ở vườn mưa – ca sáng",
+      "note": "Ghi số đồng hồ nước trước khi khóa van. Ca sáng lau mặt kính và kiểm tra vòng đệm ở ngăn dưới.",
+      "topics": ["Bảo dưỡng"],
+      "projects": ["Vườn mưa"],
+      "tags": ["Nhật ký ca"]
+    },
+    {
+      "id": "SN14",
+      "title": "Bảo dưỡng đồng hồ nước ở vườn mưa – ca tối",
+      "note": "Ghi số đồng hồ nước sau khi mở lại van. Ca tối chụp mặt kính cùng vạch chia. Mục lưu lượng súc máng trong sổ để trống vì vườn mưa không có máng.",
+      "topics": ["Bảo dưỡng"],
+      "projects": ["Vườn mưa"],
+      "tags": ["Nhật ký ca"]
+    },
+    {
+      "id": "SN15",
+      "title": "Đồng hồ nước của xưởng nhuộm",
+      "note": "Ghi số đồng hồ nước trong bảng lưu lượng súc máng. Sau buổi nhuộm chàm, đọc vạch thấp nhất khi đã ngừng lấy nước.",
+      "topics": ["Bảo dưỡng"],
+      "projects": ["Xưởng nhuộm"],
+      "tags": ["Tiêu thụ nước"]
+    },
+    {
+      "id": "SN16",
+      "title": "Ống nhòm gấp của trạm quan sát",
+      "note": "Bọc thiết bị bằng túi dày khi cất. Đặt gói hút ẩm ở ngăn riêng và lau thấu kính bằng khăn mềm.",
+      "topics": ["Dụng cụ cầm tay"],
+      "projects": ["Trạm quan sát"],
+      "tags": ["Bảo quản"]
+    },
+    {
+      "id": "SN17",
+      "title": "Bộ kiểm kê ngăn trên cùng",
+      "description": "Kẹp nam châm chân đế, dùng để giữ góc tờ phiếu khi đứng ngoài sân cân đồ.",
+      "note": "Sau kiểm kê, cất vào hộp nhựa nhỏ có sọc đen. Dán ngày trả lên nắp hộp.",
+      "topics": ["Dụng cụ cầm tay"],
+      "projects": ["Trạm quan sát"],
+      "tags": ["Kiểm kê"]
+    },
+    {
+      "id": "SN18",
+      "title": "Dặn dò ở cửa kho",
+      "description": "Việc cần làm khi trả thiết bị sau chuyến đo.",
+      "note": "Tấm nhựa chống trượt phải hong dựng đứng, tránh để ướt đáy tủ. Sáng mai lót tấm dưới giỏ lấy mẫu.",
+      "topics": ["Dụng cụ cầm tay"],
+      "projects": ["Trạm quan sát"],
+      "tags": ["Bảo quản"]
+    },
+    {
+      "id": "SN19",
+      "title": "Tấm chắn gió thử ở bàn cân",
+      "note": "Kê tấm chắn gió quanh bàn cân để kim cân đứng yên. Chừa một khe ngang vừa đủ đưa khay qua.",
+      "topics": ["Cân đo"],
+      "projects": ["Quầy rau cuối tuần"],
+      "tags": ["Thử thiết bị"]
+    },
+    {
+      "id": "SN20",
+      "title": "Rèm chắn gió ở bàn cân bột",
+      "note": "Rèm chắn gió ở bàn cân bột ngăn kim rung sát cửa lò. Dùng móc treo gắn vào trần để tháo rèm khi quét dọn.",
+      "topics": ["Cân đo"],
+      "projects": ["Bếp bánh sáng"],
+      "tags": ["Thử thiết bị"]
+    },
+    {
+      "id": "SN21",
+      "title": "Thử dấu sơn son trên túi vải",
+      "note": "Sơn son thử lên góc túi vải, hôm sau gập đôi rồi mở ra xem màu có in sang mặt đối diện. Giặt tay sau khi mẫu khô hẳn.",
+      "topics": ["Vật liệu thủ công"],
+      "projects": ["Gian quà vải"],
+      "tags": ["Thử màu"]
+    },
+    {
+      "id": "SN22",
+      "title": "Túi vải có dấu sơn son làm mẫu trưng bày",
+      "note": "Túi vải in dấu sơn son được đặt dưới đèn vàng để xem màu đỏ khi khách đứng ngoài gian. Để mẫu mở, không gập miệng.",
+      "topics": ["Vật liệu thủ công"],
+      "projects": ["Gian quà vải"],
+      "tags": ["Trưng hàng"]
+    },
+    {
+      "id": "SN23",
+      "title": "Mái tre tạo bóng cho lối đi sát chum nước",
+      "note": "Đo bóng râm vào trưa rồi dời hàng ghế nghỉ vào dưới mái tre. Chừa lối đi rộng 120 cm để xe lăn vòng qua chum nước.",
+      "topics": ["Tiếp cận công cộng", "Vi khí hậu"],
+      "projects": ["Sân sinh hoạt", "Sơ đồ khu phố"],
+      "tags": ["Đo tại chỗ", "Có kích thước"]
+    },
+    {
+      "id": "SN24",
+      "title": "Che nắng khu xếp hàng ở sân sinh hoạt",
+      "note": "Đo bóng râm lúc trưa, nhận thấy hàng người đứng ngoài phần mái hiên. Bổ sung tấm che di động và đặt đối trọng sát chân cột.",
+      "topics": ["Vi khí hậu"],
+      "projects": ["Sân sinh hoạt"],
+      "tags": ["Đo tại chỗ"]
+    },
+    {
+      "id": "SN25",
+      "title": "Sơ đồ lối vòng qua khán đài",
+      "note": "Trên sơ đồ, xe lăn đi theo lối rộng 150 cm bên cạnh khán đài. Một vạch đứt đánh dấu chỗ hạ dốc.",
+      "topics": ["Tiếp cận công cộng", "Thiết kế biển chỉ dẫn"],
+      "projects": ["Sân sinh hoạt", "Sơ đồ khu phố"],
+      "tags": ["Có kích thước", "Đề xuất"]
+    },
+    {
+      "id": "SN26",
+      "title": "Thực đơn cháo kê tại bếp tập thể",
+      "note": "Cháo kê buổi sáng ăn với ruốc nấm. Danh sách mua hạt kê và nấm khô đã gửi cho ca đi chợ.",
+      "topics": ["Bếp tập thể"],
+      "projects": ["Bếp đầu ngõ"],
+      "tags": ["Thực đơn"]
+    },
+    {
+      "id": "SN27",
+      "title": "Khẩu phần cháo kê theo nồi",
+      "note": "Cháo kê nồi lớn chia vào 18 bát men. Dùng vá nhỏ để mỗi bát nhận như nhau, phần dư để riêng trong âu sứ.",
+      "topics": ["Bếp tập thể"],
+      "projects": ["Bếp đầu ngõ"],
+      "tags": ["Khẩu phần"]
+    },
+    {
+      "id": "SN28",
+      "title": "Phiếu nhà cung cấp cân điện tử",
+      "note": "So sánh thời hạn đổi cân với hai đơn vị. Phiếu của đơn vị gần chợ có đóng dấu tròn bên cạnh tên người phụ trách.",
+      "topics": ["Cân đo"],
+      "projects": ["Quầy rau cuối tuần", "Bếp đầu ngõ"],
+      "tags": ["Nhà cung cấp"]
+    },
+    {
+      "id": "SN29",
+      "title": "Bộ chữ rời để ghép tên phố – khay đồng",
+      "note": "Bộ chữ rời dùng để ghép tên phố cho cuộc trưng bày. Khay đồng chứa mẫu chữ có chân, sắp theo thứ tự bảng chữ cái.",
+      "topics": ["In thủ công"],
+      "projects": ["Phố chữ"],
+      "tags": ["Kiểm kê"]
+    },
+    {
+      "id": "SN30",
+      "title": "Bộ chữ rời để ghép tên phố – khay gỗ",
+      "note": "Bộ chữ rời dùng để ghép tên phố cho cuộc trưng bày. Khay gỗ chứa mẫu chữ không chân, xếp tách theo chiều cao.",
+      "topics": ["In thủ công"],
+      "projects": ["Phố chữ"],
+      "tags": ["Kiểm kê"]
+    },
+    {
+      "id": "SN31",
+      "title": "Bộ chữ rời cho nhãn kệ bếp",
+      "note": "Bộ chữ rời bằng cao su dùng để in nhãn kệ bếp. Kiểm kê các chữ dính mực trước khi hoàn trả hộp.",
+      "topics": ["In thủ công"],
+      "projects": ["Bếp đầu ngõ"],
+      "tags": ["Kiểm kê"]
+    },
+    {
+      "id": "SN32",
+      "title": "Máy đếm lượt qua cổng xếp",
+      "note": "Cộng lại bộ đếm cơ sau khi đoàn tham quan qua cổng xếp. Ghi số khách vào lề phiếu giao ca để ca sau tính phần chênh.",
+      "topics": ["Trực vận hành"],
+      "projects": ["Sân sinh hoạt"],
+      "tags": ["Nhật ký ca"]
+    }
+  ],
+  "cases": [
+    {
+      "id": "S01",
+      "kind": "Giao chủ đề, dự án và thẻ",
+      "query": "phiếu nghiệm thu lối thoát",
+      "filters": {"topic": "An toàn công trình", "project": "Rạp ven sông", "tag": "Nghiệm thu"},
+      "accept": ["SN01"],
+      "why": "SN01 có đúng cụm từ trong ghi chú và đủ ba quan hệ. SN02 khác chủ đề, SN03 khác dự án, SN04 khác thẻ dù cả ba cùng có cụm tìm."
+    },
+    {
+      "id": "S02",
+      "kind": "Nhiều bản trong cùng dự án và thẻ",
+      "query": "lối thoát",
+      "filters": {"project": "Rạp ven sông", "tag": "Nghiệm thu"},
+      "accept": ["SN01", "SN02"],
+      "why": "Cả bản đo bề rộng và bản kiểm biển chỉ đường nói về lối thoát, cùng thuộc dự án và đã gắn thẻ Nghiệm thu."
+    },
+    {
+      "id": "S03",
+      "kind": "Bản đề xuất trong một tập nhiều phiên bản",
+      "query": "vạch phản quang chân tường",
+      "filters": {"project": "Rạp ven sông", "tag": "Đề xuất"},
+      "accept": ["SN04"],
+      "why": "Bản nháp SN04 là ghi chú duy nhất đề xuất dán vạch phản quang dọc chân tường tại rạp."
+    },
+    {
+      "id": "S04",
+      "kind": "Thu hẹp theo địa điểm của dự án",
+      "query": "nghiệm thu lối thoát cửa phía tây",
+      "filters": {"project": "Hội trường trên đồi"},
+      "accept": ["SN03"],
+      "why": "SN03 ghi bục phát biểu chắn cửa phía tây của hội trường. Các bản rạp ven sông nói về một địa điểm khác."
+    },
+    {
+      "id": "S05",
+      "kind": "Một ghi chú có nhiều nhãn trên cả ba chiều",
+      "query": "in thu chu giai bang chu noi",
+      "filters": {"topic": "Tiếp cận công cộng", "project": "Sơ đồ khu phố", "tag": "Đồ dùng lớp học"},
+      "accept": ["SN05"],
+      "why": "SN05 khớp ghi chú in thử chú giải bằng chữ nổi qua quan hệ thứ hai ở cả ba chiều. SN07 có chung bộ lọc nhưng dùng vòng tròn đồng tâm cho bến phà."
+    },
+    {
+      "id": "S06",
+      "kind": "Lấy một ghi chú qua nhóm học liệu còn lại",
+      "query": "gờ chấm từ bậc thềm",
+      "filters": {"topic": "Giáo dục", "project": "Tủ học liệu", "tag": "In thử"},
+      "accept": ["SN05"],
+      "why": "Gờ chấm của SN05 dẫn tay từ bậc thềm đến bàn giáo viên. SN06 cùng lô in thử nhưng là bài ghép la bàn."
+    },
+    {
+      "id": "S07",
+      "kind": "Cùng loại sơ đồ với hai đối tượng sử dụng",
+      "query": "ba vòng tròn đồng tâm",
+      "filters": {"topic": "Tiếp cận công cộng", "project": "Sơ đồ khu phố", "tag": "Đồ dùng lớp học"},
+      "accept": ["SN07"],
+      "why": "SN07 dùng ba vòng tròn đồng tâm để đánh dấu bến phà. Cùng tập đồ dùng, SN05 dùng gờ chấm cho hành trình khác."
+    },
+    {
+      "id": "S08",
+      "kind": "Chủ kho mặc định và nhãn trùng tên",
+      "query": "phiếu lắp khung mica",
+      "filters": {"topic": "Trưng bày", "project": "Tuần thủ công", "tag": "Đã duyệt"},
+      "accept": ["SN08"],
+      "why": "Hai phiếu đều có đúng nội dung tìm và ba nhãn cùng tên. Phiếu có miếng đệm nỉ thuộc kho main, phiếu chốt lò xo thuộc guest."
+    },
+    {
+      "id": "S09",
+      "kind": "Chủ kho thứ hai và tín hiệu khớp hai bản",
+      "query": "khung mica",
+      "filters": {"owner": "guest", "tag": "Đã duyệt"},
+      "accept": ["SN09"],
+      "why": "Kho guest giữ SN09 về mẫu dệt, có thẻ Đã duyệt của guest. SN08 là phiếu tranh in của main với cùng cụm tìm."
+    },
+    {
+      "id": "S10",
+      "kind": "Hai ca hoạt động cùng khớp trong một dự án",
+      "query": "đồng hồ nước",
+      "filters": {"project": "Vườn mưa"},
+      "accept": ["SN13", "SN14"],
+      "why": "Hai ca ở vườn mưa đều ghi số đồng hồ nước. Bảng đồng hồ nước của xưởng nhuộm thuộc dự án khác."
+    },
+    {
+      "id": "S11",
+      "kind": "Xóa mềm giữa hai bản cùng metadata",
+      "query": "tủ chìa khóa nhà thuyền",
+      "filters": {"topic": "Trực vận hành", "project": "Nhà thuyền", "tag": "Hướng dẫn"},
+      "accept": ["SN10"],
+      "why": "SN10 là sổ hiện hành. SN11 cùng nội dung tìm và metadata nhưng đã chuyển vào thùng rác."
+    },
+    {
+      "id": "S12",
+      "kind": "Trạng thái hiện hành theo chi tiết bàn giao",
+      "query": "phòng trực móc số 6",
+      "filters": {"project": "Nhà thuyền"},
+      "accept": ["SN10"],
+      "why": "Sổ hiện hành SN10 xác định phòng trực và móc số 6. Sổ cũ dùng móc số 2 và nằm trong thùng rác."
+    },
+    {
+      "id": "S13",
+      "kind": "Loại ghi chú đang mở để tìm ca còn lại",
+      "query": "bảo dưỡng đồng hồ nước",
+      "filters": {"exclude": "SN13", "project": "Vườn mưa", "tag": "Nhật ký ca"},
+      "accept": ["SN14"],
+      "why": "SN13 đang mở và bị loại. Nhật ký ca tối SN14 cùng thiết bị, dự án và thẻ đủ điều kiện."
+    },
+    {
+      "id": "S14",
+      "kind": "Loại một mục và nhận mục thuộc dự án khác",
+      "query": "đồng hồ nước lưu lượng súc máng",
+      "filters": {"exclude": "SN14", "topic": "Bảo dưỡng"},
+      "accept": ["SN15"],
+      "why": "SN14 đang mở có nhắc mục lưu lượng súc máng nhưng phải loại bằng ID. SN15 cùng chủ đề và có bảng theo dõi lưu lượng của xưởng nhuộm."
+    },
+    {
+      "id": "S15",
+      "kind": "Kết quả nhiều mục khi loại một mục mà không khóa dự án",
+      "query": "ghi số đồng hồ nước",
+      "filters": {"exclude": "SN14", "topic": "Bảo dưỡng"},
+      "accept": ["SN13", "SN15"],
+      "why": "SN13 và SN15 đều cùng chủ đề và ghi số đồng hồ nước. SN14 cũng có đúng cụm tìm nhưng bị loại bằng ID."
+    },
+    {
+      "id": "S16",
+      "kind": "Từ khóa chỉ nằm trong tiêu đề",
+      "query": "ong nhom gap",
+      "filters": {"topic": "Dụng cụ cầm tay", "tag": "Bảo quản"},
+      "accept": ["SN16"],
+      "why": "Tên dụng cụ chỉ xuất hiện trong tiêu đề SN16. Nội dung đi với tiêu đề chỉ gọi chung là thiết bị."
+    },
+    {
+      "id": "S17",
+      "kind": "Từ khóa chỉ nằm trong mô tả",
+      "query": "kẹp nam châm chân đế",
+      "filters": {"project": "Trạm quan sát", "tag": "Kiểm kê"},
+      "accept": ["SN17"],
+      "why": "Mô tả SN17 có đầy đủ tên dụng cụ. Tiêu đề và ghi chú chỉ nói tới vị trí kiểm kê và việc cất sau đó."
+    },
+    {
+      "id": "S18",
+      "kind": "Từ khóa chỉ nằm trong nội dung ghi chú",
+      "query": "tấm nhựa chống trượt hong dựng đứng",
+      "filters": {"project": "Trạm quan sát", "tag": "Bảo quản"},
+      "accept": ["SN18"],
+      "why": "Nội dung SN18 ghi vật liệu và cách hong dựng đứng. Tiêu đề và mô tả dùng tên chung, SN16 dặn bảo quản vật dụng khác."
+    },
+    {
+      "id": "S19",
+      "kind": "Câu nhớ ý trong phạm vi dự án",
+      "query": "Cái chắn gió để kim bàn cân hết lắc và vẫn luồn khay ngang qua ở đâu?",
+      "filters": {"project": "Quầy rau cuối tuần", "topic": "Cân đo"},
+      "accept": ["SN19"],
+      "why": "SN19 kê tấm chắn gió để kim cân đứng yên và chừa khe ngang đưa khay. SN20 nói về rèm ở bàn cân bột thuộc dự án bếp bánh."
+    },
+    {
+      "id": "S20",
+      "kind": "Tìm gần đúng vẫn giữ thẻ",
+      "query": "Mẫu sơn son gập túi vải để coi vệt đỏ có dính qua bên kia chưa?",
+      "filters": {"project": "Gian quà vải", "tag": "Thử màu"},
+      "accept": ["SN21"],
+      "why": "SN21 thử gập vải xem màu sơn có in sang mặt đối diện. SN22 trùng vật liệu và màu sơn nhưng là mẫu trưng hàng được đặt mở."
+    },
+    {
+      "id": "S21",
+      "kind": "Liên ngành đo vi khí hậu và hỗ trợ xe lăn",
+      "query": "bóng râm mái tre xe lăn 120 cm",
+      "filters": {"topic": "Vi khí hậu", "project": "Sân sinh hoạt", "tag": "Có kích thước"},
+      "accept": ["SN23"],
+      "why": "SN23 vừa đo bóng mái tre vừa chừa lối xe lăn 120 cm. SN24 đo bóng nhưng không ghi lối xe lăn, SN25 mô tả lối 150 cm ở vị trí khác."
+    },
+    {
+      "id": "S22",
+      "kind": "Chiều lọc tiếp cận với kích thước cụ thể",
+      "query": "xe lăn 150 cm",
+      "filters": {"topic": "Tiếp cận công cộng", "tag": "Có kích thước"},
+      "accept": ["SN25"],
+      "why": "SN25 ghi 150 cm cho lối cạnh khán đài. SN23 lọt cùng bộ lọc nhưng ghi 120 cm cho lối vòng qua chum nước."
+    },
+    {
+      "id": "S23",
+      "kind": "Tìm cả hai lần đo trong một chủ đề",
+      "query": "đo bóng râm",
+      "filters": {"topic": "Vi khí hậu", "tag": "Đo tại chỗ"},
+      "accept": ["SN23", "SN24"],
+      "why": "SN23 đo bóng cho lối và hàng ghế nghỉ, SN24 đo bóng cho chỗ xếp hàng. Cả hai đều ghi quan sát tại sân vào buổi trưa."
+    },
+    {
+      "id": "S24",
+      "kind": "Thẻ phân biệt thực đơn với khẩu phần",
+      "query": "cháo kê nồi lớn 18 bát men",
+      "filters": {"tag": "Khẩu phần"},
+      "accept": ["SN27"],
+      "why": "SN27 ghi nồi lớn chia 18 bát men và gắn thẻ Khẩu phần. SN26 nói về món ăn kèm và danh sách mua."
+    },
+    {
+      "id": "S25",
+      "kind": "Cùng dự án và chủ đề nhưng khác chức năng ghi chú",
+      "query": "ruốc nấm ăn với cháo kê",
+      "filters": {"topic": "Bếp tập thể", "project": "Bếp đầu ngõ"},
+      "accept": ["SN26"],
+      "why": "Chỉ SN26 ghi món ruốc nấm ăn cùng cháo kê. Cùng dự án và chủ đề, SN27 chỉ nói về chia cháo."
+    },
+    {
+      "id": "S26",
+      "kind": "Ghi chú thuộc hai dự án có cùng một chức năng",
+      "query": "thời hạn đổi cân đóng dấu tròn",
+      "filters": {"project": "Bếp đầu ngõ", "tag": "Nhà cung cấp"},
+      "accept": ["SN28"],
+      "why": "SN28 có quan hệ với cả dự án quầy rau và bếp đầu ngõ. Nội dung ghi thời hạn đổi cân và dấu tròn của đơn vị gần chợ."
+    },
+    {
+      "id": "S27",
+      "kind": "Tên đối tượng gần trùng và vật liệu phân biệt",
+      "query": "khay đồng mẫu chữ có chân",
+      "filters": {"project": "Phố chữ", "tag": "Kiểm kê"},
+      "accept": ["SN29"],
+      "why": "SN29 ghi khay đồng chứa mẫu có chân. Bản SN30 cùng bộ chữ địa danh và cùng thẻ nhưng dùng khay gỗ, chứa chữ không chân."
+    },
+    {
+      "id": "S28",
+      "kind": "Một nguồn khớp khi không dùng bộ lọc",
+      "query": "bộ đếm cơ cổng xếp",
+      "accept": ["SN32"],
+      "why": "SN32 là phiếu giao ca duy nhất dặn cộng bộ đếm cơ sau khi khách qua cổng xếp."
+    },
+    {
+      "id": "S29",
+      "kind": "Lọc dự án theo công dụng thay vì vật liệu",
+      "query": "bộ chữ rời nhãn kệ bếp",
+      "filters": {"project": "Bếp đầu ngõ"},
+      "accept": ["SN31"],
+      "why": "SN31 dùng chữ rời cao su để in nhãn kệ bếp. Hai khay chữ tại dự án Phố chữ dùng để ghép địa danh."
+    },
+    {
+      "id": "S30",
+      "kind": "Đủ hai tài liệu phù hợp trong một lô trưng bày",
+      "query": "bộ chữ rời ghép tên phố",
+      "filters": {"topic": "In thủ công", "project": "Phố chữ"},
+      "accept": ["SN29", "SN30"],
+      "why": "Hai khay chữ đồng và gỗ đều được ghi là bộ dùng ghép tên phố. SN31 dùng cho nhãn kệ bếp, thuộc dự án khác."
+    },
+    {
+      "id": "S31",
+      "kind": "Chỉ còn bản trong thùng rác",
+      "query": "biên nhận XN702 xuồng nan",
+      "filters": {"project": "Nhà thuyền", "tag": "Kế toán"},
+      "accept": [],
+      "why": "Mã XN702 chỉ có trong SN12 đã xóa mềm. Kho hiện hành không có bản biên nhận nào khác mang mã này."
+    },
+    {
+      "id": "S32",
+      "kind": "Chi tiết riêng chỉ còn ở phiên bản đã xóa",
+      "query": "chìa dự phòng móc số 2",
+      "filters": {"project": "Nhà thuyền", "tag": "Hướng dẫn"},
+      "accept": [],
+      "why": "Vị trí móc số 2 thuộc sổ SN11 đã xóa mềm. Bản đang dùng SN10 quy định móc số 6."
+    },
+    {
+      "id": "S33",
+      "kind": "Cụm chính xác chỉ thuộc chủ kho khác",
+      "query": "chốt lò xo bằng đồng",
+      "filters": {"owner": "main", "project": "Tuần thủ công", "tag": "Đã duyệt"},
+      "accept": [],
+      "why": "Chốt lò xo bằng đồng thuộc SN09 ở kho guest. Kiểu khung của main dùng đệm nỉ dù hai kho có cùng tên dự án và thẻ."
+    },
+    {
+      "id": "S34",
+      "kind": "Cô lập chủ kho trong câu hỏi nhớ ý",
+      "query": "Tìm cách chừa khe để luồn thẻ tên bức tranh vào khung mica",
+      "filters": {"owner": "guest", "topic": "Trưng bày", "tag": "Đã duyệt"},
+      "accept": [],
+      "why": "Khe cho thẻ tên tranh chỉ có trong SN08 của main. Phiếu SN09 của guest nói về cách giữ mẫu dệt."
+    },
+    {
+      "id": "S35",
+      "kind": "Bỏ mục đang mở là bỏ đáp án duy nhất",
+      "query": "đường gờ chấm bàn giáo viên",
+      "filters": {"exclude": "SN05", "project": "Sơ đồ khu phố", "topic": "Tiếp cận công cộng"},
+      "accept": [],
+      "why": "SN05 là bản duy nhất mô tả gờ chấm dẫn đến bàn giáo viên, và chính mục này đang bị loại."
+    },
+    {
+      "id": "S36",
+      "kind": "Thẻ hợp lệ chưa gán cho tài liệu liên quan",
+      "query": "cháo kê ruốc nấm",
+      "filters": {"project": "Bếp đầu ngõ", "tag": "Nhà cung cấp"},
+      "accept": [],
+      "why": "Thẻ này có thật trong dự án qua SN28 về cân điện tử. Ghi chú món cháo SN26 chỉ gắn thẻ Thực đơn."
+    },
+    {
+      "id": "S37",
+      "kind": "Giao ba bộ lọc rỗng dù từng nhãn đều hợp lệ",
+      "query": "in thử một bộ la bàn",
+      "filters": {"topic": "Giáo dục", "project": "Sơ đồ khu phố", "tag": "Thực hành"},
+      "accept": [],
+      "why": "SN06 có bài la bàn, chủ đề Giáo dục và thẻ Thực hành nhưng ở dự án Tủ học liệu. Trong Sơ đồ khu phố, SN05 cũng có chủ đề Giáo dục nhưng không có thẻ Thực hành."
+    },
+    {
+      "id": "S38",
+      "kind": "Tìm gần đúng bị chặn đúng ở phạm vi dự án",
+      "query": "Rèm chắn gió treo lên trần để giữ kim cân bột khỏi nhảy gần cửa lò",
+      "filters": {"project": "Quầy rau cuối tuần", "tag": "Thử thiết bị"},
+      "accept": [],
+      "why": "Đúng cơ cấu rèm treo và bối cảnh cửa lò thuộc SN20 của Bếp bánh sáng. SN19 đúng bộ lọc nhưng là tấm kê quanh bàn để đưa khay ngang, không có rèm treo."
+    },
+    {
+      "id": "S39",
+      "kind": "Từ khóa trong mô tả không vượt qua thẻ",
+      "query": "kẹp nam châm giữ góc tờ phiếu",
+      "filters": {"topic": "Dụng cụ cầm tay", "project": "Trạm quan sát", "tag": "Bảo quản"},
+      "accept": [],
+      "why": "Mô tả phù hợp nằm trong SN17 có thẻ Kiểm kê. Hai mục Bảo quản cùng dự án nói về ống nhòm và tấm chống trượt."
+    },
+    {
+      "id": "S40",
+      "kind": "Không suy ra thuộc tính từ một kết quả có chung chủ đề",
+      "query": "bóng râm mái tre nhiệt độ 29 độ",
+      "filters": {"topic": "Vi khí hậu", "project": "Sân sinh hoạt"},
+      "accept": [],
+      "why": "SN23 khảo sát bóng râm mái tre và SN24 khảo sát bóng chỗ xếp hàng, nhưng không ghi nhiệt độ 29 độ hay bất kỳ số đo nhiệt độ nào."
+    }
+  ]
+}
