@@ -4,6 +4,7 @@ import { KnowledgeExplorer } from './KnowledgeExplorer';
 import type { KnowledgeTreeData } from './KnowledgeTree';
 import { libraryLocationHref, parseLibraryLocation } from './LibraryViews';
 import { SavedCollectionsPanel } from './SavedCollections';
+import { WorkspaceTabs, allowTabNavigation } from './WorkspaceTabs';
 import { useResource } from './views';
 import './KnowledgeExplorer.css';
 
@@ -22,7 +23,7 @@ function initialWidth(){
 
 /** Keep the same explorer instance, scroll position and expansion state while
  * routing between library, individual notes and other authenticated screens. */
-export function KnowledgeWorkspace({path, csrf, children}: {path?: string; csrf: string; children: ReactNode}) {
+export function KnowledgeWorkspace({path, csrf, children, owner}: {path?: string; csrf: string; children: ReactNode; owner?:string|null}) {
   const [localPath, setLocalPath] = useState(() => window.location.hash || '#/thu-vien');
   useEffect(() => {
     const change = () => setLocalPath(window.location.hash || '#/thu-vien');
@@ -109,9 +110,10 @@ export function KnowledgeWorkspace({path, csrf, children}: {path?: string; csrf:
   const style={'--kt-explorer-width':sidebarWidth+'px'} as CSSProperties;
   return <WorkspaceContext.Provider value={{tree, revision}}>
     <div className="knowledge-library-layout knowledge-workspace" style={style} onClick={event => {
-      if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
       const target = event.target instanceof Element ? event.target.closest('a') : null;
       const href = target?.getAttribute('href');
+      if(href&&href!==route&&(href.startsWith('#/muc/')||href.startsWith('#/thu-vien'))&&!allowTabNavigation()){event.preventDefault();return;}
       if (href?.startsWith('#/thu-vien') && !href.includes('collection=') && !href.includes('view=')) {
         event.preventDefault();
         window.location.hash = libraryLocationHref({...parseLibraryLocation(href), view: scope.view});
@@ -150,7 +152,7 @@ export function KnowledgeWorkspace({path, csrf, children}: {path?: string; csrf:
           if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();applySidebarWidth(widthRef.current+(event.key==='ArrowLeft'?-20:20));}
           else if(event.key==='Home'||event.key==='End'){event.preventDefault();applySidebarWidth(event.key==='Home'?MIN_WIDTH:MAX_WIDTH);}
         }} />
-      <div className="workspace-content">{children}</div>
+      <div className="workspace-content"><WorkspaceTabs activeId={itemId} owner={owner} fallbackHref={libraryLocationHref(lastLibrary.current)}/>{children}</div>
     </div>
   </WorkspaceContext.Provider>;
 }

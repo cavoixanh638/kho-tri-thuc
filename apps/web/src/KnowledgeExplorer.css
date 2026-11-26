@@ -97,3 +97,20 @@
 .explorer-search-results a { display:block; padding:5px 7px; border-radius:4px; font-size:12px; overflow-wrap:anywhere; text-decoration:none; }
 .explorer-search-results a:hover,.explorer-search-results a:focus-visible { background:var(--ground); }
 .explorer-search-results small,.explorer-search-results p { display:block; font-size:11px; color:var(--muted); margin:4px 2px; }
+
+/* Tabs are route shortcuts, not duplicate mounted editors or copies of Items. */
+.workspace-tabs { min-width:0; margin:0 0 12px; border:1px solid var(--border,#dedede); border-radius:7px; background:var(--surface,#fff); }
+.workspace-tabs-header { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 8px; border-bottom:1px solid var(--border,#dedede); }
+.workspace-tabs-header > span { font-size:11px; color:var(--muted); }
+.workspace-tabs button { border:0; border-radius:4px; color:inherit; background:transparent; cursor:pointer; font:inherit; }
+.workspace-tabs button:focus-visible { outline:2px solid var(--signal,#346dc0); outline-offset:-2px; }
+.workspace-tabs-header button { padding:4px 7px; font-size:12px; }
+.workspace-tab-strip { display:flex; overflow-x:auto; scrollbar-width:thin; gap:3px; padding:4px; }
+.workspace-tab { display:flex; flex:0 0 auto; align-items:center; border:1px solid transparent; border-radius:5px; background:var(--ground,#f5f5f5); max-width: min(240px,70vw); }
+.workspace-tab.is-active { border-color:var(--signal,#346dc0); background:color-mix(in srgb,var(--signal,#346dc0) 9%,var(--surface,#fff)); }
+.workspace-tab-open { min-width:0; max-width:180px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; padding:7px 8px; font-size:13px!important; }
+.workspace-tab.is-active .workspace-tab-open { font-weight:600; color:var(--signal); }
+.workspace-tab-icon { flex:none; width:27px; height:30px; font-size:14px!important; opacity:.7; }
+.workspace-tab button:hover,.workspace-tabs-header button:hover { background:var(--raised,#eee); opacity:1; }
+.workspace-tabs .tab-notice { padding:5px 8px; font-size:12px; margin:0; }
+@media(max-width:900px){.workspace-tab-open { min-height:40px; }.workspace-tab-icon { height:40px; width:32px; }}

@@ -1,7 +1,8 @@
 import { ExtractedContent } from './ExtractedContent';
 import { AssetPreview } from './AssetPreview';
 import { Button, Textarea, TextInput } from '@mantine/core';
-import { Component, useEffect, useRef, useState, type ReactNode, type SubmitEvent } from 'react';
+import { Component, useEffect, useLayoutEffect, useRef, useState, type ReactNode, type SubmitEvent } from 'react';
+import { TAB_NAVIGATION_EVENT, TAB_TITLE_EVENT } from './WorkspaceTabs';
 import { ApiError, externalHttpUrl, request, type Capture, type Item, type Page } from './api';
 import { ItemOrganization, RelatedItems } from './ItemOrganization';
 import { itemNeedsRefresh } from './itemProcessing';
@@ -80,7 +81,7 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
   item: Item; csrf: string; onUpdated: (item: Item) => void; onRefresh: () => void;
   refreshError?: boolean; pollingPaused?: boolean;
 }) {
-  const { draft, setDraft, base, editing, dirty, recovered, storageError, start, finish } = useMarkdownDraft(item);
+  const { draft, setDraft, base, editing, dirty, recovered, storageError, start, finish, persistDraft } = useMarkdownDraft(item);
   const composing = useRef(false);
   const draftRef = useRef(draft);
   draftRef.current = draft;
@@ -97,6 +98,15 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
   const sourceUrl = externalHttpUrl(item.original_url);
   const hasSourceContent = item.kind !== 'text' || item.assets.length > 0 || Boolean(item.original_url);
   const evidenceRevision = [item.updated_at, item.source_fetch, item.content_extract, item.classification_status].join(':');
+  useEffect(()=>{window.dispatchEvent(new CustomEvent(TAB_TITLE_EVENT,{detail:{id:item.item_id,title:itemTitle(item)}}));},[item.item_id,item.title,item.note]);
+  useLayoutEffect(()=>{
+    const guard=(event:Event)=>{
+      if(composing.current||inFlight.current||reviewBusy){event.preventDefault();setError('Đang nhập hoặc đang xử lý thay đổi. Hoàn tất trước khi chuyển bài.');return;}
+      if(!persistDraft()){event.preventDefault();setError('Không lưu được bản nháp trong tab. Hãy lưu lên máy chủ hoặc sao chép trước khi chuyển bài.');}
+    };
+    window.addEventListener(TAB_NAVIGATION_EVENT,guard);
+    return()=>window.removeEventListener(TAB_NAVIGATION_EVENT,guard);
+  },[persistDraft,reviewBusy]);
   useEffect(() => {
     const command = (event: Event) => {
       const detail = (event as CustomEvent<{ action?: string; itemId?: string }>).detail;

@@ -130,3 +130,18 @@ test('storage quota failure is visible and the live draft remains saveable', asy
     await click('Lưu thay đổi'); assert.equal(saved.note, 'Nháp còn trong bộ nhớ');
   } finally { prototype.setItem = original; }
 });
+
+
+test('WS-03 tab navigation persists dirty Markdown before switch; storage failure blocks tab navigation',async()=>{
+ await render();await click('Chỉnh sửa');await input('Nháp khi đổi tab');
+ const event=new window.Event('knowledge-before-tab-navigation',{cancelable:true});
+ assert.equal(window.dispatchEvent(event),true);
+ assert.ok(sessionStorage.getItem('kt-markdown-draft-v1:kt115').includes('Nháp khi đổi tab'));
+ const original=window.Storage.prototype.setItem;
+ window.Storage.prototype.setItem=function(){throw Error('quota');};
+ try{
+   const denied=new window.Event('knowledge-before-tab-navigation',{cancelable:true});
+   await ui.act(async()=>{assert.equal(window.dispatchEvent(denied),false);await settle();});
+   assert.equal(field().value,'Nháp khi đổi tab');assert.match(container.textContent,/Không lưu được bản nháp trong tab/);
+ }finally{window.Storage.prototype.setItem=original;}
+});

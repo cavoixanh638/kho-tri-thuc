@@ -9,6 +9,7 @@ import { SearchScreen } from './SearchScreen';
 import { SettingsScreen } from './SettingsScreen';
 import { KnowledgeCommandPalette } from './KnowledgeCommandPalette';
 import { KnowledgeWorkspace } from './KnowledgeWorkspace';
+import { clearWorkspaceTabs, allowTabNavigation } from './WorkspaceTabs';
 import { ErrorNotice, Loading, PageTitle } from './views';
 
 const links = [
@@ -151,6 +152,7 @@ export function App() {
     setLogoutError(false);
     try {
       const result = await request<Session>('/session', { method: 'DELETE', csrf: session.csrf_token });
+      clearWorkspaceTabs(session.username);
       setSession(result);
       setDriveResult(undefined);
       window.location.hash = '#/gui';
@@ -169,6 +171,7 @@ export function App() {
     <Header path={path} username={session?.username} onLogout={authenticated ? () => void logout() : undefined} signingOut={signingOut} />
     <main id="main-content" className={authenticated ? "shell canvas workspace-shell" : "shell canvas"} tabIndex={-1}>
       {authenticated && <KnowledgeCommandPalette currentItemId={itemId} onAction={(action) => {
+        if (!allowTabNavigation()) return;
         if (action === 'day') window.location.hash = '#/thu-vien?view=timeline';
         else if (action === 'create') {
           if (path.startsWith('#/thu-vien')) window.dispatchEvent(new CustomEvent('knowledge-command', { detail: { action } }));
@@ -187,7 +190,7 @@ export function App() {
         </section>
       </>}
       {session && !authenticated && <Login csrf={session.csrf_token} onLogin={setSession} />}
-      {session && authenticated && <KnowledgeWorkspace key={session.username} path={path} csrf={session.csrf_token}>{itemId ? <ItemScreen id={itemId} csrf={session.csrf_token} key={itemId} />
+      {session && authenticated && <KnowledgeWorkspace key={session.username} path={path} csrf={session.csrf_token} owner={session.username}>{itemId ? <ItemScreen id={itemId} csrf={session.csrf_token} key={itemId} />
         : path === '#/lich-su' ? <HistoryScreen />
           : path.split('?', 1)[0] === '#/thu-vien' ? <LibraryScreen csrf={session.csrf_token} />
             : path.split('?', 1)[0] === '#/tim-kiem' ? <SearchScreen path={path} key={path} />

@@ -216,3 +216,36 @@ test('malformed optional structure response shows retry without crashing the not
  assert.match(container.textContent,/Bài con \(1\)/);assert.ok(container.querySelector('a[href="#/muc/'+child+'"]'));
  assert.equal(mutations.length,0);
 });
+
+
+test('WS-03/04/06 tabs select, pin, reorder, close, reopen, and persist UUIDs only',async()=>{
+ const owner='workspace-fixture';window.sessionStorage.removeItem('kt-workspace-tabs-v1:'+owner);
+ const draw=activeId=>render(ui.WorkspaceTabs,{activeId,owner,fallbackHref:'#/thu-vien?node=1'});
+ await draw(id);await draw(child);
+ const strip=container.querySelector('.workspace-tab-strip');
+ assert.equal(strip.querySelectorAll('.workspace-tab').length,2);
+ await ui.act(async()=>{window.dispatchEvent(new window.CustomEvent('knowledge-tab-title',{detail:{id,title:'Tiêu đề riêng'}}));await settle();});
+ assert.ok(strip.textContent.includes('Tiêu đề riêng'));
+ await click('Ghim Tiêu đề riêng');
+ assert.equal(strip.querySelector('.workspace-tab').dataset.tabId,id);
+ const first=strip.querySelector('.workspace-tab[data-tab-id="'+id+'"] .workspace-tab-open');
+ await ui.act(async()=>{first.click();await settle();});
+ assert.equal(window.location.hash,'#/muc/'+id);
+ const block=event=>event.preventDefault();window.addEventListener('knowledge-before-tab-navigation',block);
+ await click('Đóng tab Bài '+child.slice(0,8));
+ // The currently active tab (child in controlled props) must not be closed.
+ assert.ok(strip.querySelector('[data-tab-id="'+child+'"]'));
+ window.removeEventListener('knowledge-before-tab-navigation',block);
+ await click('Đóng tab Bài '+child.slice(0,8));assert.equal(strip.querySelectorAll('.workspace-tab').length,1);
+ await draw(id);await click('Mở lại tab đã đóng');await draw(child);
+ assert.equal(strip.querySelectorAll('.workspace-tab').length,2);
+ const stored=window.sessionStorage.getItem('kt-workspace-tabs-v1:'+owner);
+ assert.ok(stored.includes(id)&&stored.includes(child));assert.ok(!stored.includes('Tiêu đề riêng'));
+ await ui.act(async()=>root.unmount());root=ui.createRoot(container);
+ await draw(child);assert.equal(container.querySelectorAll('.workspace-tab').length,2);
+ assert.equal(container.querySelector('.workspace-tab').dataset.tabId,id);
+ await ui.act(async()=>root.unmount());root=ui.createRoot(container);
+ await render(ui.WorkspaceTabs,{activeId:child,owner:'other-fixture',fallbackHref:'#/thu-vien'});
+ assert.equal(container.querySelectorAll('.workspace-tab').length,1);
+ window.sessionStorage.removeItem('kt-workspace-tabs-v1:'+owner);window.sessionStorage.removeItem('kt-workspace-tabs-v1:other-fixture');
+});
