@@ -53,6 +53,9 @@ def database_benchmark(index, encoder, reranker, samples):
         positions = {row.pk: i for i, row in enumerate(rows)}
         if Item.objects.filter(owner=owner).count() != 10000:
             raise RuntimeError("Incomplete test corpus")
+        # The transaction's 10k uncommitted notes are not visible to autovacuum.
+        with connection.cursor() as cursor:
+            cursor.execute("ANALYZE catalog_item")
         service = SearchService()
         filters = SearchFilters(owner.pk)
 
