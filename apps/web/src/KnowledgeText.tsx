@@ -1,5 +1,6 @@
 import Markdown, { type Components } from 'react-markdown';
 import { createContext, useContext, useLayoutEffect, useRef, useState } from 'react';
+import { WorkspacePreviewContext } from './WorkspacePreview';
 import remarkGfm from 'remark-gfm';
 import { externalHttpUrl } from './api';
 import { remarkNoteOutline } from './NoteOutline';
@@ -24,12 +25,28 @@ const FoldDetails:NonNullable<Components['details']>=({children,id,className})=>
 };
 const NoteLink:NonNullable<Components['a']>=({href,children})=>{
   const state=useContext(FoldContext);
+  const preview=useContext(WorkspacePreviewContext);
   return href ? href.startsWith('#kt-heading-') ? <a href={href} onClick={event=>{event.preventDefault();state?.follow(href);}}>{children}</a>
-    : internalItemHref(href) ? <a href={href}>{children}</a> : <a href={href} target="_blank" rel="noopener noreferrer">{children}</a> : <span>{children}</span>;
+    : internalItemHref(href) ? <><a href={href}>{children}</a>{preview&&<button className="note-preview-trigger" type="button" aria-label="Xem bài liên kết bên cạnh" title="Xem bài liên kết bên cạnh"
+      onClick={event=>preview(href.slice(6),event.currentTarget)}>↗</button>}</> : <a href={href} target="_blank" rel="noopener noreferrer">{children}</a> : <span>{children}</span>;
+};
+const OutlineNavigation:NonNullable<Components['nav']>=({children,className})=>{
+  const [visible,setVisible]=useState(true);
+  const [depth,setDepth]=useState(6);
+  return <nav className={className} aria-label="Mục lục trong bài" data-outline-depth={depth}>
+    <div className="note-outline-controls">
+      <button type="button" aria-expanded={visible} onClick={()=>setVisible(value=>!value)}>{visible?'Thu gọn mục lục':'Hiện mục lục'}</button>
+      {visible&&<label>Cấp tiêu đề <select aria-label="Số cấp mục lục" value={depth} onChange={event=>setDepth(Number(event.currentTarget.value))}>
+        {[1,2,3,4,5,6].map(level=><option key={level} value={level}>{level===1?'H1':'H1–H'+level}</option>)}
+      </select></label>}
+    </div>
+    <div className="note-outline-content" hidden={!visible}>{children}</div>
+  </nav>;
 };
 // Stable component identities keep DOM/focus intact across fold state changes.
 const noteComponents:Components={
         details: FoldDetails,
+        nav: OutlineNavigation,
         h1: ({ children, id }) => <h2 id={id} tabIndex={-1}>{children}</h2>, h2: ({ children, id }) => <h3 id={id} tabIndex={-1}>{children}</h3>, h3: ({ children, id }) => <h4 id={id} tabIndex={-1}>{children}</h4>,
         h4: ({ children, id }) => <h4 id={id} tabIndex={-1}>{children}</h4>, h5: ({ children, id }) => <h5 id={id} tabIndex={-1}>{children}</h5>, h6: ({ children, id }) => <h6 id={id} tabIndex={-1}>{children}</h6>,
         a: NoteLink,

@@ -67,7 +67,7 @@
 .knowledge-explorer .explorer-actions { margin:7px 0; gap:5px; }
 .knowledge-explorer .knowledge-tree-panel > .list-meta { font-size:11px; line-height:1.4; margin:6px 0 8px; }
 @media(max-width:1280px) {
-  .knowledge-workspace .workspace-content > .detail-view,.knowledge-workspace .workspace-content > .split-view { grid-template-columns:minmax(0,1fr); }
+  .knowledge-workspace .workspace-main-pane > .detail-view,.knowledge-workspace .workspace-main-pane > .split-view { grid-template-columns:minmax(0,1fr); }
 }
 @media(max-width:900px) {
   .knowledge-workspace.knowledge-library-layout:has(.library-tree-shell) { grid-template-columns:minmax(0,1fr); gap:12px; }
@@ -114,3 +114,17 @@
 .workspace-tab button:hover,.workspace-tabs-header button:hover { background:var(--raised,#eee); opacity:1; }
 .workspace-tabs .tab-notice { padding:5px 8px; font-size:12px; margin:0; }
 @media(max-width:900px){.workspace-tab-open { min-height:40px; }.workspace-tab-icon { height:40px; width:32px; }}
+
+.workspace-reader-layout,.workspace-main-pane{min-width:0;}
+.workspace-reader-layout.is-preview-open{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;align-items:start;}
+.workspace-preview-pane{min-width:0;border:1px solid var(--rule,#ddd);border-radius:6px;background:var(--surface,#fff);padding:12px;overflow-wrap:anywhere;}
+.workspace-preview-pane:focus-visible{outline:2px solid var(--signal,#346dc0);outline-offset:1px;}
+.workspace-preview-pane header{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap;}
+.workspace-preview-pane header button{font:inherit;font-size:12px;color:inherit;background:var(--ground,#f5f5f5);border:1px solid var(--rule,#ddd);border-radius:4px;padding:6px;cursor:pointer;}
+.workspace-preview-pane h2{font-size:16px;}
+.workspace-preview-pane pre{font:inherit;white-space:pre-wrap;overflow-wrap:anywhere;max-height:55vh;overflow:auto;line-height:1.55;}
+.workspace-reader-layout.is-preview-open .workspace-main-pane>.detail-view{grid-template-columns:minmax(0,1fr);}
+@media(min-width:1281px){
+.workspace-reader-layout.layout-side{grid-template-columns:minmax(0,1fr) minmax(235px,32%);}
+.workspace-reader-layout.layout-side .workspace-preview-pane{position:sticky;top:12px;max-height:calc(100dvh - 24px);overflow:auto;}
+}

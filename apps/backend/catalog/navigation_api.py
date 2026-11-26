@@ -92,6 +92,25 @@ def navigation_tabs(request, ids: str):
     return {"items": [visible[key] for key in keys if key in visible]}
 
 
+@router.get("/items/{item_id}/preview")
+def note_preview(request, item_id: UUID):
+    """Bounded read-only authored excerpt; never infer content of media."""
+    row = get_object_or_404(
+        Item.objects.filter(owner=request.user, deleted_at__isnull=True)
+        .annotate(preview=Substr("note", 1, 6001))
+        .only("id", "title", "kind", "saved_at", "content_extract", "source_fetch"),
+        pk=item_id,
+    )
+    return {
+        **hit(row),
+        "kind": row.kind,
+        "excerpt": row.preview[:6000],
+        "truncated": len(row.preview) > 6000,
+        "content_extract": row.content_extract,
+        "source_fetch": row.source_fetch,
+    }
+
+
 @router.get("/items/{item_id}/links")
 def note_links(request, item_id: UUID):
     item = get_object_or_404(

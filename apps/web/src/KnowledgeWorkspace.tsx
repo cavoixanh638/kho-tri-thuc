@@ -5,6 +5,7 @@ import type { KnowledgeTreeData } from './KnowledgeTree';
 import { libraryLocationHref, parseLibraryLocation } from './LibraryViews';
 import { SavedCollectionsPanel } from './SavedCollections';
 import { WorkspaceTabs, allowTabNavigation } from './WorkspaceTabs';
+import { WorkspacePreviewContext, WorkspaceReadPane, previewItemId } from './WorkspacePreview';
 import { useResource } from './views';
 import './KnowledgeExplorer.css';
 
@@ -107,12 +108,35 @@ export function KnowledgeWorkspace({path, csrf, children, owner}: {path?: string
     seek();
     return()=>{done=true;observer.disconnect();window.clearTimeout(timer);};
   },[itemId,narrowOpen]);
+  const [previewId,setPreviewId]=useState<string>();
+  const [previewLayout,setPreviewLayout]=useState<'side'|'below'>('side');
+  const previewTrigger=useRef<HTMLElement|null>(null);
+  const previewPanel=useRef<HTMLElement|null>(null);
+  function openPreview(id:string,trigger:HTMLElement){
+    if(!previewItemId(id))return;
+    previewTrigger.current=trigger;setPreviewId(id);
+    window.requestAnimationFrame(()=>previewPanel.current?.focus({preventScroll:false}));
+  }
+  function closePreview(){
+    setPreviewId(undefined);
+    if(previewTrigger.current?.isConnected)previewTrigger.current.focus({preventScroll:false});
+  }
+  useEffect(()=>{
+    const expire=()=>{setPreviewId(undefined);previewTrigger.current=null;};
+    window.addEventListener('session-expired',expire);
+    return()=>window.removeEventListener('session-expired',expire);
+  },[]);
   const style={'--kt-explorer-width':sidebarWidth+'px'} as CSSProperties;
-  return <WorkspaceContext.Provider value={{tree, revision}}>
+  return <WorkspaceContext.Provider value={{tree, revision}}><WorkspacePreviewContext.Provider value={openPreview}>
     <div className="knowledge-library-layout knowledge-workspace" style={style} onClick={event => {
-      if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey) return;
       const target = event.target instanceof Element ? event.target.closest('a') : null;
       const href = target?.getAttribute('href');
+      if(event.altKey){
+        const id=href?.startsWith('#/muc/')?href.slice(6):undefined;
+        if(target&&id&&previewItemId(id)){event.preventDefault();openPreview(id,target);}
+        return;
+      }
       if(href&&href!==route&&(href.startsWith('#/muc/')||href.startsWith('#/thu-vien'))&&!allowTabNavigation()){event.preventDefault();return;}
       if (href?.startsWith('#/thu-vien') && !href.includes('collection=') && !href.includes('view=')) {
         event.preventDefault();
@@ -152,7 +176,14 @@ export function KnowledgeWorkspace({path, csrf, children, owner}: {path?: string
           if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();applySidebarWidth(widthRef.current+(event.key==='ArrowLeft'?-20:20));}
           else if(event.key==='Home'||event.key==='End'){event.preventDefault();applySidebarWidth(event.key==='Home'?MIN_WIDTH:MAX_WIDTH);}
         }} />
-      <div className="workspace-content"><WorkspaceTabs activeId={itemId} owner={owner} fallbackHref={libraryLocationHref(lastLibrary.current)}/>{children}</div>
+      <div className="workspace-content">
+        <WorkspaceTabs activeId={itemId} owner={owner} fallbackHref={libraryLocationHref(lastLibrary.current)}/>
+        <div className={'workspace-reader-layout'+(previewId?' is-preview-open layout-'+previewLayout:'')}>
+          <div className="workspace-main-pane">{children}</div>
+          {previewId&&<WorkspaceReadPane key={previewId} id={previewId} panelRef={previewPanel} layout={previewLayout}
+            onLayout={()=>setPreviewLayout(value=>value==='side'?'below':'side')} onClose={closePreview}/>}
+        </div>
+      </div>
     </div>
-  </WorkspaceContext.Provider>;
+  </WorkspacePreviewContext.Provider></WorkspaceContext.Provider>;
 }

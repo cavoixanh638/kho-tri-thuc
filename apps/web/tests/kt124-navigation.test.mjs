@@ -141,3 +141,18 @@ test('EDIT-10 restores a note-specific folded preference after remount; no raw c
   assert.equal(container.querySelector('details.kt-fold-section').open,true);
   sessionStorage.removeItem('kt-heading-fold-v1:'+foldKey);
 });
+
+
+test('EDIT-16 outline visibility and maximum heading depth do not rewrite the note or remove content',async()=>{
+ const raw='# Một\n\nĐoạn một\n\n## Hai\n\nĐoạn hai\n\n### Ba\n\nĐoạn ba';
+ await render(ui.KnowledgeText,{text:raw});
+ const select=container.querySelector('[aria-label="Số cấp mục lục"]');
+ await ui.act(async()=>{select.value='2';select.dispatchEvent(new window.Event('change',{bubbles:true}));await delay(10);});
+ assert.equal(container.querySelector('.note-outline').dataset.outlineDepth,'2');
+ assert.equal(container.querySelectorAll('.note-outline a').length,3);
+ assert.equal(container.querySelectorAll('.knowledge-text h2,.knowledge-text h3,.knowledge-text h4').length,3);
+ await click('.note-outline-controls button');assert.equal(container.querySelector('.note-outline-content').hidden,true);
+ assert.match(container.textContent,/Đoạn ba/);
+ await click('.note-outline-controls button');assert.equal(container.querySelector('.note-outline-content').hidden,false);
+ assert.equal(calls.length,0);
+});

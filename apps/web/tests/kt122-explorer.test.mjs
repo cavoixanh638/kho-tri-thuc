@@ -259,3 +259,21 @@ test('WS-03/04/06 tabs select, pin, reorder, close, reopen, and persist UUIDs on
  assert.equal(container.querySelectorAll('.workspace-tab').length,1);
  window.sessionStorage.removeItem('kt-workspace-tabs-v1:'+owner);window.sessionStorage.removeItem('kt-workspace-tabs-v1:other-fixture');
 });
+
+
+test('WS-05/08 Alt-click opens bounded read-only pane without navigating or remounting current content',async()=>{
+ const original=globalThis.fetch;
+ globalThis.fetch=async(path,options)=>String(path).endsWith('/items/'+child+'/preview')
+   ?Response.json({item_id:child,title:'Bài xem cạnh',kind:'text',excerpt:'<script>không chạy</script> Nội dung',truncated:true,content_extract:'not_available',source_fetch:'not_applicable',saved_at:'2026-11-21T00:00:00Z'})
+   :original(path,options);
+ const content=ui.createElement('article',null,ui.createElement('a',{href:'#/muc/'+child},'Mở bài con'));
+ await render(ui.KnowledgeWorkspace,{path:'#/muc/'+id,owner:'preview-test',csrf:'fixture',children:content});
+ const main=container.querySelector('.workspace-main-pane article'),link=main.querySelector('a'),hash=window.location.hash;
+ await ui.act(async()=>{link.dispatchEvent(new window.MouseEvent('click',{bubbles:true,cancelable:true,button:0,altKey:true}));await new Promise(r=>setTimeout(r,30));});
+ const pane=container.querySelector('.workspace-preview-pane');
+ assert.ok(pane);assert.match(pane.textContent,/Bài xem cạnh/);assert.match(pane.textContent,/6000/);assert.equal(pane.querySelector('script'),null);
+ assert.equal(container.querySelector('.workspace-main-pane article'),main);assert.equal(window.location.hash,hash);
+ await click('Đổi bố cục xem cạnh');assert.ok(container.querySelector('.workspace-reader-layout.layout-below'));
+ await click('Đóng xem cạnh');assert.equal(container.querySelector('.workspace-preview-pane'),null);assert.equal(document.activeElement,link);
+ assert.equal(mutations.length,0);
+});
