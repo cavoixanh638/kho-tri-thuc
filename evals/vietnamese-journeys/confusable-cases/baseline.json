@@ -1,0 +1,295 @@
+{
+  "tested_source": "d1e47e8dab496003fe1283c301af13c7b83e146e",
+  "backend_tree": "0228d392731697dfbdd98f1e53c962deb109ebb2",
+  "fixture_sha256": "859457c476cccb88b5199645957d3df2314f57bf667df174d6682d18c8ac8429",
+  "runner_sha256": "0229ac2775c07ab46943161cb36d6abde567a21af18df4864a8f04e5db94b8c8",
+  "notes": 10,
+  "initial": {
+    "positives": 16,
+    "top1_acceptable": 3,
+    "top5_any_acceptable": 3,
+    "top5_all_acceptable": 2,
+    "negatives": 5,
+    "negatives_with_hits": 2,
+    "negative_hits_total": 3
+  },
+  "with_suggestions": {
+    "positives": 16,
+    "top1_acceptable": 15,
+    "top5_any_acceptable": 15,
+    "top5_all_acceptable": 15,
+    "negatives": 5,
+    "negatives_with_hits": 4,
+    "negative_hits_total": 10
+  },
+  "suggestions_offered": 17,
+  "negative_suggestions_offered": 3,
+  "negative_expanded_hits_total": 8,
+  "cases": [
+    {
+      "id": "Q01",
+      "kind": "phiên bản",
+      "accept": [
+        "C01"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "C01",
+        "C02"
+      ]
+    },
+    {
+      "id": "Q02",
+      "kind": "phiên bản",
+      "accept": [
+        "C02"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "C02",
+        "C01"
+      ]
+    },
+    {
+      "id": "Q03",
+      "kind": "hướng bàn giao",
+      "accept": [
+        "C03"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "C03",
+        "C04"
+      ]
+    },
+    {
+      "id": "Q04",
+      "kind": "hướng bàn giao",
+      "accept": [
+        "C04"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "C04",
+        "C03"
+      ]
+    },
+    {
+      "id": "Q05",
+      "kind": "trình tự",
+      "accept": [
+        "C05"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "C05",
+        "C06"
+      ]
+    },
+    {
+      "id": "Q06",
+      "kind": "trình tự",
+      "accept": [
+        "C06"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "C06",
+        "C05"
+      ]
+    },
+    {
+      "id": "Q07",
+      "kind": "đối tượng",
+      "accept": [
+        "C07"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "C07",
+        "C08"
+      ]
+    },
+    {
+      "id": "Q08",
+      "kind": "đối tượng",
+      "accept": [
+        "C08"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "C08",
+        "C07"
+      ]
+    },
+    {
+      "id": "Q09",
+      "kind": "đối tượng",
+      "accept": [
+        "C09"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "C09"
+      ]
+    },
+    {
+      "id": "Q10",
+      "kind": "đối tượng",
+      "accept": [
+        "C10"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "C10"
+      ]
+    },
+    {
+      "id": "Q11",
+      "kind": "phiên bản",
+      "accept": [
+        "C02"
+      ],
+      "initial": [
+        "C02",
+        "C01"
+      ],
+      "offered": false,
+      "expanded": null
+    },
+    {
+      "id": "Q12",
+      "kind": "hướng bàn giao",
+      "accept": [
+        "C04"
+      ],
+      "initial": [],
+      "offered": false,
+      "expanded": null
+    },
+    {
+      "id": "Q13",
+      "kind": "trình tự",
+      "accept": [
+        "C05"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "C05",
+        "C06"
+      ]
+    },
+    {
+      "id": "Q14",
+      "kind": "đối tượng",
+      "accept": [
+        "C10"
+      ],
+      "initial": [
+        "C10"
+      ],
+      "offered": true,
+      "expanded": [
+        "C10",
+        "C09"
+      ]
+    },
+    {
+      "id": "Q15",
+      "kind": "đa đáp án",
+      "accept": [
+        "C01",
+        "C02"
+      ],
+      "initial": [
+        "C01"
+      ],
+      "offered": true,
+      "expanded": [
+        "C01",
+        "C02"
+      ]
+    },
+    {
+      "id": "Q16",
+      "kind": "đa đáp án",
+      "accept": [
+        "C03",
+        "C04"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "C04",
+        "C03"
+      ]
+    },
+    {
+      "id": "Q17",
+      "kind": "chi tiết vắng",
+      "accept": [],
+      "initial": [
+        "C01",
+        "C02"
+      ],
+      "offered": false,
+      "expanded": null
+    },
+    {
+      "id": "Q18",
+      "kind": "đảo vai",
+      "accept": [],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "C03",
+        "C04"
+      ]
+    },
+    {
+      "id": "Q19",
+      "kind": "đảo thứ tự",
+      "accept": [],
+      "initial": [
+        "C06"
+      ],
+      "offered": true,
+      "expanded": [
+        "C06",
+        "C05"
+      ]
+    },
+    {
+      "id": "Q20",
+      "kind": "trộn đối tượng",
+      "accept": [],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "C08",
+        "C07",
+        "C01",
+        "C02"
+      ]
+    },
+    {
+      "id": "Q21",
+      "kind": "ngoài chủ đề",
+      "accept": [],
+      "initial": [],
+      "offered": false,
+      "expanded": null
+    }
+  ]
+}
