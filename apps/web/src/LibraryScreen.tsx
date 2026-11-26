@@ -10,10 +10,10 @@ import { KnowledgeWorkspace, useKnowledgeWorkspace } from './KnowledgeWorkspace'
 
 export function LibraryScreen({ csrf = '', owner }: { csrf?: string; owner?:string|null }) {
   const workspace = useKnowledgeWorkspace();
-  return workspace ? <LibraryContent csrf={csrf} /> : <KnowledgeWorkspace csrf={csrf}><LibraryContent csrf={csrf} /></KnowledgeWorkspace>;
+  return workspace ? <LibraryContent csrf={csrf} owner={owner} /> : <KnowledgeWorkspace csrf={csrf}><LibraryContent csrf={csrf} owner={owner} /></KnowledgeWorkspace>;
 }
 
-function LibraryContent({ csrf }: { csrf: string }) {
+function LibraryContent({ csrf, owner }: { csrf: string; owner?: string | null }) {
   const [scope, setScope] = useState(() => parseLibraryLocation(window.location.hash));
   const { filter, offset, view } = scope;
   const collectionId = collectionIdFromHash(window.location.hash);
