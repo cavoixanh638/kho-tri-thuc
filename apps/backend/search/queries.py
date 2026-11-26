@@ -1,4 +1,7 @@
+from .claims import claim_condition
 from .identifiers import identifier_condition
+from .passages import evidence_excerpt
+from .quantities import quantity_condition
 
 
 # Match the expressions and predicates in search.0001, including the config.
@@ -9,6 +12,24 @@ DERIVED_TEXT = "public.kt_search_text(d.text)"
 DERIVED_VECTOR = f"to_tsvector('public.kt_vi', {DERIVED_TEXT})"
 CAPTURE_TEXT = "public.kt_search_text(c.raw_text)"
 CAPTURE_VECTOR = f"to_tsvector('public.kt_vi', {CAPTURE_TEXT})"
+
+# Keep the indexed text unchanged, but do not construct a sentence out of
+# the end of a title and the beginning of a note when verifying a claim.
+ITEM_PASSAGE = r"normalize(concat_ws(E'\n', i.title, left(i.description, 20000), left(i.note, 100000)), NFC)"
+
+
+def source_condition(source):
+    passage = ITEM_PASSAGE if source == ITEM_TEXT else source
+    return f"({identifier_condition(source)} AND {claim_condition(passage)} AND {quantity_condition(passage)})"
+
+EVIDENCE_TEXT = f"""CASE e.source WHEN 'item' THEN {ITEM_TEXT}
+    WHEN 'derived_content' THEN {DERIVED_TEXT} ELSE {CAPTURE_TEXT} END"""
+EVIDENCE_PASSAGE = f"""CASE e.source WHEN 'item' THEN {ITEM_PASSAGE}
+    WHEN 'derived_content' THEN {DERIVED_TEXT} ELSE {CAPTURE_TEXT} END"""
+HEADLINE_OPTIONS = """'StartSel="", StopSel="", MaxWords=24, MinWords=8, MaxFragments=1, ShortWord=0'"""
+STANDARD_EXCERPT = f"""CASE WHEN e.fts THEN left(ts_headline('public.kt_vi', {EVIDENCE_TEXT}, tsq,
+    {HEADLINE_OPTIONS}), 320)
+    ELSE substring({ITEM_TEXT} FROM greatest(strpos({ITEM_FOLD}, folded) - 60, 1) FOR 320) END"""
 
 VISIBLE_ITEMS = """
 visible_items AS NOT MATERIALIZED (
@@ -47,7 +68,7 @@ fts_first_page AS MATERIALIZED (
     FROM (
         SELECT i.id
         FROM visible_items i CROSS JOIN input
-        WHERE {ITEM_VECTOR} @@ tsq AND {identifier_condition(ITEM_TEXT)}
+        WHERE {ITEM_VECTOR} @@ tsq AND {source_condition(ITEM_TEXT)}
         LIMIT %(page_size)s
     ) qualified
 ),
@@ -64,14 +85,14 @@ matches AS (
            NULL::uuid AS capture_id, true AS fts, 1::real + ts_rank({ITEM_VECTOR}, tsq, 32) AS score,
            NULL::timestamptz AS received_at
     FROM visible_items i CROSS JOIN input
-    WHERE {ITEM_VECTOR} @@ tsq AND {identifier_condition(ITEM_TEXT)}
+    WHERE {ITEM_VECTOR} @@ tsq AND {source_condition(ITEM_TEXT)}
 
     UNION ALL
     SELECT d.item_id, 'derived_content', d.id, NULL, true,
            1::real + ts_rank({DERIVED_VECTOR}, tsq, 32), NULL
     FROM processing_derivedcontent d
     JOIN visible_items i ON i.id = d.item_id CROSS JOIN input
-    WHERE d.status = 'active' AND {DERIVED_VECTOR} @@ tsq AND {identifier_condition(DERIVED_TEXT)}
+    WHERE d.status = 'active' AND {DERIVED_VECTOR} @@ tsq AND {source_condition(DERIVED_TEXT)}
 
     UNION ALL
     SELECT i.id, 'item', NULL, NULL, false,
@@ -85,7 +106,7 @@ matches AS (
            END, NULL
     FROM visible_items i CROSS JOIN input CROSS JOIN fts_first_page fts_page
     WHERE (%(cursor_id)s::uuid IS NOT NULL OR NOT fts_page.enough)
-      AND {identifier_condition(ITEM_TEXT)}
+      AND {source_condition(ITEM_TEXT)}
       AND ((%(substring)s AND {ITEM_FOLD} LIKE
                ('%%' || replace(replace(replace(folded, '!', '!!'), '%%', '!%%'), '_', '!_') || '%%')
                ESCAPE '!')
@@ -95,7 +116,7 @@ matches AS (
     SELECT c.item_id, 'capture_event', NULL, c.id, true,
            1::real + ts_rank({CAPTURE_VECTOR}, tsq, 32), r.server_received_at
     FROM recent_captures r JOIN ingestion_captureevent c ON c.id = r.id CROSS JOIN input
-    WHERE {CAPTURE_VECTOR} @@ tsq AND {identifier_condition(CAPTURE_TEXT)}
+    WHERE {CAPTURE_VECTOR} @@ tsq AND {source_condition(CAPTURE_TEXT)}
 ),
 evidence AS MATERIALIZED (
     SELECT DISTINCT ON (item_id, source) item_id, source, derived_id, capture_id, fts, score
@@ -112,17 +133,7 @@ page AS (
     LIMIT %(page_size)s
 )
 SELECT p.item_id, i.title, p.score, e.source,
-       CASE WHEN e.fts THEN left(ts_headline(
-           'public.kt_vi',
-           CASE e.source
-                WHEN 'item' THEN {ITEM_TEXT}
-                WHEN 'derived_content' THEN {DERIVED_TEXT}
-                ELSE {CAPTURE_TEXT}
-           END,
-           tsq, 'StartSel="", StopSel="", MaxWords=24, MinWords=8, MaxFragments=1, ShortWord=0'
-       ), 320)
-       ELSE substring({ITEM_TEXT} FROM greatest(strpos({ITEM_FOLD}, folded) - 60, 1) FOR 320)
-       END AS snippet,
+       {evidence_excerpt(EVIDENCE_PASSAGE, STANDARD_EXCERPT)} AS snippet,
        d.source_locator::text,
        CASE e.source
             WHEN 'derived_content' THEN jsonb_build_object(

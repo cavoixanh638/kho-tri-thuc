@@ -7,7 +7,9 @@ from uuid import UUID
 
 from django.db import connection
 
+from .claims import claim_params
 from .identifiers import identifier_patterns
+from .quantities import quantity_params
 from .queries import SEARCH_SQL
 from .recall import RECALL_SQL, recall_params
 
@@ -139,6 +141,8 @@ def _search_params(filters, query, cursor, limit):
         "project_id": filters.project_id,
         "tag_id": filters.tag_id,
         "query": query,
+        **claim_params(query),
+        **quantity_params(query),
         "identifier_patterns": identifier_patterns(query),
         "substring": len(query) >= 3,
         # Identifiers with digits are exact keys. Trigram fuzzy matching of

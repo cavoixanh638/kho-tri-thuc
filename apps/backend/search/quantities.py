@@ -12,7 +12,7 @@ NUMBER = r"[+−-]?\d+(?:[.,]\d+)?"
 UNIT_GAP = r"\s*(?:[-‑]\s*)?"
 MEASUREMENT = re.compile(
     rf"(?<![\w.,+−-])(?P<number>{NUMBER}){UNIT_GAP}(?P<unit>{WEIGHTED_DB}|{RATE}|{LENGTH}"
-    r"|kg|mg|[kM]?Hz|m[sL]|g|s|°\s*[CF]|%)(?!\w)"
+    r"|kg|mg|[kM]?Hz|m[sL]|g|s|°\s*[CF]|%)(?![\w/])"
 )
 DATE = r"(?:\d{4}[-/]\d{1,2}[-/]\d{1,2}|\d{1,2}[./-]\d{1,2}[./-]\d{4})"
 DATE_KEY = re.compile(rf"(?<![\w/-]){DATE}(?![\w/-])")
@@ -36,7 +36,8 @@ NO_READING = (r"\m(?:(?:chua|khong)\s+(?:(?:duoc|co)\s+)?"
               r"(?:ghi|do|xac dinh|biet|cong bo|so lieu|du lieu|ket qua)|"
               r"no\s+(?:reading|measurement|data)|not\s+(?:yet\s+)?(?:recorded|measured|available))\M")
 CLUE_STOP = frozenset("ai cac cho cua co da den duoc gi giup hay hoi khi la ma minh nao ngay nho "
-                      "o tai theo thi tim toi trong tu va ve voi a an at by for in of on the with".split())
+                      "o tai theo thi tim toi trong tu va ve voi".split())
+ENGLISH_CLUE_STOP = frozenset("a an at by for of on the with".split())
 
 
 def _fold(text):
@@ -77,7 +78,7 @@ def quantity_params(query):
     clue_text = list(query)
     for match in MEASUREMENT.finditer(query):
         value, unit = match.group("number", "unit")
-        pattern = _number(value) + UNIT_GAP + _unit(unit) + r"(?![[:alnum:]_])"
+        pattern = _number(value) + UNIT_GAP + _unit(unit) + r"(?![[:alnum:]_/²³])"
         required.append(pattern)
         clue_text[match.start():match.end()] = " " * len(match[0])
         if re.fullmatch(RATE, unit):
@@ -115,7 +116,10 @@ def quantity_params(query):
     # when there is one unambiguous target to compare within the source.
     clues = []
     if len(contexts) == 1:
-        clues = sorted(set(re.findall(r"[^\W\d_]+", _fold("".join(clue_text)))) - CLUE_STOP)
+        # Even an unaccented Vietnamese query can use "in" as the predicate
+        # or the distinguishing part of "máy in" (printer).
+        stop = CLUE_STOP | ENGLISH_CLUE_STOP if query.isascii() else CLUE_STOP
+        clues = sorted(set(re.findall(r"[^\W\d_]+", _fold("".join(clue_text)))) - stop)
     target, family = contexts[0] if clues else (None, None)
     return {
         "quantity_required": required or None, "quantity_labels": labelled or None, "quantity_pair": paired_labels,

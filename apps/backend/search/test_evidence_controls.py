@@ -55,6 +55,15 @@ class SearchEvidenceControlTests(TestCase):
         self.assert_supported("tháo lưới lọc trước khi xả bồn", before, "Tháo lưới lọc trước khi xả bồn")
         self.assert_supported("tháo lưới lọc sau khi xả bồn", after, "Tháo lưới lọc sau khi xả bồn")
 
+    def test_preview_shows_the_supported_action_when_an_earlier_passage_forbids_it(self):
+        item = self.note("Không nên kéo chốt bạc khi còi vang. " + "Kiểm kê cuối ngày. " * 80
+                         + "Kéo chốt bạc khi còi vang.")
+        for query in ("kéo chốt bạc khi còi vang", "không nên kéo chốt bạc khi còi vang"):
+            with self.subTest(query=query):
+                hit, = SearchService().search(SearchFilters(self.owner.pk), query).hits
+                self.assertEqual(hit.item_id, item.pk)
+                self.assertEqual(hit.evidence[0].snippet.casefold(), query)
+
     def test_handoff_requires_the_written_sender_and_receiver(self):
         glass_sends = self.note("Tổ kính giao khóa đồng cho tổ mộc.")
         wood_sends = self.note("Tổ mộc giao khóa đồng cho tổ kính.")
@@ -82,3 +91,24 @@ class SearchEvidenceControlTests(TestCase):
 
         self.assert_supported("tốc độ mạng 32 MB/s", byte_rate, "Tốc độ mạng 32 MB/s")
         self.assert_supported("tốc độ mạng 32 Mb/s", bit_rate, "Tốc độ mạng 32 Mb/s")
+
+    def test_explicit_details_return_a_note_when_it_really_supports_them(self):
+        pairs = (
+            ("Đổi khay vì lớp lót cũ làm rách giấy", "Đổi khay vì lớp lót cũ làm rách giấy.",
+             "Đổi khay vì cần thêm chỗ. Lớp lót cũ vẫn tốt. Giấy bị rách lúc gấp."),
+            ("Hướng dẫn nhận vé chỉ bằng thẻ xanh", "Hướng dẫn nhận vé chỉ bằng thẻ xanh.",
+             "Hướng dẫn nhận vé cần cả thẻ xanh lẫn giấy mời."),
+            ("Hẹn giao bìa chủ nhật", "Hẹn giao bìa chủ nhật tại cửa kho.", "Hẹn giao bìa thứ bảy tại cửa kho."),
+            ("song hoa nxb giọt nắng hồng", "Song Hoa, Nhà xuất bản Giọt Nắng Hồng.",
+             "Song Hoa của Nhà xuất bản Giọt Nắng Xanh. Trang cuối in màu hồng."),
+        )
+        service = SearchService()
+        for query, yes, no in pairs:
+            with self.subTest(query=query):
+                supported = self.note(yes)
+                self.note(no)
+                page = service.search(SearchFilters(self.owner.pk), query, expand=True)
+                self.assertEqual([hit.item_id for hit in page.hits], [supported.pk])
+                filtered = SearchFilters(self.owner.pk, exclude_item_id=supported.pk)
+                self.assertFalse(service.search(filtered, query).can_expand)
+                self.assertFalse(service.search(filtered, query, expand=True).hits)

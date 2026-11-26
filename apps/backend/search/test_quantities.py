@@ -56,6 +56,8 @@ class QuantityEvidenceTests(TestCase):
         self.assertFalse(self.supported("5 cm", "Đã chốt 123,5 cm."))
         self.assertFalse(self.supported("3 kg", "Cân thử 3 g rồi đổi quả cân 4 kg."))
         self.assertTrue(self.supported("chốt 15 mm", "Bu-lông 15-mm ở góc."))
+        self.assertIsNone(quantity_params("tốc độ 32 m/s")["quantity_required"])
+        self.assertFalse(self.supported("độ dài 32 m", "Số đo 32 m/s."))
 
     def test_a_date_belongs_to_its_local_activity(self):
         body = "Bàn tiếp nhận gửi gói hàng ngày 2026-05-12; bàn lưu trữ hủy phiếu ngày 2026-05-13."

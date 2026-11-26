@@ -4,8 +4,9 @@ import math
 import re
 import unicodedata
 
-from .identifiers import identifier_condition, remembered_code
-from .queries import ITEM_TEXT, ITEM_VECTOR, VISIBLE_ITEMS
+from .identifiers import remembered_code
+from .passages import evidence_excerpt
+from .queries import HEADLINE_OPTIONS, ITEM_PASSAGE, ITEM_TEXT, ITEM_VECTOR, VISIBLE_ITEMS, source_condition
 
 
 # These words frame a question but usually do not identify a note. Keep marked
@@ -61,6 +62,8 @@ def recall_params(query):
     }
 
 
+PARTIAL_EXCERPT = f"left(ts_headline(%(config)s::regconfig, {ITEM_TEXT}, h.q, {HEADLINE_OPTIONS}), 320)"
+
 RECALL_SQL = f"""
 WITH {VISIBLE_ITEMS},
 terms AS MATERIALIZED (
@@ -87,7 +90,7 @@ documents AS MATERIALIZED (
     FROM candidate_ids c CROSS JOIN LATERAL (
         SELECT src.* FROM visible_items src WHERE src.id = c.id LIMIT 1
     ) i
-    WHERE {identifier_condition(ITEM_TEXT)}
+    WHERE {source_condition(ITEM_TEXT)}
 ),
 weights AS (
     SELECT t.*, coalesce(f.frequency, 0) AS frequency
@@ -112,6 +115,10 @@ scored AS (
     GROUP BY id
     HAVING bool_and(word !~ '[[:digit:]]' OR typed)
        AND bool_or(frequency BETWEEN 1 AND %(postings_limit)s - 1 AND (typed OR folded))
+       -- A long description mostly absent from the visible collection needs
+       -- more evidence than the usual two or three shared search terms.
+       AND (count(*) < 9 OR 2 * count(*) FILTER (WHERE frequency = 0) <= count(*)
+            OR 3 * count(*) FILTER (WHERE typed OR folded) >= count(*))
 ),
 phrase_query AS (
     SELECT string_agg(phraseto_tsquery(%(config)s::regconfig, pair)::text, ' | ')::tsquery AS q
@@ -144,10 +151,7 @@ page AS (
 headline_query AS (
     SELECT string_agg(term_query::text, ' | ')::tsquery AS q FROM terms
 )
-SELECT i.id, i.title, p.score, 'item', left(ts_headline(
-           %(config)s::regconfig, {ITEM_TEXT}, h.q,
-           'StartSel="", StopSel="", MaxWords=24, MinWords=8, MaxFragments=1, ShortWord=0'
-       ), 320), NULL, '{{}}', p.strong
+SELECT i.id, i.title, p.score, 'item', {evidence_excerpt(ITEM_PASSAGE, PARTIAL_EXCERPT)}, NULL, '{{}}', p.strong
 FROM page p JOIN visible_items i ON i.id = p.id CROSS JOIN headline_query h
 ORDER BY p.score DESC, p.id DESC
 """
