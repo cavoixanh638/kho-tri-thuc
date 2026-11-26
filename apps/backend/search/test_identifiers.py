@@ -2,6 +2,8 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from catalog.models import Item
+from ingestion.models import CaptureEvent
+from processing.models import DerivedContent
 from .services import SearchFilters, SearchService
 
 
@@ -71,3 +73,22 @@ class IdentifierSearchTests(TestCase):
         self.note("Phiếu AX-1730")
         self.note("Phiếu TAX-173")
         self.assertEqual(self.found("AX-173", expand=True), {right.title})
+
+    def test_each_source_has_to_contain_the_same_document_key(self):
+        right = "Biên bản AX-173"
+        nearby = "Bảng AX có trị số -173"
+        expected = {}
+        for channel in ("item", "derived_content", "capture_event"):
+            item = self.note(f"Phụ lục {channel}", body=right if channel == "item" else nearby)
+            DerivedContent.objects.create(
+                item=item, kind="pdf_text", processor="fixture", processor_version="1",
+                input_hash="a" * 64, text=right if channel == "derived_content" else nearby,
+            )
+            CaptureEvent.objects.create(
+                item=item, owner=self.owner, raw_kind=CaptureEvent.Kind.LINK,
+                original_url="https://example.test/fixture",
+                raw_text=right if channel == "capture_event" else nearby,
+            )
+            expected[item.pk] = {channel}
+        page = SearchService().search(SearchFilters(self.owner.pk), "AX-173")
+        self.assertEqual({hit.item_id: {e.source for e in hit.evidence} for hit in page.hits}, expected)
