@@ -1,5 +1,19 @@
 # HIỆN TRẠNG THỰC TẾ — KHO TRI THỨC
 
+<a id="tim-kiem-120-ca"></a>
+
+## Tìm kiếm tiếng Việt trên 120 tình huống mới
+
+Ngày 26/11/2026, bản `059f6d4` chạy **120 ca trên 122 ghi chú tự soạn** bằng PostgreSQL 18.4. Đáp án được khóa trước khi tìm. Lượt đầu đạt **71/120**. Khi dùng thêm **Tìm gần đúng** nếu có nút, kết quả đạt **92/120**. [Bảng từng ca, đáp án và thứ tự kết quả](../evals/vietnamese-journeys/scenario-matrix/README.md)
+
+| Ca đạt theo từng tiêu chí | Lượt đầu | Khi dùng thêm **Tìm gần đúng** |
+| --- | ---: | ---: |
+| Một đáp án đứng đầu | 46/81 | 70/81 |
+| Đủ hai hoặc ba đáp án trong năm mục đầu | 5/13 | 10/13 |
+| Danh sách rỗng khi kho không có đáp án | 20/26 | 12/26 |
+
+Bộ thử phát hiện tìm nhầm ngày ký thành ngày đo, đảo chiều rộng và chiều cao, bỏ sót số thập phân viết bằng dấu chấm và gợi ý ghi chú có ý nghĩa trái với câu hỏi. Mọi kết quả đã trả đều thuộc đúng chủ kho và phạm vi đã chọn. [120 kết quả thực đo](../evals/vietnamese-journeys/scenario-matrix/results-windows.json)
+
 <a id="kiem-thu-tim-kiem-20261126"></a>
 
 ## Kiểm thử tìm kiếm ngày 26/11/2026

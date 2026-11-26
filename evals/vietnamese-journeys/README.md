@@ -1,5 +1,7 @@
 # Đo khả năng xếp nhóm và tìm lại ghi chú tiếng Việt
 
+**Bộ 120 tình huống mới** đo tìm theo trí nhớ, mã và đơn vị dễ nhầm, bộ lọc, thùng rác và phân biệt hai chủ kho trên 122 ghi chú tự soạn. Mỗi câu có đáp án, căn cứ và thứ tự kết quả ở cả lượt đầu lẫn khi dùng thêm **Tìm gần đúng**. [Xem 120 ca và kết quả](scenario-matrix/README.md)
+
 Đợt 26/11/2026 kiểm thêm các cặp ghi chú dễ nhầm, cách giữ nguyên mã và số trong câu, cùng thao tác đổi bộ lọc và quay lại trên trình duyệt. [Bộ 21 câu mới](confusable-cases/README.md) · [Kết quả điều hướng Chromium](results-browser-navigation-20261126.json) · [Kiểm thử hai bộ tiếng Việt cũ và P16](edge-regression-20261126.json)
 
 36 ghi chú được soạn riêng cho phép thử, gồm 20 mục phát triển và 16 mục giữ lại. Nội dung bao phủ ảnh, âm thanh, dựng phim, sao lưu, dẫn nguồn, golf và những mục nên để trống. Hai ghi chú thuộc nhiều chủ đề. Một số ghi chú nhắc tên chủ đề trong ngữ cảnh không liên quan. Mỗi mục có một truy vấn tìm lại chính mục đó. Ba truy vấn bổ sung không có mục phù hợp.
