@@ -1,0 +1,146 @@
+{
+  "tested_sha": "ba1e7512e01467fb2f07af5a765d45cc0afe946c",
+  "app_source_dirty": false,
+  "platform": "win32",
+  "chromium": "Chrome/158.0.8127.88",
+  "corpus_sha256": "d6870d9000dd7fda9dcc33ad1f3382abcd18be1ac586f6cf92df0face206a979",
+  "navigation_sha256": "a028bef80bd3e07ce7588117e625062927e602bd705c78b7475caa99ee854ad9",
+  "steps_passed": 16,
+  "steps": [
+    {
+      "action": "submit_memory_query",
+      "query_for": "M02",
+      "topic": null,
+      "expanded": false,
+      "partial_label": false,
+      "results": []
+    },
+    {
+      "action": "expand",
+      "query_for": "M02",
+      "topic": null,
+      "expanded": true,
+      "partial_label": true,
+      "results": [
+        "M02"
+      ]
+    },
+    {
+      "action": "open_expanded_result",
+      "article": "M02",
+      "raw_note_verified": true
+    },
+    {
+      "action": "back_to_expansion",
+      "query_for": "M02",
+      "topic": null,
+      "expanded": true,
+      "partial_label": true,
+      "results": [
+        "M02"
+      ]
+    },
+    {
+      "action": "forward_reopens_article",
+      "article": "M02",
+      "raw_note_verified": true
+    },
+    {
+      "action": "back_from_article",
+      "query_for": "M02",
+      "topic": null,
+      "expanded": true,
+      "partial_label": true,
+      "results": [
+        "M02"
+      ]
+    },
+    {
+      "action": "back_to_initial_search",
+      "query_for": "M02",
+      "topic": null,
+      "expanded": false,
+      "partial_label": false,
+      "results": []
+    },
+    {
+      "action": "forward_restores_expansion",
+      "query_for": "M02",
+      "topic": null,
+      "expanded": true,
+      "partial_label": true,
+      "results": [
+        "M02"
+      ]
+    },
+    {
+      "action": "new_query_exits_expansion",
+      "query_for": "M14",
+      "topic": null,
+      "expanded": false,
+      "partial_label": false,
+      "results": [
+        "M14"
+      ]
+    },
+    {
+      "action": "back_restores_previous_query_and_mode",
+      "query_for": "M02",
+      "topic": null,
+      "expanded": true,
+      "partial_label": true,
+      "results": [
+        "M02"
+      ]
+    },
+    {
+      "action": "submit_topic_drops_expansion",
+      "query_for": "M02",
+      "topic": "thu âm",
+      "expanded": false,
+      "partial_label": false,
+      "results": []
+    },
+    {
+      "action": "back_removes_filter",
+      "query_for": "M02",
+      "topic": null,
+      "expanded": true,
+      "partial_label": true,
+      "results": [
+        "M02"
+      ]
+    },
+    {
+      "action": "forward_restores_filter",
+      "query_for": "M02",
+      "topic": "thu âm",
+      "expanded": false,
+      "partial_label": false,
+      "results": []
+    },
+    {
+      "action": "change_query_keeps_filter",
+      "query_for": "M14",
+      "topic": "thu âm",
+      "expanded": false,
+      "partial_label": false,
+      "results": []
+    },
+    {
+      "action": "remove_filter_restores_note",
+      "query_for": "M14",
+      "topic": null,
+      "expanded": false,
+      "partial_label": false,
+      "results": [
+        "M14"
+      ]
+    },
+    {
+      "action": "open_unfiltered_result",
+      "article": "M14",
+      "raw_note_verified": true
+    }
+  ]
+}

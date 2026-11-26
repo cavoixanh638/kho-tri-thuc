@@ -28,6 +28,8 @@ python tools/windows/start_synthetic_pilot.py --measure
 python tools/windows/start_synthetic_pilot.py --measure-navigation
 ```
 
+Ngày 26/11/2026, Chrome 158 trên Windows đạt 16/16 bước ở mã ứng dụng `ba1e751`. Lượt mở rộng tìm thấy M02, bộ lọc “thu âm” loại M02 và M14 khỏi hai câu tìm đó. Bỏ bộ lọc đưa M14 trở lại. Các lần mở qua kết quả và qua lịch sử đều hiện đúng nguyên văn bài cần đọc. [Kết quả điều hướng từng bước](results-browser-navigation-20261126.json)
+
 Phép đo đọc mật khẩu đăng nhập từ tệp riêng và kiểm tra `thu âm` vẫn vắng mặt trên M14. Kết quả `VERIFIED_ABSENT` xác nhận trạng thái của lần đo đó. Nếu cần tái hiện thao tác gỡ trên một bộ mẫu mới, đặt `KT_EVAL_BROWSER_CORRECTION=1` khi gọi trực tiếp `measure_browser.mjs`. Runner sẽ thử gỡ từ menu **Thao tác** trong cây thư mục và lưu sửa đổi đó.
 
 Để tạo bộ mẫu mới với Django đã trỏ đúng DB QA, đặt `KT_EVAL_BROWSER_QA=1`, `KT_EVAL_BROWSER_USER` (tiền tố `kt-browser-eval-`), `KT_EVAL_BROWSER_PASSWORD` và `KT_EVAL_BROWSER_SEED` (đường dẫn seed map ngoài repo), rồi chạy `python apps/backend/manage.py shell -c "import runpy; runpy.run_path('evals/vietnamese-journeys/seed_browser.py')"`. Chỉ đặt `KT_EVAL_BROWSER_REUSE=1` nếu muốn chạy lại organizer trên bộ mẫu đã có. Seeder kiểm tra tài khoản, ID và nguyên văn của tất cả ghi chú trước khi gán lại.
