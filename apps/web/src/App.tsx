@@ -192,7 +192,7 @@ export function App() {
       {session && !authenticated && <Login csrf={session.csrf_token} onLogin={setSession} />}
       {session && authenticated && <KnowledgeWorkspace key={session.username} path={path} csrf={session.csrf_token} owner={session.username}>{itemId ? <ItemScreen id={itemId} csrf={session.csrf_token} key={itemId} />
         : path === '#/lich-su' ? <HistoryScreen />
-          : path.split('?', 1)[0] === '#/thu-vien' ? <LibraryScreen csrf={session.csrf_token} />
+          : path.split('?', 1)[0] === '#/thu-vien' ? <LibraryScreen csrf={session.csrf_token} owner={session.username} />
             : path.split('?', 1)[0] === '#/tim-kiem' ? <SearchScreen path={path} key={path} />
               : path === '#/cai-dat' ? <SettingsScreen csrf={session.csrf_token} driveResult={driveResult} username={session.username} />
                 : <CaptureScreen csrf={session.csrf_token} />}</KnowledgeWorkspace>}

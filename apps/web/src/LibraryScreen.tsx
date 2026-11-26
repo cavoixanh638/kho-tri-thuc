@@ -8,7 +8,7 @@ import { itemNeedsRefresh } from './itemProcessing';
 import { Empty, ErrorNotice, Loading, PageControls, PageTitle, useResource } from './views';
 import { KnowledgeWorkspace, useKnowledgeWorkspace } from './KnowledgeWorkspace';
 
-export function LibraryScreen({ csrf = '' }: { csrf?: string }) {
+export function LibraryScreen({ csrf = '', owner }: { csrf?: string; owner?:string|null }) {
   const workspace = useKnowledgeWorkspace();
   return workspace ? <LibraryContent csrf={csrf} /> : <KnowledgeWorkspace csrf={csrf}><LibraryContent csrf={csrf} /></KnowledgeWorkspace>;
 }
@@ -41,7 +41,7 @@ function LibraryContent({ csrf }: { csrf: string }) {
 
   return <>
     <PageTitle title="Thư viện" description="Đi từ kho con, lĩnh vực đến bộ sách, chương và từng bài tri thức. Một bài có thể xuất hiện trong nhiều nhánh." />
-    {collectionId ? <SavedCollectionScreen csrf={csrf} id={collectionId === 'new' ? undefined : collectionId} /> : <section className="panel knowledge-library-content" aria-label="Danh sách mục">
+    {collectionId ? <SavedCollectionScreen csrf={csrf} id={collectionId === 'new' ? undefined : collectionId} owner={owner} /> : <section className="panel knowledge-library-content" aria-label="Danh sách mục">
       <nav className="knowledge-breadcrumb" aria-label="Đường dẫn mục lục">
         <a href={knowledgeNodeHref()}>Kho Tri Thức</a>
         {ancestors.map((node) => <span key={node.id}><span aria-hidden="true"> / </span><a href={knowledgeNodeHref(node.id)} aria-current={node.id === scope.id ? 'page' : undefined}>{node.name}</a></span>)}
@@ -70,7 +70,7 @@ function LibraryContent({ csrf }: { csrf: string }) {
       </div>}
       {library.error ? <ErrorNotice retry={library.retry}>Chưa tải được thư viện.</ErrorNotice>
         : !library.data ? <Loading />
-          : library.data.results.length ? <LibraryViews items={library.data.results} mode={view} />
+          : library.data.results.length ? <LibraryViews items={library.data.results} mode={view} preferenceKey={owner?owner+':library':undefined} />
             : <Empty>{filter === 'favorite' ? 'Chưa có mục yêu thích.' : filter === 'deleted' ? 'Thùng rác trống.' : <span>Chưa có mục nào. <a href="#/gui">Gửi vào kho</a></span>}</Empty>}
       {library.data && <PageControls offset={offset} nextOffset={library.data.next_offset} onChange={(value) => navigate({ offset: value })} />}
     </section>}

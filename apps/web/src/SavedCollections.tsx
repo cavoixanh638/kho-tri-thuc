@@ -97,7 +97,7 @@ function DefinitionForm({ initial, csrf, onSaved }: { initial?: SavedCollection;
   </form>;
 }
 
-export function SavedCollectionScreen({ csrf, id }: { csrf: string; id?: string }) {
+export function SavedCollectionScreen({ csrf, id, owner }: { csrf: string; id?: string; owner?:string|null }) {
   const isNew = !id || id === 'new';
   const data = useResource<SavedCollection>(isNew ? '/collections' : '/collections/' + id);
   const [editing, setEditing] = useState(false);
@@ -127,7 +127,7 @@ export function SavedCollectionScreen({ csrf, id }: { csrf: string; id?: string 
       <p className="list-meta">Cách xem: {libraryModes.find((entry) => entry.value === value.view)?.label}. Đổi cách xem trong “Xem điều kiện / chỉnh sửa” rồi lưu.</p>
       {results.error ? <ErrorNotice retry={results.retry}>Chưa tải được kết quả.</ErrorNotice> : !results.data ? <Loading /> : <>
         <p role="status">{results.data.count} bài khớp điều kiện.</p>
-        {results.data.results.length ? <LibraryViews items={results.data.results} mode={value.view} sort={value.query.sort} /> : <Empty>Chưa có bài khớp điều kiện.</Empty>}
+        {results.data.results.length ? <LibraryViews items={results.data.results} mode={value.view} sort={value.query.sort} preferenceKey={owner?owner+':collection:'+value.id:undefined} /> : <Empty>Chưa có bài khớp điều kiện.</Empty>}
         <PageControls offset={offset} nextOffset={results.data.next_offset} onChange={setOffset} />
       </>}
     </>}

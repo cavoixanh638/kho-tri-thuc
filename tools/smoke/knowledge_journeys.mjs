@@ -242,6 +242,11 @@ if (prerequisitesReady) {
       await attempt('J2', async () => {
         await route('#/muc/' + context.parent);
         await click('Chỉnh sửa');
+        const initialDraft=await page.eval(()=>document.querySelector('.markdown-editor textarea').value);
+        await page.eval(()=>{const t=document.querySelector('.markdown-editor textarea');t.focus();t.setSelectionRange(0,Math.min(3,t.value.length));document.querySelector('[aria-label="In đậm"]').click();});
+        await wait(before=>document.querySelector('.markdown-editor textarea').value!==before,initialDraft,'format selected text');
+        await page.eval(()=>document.querySelector('[aria-label="Hoàn tác định dạng"]').click());
+        await wait(before=>document.querySelector('.markdown-editor textarea').value===before,initialDraft,'undo format without modifying draft');
         await page.eval(() => { const t = document.querySelector('.markdown-editor textarea'); t.focus(); t.setSelectionRange(t.value.length, t.value.length); });
         await page.send('Input.insertText', { text: '\n[[' });
         await wait(() => !!document.querySelector('.wiki-completion [role="option"]'), undefined, 'wiki choices');
@@ -259,6 +264,17 @@ if (prerequisitesReady) {
         const headings = await page.eval(() => [...document.querySelectorAll('.knowledge-text h2[id],.knowledge-text h3[id],.knowledge-text h4[id],.knowledge-text h5[id],.knowledge-text h6[id]')].map(n => n.tagName));
         assert.deepEqual(headings, ['H2', 'H3', 'H4', 'H4', 'H5', 'H6'], 'H1-H6 markdown levels follow the page H1 without flattening H1/H2');
         const beforeFold=(await get('/items/'+context.parent)).note;
+        await page.eval(()=>{const select=document.querySelector('[aria-label="Số cấp mục lục"]');select.value='2';select.dispatchEvent(new Event('change',{bubbles:true}));});
+        await wait(()=>document.querySelector('.note-outline').dataset.outlineDepth==='2',undefined,'custom outline depth');
+        assert.equal(await page.eval(()=>getComputedStyle(document.querySelector('.note-outline li[data-depth="3"]')).display),'none');
+        await page.eval(()=>{const select=document.querySelector('[aria-label="Số cấp mục lục"]');select.value='6';select.dispatchEvent(new Event('change',{bubbles:true}));});
+        await page.eval(id=>{const link=document.querySelector('.knowledge-text a[href="#/muc/'+id+'"]');link.nextElementSibling.click();},context.child);
+        await wait(()=>document.querySelector('.workspace-preview-pane')?.textContent.includes('P08 Chương Một'),undefined,'read-only related preview');
+        assert.equal(await page.eval(()=>document.documentElement.scrollWidth>innerWidth),false,'preview split overflow');
+        assert.equal(await page.eval(()=>location.hash),'#/muc/'+context.parent);
+        await page.eval(()=>document.querySelector('[aria-label="Đóng xem cạnh"]').click());
+        await wait(()=>!document.querySelector('.workspace-preview-pane'),undefined,'close preview without route change');
+        assert.equal((await get('/items/'+context.parent)).note,beforeFold);
         const outer=await page.eval(()=>document.querySelector('.knowledge-text details.kt-fold-section')?.id);
         assert.ok(outer,'Foldable Markdown section rendered');
         await page.eval(id=>document.getElementById(id).querySelector(':scope > summary').click(),outer);
