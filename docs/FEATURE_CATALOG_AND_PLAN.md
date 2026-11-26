@@ -61,7 +61,7 @@ Ngày 25/11/2026. **Nguồn chuẩn theo dõi ưu điểm của 17 nghiên cứu
 | EDIT-07 | MỘT PHẦN | Ảnh inline, kéo thả ảnh/media vào bài | G05.5 G12.4 | Asset verified, giữ vị trí |
 | EDIT-08 | THIẾU | Callout, toggle block, divider, checklist tương tác | G01+ G06+ G02+ | Không phá raw, version |
 | EDIT-09 | CÓ MÃ | Mục lục heading và anchor | G06.3 G17+ | Heading trùng tên ổn định |
-| EDIT-10 | THIẾU | Thu gọn heading và nội dung con | G06.3 G17+ | Không sửa raw; nhớ state |
+| EDIT-10 | CÓ MÃ | Thu gọn heading và nội dung con | G06.3 G17+ | Không sửa raw; nhớ state |
 | EDIT-11 | THIẾU | Block/section link, copy permalink đoạn | G01+ G06.4 G16+ | Rename, stale rõ |
 | EDIT-12 | MỘT PHẦN | Autosave draft, cảnh báo rời bài, undo/redo | G01.5 G17.1 | Reload/concurrent edit/IME |
 | EDIT-13 | THIẾU | Lịch sử version, so sánh và restore bản cũ | G04+ G09+ G15.1 | Restore tạo version mới |
@@ -407,7 +407,7 @@ Các đề xuất A–E, P1–P5, I01–I06 quy đổi số theo thứ tự xu�
 | [G17 Obsidian #30](https://github.com/cavoixanh638/kho-tri-thuc/pull/30) | G17.5 Vault | PORT-01, PORT-02, PORT-03, PORT-05 |
 | [G17 Obsidian #30](https://github.com/cavoixanh638/kho-tri-thuc/pull/30) | G17.6 Canvas | VIS-01, VIS-05 |
 
-**Kiểm kê:** 176 ID trong 17 nhóm, 94/94 đề xuất gốc có ánh xạ. MỘT PHẦN: 49; THIẾU: 70; CÓ MÃ: 34; HOÃN CÓ ĐIỀU KIỆN: 23. Đây là số dòng, không phải tỷ lệ hoàn thành sản phẩm. Nguồn [INDEX 17 nghiên cứu](research/notes-apps-20261120/INDEX.md), [ma trận 38 nhóm cũ](workstreams/notes-ux-20261120/G00-FEATURE-TRACEABILITY.md), [G00 #47](https://github.com/cavoixanh638/kho-tri-thuc/pull/47).
+**Kiểm kê:** 176 ID trong 17 nhóm, 94/94 đề xuất gốc có ánh xạ. MỘT PHẦN: 49; THIẾU: 69; CÓ MÃ: 35; HOÃN CÓ ĐIỀU KIỆN: 23. Đây là số dòng, không phải tỷ lệ hoàn thành sản phẩm. Nguồn [INDEX 17 nghiên cứu](research/notes-apps-20261120/INDEX.md), [ma trận 38 nhóm cũ](workstreams/notes-ux-20261120/G00-FEATURE-TRACEABILITY.md), [G00 #47](https://github.com/cavoixanh638/kho-tri-thuc/pull/47).
 
 ## Thứ tự triển khai và ownership
 
@@ -433,5 +433,8 @@ Mỗi nhóm có thể chia thành PR nhỏ theo ID và file sở hữu, không g
 
 | 25/11/2026 | WS-02, TREE-07/08, GATE-01 | 94be069 / 10dc329b | [Actions #45660847662](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/45660847662): bước frontend DOM/unit và bước browser acceptance hoàn tất SUCCESS tại lần đọc; các job tổng thể còn chạy nên chưa gọi release PASS. Đây là bằng chứng của checkpoint cũ, không phải HEAD mới. |
 | 25/11/2026 | TREE-06/09, SEARCH-04 | 6daf1424ca10c55ec7d6c7e5a3ede75458836bb5 / NOT_RUN | CODE: tìm tên folder/note trong sidebar bằng /navigation giới hạn 20+20, debounce/abort/IME, không remount cây; tự cuộn mục lục tới note chính đã tải, không cuộn trang đọc, không đổi focus; highlight token khớp tiếng Việt có/không dấu, NFC/NFD, giữ nguyên text, không giả semantic. J7 thêm CDP pointer thật, keyboard, 4 viewport, search, collapse/restore. Còn giới hạn active note ngoài trang lazy đã tải, TREE-06 vẫn MỘT PHẦN; chưa xác nhận CI/Windows. NEXT: CI đúng HEAD rồi tiếp WS-03/04 và EDIT-10. Rollback revert frontend/tests, không migration. |
+
+| 26/11/2026 | GATE-01, WS-02, TREE-06/09, SEARCH-04 | 2716e32a77ab0e8f145b70352ea37ee175a4e10f / 2056c535297d4867aa23e1e01550449289b4dc64 | [Run 45661554823](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/45661554823): frontend 344/344 PASS, P15 104/104 PASS (screen reader NOT_RUN), P08 12/13 FAIL J7 (width=356, saved=286). J8 vault, J9 synthetic 10k/1k PG restore, J6B private synthetic PASS. Windows/provider thật không được suy PASS. |
+| 26/11/2026 | WS-02, EDIT-10, TREE-08 | dbd0935c0fe44e38c6b077ba817ad82d8282766c / NOT_RUN | CODE: lưu chiều rộng ngay lúc kéo/phím, không phụ thuộc passive effect; chặn DTO cấu trúc bài/danh sách folder lỗi và stale request; thu gọn heading Markdown theo cấp thực bằng native details, outline tự mở tổ tiên, nhớ preference theo note (không lưu raw/ghi DB). Thêm test nested heading, reload, raw, retry lỗi DTO và J2 Chromium. Chỉ top-level Markdown heading; chưa folding trong list/quote. NEXT: CI toàn bộ đúng SHA, sửa nếu lỗi, tiếp WS-03/04, EDT toolbar. Rollback revert frontend/test, không migration. |
 
 **Prompt chuyển tiếp:** Vào repo, đọc file này + AGENTS.md + CURRENT_STATE; kiểm HEAD và PR đang mở, chọn đúng ID, thực hiện code, regression, cập nhật ID + checkpoint, commit/PR, không tự merge/deploy. Giữ tất cả ánh xạ và dòng chưa làm/hoãn.

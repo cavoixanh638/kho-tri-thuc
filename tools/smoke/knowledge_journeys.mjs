@@ -262,10 +262,9 @@ if (prerequisitesReady) {
         const outer=await page.eval(()=>document.querySelector('.knowledge-text details.kt-fold-section')?.id);
         assert.ok(outer,'Foldable Markdown section rendered');
         await page.eval(id=>document.getElementById(id).querySelector(':scope > summary').click(),outer);
-        await wait(id=>document.getElementById(id)?.open===false,outer,'native heading fold');
+        await wait(({id,item})=>document.getElementById(id)?.open===false&&JSON.parse(sessionStorage.getItem('kt-heading-fold-v1:'+item)||'[]').includes(id),{id:outer,item:context.parent},'native heading fold and preference persisted');
         await page.send('Page.reload',{ignoreCache:true});
         await wait(id=>document.getElementById(id)?.open===false,outer,'fold preference survives reload');
-        await page.eval(()=>document.querySelector('.note-outline a[href]:last-child')?.click());
         // Select an explicitly nested heading via the outline.
         await page.eval(()=>[...document.querySelectorAll('.note-outline a')].find(a=>a.textContent==='Kết luận').click());
         await wait(id=>document.getElementById(id)?.open===true,outer,'outline reopens ancestor');
