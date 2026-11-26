@@ -31,11 +31,17 @@ def recall_params(query):
     words = re.findall(r"[^\W_]+", QUERY_FRAMING.sub(" ", query.casefold()))
     # A single token, quoted text, URL, or structured identifier already has a
     # literal/typo search. Do not silently discard pieces of an exact key.
-    if len(query.split()) < 2 or any(char in query for char in '/\\@_#%:"“”'):
+    if (len(query.split()) < 2 or any(char in query for char in '/\\@_#%"“”')
+            or re.search(r":(?=\S)", query)):
         return None
     accented = any(not word.isascii() for word in words)
     stop_words = QUESTION_WORDS if accented else UNACCENTED_QUESTION_WORDS | ENGLISH_QUESTION_WORDS
     terms = list(dict.fromkeys(word for word in words if word not in stop_words))
+    marked = [word for word in terms if not word.isascii()]
+    marked_spellings = {_unaccent(word) for word in marked}
+    # Both spellings of one clue (e.g. "bến ben") still count only once.
+    terms = [word for word in terms if not (word.isascii() and word in marked_spellings)]
+    foldable = [word for word in terms if word.isascii() and word.isalpha()] if marked else []
     identifiers = [word for word in terms if len(word) >= 4
                    and any(ch.isdigit() for ch in word) and any(ch.isalpha() for ch in word)]
     if not terms or len(terms) > 24 or (len(terms) < 2 and not identifiers):
@@ -44,7 +50,8 @@ def recall_params(query):
                                if a != b and a in terms and b in terms))
     return {
         "terms": terms, "identifiers": identifiers, "pairs": pairs,
-        "config": "pg_catalog.simple" if any(not word.isascii() for word in terms) else "public.kt_vi",
+        "config": "pg_catalog.simple" if marked else "public.kt_vi",
+        "marked": marked, "foldable": foldable,
         "strong_phrase_count": max(3, math.ceil(0.75 * len(terms))),
         "suggestion_count": max(2, min(3, math.ceil(0.25 * len(terms)))),
         "postings_limit": MAX_POSTINGS_PER_TERM + 1,
@@ -72,7 +79,8 @@ candidate_ids AS (
 ),
 documents AS MATERIALIZED (
     SELECT i.id, to_tsvector(%(config)s::regconfig, {ITEM_TEXT}) AS document,
-           to_tsvector(%(config)s::regconfig, i.title) AS title_vector
+           to_tsvector(%(config)s::regconfig, i.title) AS title_vector,
+           CASE WHEN cardinality(%(foldable)s::text[]) > 0 THEN {ITEM_VECTOR} END AS folded_document
     FROM candidate_ids c CROSS JOIN LATERAL (
         SELECT src.* FROM visible_items src WHERE src.id = c.id LIMIT 1
     ) i
@@ -82,16 +90,24 @@ weights AS (
     FROM terms t LEFT JOIN (SELECT word, max(frequency) AS frequency FROM postings GROUP BY word) f
       ON f.word = t.word
 ),
-scored AS (
-    SELECT d.id,
-           count(*) FILTER (WHERE d.document @@ t.term_query) AS matched,
-           bool_or(t.word = ANY(%(identifiers)s::text[]) AND d.document @@ t.term_query) AS has_identifier,
-           sum((1 + 0.25 * (d.title_vector @@ t.term_query)::int) /
-               sqrt(greatest(1, t.frequency)::float8)) FILTER (WHERE d.document @@ t.term_query) AS term_score
+term_matches AS (
+    SELECT d.id, t.word, t.frequency, d.document @@ t.term_query AS typed,
+           t.word = ANY(%(foldable)s::text[]) AND d.folded_document @@ t.indexed_query AS folded,
+           (1 + 0.25 * (d.title_vector @@ t.term_query)::int) / sqrt(greatest(1, t.frequency)::float8) AS weight
     FROM documents d CROSS JOIN weights t
-    GROUP BY d.id
-    HAVING bool_and(t.word !~ '[[:digit:]]' OR d.document @@ t.term_query)
-       AND bool_or(t.frequency BETWEEN 1 AND %(postings_limit)s - 1 AND d.document @@ t.term_query)
+),
+scored AS (
+    SELECT id, count(*) FILTER (WHERE typed) AS matched,
+           count(*) FILTER (WHERE typed OR folded) AS suggested,
+           bool_or(word = ANY(%(marked)s::text[]) AND typed) AS marked_match,
+           bool_or(frequency BETWEEN 1 AND %(postings_limit)s - 1 AND typed) AS typed_anchor,
+           bool_or(word = ANY(%(identifiers)s::text[]) AND typed) AS has_identifier,
+           sum(weight) FILTER (WHERE typed) AS term_score,
+           coalesce(sum(0.5 * weight) FILTER (WHERE folded AND NOT typed), 0) AS folded_score
+    FROM term_matches
+    GROUP BY id
+    HAVING bool_and(word !~ '[[:digit:]]' OR typed)
+       AND bool_or(frequency BETWEEN 1 AND %(postings_limit)s - 1 AND (typed OR folded))
 ),
 phrase_query AS (
     SELECT string_agg(phraseto_tsquery(%(config)s::regconfig, pair)::text, ' | ')::tsquery AS q
@@ -101,17 +117,19 @@ supported AS (
     SELECT s.*, coalesce(d.document @@ phrase.q, false) AS has_phrase
     FROM scored s JOIN documents d ON d.id = s.id CROSS JOIN phrase_query phrase
     WHERE s.has_identifier OR s.matched >= %(suggestion_count)s
+       OR (s.marked_match AND s.suggested >= %(suggestion_count)s)
 ),
 confidence AS (
-    SELECT id, term_score + CASE WHEN has_phrase THEN 0.5 ELSE 0 END AS weight,
-           (has_identifier OR matched = cardinality(%(terms)s::text[]) OR
-            (has_phrase AND matched >= %(strong_phrase_count)s)) AS strong
+    SELECT id, term_score + CASE WHEN has_phrase THEN 0.5 ELSE 0 END AS typed_weight, folded_score,
+           typed_anchor AND (has_identifier OR matched = cardinality(%(terms)s::text[]) OR
+                             (has_phrase AND matched >= %(strong_phrase_count)s)) AS strong
     FROM supported
 ),
 ranked AS (
     -- Nonoverlapping score intervals keep the existing keyset cursor stable
     -- when a reader explicitly includes weaker suggestions.
-    SELECT id, strong, (strong::int + weight / (1 + weight))::real AS score
+    SELECT id, strong, (strong::int + 1 - 1 / (1 + typed_weight
+                + CASE WHEN strong THEN 0 ELSE folded_score END))::real AS score
     FROM confidence
 ),
 page AS (

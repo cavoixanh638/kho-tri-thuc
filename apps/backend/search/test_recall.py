@@ -1,10 +1,11 @@
+import unicodedata
 from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.utils import timezone
 
-from catalog.models import Item, ItemTopic, Topic
+from catalog.models import Item, ItemProject, ItemTag, ItemTopic, Project, Tag, Topic
 from .services import SearchCursor, SearchFilters, SearchService
 
 
@@ -92,3 +93,84 @@ class RememberedNoteTests(TestCase):
         self.assertEqual([r["item_id"] for r in expanded["results"]], [str(target.pk)])
         self.assertEqual(expanded["match_kind"], "partial")
         self.assertFalse(expanded["can_expand"])
+
+    def test_mixed_accents_in_a_remembered_phrase(self):
+        dock = self.note("Sổ trực", note="Đánh dấu bến tàu trên bản đồ.")
+        beside = self.note("Sổ trực", note="Để thùng bên tàu đợi người nhận.")
+        for marked, expected in (("bến", dock), ("bên", beside)):
+            variants = [f"{marked} tau mép vách", unicodedata.normalize("NFD", f"{marked.upper()}\u00a0TAU\tmép vách")]
+            for query in variants:
+                with self.subTest(query=query):
+                    first = self.search(query)
+                    self.assertEqual(first.hits, ())
+                    self.assertTrue(first.can_expand)
+                    result = self.search(query, expand=True)
+                    self.assertEqual([hit.item_id for hit in result.hits], [expected.pk])
+                    self.assertIn(f"{marked} tàu", result.hits[0].evidence[0].snippet)
+
+    def test_spelling_the_same_clue_twice_does_not_create_two_clues(self):
+        self.note("Nhật ký ca tối", note="Gặp nhau ở bến.")
+        for query in ("bến ben triền gỗ", "ben bến triền gỗ", "BẾN bến triền gỗ"):
+            with self.subTest(query=query):
+                self.assertFalse(self.search(query).can_expand)
+                self.assertEqual(self.search(query, expand=True).hits, ())
+
+    def test_prose_colon_and_time_literal_have_distinct_behavior(self):
+        target = self.note("Tại chỗ", note="Đánh dấu bến tàu. Ca 08 có 15 người.")
+        for query in ("bến tàu mép vách", "Ghi chú: bến tàu mép vách?", "Ghi chú:\nbến tàu mép vách"):
+            with self.subTest(query=query):
+                self.assertTrue(self.search(query).can_expand)
+                self.assertEqual([h.item_id for h in self.search(query, expand=True).hits], [target.pk])
+        self.assertFalse(self.search("bến tàu hôm lạ 08:15", expand=True).hits)
+
+    def test_edit_retag_and_trash_refresh_results_with_intersecting_filters(self):
+        topic = Topic.objects.create(owner=self.owner, name="Kho")
+        project = Project.objects.create(owner=self.owner, name="Bảo trì")
+        tag = Tag.objects.create(owner=self.owner, name="Bàn giao")
+        target = self.note("Bàn giao", note="Dỡ buồm ở bến tàu.")
+        outside = self.note("Bàn giao", note="Dỡ buồm ở bến tàu.")
+        for item in (target, outside):
+            ItemTopic.objects.create(item=item, topic=topic)
+            ItemProject.objects.create(item=item, project=project)
+        assignment = ItemTag.objects.create(item=target, tag=tag)
+        filters = SearchFilters(self.owner.pk, topic_id=topic.pk, project_id=project.pk, tag_id=tag.pk)
+
+        def verify(expected):
+            query = "buồm tàu ron tím"
+            service = SearchService()
+            self.assertEqual(service.search(filters, query).can_expand, bool(expected))
+            self.assertEqual([h.item_id for h in service.search(filters, query, expand=True).hits], expected)
+
+        verify([target.pk])
+        assignment.delete()
+        verify([])
+        ItemTag.objects.create(item=target, tag=tag)
+        Item.objects.filter(pk=target.pk).update(note="Kiểm kê ống trong kho.")
+        verify([])
+        Item.objects.filter(pk=target.pk).update(note="Dỡ buồm ở bến tàu.")
+        verify([target.pk])
+        Item.objects.filter(pk=target.pk).update(deleted_at=timezone.now())
+        verify([])
+
+    def test_candidate_frequency_boundary_is_within_the_selected_folder(self):
+        items = Item.objects.bulk_create([
+            Item(owner=self.owner, kind=Item.Kind.TEXT, title="Gấp vải") for _ in range(64)
+        ])
+        query = "gấp vải khung sườn"
+        self.assertTrue(self.search(query).can_expand)
+        self.note("Gấp vải")
+        self.assertFalse(self.search(query).can_expand)
+        self.assertTrue(self.search("gấp vải").hits)
+        topic = Topic.objects.create(owner=self.owner, name="Mẫu giữ lại")
+        ItemTopic.objects.create(topic=topic, item=items[0])
+        scoped = SearchFilters(self.owner.pk, topic_id=topic.pk)
+        page = SearchService().search(scoped, query, expand=True)
+        self.assertEqual([hit.item_id for hit in page.hits], [items[0].pk])
+
+    def test_recall_snippet_reaches_tail_of_two_notes_with_the_same_title(self):
+        prefix = "Thông tin đóng gói. " * 60
+        target = self.note("Phiếu giao", note=prefix + "Đã mang thước đồng lên xưởng.")
+        self.note("Phiếu giao", note=prefix + "Gửi hộp chì cho đại lý.")
+        page = self.search("tìm thước đồng mép cong", expand=True)
+        self.assertEqual([hit.item_id for hit in page.hits], [target.pk])
+        self.assertIn("thước đồng", page.hits[0].evidence[0].snippet)
