@@ -1,5 +1,37 @@
 # 120 tình huống tìm kiếm tiếng Việt
 
+## Kết quả sau khi sửa 14 câu gợi ý sai
+
+Ngày 26/11/2026, dịch vụ tìm kiếm từ khóa PostgreSQL ở bản `b284142` chạy lại đủ 120 câu trên cùng 122 ghi chú tự soạn. Ba tệp đề và đáp án có cùng SHA-256 với lần đầu. Mỗi câu được chấm ở lượt đầu và sau khi người dùng chọn **Tìm gần đúng** nếu có nút. [Kết quả mới theo từng mã](results-evidence-windows.json) · [Kết quả trước khi sửa](results-windows.json)
+
+| Tiêu chí | Lượt đầu trước → sau | Khi dùng gợi ý trước → sau |
+| --- | ---: | ---: |
+| Đạt trên cả bộ | 71 → **77/120** | 92 → **106/120** |
+| Một đáp án đứng đầu | 46 → 46/81 | 70 → 70/81 |
+| Đủ mọi đáp án trong năm mục đầu | 5 → 5/13 | 10 → 10/13 |
+| Trả rỗng cho câu không có đáp án | 20 → **26/26** | 12 → **26/26** |
+
+Trước khi sửa, 6 câu trả sai ngay lượt đầu. Nếu dùng cả gợi ý, 14 câu trả tổng cộng 40 mục sai. Sau khi sửa, cả 26 câu không có đáp án đều trả rỗng ngay từ đầu và đều không hiện nút mở rộng. Đối chiếu từng mã cho thấy 80 câu có đáp án từng đạt khi mở gợi ý đều tiếp tục đạt. Mọi kết quả ở cả hai lượt đều thuộc đúng chủ kho và bộ lọc.
+
+| Ca cũ trả sai | Dữ kiện hệ thống đã ghép nhầm |
+| --- | --- |
+| L33, L38 | Nấu thêm đậu vì có thêm khách, còn nồi men cũ đem sửa quai. Hai tiếng gõ dùng cho lượt thử đèn, còn tín hiệu ra diễn là lời gọi qua bộ đàm. |
+| L34, L40 | Giày gõ cần ván riêng. Hồ sơ gian vải cần cả ảnh và sơ đồ. Hai câu tìm đều khẳng định có thể bỏ qua một điều kiện. |
+| L35, L37 | Người phụ trách đạo cụ nhận dải băng từ nhóm hợp xướng. Gia đình tự trả phí thuê đàn. Câu tìm gán việc tặng hoặc trả tiền cho bên khác. |
+| L36, L39 | Hạn nhận mẫu là thứ bảy. Mẫu gai lên xanh đậm, còn xanh xám là màu của mẫu đũi. |
+| V33 | Tên tác phẩm trùng nhưng nhà xuất bản trong kho là Bến Hổ Phách, trong khi câu hỏi ghi Bến Hổ Ngọc. |
+| V34, V36 | Cùng một ghi chú có 52 dB(A) và 67 dB(C). Cặp ngang 105 mm, cao 148 mm cũng từng được trả cho câu hỏi đảo hai chiều. |
+| V37, V38 | Ngày ký bị dùng làm ngày đo. Đơn vị MB/s của ổ đọc bị gán cho phép thử đường truyền dùng Mb/s. |
+| S38 | Trong phạm vi đã chọn chỉ có tấm chắn quanh bàn cân. Ghi chú về rèm treo cạnh cửa lò nằm ở dự án khác. |
+
+Dịch vụ kiểm tra các ràng buộc viết rõ trong chính nguồn được xếp hạng, trước khi chia trang. Với một mô tả dài mà hơn nửa số từ vắng trong phạm vi đang tìm, ứng viên cần khớp ít nhất một phần ba số từ nội dung. Các câu hỏi còn để ngỏ người, vật hay nguyên nhân vẫn có thể dùng gợi ý từ khóa. [Bộ đối chứng đảo vai, phủ định, tín hiệu và đơn vị](../../../apps/backend/search/test_evidence_controls.py)
+
+Còn 14 câu có đáp án chưa đạt khi dùng gợi ý. Bốn câu nhớ ý là L05, L10, L13 và L16. Mười câu còn lại là V04, V08, V09, V10, V18, V23, V28, V30, V31 và V32. Chúng gồm cách viết số thập phân, ngày tháng, ký tự toàn chiều rộng và các câu cần tìm đủ nhiều ghi chú. Trong hai bộ tiếng Việt cũ, số câu có đáp án tìm thấy trong năm mục đầu vẫn là 36/36 và 34/36. Hai bộ này vẫn có lần lượt 1/3 và 10/15 câu không đáp án nhận gợi ý sai. [Bộ đề ban đầu](../provisional.json) · [Bộ câu hỏi nhớ ý](../recall-check.json)
+
+Ở bộ 21 ca dễ nhầm, cả 16 câu có đáp án vẫn tìm đúng khi mở rộng. Số câu trống nhận gợi ý giảm từ 4 xuống 3 trên 5. Bộ P16 gồm 86 truy vấn giữ Recall@5 ở 73/77 và Precision@5 ở 73/76. Cả 13 câu không có đáp án trong P16 đều trả rỗng. [Bộ 21 ca](../confusable-cases/fixture.json) · [Bộ P16](../../parallel/p16-search/corpus.json)
+
+## Lần đo ban đầu
+
 Ngày 26/11/2026, 120 truy vấn mới được chạy trên cùng một kho thử gồm 122 ghi chú tự soạn trong PostgreSQL 18.4. Ba nhóm soạn đáp án trước khi chạy. Bộ đề gồm 81 câu tìm một ghi chú, 13 câu cần tìm đủ hai hoặc ba ghi chú và 26 câu yêu cầu trả rỗng. Mỗi ca có câu tìm, đáp án, lý do và kết quả ở cả hai chế độ. [Bản đã khóa đáp án](https://github.com/cavoixanh638/kho-tri-thuc/tree/ae4a6aa8a3dc5ce1ab8f15c0c036182f2798cdad/evals/vietnamese-journeys/scenario-matrix) · [Kết quả gốc trên Windows](results-windows.json)
 
 | Nhóm | Số ca | Đạt ở lượt đầu | Đạt khi dùng thêm **Tìm gần đúng** |
@@ -42,7 +74,7 @@ python -B -m unittest discover -s evals/vietnamese-journeys/scenario-matrix -p t
 $env:POSTGRES_HOST = '127.0.0.1'
 $env:POSTGRES_DB = 'kt_eval_edge_pairs'
 $env:KT_EVAL_ALLOW_DISPOSABLE = '1'
-python evals/vietnamese-journeys/confusable-cases/run.py --matrix --expected-source 059f6d4 --report matrix-local.json
+python evals/vietnamese-journeys/confusable-cases/run.py --matrix --expected-source b284142 --report matrix-local.json
 ```
 
 Phép đo dùng backend của `059f6d4`. Công cụ kiểm 120 câu sau khi chuẩn hóa Unicode, kiểu chữ, khoảng trắng, dấu và ký tự phân cách, đồng thời đối chiếu với các bộ 21, 39, 51 và 86 câu từng có. Đây là đánh giá dịch vụ trên văn bản tự soạn. Lượt này chưa đo thao tác trình duyệt hay mức độ hài lòng của người dùng thật.

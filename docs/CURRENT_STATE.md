@@ -1,5 +1,9 @@
 # HIỆN TRẠNG THỰC TẾ — KHO TRI THỨC
 
+## Sửa gợi ý sai ở 14 câu không có đáp án
+
+Ngày 26/11/2026, bản `b284142` giữ tìm kiếm từ khóa PostgreSQL và kiểm tra bằng chứng trước khi hiển thị. Chạy lại đủ 120 câu trên 122 ghi chú tự soạn, lượt đầu tăng từ **71 lên 77/120**, khi dùng **Tìm gần đúng** tăng từ **92 lên 106/120**. Cả 26 câu không có đáp án đều trả rỗng ở hai lượt. Cả 80 câu có đáp án từng đạt khi dùng gợi ý đều tiếp tục đạt. Còn 14 câu có đáp án chưa đạt. [Nguyên nhân theo từng ca và kết quả đối chứng](../evals/vietnamese-journeys/scenario-matrix/README.md#kết-quả-sau-khi-sửa-14-câu-gợi-ý-sai) · [120 kết quả thực đo](../evals/vietnamese-journeys/scenario-matrix/results-evidence-windows.json)
+
 <a id="thu-tim-kiem-ngu-nghia-windows"></a>
 
 ## Thử tìm kiếm ngữ nghĩa trên Windows
