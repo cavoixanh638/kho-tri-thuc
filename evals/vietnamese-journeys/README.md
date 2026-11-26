@@ -1,5 +1,7 @@
 # Đo khả năng xếp nhóm và tìm lại ghi chú tiếng Việt
 
+Đợt 26/11/2026 kiểm thêm các cặp ghi chú dễ nhầm, cách giữ nguyên mã và số trong câu, cùng thao tác đổi bộ lọc và quay lại trên trình duyệt. [Bộ 21 câu mới](confusable-cases/README.md) · [Kết quả điều hướng Chromium](results-browser-navigation-20261126.json) · [Kiểm thử hai bộ tiếng Việt cũ và P16](edge-regression-20261126.json)
+
 36 ghi chú được soạn riêng cho phép thử, gồm 20 mục phát triển và 16 mục giữ lại. Nội dung bao phủ ảnh, âm thanh, dựng phim, sao lưu, dẫn nguồn, golf và những mục nên để trống. Hai ghi chú thuộc nhiều chủ đề. Một số ghi chú nhắc tên chủ đề trong ngữ cảnh không liên quan. Mỗi mục có một truy vấn tìm lại chính mục đó. Ba truy vấn bổ sung không có mục phù hợp.
 
 `corpus.json` chứa văn bản và danh sách chủ đề. `provisional.json` chứa đáp án do cùng người soạn bộ thử đặt trước lần đo. Các mục giữ lại vẫn dùng đáp án tạm này. Khi thay đổi thuật toán, chỉ dùng tập phát triển để chọn tham số và công bố riêng số liệu trên tập giữ lại. Dùng bộ mới cho một vòng đánh giá độc lập sau khi đã xem lỗi ở tập giữ lại.

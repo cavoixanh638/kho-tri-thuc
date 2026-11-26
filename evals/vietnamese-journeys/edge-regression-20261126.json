@@ -1,0 +1,143 @@
+{
+  "runtime_sha": "ba1e7512e01467fb2f07af5a765d45cc0afe946c",
+  "environment": "Windows local QA / PostgreSQL 18 / generated notes",
+  "django": {
+    "total": 429,
+    "passed": 420,
+    "skipped": 9
+  },
+  "search_django": {
+    "total": 35,
+    "passed": 35,
+    "skipped": 0
+  },
+  "vietnamese_note_regressions": {
+    "provisional": {
+      "initial": {
+        "positive_target_in_top5": [
+          22,
+          36
+        ],
+        "negative_queries_with_hits": [
+          0,
+          3
+        ]
+      },
+      "including_expansion": {
+        "positive_target_in_top5": [
+          36,
+          36
+        ],
+        "negative_queries_with_hits": [
+          1,
+          3
+        ]
+      }
+    },
+    "recall-check": {
+      "initial": {
+        "positive_target_in_top5": [
+          1,
+          36
+        ],
+        "negative_queries_with_hits": [
+          0,
+          15
+        ]
+      },
+      "including_expansion": {
+        "positive_target_in_top5": [
+          34,
+          36
+        ],
+        "negative_queries_with_hits": [
+          10,
+          15
+        ]
+      }
+    }
+  },
+  "p16": {
+    "query_count": 86,
+    "negative_queries": 13,
+    "recall_at_5": 0.948051948051948,
+    "precision_at_5": 0.9605263157894737,
+    "negative_violations": {},
+    "no_leak": true,
+    "evidence_errors": []
+  },
+  "scale": {
+    "notes": 10000,
+    "topics": 1000,
+    "samples_per_case": 20,
+    "scope": "Read-only, warm SearchService and local PostgreSQL; 10k repetitive synthetic notes, not a user library.",
+    "cases": {
+      "exact_id": {
+        "hits": 1,
+        "target_rank": 1,
+        "p95_ms": 5.43,
+        "select_count": 1,
+        "item_sequential_rows_examined": [
+          0
+        ],
+        "indexes": [
+          [
+            "capture_owner_received_idx",
+            "catalog_item_pkey",
+            "derived_item_kind_active_idx",
+            "ingestion_captureevent_pkey",
+            "kt_item_fts_gin",
+            "kt_item_trgm_gin",
+            "processing_derivedcontent_pkey"
+          ]
+        ]
+      },
+      "common_phrase": {
+        "hits": 5,
+        "target_rank": null,
+        "p95_ms": 630.5,
+        "select_count": 1
+      },
+      "remembered_with_id": {
+        "hits": 1,
+        "target_rank": 1,
+        "p95_ms": 10.28,
+        "select_count": 2,
+        "item_sequential_rows_examined": [
+          0,
+          0
+        ],
+        "indexes": [
+          [
+            "capture_owner_received_idx",
+            "derived_item_kind_active_idx",
+            "kt_item_fts_gin",
+            "kt_item_trgm_gin"
+          ],
+          [
+            "catalog_item_pkey",
+            "kt_item_fts_gin"
+          ]
+        ]
+      },
+      "common_near_miss": {
+        "hits": 0,
+        "target_rank": null,
+        "p95_ms": 8.82,
+        "select_count": 2
+      },
+      "unrelated": {
+        "hits": 0,
+        "target_rank": null,
+        "p95_ms": 7.01,
+        "select_count": 2
+      },
+      "foreign_id": {
+        "hits": 0,
+        "target_rank": null,
+        "p95_ms": 4.66,
+        "select_count": 1
+      }
+    }
+  }
+}

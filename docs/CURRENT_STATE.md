@@ -1,5 +1,20 @@
 # HIỆN TRẠNG THỰC TẾ — KHO TRI THỨC
 
+<a id="kiem-thu-tim-kiem-20261126"></a>
+
+## Kiểm thử tìm kiếm ngày 26/11/2026
+
+Bản Windows `ba1e751` được kiểm trên PostgreSQL 18 và Chromium. Đã bổ sung 16 ca hồi quy backend và một bộ 21 câu với đáp án khóa trước trên 10 ghi chú dễ nhầm. [PR #100](https://github.com/cavoixanh638/kho-tri-thuc/pull/100) · [Bộ câu hỏi và kết quả từng câu](../evals/vietnamese-journeys/confusable-cases/README.md)
+
+| Tình huống | Kết quả |
+| --- | --- |
+| Gõ dấu không đều và sao chép văn bản | Khi mở rộng, “bến tau” tìm được bài có “bến tàu” và phân biệt với bài có “bên tàu”. Đã thử chữ hoa, Unicode tổ hợp, khoảng trắng đặc biệt và từ lặp. Dấu hai chấm trong “Ghi chú: …” cho phép tìm tiếp. [Ca thử tiếng Việt](../apps/backend/search/test_recall.py) |
+| Mã, số và dấu phân cách | Phân biệt `AX173` với `AX1730`, `173` với `0173`, `08:15` với `15:08`, và `2,5` với `5,2`. Tiền tố `123/QD-UB` vẫn tìm được `123/QĐ-UBND`. Với mã kèm năm, các phần phải thuộc cùng một mã trong nguồn kết quả. [Ca thử ghi chú, văn bản trích xuất và ghi chú kèm liên kết](../apps/backend/search/test_identifiers.py) |
+| Ghi chú dễ nhầm | Lượt đầu đưa bài đúng lên đầu cho 3/16 câu có đáp án. Khi mở rộng, cả 16/16 có bài đúng đứng đầu và có đủ đáp án trong top 5. Trong 5 câu âm, 2 câu có kết quả ở lượt đầu và 4 câu có gợi ý khi mở rộng. Hai lỗi ở lượt đầu là trả lịch sai tháng và nhầm việc dán thẻ với bóc thẻ sau khi đóng cổng. [Đối chiếu với bản trước](../evals/vietnamese-journeys/confusable-cases/README.md) |
+| Đổi trạng thái và điều hướng | PostgreSQL cập nhật kết quả khi sửa nội dung, bỏ thẻ hoặc đưa ghi chú vào thùng rác. Chromium hoàn tất 16/16 bước đổi từ khóa, đổi chủ đề sau khi mở rộng, dùng Back/Forward và mở đúng nguyên văn M02, M14. Ca giao diện riêng kiểm tra phản hồi cũ đến chậm sau khi người dùng đổi truy vấn. [Kết quả Chromium](../evals/vietnamese-journeys/results-browser-navigation-20261126.json) |
+
+Trên Windows, cả 35 kiểm thử backend tìm kiếm và 336 kiểm thử frontend đều đạt. Toàn bộ Django ghi nhận 420 ca đạt, 9 ca bỏ qua. Bộ 86 truy vấn giữ Recall@5 73/77, Precision@5 73/76 và cả 13 câu âm đều trả rỗng. Ở kho QA 10.000 ghi chú, mã chính xác đứng đầu với P95 5,43 ms, mã nằm trong câu đứng đầu với P95 10,28 ms. Các số thời gian đo qua dịch vụ cục bộ, 20 lượt mỗi câu. [Báo cáo hồi quy và quy mô](../evals/vietnamese-journeys/edge-regression-20261126.json)
+
 <a id="ung-vien-windows-20261125"></a>
 
 ## Bản ứng viên Windows ngày 25/11/2026
