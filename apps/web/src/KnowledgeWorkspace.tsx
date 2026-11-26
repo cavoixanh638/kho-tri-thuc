@@ -67,7 +67,15 @@ export function KnowledgeWorkspace({path, csrf, children}: {path?: string; csrf:
   const [sidebarWidth,setSidebarWidth]=useState(initialWidth);
   const sidebarRef=useRef<HTMLElement>(null);
   const resize=useRef<{pointerId:number;startX:number;startWidth:number}|undefined>(undefined);
-  useEffect(()=>{try{window.sessionStorage.setItem(widthKey,String(sidebarWidth));}catch{/* optional preference */}},[sidebarWidth]);
+  // Persist the preference in the event itself, not a passive effect that can
+  // still be pending if the user immediately reloads after dragging.
+  const widthRef=useRef(sidebarWidth);
+  function applySidebarWidth(value:number){
+    const next=clampWidth(value);
+    widthRef.current=next;
+    try{window.sessionStorage.setItem(widthKey,String(next));}catch{/* optional preference */}
+    setSidebarWidth(next);
+  }
   // Observe only the navigator until the canonical note arrives through lazy
   // branches. Scroll the sidebar, never the reading page or the editor focus.
   useEffect(()=>{
@@ -134,13 +142,13 @@ export function KnowledgeWorkspace({path, csrf, children}: {path?: string; csrf:
         }}
         onPointerMove={event=>{
           const drag=resize.current;
-          if(drag&&drag.pointerId===event.pointerId)setSidebarWidth(clampWidth(drag.startWidth+event.clientX-drag.startX));
+          if(drag&&drag.pointerId===event.pointerId)applySidebarWidth(drag.startWidth+event.clientX-drag.startX);
         }}
         onPointerUp={()=>{resize.current=undefined;}} onPointerCancel={()=>{resize.current=undefined;}} onLostPointerCapture={()=>{resize.current=undefined;}}
-        onDoubleClick={()=>setSidebarWidth(DEFAULT_WIDTH)}
+        onDoubleClick={()=>applySidebarWidth(DEFAULT_WIDTH)}
         onKeyDown={event=>{
-          if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();setSidebarWidth(old=>clampWidth(old+(event.key==='ArrowLeft'?-20:20)));}
-          else if(event.key==='Home'||event.key==='End'){event.preventDefault();setSidebarWidth(event.key==='Home'?MIN_WIDTH:MAX_WIDTH);}
+          if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();applySidebarWidth(widthRef.current+(event.key==='ArrowLeft'?-20:20));}
+          else if(event.key==='Home'||event.key==='End'){event.preventDefault();applySidebarWidth(event.key==='Home'?MIN_WIDTH:MAX_WIDTH);}
         }} />
       <div className="workspace-content">{children}</div>
     </div>

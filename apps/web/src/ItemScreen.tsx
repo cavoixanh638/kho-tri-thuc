@@ -238,7 +238,7 @@ function ItemContent({ item, csrf, onUpdated, onRefresh, refreshError, pollingPa
             </div>}
           </form> : <>
             {item.note ? <>
-              <KnowledgeText text={item.note} title={itemTitle(item)} />
+              <KnowledgeText text={item.note} title={itemTitle(item)} foldKey={item.item_id} />
               {!item.deleted && <SourceCitationBridge id={item.item_id} refreshKey={evidenceRevision} onIllustration={showIllustration} />}
               <details className="raw-knowledge"><summary>Xem Markdown gốc</summary><pre>{item.note}</pre></details>
             </> : !item.deleted ? <KnowledgeReading id={item.item_id} refreshKey={evidenceRevision} onIllustration={showIllustration} /> : <Empty>Bài đang ở thùng rác.</Empty>}

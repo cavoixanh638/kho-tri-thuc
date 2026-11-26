@@ -258,6 +258,18 @@ if (prerequisitesReady) {
         await wait((child) => !!document.querySelector('a[href="#/muc/' + child + '"]'), context.child, 'renamed link rendered');
         const headings = await page.eval(() => [...document.querySelectorAll('.knowledge-text h2[id],.knowledge-text h3[id],.knowledge-text h4[id],.knowledge-text h5[id],.knowledge-text h6[id]')].map(n => n.tagName));
         assert.deepEqual(headings, ['H2', 'H3', 'H4', 'H4', 'H5', 'H6'], 'H1-H6 markdown levels follow the page H1 without flattening H1/H2');
+        const beforeFold=(await get('/items/'+context.parent)).note;
+        const outer=await page.eval(()=>document.querySelector('.knowledge-text details.kt-fold-section')?.id);
+        assert.ok(outer,'Foldable Markdown section rendered');
+        await page.eval(id=>document.getElementById(id).querySelector(':scope > summary').click(),outer);
+        await wait(id=>document.getElementById(id)?.open===false,outer,'native heading fold');
+        await page.send('Page.reload',{ignoreCache:true});
+        await wait(id=>document.getElementById(id)?.open===false,outer,'fold preference survives reload');
+        await page.eval(()=>document.querySelector('.note-outline a[href]:last-child')?.click());
+        // Select an explicitly nested heading via the outline.
+        await page.eval(()=>[...document.querySelectorAll('.note-outline a')].find(a=>a.textContent==='Kết luận').click());
+        await wait(id=>document.getElementById(id)?.open===true,outer,'outline reopens ancestor');
+        assert.equal((await get('/items/'+context.parent)).note,beforeFold,'folding must never mutate Markdown');
         await page.eval(() => document.body.focus());
         await page.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'k', code: 'KeyK', windowsVirtualKeyCode: 75, modifiers: 2 });
         await page.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'k', code: 'KeyK', windowsVirtualKeyCode: 75, modifiers: 2 });

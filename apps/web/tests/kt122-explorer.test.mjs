@@ -205,3 +205,14 @@ test('TREE-06 active canonical note scrolls the navigator only after lazy expans
  assert.equal(shell.scrollTop,158);
  assert.equal(container.querySelector('.workspace-content article').textContent,'Content');
 });
+
+
+test('malformed optional structure response shows retry without crashing the note shell',async()=>{
+ const validFetch=globalThis.fetch;let invalid=true;
+ globalThis.fetch=async(path,options)=>String(path).endsWith('/structure')&&invalid?Response.json({item_id:id}):validFetch(path,options);
+ await render(ui.ItemStructurePanel,{id,csrf:'fixture-csrf'});
+ assert.match(container.textContent,/Chưa tải được cấu trúc bài/);assert.equal(container.querySelector('details'),null);
+ invalid=false;await click('Thử lại');
+ assert.match(container.textContent,/Bài con \(1\)/);assert.ok(container.querySelector('a[href="#/muc/'+child+'"]'));
+ assert.equal(mutations.length,0);
+});

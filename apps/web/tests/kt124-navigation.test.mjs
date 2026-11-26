@@ -110,3 +110,34 @@ test('link context keeps outgoing references separate from unlinked mention cand
   assert.equal(container.querySelectorAll('a').length, 2);
   assert.equal(calls.length, 1);
 });
+
+
+test('EDIT-10 folds nested Markdown headings without rewriting content and outline reveals hidden target',async()=>{
+  const raw='# Chương\r\n\r\nĐoạn đầu\r\n\r\n## Phần con\r\n\r\nNội dung con\r\n\r\n# Chương sau\r\n\r\nĐoạn độc lập\r\n';
+  await render(ui.KnowledgeText,{text:raw});
+  const sections=[...container.querySelectorAll('details.kt-fold-section')];
+  assert.equal(sections.length,3);assert.ok(sections.every(section=>section.open));
+  assert.ok(sections[0].contains(sections[1]));assert.ok(!sections[0].contains(sections[2]));
+  await ui.act(async()=>{sections[0].open=false;sections[0].dispatchEvent(new window.Event('toggle'));await delay(15);});
+  assert.equal(sections[0].open,false);assert.equal(sections[2].open,true);
+  const child=[...container.querySelectorAll('.note-outline a')].find(a=>a.textContent==='Phần con');
+  await ui.act(async()=>{child.click();await delay(15);});
+  assert.equal(sections[0].open,true);assert.equal(document.activeElement,container.querySelector(child.getAttribute('href')));
+  assert.match(container.textContent,/Nội dung con/);assert.equal(calls.length,0);
+});
+test('EDIT-10 restores a note-specific folded preference after remount; no raw content in preference',async()=>{
+  const foldKey='fold-fixture',raw='# Một\n\nNội dung riêng\n\n# Hai\n\nĐoạn hai';
+  await render(ui.KnowledgeText,{text:raw,foldKey});
+  const section=container.querySelector('details.kt-fold-section');
+  await ui.act(async()=>{section.open=false;section.dispatchEvent(new window.Event('toggle'));await delay(15);});
+  assert.equal(section.open,false);
+  const stored=sessionStorage.getItem('kt-heading-fold-v1:'+foldKey);
+  assert.ok(stored?.includes(section.id));assert.ok(!stored.includes('Nội dung riêng'));
+  await ui.act(async()=>root.unmount());root=ui.createRoot(container);
+  await render(ui.KnowledgeText,{text:raw,foldKey});
+  assert.equal(container.querySelector('details.kt-fold-section').open,false);
+  await ui.act(async()=>root.unmount());root=ui.createRoot(container);
+  await render(ui.KnowledgeText,{text:raw,foldKey:'other'});
+  assert.equal(container.querySelector('details.kt-fold-section').open,true);
+  sessionStorage.removeItem('kt-heading-fold-v1:'+foldKey);
+});
