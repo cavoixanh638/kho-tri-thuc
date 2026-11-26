@@ -54,14 +54,23 @@ function validateCatalog(markdown){
   return {features:rows.size,groups:Number(totals[2]),originalProposals:expected.size,statuses:counts};
 }
 
+function negativeFixtures(catalog){
+  const first=catalog.split(/\r?\n/).find(line=>line.startsWith('| WS-01 |'));
+  const mapping=catalog.split(/\r?\n/).find(line=>line.startsWith('| [G01 Notion')&&line.includes(' | G01.1 '));
+  const mapped=mapping.split('|')[3].trim().split(', ');
+  const changedMap=mapping.replace(mapped.join(', '),mapped.slice(1).join(', '));
+  return [
+    ['missing baseline feature',catalog.replace(first,'')],
+    ['duplicate baseline ID',catalog.replace(first,first+'\n'+first)],
+    ['missing original mapping',catalog.replace(mapping,'')],
+    ['wrong research PR',catalog.replace(mapping,mapping.replace('/pull/43)','/pull/42)'))],
+    ['unmatched reverse mapping',catalog.replace(mapping,changedMap)],
+    ['stale summary',catalog.replace(/(\*\*Kiểm kê:\*\* )(\d+) ID/,(_,prefix,n)=>prefix+(Number(n)+1)+' ID')],
+  ];
+}
+
 const catalog=readFileSync(new URL('../../docs/FEATURE_CATALOG_AND_PLAN.md',import.meta.url),'utf8');
 const result=validateCatalog(catalog);
-const negatives=[
-  ['missing baseline feature',catalog.replace(/^\\| WS-01 \\|.*\\n/m,'')],
-  ['duplicate baseline ID',catalog.replace(/^\\| WS-01 \\|.*$/m,line=>line+'\\n'+line)],
-  ['missing original mapping',catalog.replace(/^\\| \\[G01 Notion.*\\| G01\\.1 .*\\n/m,'')],
-  ['wrong research PR',catalog.replace(/(\\| \\[G01 Notion #43\\]\\([^)]*\\/pull\\/)43/,'$142')],
-  ['unmatched forward mapping',catalog.replace(/(\\| WS-05 \\|[^\\n]*)G05\\.5/,'$1G05.4')],
-];
+const negatives=negativeFixtures(catalog);
 for(const [name,mutated] of negatives){assert.notEqual(mutated,catalog,name+' fixture changed');assert.throws(()=>validateCatalog(mutated),undefined,name);}
 console.log(JSON.stringify({status:'PASS',...result,negativeCases:negatives.length}));
