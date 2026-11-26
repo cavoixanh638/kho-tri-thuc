@@ -151,7 +151,10 @@ page AS (
 headline_query AS (
     SELECT string_agg(term_query::text, ' | ')::tsquery AS q FROM terms
 )
-SELECT i.id, i.title, p.score, 'item', {evidence_excerpt(ITEM_PASSAGE, PARTIAL_EXCERPT)}, NULL, '{{}}', p.strong
+SELECT i.id, i.title, p.score, 'item', {evidence_excerpt(ITEM_PASSAGE, PARTIAL_EXCERPT)}, NULL, '{{}}', p.strong,
+       CASE WHEN %(rerank_window)s > 0 AND row_number() OVER (ORDER BY p.score DESC, p.id DESC) <= %(rerank_window)s
+            THEN left(concat_ws(E'\\n', nullif(i.title, ''), nullif(i.description, ''), nullif(i.note, '')),
+                      %(passage_chars)s) END
 FROM page p JOIN visible_items i ON i.id = p.id CROSS JOIN headline_query h
 ORDER BY p.score DESC, p.id DESC
 """

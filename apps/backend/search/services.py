@@ -5,8 +5,10 @@ from dataclasses import dataclass
 from typing import Literal
 from uuid import UUID
 
+from django.conf import settings
 from django.db import connection
 
+from . import reranking
 from .claims import claim_params
 from .identifiers import identifier_patterns
 from .quantities import quantity_params
@@ -56,6 +58,7 @@ class SearchPage:
     next_cursor: SearchCursor | None = None
     match_kind: Literal["standard", "partial"] = "standard"
     can_expand: bool = False
+    ranking: Literal["lexical", "bge"] = "lexical"
 
 
 class SearchService:
@@ -87,6 +90,7 @@ class SearchService:
         params = _search_params(filters, query, cursor, limit)
         match_kind = "standard"
         can_expand = False
+        passages = []
         with connection.cursor() as db_cursor:
             db_cursor.execute(SEARCH_SQL, params)
             rows = db_cursor.fetchall()
@@ -105,10 +109,17 @@ class SearchService:
                                                    "substring": True, "typo": False})
                     rows = db_cursor.fetchall()
                 else:
-                    db_cursor.execute(RECALL_SQL, {**params, **partial})
+                    window = min(limit, reranking.WINDOW_SIZE) if (
+                        expand and cursor is None and settings.SEARCH_BGE_MODEL_DIR
+                    ) else 0
+                    db_cursor.execute(RECALL_SQL, {**params, **partial, "rerank_window": window,
+                                                   "passage_chars": reranking.MAX_PASSAGE_CHARS})
                     candidates = db_cursor.fetchall()
-                    can_expand = not expand and any(not row[-1] for row in candidates)
-                    rows = [row[:-1] for row in candidates if expand or row[-1]]
+                    has_suggestions = any(not row[-2] for row in candidates)
+                    can_expand = not expand and has_suggestions
+                    rows = [row[:-2] for row in candidates if expand or row[-2]]
+                    if window and has_suggestions:
+                        passages = [row[-1] for row in candidates[:window]]
                 if rows:
                     match_kind = "partial"
 
@@ -130,7 +141,13 @@ class SearchService:
         if len(hits) > limit:
             hits = hits[:limit]
             next_cursor = SearchCursor(hits[-1].score, hits[-1].item_id)
-        return SearchPage(hits, next_cursor, match_kind, can_expand)
+        # The cursor is the original lexical page boundary. The lookahead
+        # row is never scored, so the next page cannot repeat or skip items.
+        ranking = "lexical"
+        if len(passages) >= 2 and (order := reranking.rerank_order(query, passages)) is not None:
+            hits = tuple(hits[index] for index in order) + hits[len(order):]
+            ranking = "bge"
+        return SearchPage(hits, next_cursor, match_kind, can_expand, ranking)
 
 
 def _search_params(filters, query, cursor, limit):

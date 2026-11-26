@@ -36,18 +36,21 @@ class Page(Schema):
     next_cursor: Cursor | None
     match_kind: str = "standard"
     can_expand: bool = False
+    ranking: str = "lexical"
 
 
 class Error(Schema):
     code: str
 
 
-def browse_groups(owner, group_filters, cursor, limit):
+def browse_groups(owner, group_filters, cursor, limit, exclude_item_id=None):
     if not group_filters:
         return {"results": [], "next_cursor": None}
     queryset = Item.objects.filter(
         owner=owner, deleted_at__isnull=True, **group_filters
     )
+    if exclude_item_id is not None:
+        queryset = queryset.exclude(pk=exclude_item_id)
     if cursor:
         if cursor.score != 0:
             raise ValueError("group cursors must have a zero score")
@@ -75,6 +78,7 @@ def search(
     cursor_item_id: UUID | None = None,
     limit: int = 20,
     expand: bool = False,
+    exclude_item_id: UUID | None = None,
 ):
     if (
         (cursor_score is None) != (cursor_item_id is None)
@@ -103,9 +107,9 @@ def search(
                 )
                 if value is not None
             }
-            return browse_groups(request.user, group_filters, cursor, limit)
+            return browse_groups(request.user, group_filters, cursor, limit, exclude_item_id)
         page = SearchService().search(
-            SearchFilters(request.user.pk, topic_id, project_id, tag_id),
+            SearchFilters(request.user.pk, topic_id, project_id, tag_id, exclude_item_id),
             q,
             cursor,
             limit=limit,
@@ -116,6 +120,7 @@ def search(
             "next_cursor": asdict(page.next_cursor) if page.next_cursor else None,
             "match_kind": page.match_kind,
             "can_expand": page.can_expand,
+            "ranking": page.ranking,
         }
     except (ValueError, UnicodeError):
         return Status(422, {"code": "invalid_search"})
