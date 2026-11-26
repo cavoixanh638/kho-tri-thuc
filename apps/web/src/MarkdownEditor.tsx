@@ -4,6 +4,7 @@ import { KnowledgeText } from './KnowledgeText';
 import './MarkdownEditor.css';
 import { request } from './api';
 import { wikiInsertion, wikiQuery, type WikiQuery } from './WikiCompletion';
+import { formatMarkdown, markdownActions, type FormatAction, type FormatResult } from './MarkdownFormatting';
 
 type WikiTarget = { item_id: string; title: string; saved_at: string };
 
@@ -37,6 +38,36 @@ export function MarkdownEditor({ value, title, disabled, onChange, onSave, onCom
   const [targets, setTargets] = useState<WikiTarget[]>([]);
   const [active, setActive] = useState(0);
   const [wikiError, setWikiError] = useState('');
+  const formatUndo=useRef<{before:FormatResult;after:FormatResult}[]>([]);
+  const formatRedo=useRef<{before:FormatResult;after:FormatResult}[]>([]);
+  const [blockMenu,setBlockMenu]=useState(false);
+  function restoreFormat(result:FormatResult){
+    setQuery(undefined);setTargets([]);setBlockMenu(false);
+    onChange(result.raw);
+    window.requestAnimationFrame(()=>{
+      const field=textarea.current;
+      if(field){field.focus();field.setSelectionRange(result.start,result.end);}
+    });
+  }
+  function format(action:FormatAction){
+    const field=textarea.current;
+    if(!field||disabled||composing.current||mode==='read')return;
+    const before={raw:value,start:field.selectionStart,end:field.selectionEnd};
+    const after=formatMarkdown(value,before.start,before.end,action);
+    if(after.raw===value)return;
+    formatUndo.current=[...formatUndo.current.slice(-29),{before,after}];
+    formatRedo.current=[];restoreFormat(after);
+  }
+  function formatHistory(redo:boolean){
+    if(disabled||composing.current||mode==='read')return false;
+    const from=redo?formatRedo.current:formatUndo.current;
+    const transaction=from.at(-1);
+    if(!transaction||value!==(redo?transaction.before.raw:transaction.after.raw))return false;
+    from.pop();(redo?formatUndo.current:formatRedo.current).push(transaction);
+    restoreFormat(redo?transaction.after:transaction.before);return true;
+  }
+  const canUndoFormat=formatUndo.current.at(-1)?.after.raw===value;
+  const canRedoFormat=formatRedo.current.at(-1)?.before.raw===value;
   useEffect(() => {
     if (!query || isComposing || disabled) { setTargets([]); return; }
     const controller = new AbortController();
@@ -67,6 +98,13 @@ export function MarkdownEditor({ value, title, disabled, onChange, onSave, onCom
         event.preventDefault(); complete(targets[active]); return;
       }
     }
+    if(event.target===textarea.current&&(event.ctrlKey||event.metaKey)&&!event.altKey){
+      const key=event.key.toLowerCase();
+      if(key==='b'||key==='i'){event.preventDefault();format(key==='b'?'bold':'italic');return;}
+      if(key==='z'||key==='y'){
+        if(formatHistory(key==='y'||event.shiftKey)){event.preventDefault();return;}
+      }
+    }
     if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
       event.preventDefault();
       if (!disabled) onSave();
@@ -76,6 +114,21 @@ export function MarkdownEditor({ value, title, disabled, onChange, onSave, onCom
       {([['edit', 'Soạn thảo'], ['split', 'Soạn + Xem trước'], ['read', 'Đọc bản nháp']] as const).map(([key, label]) =>
         <Button key={key} type="button" variant="default" aria-pressed={mode === key} disabled={disabled || isComposing} onClick={() => setMode(key)}>{label}</Button>)}
     </div>
+    {mode!=='read'&&<div className="markdown-format-toolbar" role="group" aria-label="Định dạng Markdown">
+      {markdownActions.filter(action=>!action.block).map(action=><button key={action.id} type="button" title={action.label} aria-label={action.label}
+        disabled={disabled||isComposing} onMouseDown={event=>event.preventDefault()} onClick={()=>format(action.id)}>{action.symbol}</button>)}
+      <button type="button" aria-expanded={blockMenu} aria-controls={id+'-format-blocks'} disabled={disabled||isComposing}
+        onMouseDown={event=>event.preventDefault()} onClick={()=>setBlockMenu(value=>!value)}>Chèn khối ▾</button>
+      <button type="button" aria-label="Hoàn tác định dạng" title="Hoàn tác định dạng" disabled={disabled||isComposing||!canUndoFormat}
+        onMouseDown={event=>event.preventDefault()} onClick={()=>formatHistory(false)}>↶</button>
+      <button type="button" aria-label="Làm lại định dạng" title="Làm lại định dạng" disabled={disabled||isComposing||!canRedoFormat}
+        onMouseDown={event=>event.preventDefault()} onClick={()=>formatHistory(true)}>↷</button>
+      {blockMenu&&<div className="markdown-format-blocks" id={id+'-format-blocks'} role="group" aria-label="Chèn khối Markdown"
+        onKeyDown={event=>{if(event.key==='Escape'){event.preventDefault();setBlockMenu(false);textarea.current?.focus();}}}>
+        {markdownActions.filter(action=>action.block).map(action=><button type="button" key={action.id} disabled={disabled||isComposing}
+          onMouseDown={event=>event.preventDefault()} onClick={()=>format(action.id)}>{action.label}</button>)}
+      </div>}
+    </div>}
     <p id={`${id}-help`} className="markdown-editor-help">Markdown: # tiêu đề, - danh sách, &gt; trích dẫn, **đậm**, [tên](https://…), `mã`. Ctrl/⌘ + Enter để lưu.</p>
     <div className={`markdown-editor-panes markdown-editor-${mode}`}>
       <div hidden={mode === 'read'}>

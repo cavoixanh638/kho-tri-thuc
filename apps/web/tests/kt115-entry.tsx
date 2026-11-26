@@ -3,3 +3,5 @@ export { createRoot } from 'react-dom/client';
 export { MantineProvider } from '@mantine/core';
 export { ItemScreen } from '../src/ItemScreen';
 export { editRawMarkdown } from '../src/MarkdownEditor';
+
+export { formatMarkdown } from '../src/MarkdownFormatting';

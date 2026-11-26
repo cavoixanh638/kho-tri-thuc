@@ -81,7 +81,15 @@ try{
   mkdirSync(out,{recursive:true});
   const health=await fetch(ORIGIN+'/api/v1/health',{signal:AbortSignal.timeout(5000)});
   assert.equal(health.status,200,'Isolated QA backend health');
-  browser=await Browser.launch({binary:process.env.KT_JOURNEY_CHROMIUM||'chromium',startupTimeoutMs:30000});
+  // Retry just one Chromium startup timeout with a fresh profile; never
+  // retry or ignore an application/assertion failure, never fake screenshots.
+  try {
+    browser=await Browser.launch({binary:process.env.KT_JOURNEY_CHROMIUM||'chromium',startupTimeoutMs:30000});
+  } catch(error) {
+    if(error?.message!=='Chromium launch timed out')throw error;
+    console.warn('Chromium startup timed out; retrying once with a clean profile');
+    browser=await Browser.launch({binary:process.env.KT_JOURNEY_CHROMIUM||'chromium',startupTimeoutMs:45000});
+  }
   page=await browser.newPage({width:1440,height:900,reducedMotion:true});
   await page.goto(ORIGIN);
   await wait(()=>!!document.querySelector('input[autocomplete="username"]'),undefined,'login form');
