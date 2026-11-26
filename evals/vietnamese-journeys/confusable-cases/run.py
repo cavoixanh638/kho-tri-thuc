@@ -5,11 +5,11 @@ import os
 import subprocess
 import sys
 from pathlib import Path
-from uuid import NAMESPACE_URL, uuid5
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
 from evaluate import fingerprint, read, unique, write
+from scenario_matrix import MATRIX_FILES, judge_matrix, load_matrix, seed_search_cases
 
 
 def validate(fixture):
@@ -40,7 +40,7 @@ def measure(repo, fixture):
     from catalog.models import Item
     from django.contrib.auth import get_user_model
     from django.db import connection, transaction
-    from search.services import SearchFilters, SearchService
+    from search.services import SearchService
 
     if connection.vendor != "postgresql":
         raise RuntimeError("PostgreSQL required")
@@ -53,18 +53,11 @@ def measure(repo, fixture):
     with transaction.atomic():
         if users.exists() or Item.objects.exists():
             raise RuntimeError("Use a migrated empty evaluation database")
-        owner = users.create_user(username="kt-eval-edge-pairs")
-        labels = {
-            Item.objects.create(
-                id=uuid5(NAMESPACE_URL, "urn:kt-confusable:" + item["id"]),
-                kind=Item.Kind.TEXT, owner=owner, title=item["title"], note=item["note"],
-            ).pk: item["id"]
-            for item in fixture["items"]
-        }
-        filters = SearchFilters(owner_id=owner.pk)
+        labels, filters_by_case = seed_search_cases(fixture)
         service = SearchService()
         rows = []
         for case in fixture["cases"]:
+            filters = filters_by_case[case["id"]]
             page = service.search(filters, case["query"], limit=5)
             offered = bool(getattr(page, "can_expand", False))
             follow = service.search(filters, case["query"], limit=5, expand=True) if offered else None
@@ -103,12 +96,22 @@ def summarize(rows, follow_suggestions):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repo", type=Path, default=HERE.parents[2])
-    parser.add_argument("--expected-source", required=True, help="Commit whose backend is being measured")
-    parser.add_argument("--report", required=True, type=Path)
+    parser.add_argument("--matrix", action="store_true", help="Measure all three scenario suites in one shared corpus")
+    parser.add_argument("--validate-only", action="store_true", help="Check fixtures without opening a database")
+    parser.add_argument("--require-all", action="store_true", help="Exit nonzero if either mode misses any matrix case")
+    parser.add_argument("--expected-source", help="Commit whose backend is being measured")
+    parser.add_argument("--report", type=Path)
     args = parser.parse_args()
+    if args.require_all and (not args.matrix or args.validate_only):
+        parser.error("--require-all applies to a live --matrix run")
+    if not args.validate_only and (not args.expected_source or not args.report):
+        parser.error("a live run requires --expected-source and --report")
     fixture_file = HERE / "fixture.json"
-    fixture = read(fixture_file)
+    fixture = load_matrix() if args.matrix else read(fixture_file)
     validate(fixture)
+    if args.validate_only:
+        print(f"Validated {len(fixture['cases'])} cases and {len(fixture['items'])} notes.")
+        return
     repo = args.repo.resolve()
 
     def git(*arguments):
@@ -118,12 +121,19 @@ def main():
     backend_tree = git("rev-parse", f"{source}:apps/backend")
     if git("rev-parse", "HEAD:apps/backend") != backend_tree or git("status", "--porcelain", "--", "apps/backend"):
         raise RuntimeError("Checked-out backend differs from the requested source")
+    if args.matrix:
+        directory = MATRIX_FILES[0].parent
+        freeze = ["git", "-C", str(directory)]
+        if subprocess.check_output([*freeze, "status", "--porcelain", "--", *(p.name for p in MATRIX_FILES)]).strip():
+            raise RuntimeError("Commit all matrix fixtures before measuring")
+        fixture_commit = subprocess.check_output([*freeze, "rev-parse", "HEAD"], text=True).strip()
     rows = measure(repo, fixture)
-    write(args.report, {
+    report = {
         "tested_source": source,
         "backend_tree": backend_tree,
-        "fixture_sha256": fingerprint(fixture_file),
         "runner_sha256": fingerprint(Path(__file__)),
+        "scenario_module_sha256": fingerprint(HERE.parent / "scenario_matrix.py"),
+        "evaluation_module_sha256": fingerprint(HERE.parent / "evaluate.py"),
         "notes": len(fixture["items"]),
         "initial": summarize(rows, follow_suggestions=False),
         "with_suggestions": summarize(rows, follow_suggestions=True),
@@ -131,7 +141,21 @@ def main():
         "negative_suggestions_offered": sum(row["offered"] for row in rows if not row["accept"]),
         "negative_expanded_hits_total": sum(len(row["expanded"] or []) for row in rows if not row["accept"]),
         "cases": rows,
-    }, exclusive=True)
+    }
+    if args.matrix:
+        report["fixture_commit"] = fixture_commit
+        report["fixture_sha256"] = {p.name: fingerprint(p) for p in MATRIX_FILES}
+        report["by_suite"] = judge_matrix(rows, fixture)
+    else:
+        report["fixture_sha256"] = fingerprint(fixture_file)
+    write(args.report, report, exclusive=True)
+    if args.matrix:
+        totals = report["by_suite"]["all"]
+        print(totals)
+        if any(row[mode]["out_of_scope"] for row in rows for mode in ("initial_verdict", "with_suggestions_verdict")):
+            raise SystemExit("Report written: a result fell outside its search scope")
+        if args.require_all and min(totals["initial_pass"], totals["with_suggestions_pass"]) < totals["cases"]:
+            raise SystemExit("Report written: at least one case missed its declared expectation")
 
 
 if __name__ == "__main__":
