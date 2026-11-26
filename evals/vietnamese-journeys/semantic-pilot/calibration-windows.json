@@ -1,0 +1,50 @@
+{
+  "config": {
+    "models": {
+      "embedding": {
+        "repo": "AITeamVN/Vietnamese_Embedding_v2",
+        "revision": "18b44161e041bf1d3a333ab5144b5b7b93f914d2"
+      },
+      "reranker": {
+        "repo": "onnx-community/bge-reranker-v2-m3-ONNX",
+        "revision": "6f5ff65298512715a1e669753bc754d2bc8f367b"
+      }
+    },
+    "embedding_graph": "FP32 ONNX; CLS pooling and L2 normalization",
+    "rerank_graph": "Q8 ONNX; raw pair logit",
+    "max_tokens": 512,
+    "dense_k": 12,
+    "lexical_k": 5,
+    "rerank_k": 8,
+    "rrf_k": 60,
+    "backend_tree": "13d5e15337727d340c610d4b442e6e2bf023ec82",
+    "policy": "preserve a nonempty initial page with no expansion; otherwise offer semantic suggestions",
+    "implementation": {
+      "pilot.py": "8bc07e246634f4fa8a29cd7ff8efb87b102f5ad8a7c99ef0832e4618f9126aec",
+      "models.py": "7474ab8bf2271a01577f58120c21040768b90da194927cceab511fb0a219239b",
+      "judge.py": "2dee80777becfd877c3c8601c39e318cc9e7adcfa0d558390792775ebd080039"
+    }
+  },
+  "fixtures": {
+    "scenario-matrix/language.json": "d87dbd94e996ed5be8bf2817dc008acf942a13e5bee830eb8a1f3c8791fbe753",
+    "scenario-matrix/values.json": "dd3764fd89ab210b847d1899aa718c834cba313db4c9b0a114b600eb7503dafd",
+    "scenario-matrix/scope.json": "f55703ff82ef434d0258de0d330f74e9cb7b400ea625c5cde41e15e2c99f79cd",
+    "corpus.json": "d6870d9000dd7fda9dcc33ad1f3382abcd18be1ac586f6cf92df0face206a979",
+    "recall-check.json": "b6fcbfa9dba36a78f92c3ab4c98251498d9fd14c2884e30e1463197ad4b0c6ee"
+  },
+  "criterion": "maximize mean(positive top-1 rate, true negative rate); tie: more negatives empty, then stricter threshold",
+  "hybrid": {
+    "threshold": 0.48,
+    "positive_top1": 29,
+    "positives": 36,
+    "negative_empty": 10,
+    "negatives": 15
+  },
+  "reranked": {
+    "threshold": -2.0,
+    "positive_top1": 31,
+    "positives": 36,
+    "negative_empty": 9,
+    "negatives": 15
+  }
+}
