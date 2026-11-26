@@ -14,7 +14,9 @@ function read(owner?:string|null):Model{
   try{
     const data=owner?JSON.parse(window.sessionStorage.getItem(prefix+owner)??'null'):null;
     const tabs:Tab[]=Array.isArray(data?.tabs)?data.tabs.filter((x:Tab)=>x&&validId(x.id)).slice(0,MAX).map((x:Tab)=>({id:x.id,pinned:x.pinned===true})):[];
-    return {tabs:[...new Map(tabs.map(tab=>[tab.id,tab])).values()].sort((a,b)=>Number(b.pinned)-Number(a.pinned)),closed:Array.isArray(data?.closed)?data.closed.filter(validId).slice(0,10):[]};
+    const unique=[...new Map(tabs.map(tab=>[tab.id,tab])).values()].sort((a,b)=>Number(b.pinned)-Number(a.pinned));
+    const openIds=new Set(unique.map(tab=>tab.id));
+    return {tabs:unique,closed:Array.isArray(data?.closed)?[...new Set<string>(data.closed.filter(validId))].filter(id=>!openIds.has(id)).slice(0,10):[]};
   }catch{return {tabs:[],closed:[]};}
 }
 export function clearWorkspaceTabs(owner?:string|null){

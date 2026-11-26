@@ -19,10 +19,10 @@ Ngày 25/11/2026. **Nguồn chuẩn theo dõi ưu điểm của 17 nghiên cứu
 | --- | --- | --- | --- | --- |
 | WS-01 | MỘT PHẦN | Sidebar cố định, cuộn độc lập và giữ DOM khi mở bài | G17+ | Chuyển route giữ sidebar, scroll, nhánh; #101 còn 2 test lỗi |
 | WS-02 | CÓ MÃ | Kéo đường biên để resize, lưu chiều rộng, hỗ trợ bàn phím | G17+ | 240–480px, reload, 390px không tràn |
-| WS-03 | THIẾU | Mở nhiều tab, đóng và mở lại tab | G17+ G14+ | Cùng UUID, không mất draft |
-| WS-04 | THIẾU | Ghim, sắp xếp tab, mở bài trong tab mới | G17+ | Không mất editor state |
+| WS-03 | CÓ MÃ | Mở nhiều tab, đóng và mở lại tab | G17+ G14+ | Cùng UUID, không mất draft |
+| WS-04 | MỘT PHẦN | Ghim, sắp xếp tab, mở bài trong tab mới | G17+ | Không mất editor state |
 | WS-05 | THIẾU | Chia pane ngang/dọc, mở nguồn cạnh bài | G05.5 G17+ | Hai pane độc lập, mobile fallback |
-| WS-06 | THIẾU | Khôi phục phiên làm việc, bố cục, tab | G17+ | Tách tài khoản, không lưu raw ngoài DB |
+| WS-06 | MỘT PHẦN | Khôi phục phiên làm việc, bố cục, tab | G17+ | Tách tài khoản, không lưu raw ngoài DB |
 | WS-07 | MỘT PHẦN | Back/forward và lịch sử vị trí đọc | G17+ | Quay lại đúng vị trí |
 | WS-08 | THIẾU | Preview bài khi hover/tap, mở không mất trang | G05.5 G17+ | Owner scope, Escape trả focus |
 | WS-09 | THIẾU | Panel mục lục phải và liên quan bật/tắt được | G07.1 G14.3 G16.2 G17+ | Không che editor, lưu layout |
@@ -407,7 +407,7 @@ Các đề xuất A–E, P1–P5, I01–I06 quy đổi số theo thứ tự xu�
 | [G17 Obsidian #30](https://github.com/cavoixanh638/kho-tri-thuc/pull/30) | G17.5 Vault | PORT-01, PORT-02, PORT-03, PORT-05 |
 | [G17 Obsidian #30](https://github.com/cavoixanh638/kho-tri-thuc/pull/30) | G17.6 Canvas | VIS-01, VIS-05 |
 
-**Kiểm kê:** 176 ID trong 17 nhóm, 94/94 đề xuất gốc có ánh xạ. MỘT PHẦN: 49; THIẾU: 69; CÓ MÃ: 35; HOÃN CÓ ĐIỀU KIỆN: 23. Đây là số dòng, không phải tỷ lệ hoàn thành sản phẩm. Nguồn [INDEX 17 nghiên cứu](research/notes-apps-20261120/INDEX.md), [ma trận 38 nhóm cũ](workstreams/notes-ux-20261120/G00-FEATURE-TRACEABILITY.md), [G00 #47](https://github.com/cavoixanh638/kho-tri-thuc/pull/47).
+**Kiểm kê:** 176 ID trong 17 nhóm, 94/94 đề xuất gốc có ánh xạ. MỘT PHẦN: 51; THIẾU: 66; CÓ MÃ: 36; HOÃN CÓ ĐIỀU KIỆN: 23. Đây là số dòng, không phải tỷ lệ hoàn thành sản phẩm. Nguồn [INDEX 17 nghiên cứu](research/notes-apps-20261120/INDEX.md), [ma trận 38 nhóm cũ](workstreams/notes-ux-20261120/G00-FEATURE-TRACEABILITY.md), [G00 #47](https://github.com/cavoixanh638/kho-tri-thuc/pull/47).
 
 ## Thứ tự triển khai và ownership
 
@@ -436,5 +436,8 @@ Mỗi nhóm có thể chia thành PR nhỏ theo ID và file sở hữu, không g
 
 | 26/11/2026 | GATE-01, WS-02, TREE-06/09, SEARCH-04 | 2716e32a77ab0e8f145b70352ea37ee175a4e10f / 2056c535297d4867aa23e1e01550449289b4dc64 | [Run 45661554823](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/45661554823): frontend 344/344 PASS, P15 104/104 PASS (screen reader NOT_RUN), P08 12/13 FAIL J7 (width=356, saved=286). J8 vault, J9 synthetic 10k/1k PG restore, J6B private synthetic PASS. Windows/provider thật không được suy PASS. |
 | 26/11/2026 | WS-02, EDIT-10, TREE-08 | dbd0935c0fe44e38c6b077ba817ad82d8282766c / NOT_RUN | CODE: lưu chiều rộng ngay lúc kéo/phím, không phụ thuộc passive effect; chặn DTO cấu trúc bài/danh sách folder lỗi và stale request; thu gọn heading Markdown theo cấp thực bằng native details, outline tự mở tổ tiên, nhớ preference theo note (không lưu raw/ghi DB). Thêm test nested heading, reload, raw, retry lỗi DTO và J2 Chromium. Chỉ top-level Markdown heading; chưa folding trong list/quote. NEXT: CI toàn bộ đúng SHA, sửa nếu lỗi, tiếp WS-03/04, EDT toolbar. Rollback revert frontend/test, không migration. |
+
+| 26/11/2026 | GATE-01, EDIT-10, WS-02, TREE-08 | ce39d51be24e471f90ca97f8a743df605b189ac3 / GitHub PR merge-test SHA (xem run) | [Run 45735056944](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/45735056944): frontend 345/347 FAIL; J2/J7 browser step chạy xong nhưng gate cuối chưa xác nhận. Hai lỗi: React component inline remount khi fold; test P01 còn truy vấn nhãn/message của boundary cũ. Sửa ổn định identity và assert panel lỗi recoverable ở checkpoint sau, không hạ tiêu chí. |
+| 26/11/2026 | WS-03/04/06, EDIT-10, TREE-08 | 8644e8e521fe3b316cbf22753330cd5035d9e2a4 / NOT_RUN | CODE: tab theo route một editor, chuyển/đóng/mở lại, pin, reorder drag/Alt+Arrow, tối đa 20 tab, khôi phục UUID/pin/order trong phiên theo tài khoản; /navigation/tabs chỉ trả metadata ≤20 ID owner-scoped, không title/raw ở storage; explicit logout/expiry xóa preference. Guard lưu draft đồng bộ trước chuyển tab, chặn nếu composition/save/quota lỗi. Fold components ổn định không remount. J7 thêm chuyển tab với nháp chưa gửi, không đổi raw/CaptureEvent, pin/close/reopen; unit/DB tests riêng. WS04 còn thiếu modifier mở tab mới chuyên biệt; WS06 chưa lưu split-layout (WS05 chưa làm), WS07 scroll history chưa làm. Rollback revert code + tests, không migration. NEXT: CI đúng HEAD; sửa lỗi trước split/preview và editor. |
 
 **Prompt chuyển tiếp:** Vào repo, đọc file này + AGENTS.md + CURRENT_STATE; kiểm HEAD và PR đang mở, chọn đúng ID, thực hiện code, regression, cập nhật ID + checkpoint, commit/PR, không tự merge/deploy. Giữ tất cả ánh xạ và dòng chưa làm/hoãn.
