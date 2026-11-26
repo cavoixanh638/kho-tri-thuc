@@ -96,10 +96,17 @@ class SearchService:
                                                    "page_size": 1})
                     if db_cursor.fetchone():
                         return SearchPage()
-                db_cursor.execute(RECALL_SQL, {**params, **partial})
-                candidates = db_cursor.fetchall()
-                can_expand = not expand and any(not row[-1] for row in candidates)
-                rows = [row[:-1] for row in candidates if expand or row[-1]]
+                if "lookup_key" in partial:
+                    # Use the indexed literal lookup. Keep the original patterns
+                    # so every other written number/code must be present on the same source.
+                    db_cursor.execute(SEARCH_SQL, {**params, "query": partial["lookup_key"],
+                                                   "substring": True, "typo": False})
+                    rows = db_cursor.fetchall()
+                else:
+                    db_cursor.execute(RECALL_SQL, {**params, **partial})
+                    candidates = db_cursor.fetchall()
+                    can_expand = not expand and any(not row[-1] for row in candidates)
+                    rows = [row[:-1] for row in candidates if expand or row[-1]]
                 if rows:
                     match_kind = "partial"
 

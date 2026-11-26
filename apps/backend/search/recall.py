@@ -4,6 +4,7 @@ import math
 import re
 import unicodedata
 
+from .identifiers import identifier_condition, remembered_code
 from .queries import ITEM_TEXT, ITEM_VECTOR, VISIBLE_ITEMS
 
 
@@ -28,6 +29,8 @@ MAX_POSTINGS_PER_TERM = 64
 
 
 def recall_params(query):
+    if code := remembered_code(query):
+        return {"lookup_key": code}
     words = re.findall(r"[^\W_]+", QUERY_FRAMING.sub(" ", query.casefold()))
     # A single token, quoted text, URL, or structured identifier already has a
     # literal/typo search. Do not silently discard pieces of an exact key.
@@ -84,6 +87,7 @@ documents AS MATERIALIZED (
     FROM candidate_ids c CROSS JOIN LATERAL (
         SELECT src.* FROM visible_items src WHERE src.id = c.id LIMIT 1
     ) i
+    WHERE {identifier_condition(ITEM_TEXT)}
 ),
 weights AS (
     SELECT t.*, coalesce(f.frequency, 0) AS frequency
