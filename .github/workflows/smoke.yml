@@ -26,6 +26,9 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Verify feature catalog preserves research traceability (offline)
+        run: node tools/smoke/feature_catalog_contract.mjs
+
       - name: Validate Compose and start the stack
         run: |
           git rev-parse HEAD
