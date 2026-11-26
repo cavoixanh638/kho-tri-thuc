@@ -1,0 +1,218 @@
+{
+  "provenance": "Synthetic Vietnamese notes and judgments authored by an agent and committed before the first run on this suite.",
+  "base": "d1e47e8",
+  "items": [
+    {
+      "id": "C01",
+      "title": "Lịch tưới vườn chung — tháng Hai",
+      "note": "Bản dùng tháng Hai: tưới luống cà chua sáng thứ ba. Chìa khóa van để trong hộp thiếc cạnh vòi."
+    },
+    {
+      "id": "C02",
+      "title": "Lịch tưới vườn chung — tháng Ba",
+      "note": "Bản dùng tháng Ba: dời tưới luống cà chua sang chiều thứ năm. Chìa khóa van chuyển vào ngăn bàn trực."
+    },
+    {
+      "id": "C03",
+      "title": "Máy chiếu cho buổi thơ — nhận",
+      "note": "Thứ sáu tôi mượn máy chiếu của thư viện, ký sổ tại quầy và lấy thêm dây HDMI ở ngăn kéo."
+    },
+    {
+      "id": "C04",
+      "title": "Máy chiếu cho buổi thơ — bàn giao",
+      "note": "Sáng thứ hai tôi trả máy chiếu cho thư viện, quấn dây HDMI vào túi và nhờ thủ thư ký xác nhận đã nhận đủ."
+    },
+    {
+      "id": "C05",
+      "title": "Hội chợ gốm — mở sân",
+      "note": "Trước khi mở cổng, tình nguyện viên dán thẻ giá vào dưới đáy chén. Khách đầu tiên được phát thẻ màu vàng."
+    },
+    {
+      "id": "C06",
+      "title": "Hội chợ gốm — dọn sân",
+      "note": "Sau khi cổng đóng, tình nguyện viên bóc thẻ giá khỏi đáy chén chưa bán. Chén dư được xếp vào sọt đỏ."
+    },
+    {
+      "id": "C07",
+      "title": "Lọ bạc hà của bếp",
+      "note": "Lọ nắp bạc đựng lá bạc hà. Khi mang ra bàn để pha nước lạnh, thêm hai lát chanh xanh."
+    },
+    {
+      "id": "C08",
+      "title": "Lọ húng quế của bếp",
+      "note": "Lọ nắp trắng đựng lá húng quế. Chỉ trộn vào xốt cà chua ngay trước khi tắt lửa."
+    },
+    {
+      "id": "C09",
+      "title": "Sửa kệ phòng đọc — kệ truyện tranh",
+      "note": "Kệ thấp cạnh cửa có vít lỏng. Siết lại vít bên trái rồi kê thử năm quyển truyện tranh."
+    },
+    {
+      "id": "C10",
+      "title": "Sửa kệ phòng đọc — kệ từ điển",
+      "note": "Kệ cao cạnh cửa có chân cập kênh. Chèn miếng nỉ dưới chân bên phải rồi đặt lại các cuốn từ điển."
+    }
+  ],
+  "cases": [
+    {
+      "id": "Q01",
+      "kind": "phiên bản",
+      "query": "Tìm tờ lịch tưới hồi chưa dời lịch, hôm đó lấy chìa ở hộp cạnh vòi.",
+      "accept": [
+        "C01"
+      ]
+    },
+    {
+      "id": "Q02",
+      "kind": "phiên bản",
+      "query": "Lịch tưới mới của cà chua, chìa khóa giờ ở chỗ bàn trực ấy.",
+      "accept": [
+        "C02"
+      ]
+    },
+    {
+      "id": "Q03",
+      "kind": "hướng bàn giao",
+      "query": "Hôm đi lấy máy chiếu về phục vụ buổi đọc thơ, mình lấy cáp ở đâu?",
+      "accept": [
+        "C03"
+      ]
+    },
+    {
+      "id": "Q04",
+      "kind": "hướng bàn giao",
+      "query": "Có ghi chú lúc đem máy chiếu lại thư viện và nhờ người trực ký đã nhận đồ không?",
+      "accept": [
+        "C04"
+      ]
+    },
+    {
+      "id": "Q05",
+      "kind": "trình tự",
+      "query": "Trước lúc đón khách hội chợ, ai lo việc gắn giá dưới chén?",
+      "accept": [
+        "C05"
+      ]
+    },
+    {
+      "id": "Q06",
+      "kind": "trình tự",
+      "query": "Hết giờ bán gốm thì mấy cái chén còn lại cho vào đâu, sau khi gỡ tem giá?",
+      "accept": [
+        "C06"
+      ]
+    },
+    {
+      "id": "Q07",
+      "kind": "đối tượng",
+      "query": "Lọ dùng để pha nước mát với chanh có loại lá gì?",
+      "accept": [
+        "C07"
+      ]
+    },
+    {
+      "id": "Q08",
+      "kind": "đối tượng",
+      "query": "Loại rau thơm trong lọ nắp trắng được cho vào xốt lúc nào?",
+      "accept": [
+        "C08"
+      ]
+    },
+    {
+      "id": "Q09",
+      "kind": "đối tượng",
+      "query": "Tìm việc siết lại vít cái kệ thấp để xếp truyện.",
+      "accept": [
+        "C09"
+      ]
+    },
+    {
+      "id": "Q10",
+      "kind": "đối tượng",
+      "query": "Cái kệ cao bị kênh chân được chèn bằng vật liệu gì?",
+      "accept": [
+        "C10"
+      ]
+    },
+    {
+      "id": "Q11",
+      "kind": "phiên bản",
+      "query": "lich tuoi vuon thang ba",
+      "accept": [
+        "C02"
+      ]
+    },
+    {
+      "id": "Q12",
+      "kind": "hướng bàn giao",
+      "query": "Lịch thứ hai: việc trả máy trình chiếu sau buổi thơ.",
+      "accept": [
+        "C04"
+      ]
+    },
+    {
+      "id": "Q13",
+      "kind": "trình tự",
+      "query": "Công việc với nhãn giá của đồ gốm lúc khách chưa được vào sân.",
+      "accept": [
+        "C05"
+      ]
+    },
+    {
+      "id": "Q14",
+      "kind": "đối tượng",
+      "query": "Sửa kệ phòng đọc có lót nỉ bên phải, tìm giúp.",
+      "accept": [
+        "C10"
+      ]
+    },
+    {
+      "id": "Q15",
+      "kind": "đa đáp án",
+      "query": "Cho xem các ghi chú về lịch tưới vườn chung của hai tháng.",
+      "accept": [
+        "C01",
+        "C02"
+      ]
+    },
+    {
+      "id": "Q16",
+      "kind": "đa đáp án",
+      "query": "Biên nhận mượn với lúc bàn giao lại máy chiếu cho thư viện.",
+      "accept": [
+        "C03",
+        "C04"
+      ]
+    },
+    {
+      "id": "Q17",
+      "kind": "chi tiết vắng",
+      "query": "Lịch tưới vườn chung tháng Tư.",
+      "accept": []
+    },
+    {
+      "id": "Q18",
+      "kind": "đảo vai",
+      "query": "Giấy nhờ thủ thư ký lúc đi mượn máy chiếu thứ sáu.",
+      "accept": []
+    },
+    {
+      "id": "Q19",
+      "kind": "đảo thứ tự",
+      "query": "Ghi chú dán thẻ giá vào chén sau khi cổng đóng.",
+      "accept": []
+    },
+    {
+      "id": "Q20",
+      "kind": "trộn đối tượng",
+      "query": "Cách dùng lọ nắp bạc để nêm xốt cà chua.",
+      "accept": []
+    },
+    {
+      "id": "Q21",
+      "kind": "ngoài chủ đề",
+      "query": "Mình để đâu bảng phí gửi xe đạp qua đêm?",
+      "accept": []
+    }
+  ]
+}
