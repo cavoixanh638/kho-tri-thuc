@@ -23,10 +23,10 @@ Chạy `node tools/smoke/feature_catalog_contract.mjs` trước mỗi PR. Cổng
 | WS-02 | CÓ MÃ | Kéo đường biên để resize, lưu chiều rộng, hỗ trợ bàn phím | G17+ | 240–480px, reload, 390px không tràn |
 | WS-03 | CÓ MÃ | Mở nhiều tab, đóng và mở lại tab | G17+ G14+ | Cùng UUID, không mất draft |
 | WS-04 | MỘT PHẦN | Ghim, sắp xếp tab, mở bài trong tab mới | G17+ | Không mất editor state |
-| WS-05 | THIẾU | Chia pane ngang/dọc, mở nguồn cạnh bài | G05.5 G17+ | Hai pane độc lập, mobile fallback |
+| WS-05 | MỘT PHẦN | Chia pane ngang/dọc, mở nguồn cạnh bài | G05.5 G17+ | Hai pane độc lập, mobile fallback |
 | WS-06 | MỘT PHẦN | Khôi phục phiên làm việc, bố cục, tab | G17+ | Tách tài khoản, không lưu raw ngoài DB |
 | WS-07 | MỘT PHẦN | Back/forward và lịch sử vị trí đọc | G17+ | Quay lại đúng vị trí |
-| WS-08 | THIẾU | Preview bài khi hover/tap, mở không mất trang | G05.5 G17+ | Owner scope, Escape trả focus |
+| WS-08 | MỘT PHẦN | Preview bài khi hover/tap, mở không mất trang | G05.5 G17+ | Owner scope, Escape trả focus |
 | WS-09 | THIẾU | Panel mục lục phải và liên quan bật/tắt được | G07.1 G14.3 G16.2 G17+ | Không che editor, lưu layout |
 | WS-10 | MỘT PHẦN | Responsive, keyboard, reduced-motion | G17+ | 390/768/1440/1920px, IME |
 
@@ -57,7 +57,7 @@ Chạy `node tools/smoke/feature_catalog_contract.mjs` trước mỗi PR. Cổng
 | EDIT-01 | CÓ MÃ | Source Markdown, Reading Mode, GFM | G17.1 G01.5 G09+ | Roundtrip Unicode, bảng, link |
 | EDIT-02 | MỘT PHẦN | Split Edit/Preview đồng bộ | G17.1 G01.5 | Giữ scroll/con trỏ |
 | EDIT-03 | THIẾU | Inline Live Preview tại con trỏ | G17.1 G01.5 G12.4 | So 2–3 editor; 50 note lossless, IME, undo, 100k ký tự |
-| EDIT-04 | THIẾU | Toolbar định dạng, menu / và shortcut | G01.5 G17.1 G12.4 | Selection, undo chính xác |
+| EDIT-04 | MỘT PHẦN | Toolbar định dạng, menu / và shortcut | G01.5 G17.1 G12.4 | Selection, undo chính xác |
 | EDIT-05 | THIẾU | Block kéo, nhân bản, xóa, đổi loại | G01.5 G12.4 G14+ | Không mất raw/anchor |
 | EDIT-06 | MỘT PHẦN | Chỉnh bảng trực tiếp, thêm/xóa hàng/cột | G01.5 G12.4 | GFM roundtrip |
 | EDIT-07 | MỘT PHẦN | Ảnh inline, kéo thả ảnh/media vào bài | G05.5 G12.4 | Asset verified, giữ vị trí |
@@ -68,7 +68,8 @@ Chạy `node tools/smoke/feature_catalog_contract.mjs` trước mỗi PR. Cổng
 | EDIT-12 | MỘT PHẦN | Autosave draft, cảnh báo rời bài, undo/redo | G01.5 G17.1 | Reload/concurrent edit/IME |
 | EDIT-13 | THIẾU | Lịch sử version, so sánh và restore bản cũ | G04+ G09+ G15.1 | Restore tạo version mới |
 | EDIT-14 | HOÃN CÓ ĐIỀU KIỆN | Viết tay, vẽ tự do | G05+ G12+ | Chỉ khi có nhu cầu bút |
-| EDIT-15 | THIẾU | Preview link và chọn link ngay trong editor | G17+ G09.2 | UUID không phụ thuộc title |
+| EDIT-15 | MỘT PHẦN | Preview link và chọn link ngay trong editor | G17+ G09.2 | UUID không phụ thuộc title |
+| EDIT-16 | CÓ MÃ | Tùy chỉnh độ sâu H1–H6 và ẩn/hiện mục lục trong bài | G04+ G06+ | Không đổi nội dung hoặc anchor; đọc và xem trước cùng nguyên tắc, chưa lưu preference riêng theo bài |
 
 ### TYPE — Loại bài và thuộc tính (P1)
 
@@ -98,16 +99,20 @@ Chạy `node tools/smoke/feature_catalog_contract.mjs` trước mỗi PR. Cổng
 | VIEW-01 | CÓ MÃ | List/Table/Card/Timeline cùng UUID/filter | G01.1 G03.3 G08.1 G12.3 G14.4 G16.3 G17.3 | 4 view cùng tập ID, 10k |
 | VIEW-02 | CÓ MÃ | Saved Collection động any/all/exclude | G01.1 G04.5 G06.2 G14.2 G17.3 | Xóa filter không xóa bài |
 | VIEW-03 | CÓ MÃ | Lưu view, sort và khoảng ngày | G01.1 G06.2 G08.1 G17.3 | Reload, filter tự cập nhật |
-| VIEW-04 | THIẾU | Đổi tên/ẩn/hiện/reorder/resize cột, lưu view | G01+ G08+ G17+ | Nhiều layout cùng data, per owner |
+| VIEW-04 | MỘT PHẦN | Đổi tên/ẩn/hiện/reorder/resize cột, lưu view | G01+ G08+ G17+ | Nhiều layout cùng data, per owner |
 | VIEW-05 | THIẾU | Chỉnh trực tiếp ô field/tag/group | G01.2 G08.1 G16.3 | Version conflict, mọi view cập nhật |
 | VIEW-06 | THIẾU | Group-by loại/chủ đề/trạng thái/field | G01.1 G14.4 G17.3 | Distinct UUID |
 | VIEW-07 | THIẾU | Kanban, kéo cập nhật thuộc tính có duyệt | G01+ G08+ G12+ G17.3 | Không mất group |
 | VIEW-08 | THIẾU | Calendar theo ngày nhận/đăng/field | G01+ G08+ G14.4 G13+ | Timezone, ngày thiếu |
-| VIEW-09 | HOÃN CÓ ĐIỀU KIỆN | Dashboard/biểu đồ/Pivot/map | G08+ G14+ G17+ | Ca dùng và aggregate đúng |
+| VIEW-09 | HOÃN CÓ ĐIỀU KIỆN | Dashboard/biểu đồ | G08+ G14+ G17+ | Ca dùng và aggregate đúng |
 | VIEW-10 | HOÃN CÓ ĐIỀU KIỆN | Nhúng saved query sống trong note | G14+ G17+ | Read-only references, bounded |
 | VIEW-11 | CÓ MÃ | Nút gắn nguồn/mở nguồn/nhóm/xử lý lại | G08.3 | Idempotent retry |
 | VIEW-12 | HOÃN CÓ ĐIỀU KIỆN | Nút hành động tùy chỉnh, workflow điều kiện | G08+ G03+ | Whitelist, audit |
 | VIEW-13 | MỘT PHẦN | Tag browser, nested tags/màu, đường dẫn nhóm | G04.4 G06+ G16+ | Cây Topic khác tag; không nhân bản; lọc ≤3 thao tác |
+| VIEW-14 | MỘT PHẦN | Hiển thị và sắp xếp theo thời điểm cập nhật (khác ngày nhận/đăng) | G01+ G06+ G16+ | Cột updated_at có; sort toàn bộ server và phân biệt cập nhật hệ thống/người dùng còn thiếu |
+| VIEW-15 | THIẾU | Facet kiểu nội dung, ảnh/audio/PDF/link, nhãn/màu | G02+ G04+ G06+ | Lọc toàn kho trước phân trang, nhiều điều kiện, 1 UUID, không lọc riêng trang đang mở |
+| VIEW-16 | HOÃN CÓ ĐIỀU KIỆN | Pivot nhiều chiều theo thuộc tính | G08+ G14+ | Sau typed fields và nhu cầu; distinct UUID, giới hạn nhóm, tổng đúng DB |
+| VIEW-17 | HOÃN CÓ ĐIỀU KIỆN | Map view theo tọa độ/địa điểm do người dùng cung cấp | G17+ | Chỉ khi có use case; không suy vị trí riêng hoặc gọi geocoding mặc định |
 
 ### LINK — Liên kết và liên quan (P1)
 
@@ -159,6 +164,7 @@ Chạy `node tools/smoke/feature_catalog_contract.mjs` trước mỗi PR. Cổng
 | CAP-12 | THIẾU | Voice inbox, chuyển lời thành note | G02.5 G06+ G13+ | ASR Việt, audio source |
 | CAP-13 | THIẾU | Tách nhiều ý nói thành nhiều đề xuất | G02.5 | 10 sample, duyệt |
 | CAP-14 | HOÃN CÓ ĐIỀU KIỆN | Reminders theo giờ/lặp | G02.6 G13+ | Timezone; không location |
+| CAP-15 | THIẾU | Archive ghi chú đã xử lý tách khỏi thùng rác | G02+ | Archive giữ nội dung/quan hệ/lịch sử, filter rõ, unarchive, không đổi CaptureEvent |
 
 ### CLIP — Clipper và trích dẫn (P1)
 
@@ -176,6 +182,7 @@ Chạy `node tools/smoke/feature_catalog_contract.mjs` trước mỗi PR. Cổng
 | CLIP-08 | MỘT PHẦN | Reader web, highlight và quay lại đúng đoạn | G13.3 G16.1 | 20 trang/5 blocked |
 | CLIP-09 | MỘT PHẦN | Clip đoạn PDF/transcript vào bài có sẵn | G07.3 G13.4 G16.1 | Thao tác trực quan |
 | CLIP-10 | THIẾU | Smart filing trong preview clip | G04.1 G03.2 | Không tạo taxonomy bừa |
+| CLIP-11 | MỘT PHẦN | Clip YouTube riêng: preview thumbnail/metadata, ghi rõ captions có/thiếu | G04+ G16+ | Tái dùng pipeline nguồn, không suy tải/hiểu video; 10 URL hợp lệ và blocked |
 
 ### SOURCE — Đọc và khai thác nguồn (P0/P1)
 
@@ -197,6 +204,9 @@ Chạy `node tools/smoke/feature_catalog_contract.mjs` trước mỗi PR. Cổng
 | SOURCE-12 | HOÃN CÓ ĐIỀU KIỆN | Speaker diarization và đổi nhãn người nói | G04+ G15.2 | Gold có quyền |
 | SOURCE-13 | HOÃN CÓ ĐIỀU KIỆN | Podcast/caption YouTube thành source cards | G16+ G11+ | Nguồn được phép, thiếu captions rõ |
 | SOURCE-14 | MỘT PHẦN | Phân tích ảnh/PDF/media theo yêu cầu | G13+ G11.3 | OCR pilot, không tự bật phí |
+| SOURCE-15 | THIẾU | Danh sách tổng hợp annotation/highlight PDF theo trang | G04+ G16+ | Sau SOURCE-07/08, click đúng trang, tổng hợp không ghi đè raw |
+| SOURCE-16 | HOÃN CÓ ĐIỀU KIỆN | OCR chữ viết tay trong ảnh/PDF, đánh giá độc lập chữ in | G04+ G06+ | Gold tiếng Việt có quyền, tách CER/WER và nguồn; provider/cost consent |
+| SOURCE-17 | THIẾU | Waveform audio/video hiển thị mốc transcript đã xác minh | G04+ | Dùng waveform thực/locator, click seek, không vẽ biên độ giả |
 
 ### SEARCH — Tìm kiếm (P0/P1)
 
@@ -247,6 +257,9 @@ Chạy `node tools/smoke/feature_catalog_contract.mjs` trước mỗi PR. Cổng
 | AI-11 | HOÃN CÓ ĐIỀU KIỆN | Quiz/flashcard/mindmap/audio overview/học tương tác | G11+ | Nhu cầu, citation |
 | AI-12 | MỘT PHẦN | Opt-in theo bài/nguồn, privacy, cost/quota | G09.6 G01.6 G14.5 G16.5 | OCR consent có; 30 private fail closed |
 | AI-13 | HOÃN CÓ ĐIỀU KIỆN | NotebookLM adapter qua API/MCP | G11.2 G11.5 | Chỉ khi Drive/export pilot không đủ |
+| AI-14 | THIẾU | Chế độ Ask chỉ đọc và Edit tạo đề xuất riêng | G04+ G01+ | Ask không mutation, Edit cần duyệt; kiểm 30 ca nguồn/quyền/cost |
+| AI-15 | HOÃN CÓ ĐIỀU KIỆN | Xuất sản phẩm nghiên cứu AI ra PDF/DOCX/CSV/XLSX/PPTX khi cần | G11+ | Sau AI-07, giữ citation và version; tệp riêng không đổi Item.note |
+| AI-16 | HOÃN CÓ ĐIỀU KIỆN | Tạo trang học/tài liệu tương tác từ tập nguồn | G11+ | Có nhu cầu học thực; dữ liệu riêng không publish mặc định |
 
 ### MEET — Khai thác nội dung họp (P2)
 
@@ -291,6 +304,10 @@ Chạy `node tools/smoke/feature_catalog_contract.mjs` trước mỗi PR. Cổng
 | PORT-08 | HOÃN CÓ ĐIỀU KIỆN | Xuất định kỳ và history restore | G13+ G16+ G07.5 | Không chồng job, checksum |
 | PORT-09 | HOÃN CÓ ĐIỀU KIỆN | MCP read-only có scope | G09+ G11+ G14+ G16+ G17+ | Pilot ChatGPT Drive 5–10 bài trước |
 | PORT-10 | MỘT PHẦN | Bảo mật/riêng tư theo bài, export không secrets | G09.6 G07.5 | Owner/consent; AI policy từng item |
+| PORT-11 | THIẾU | Sao chép/tải Markdown riêng từng bài ngay trên máy | G06+ G09+ G17+ | Không bật Drive export/AI; giữ byte, tên file an toàn, không lộ token |
+| PORT-12 | THIẾU | In hoặc xuất PDF bản đọc riêng từng bài | G06+ G03+ G08+ | Không xuất menu/draft chưa chọn, giữ Unicode, nguồn/URL và ngắt trang |
+| PORT-13 | HOÃN CÓ ĐIỀU KIỆN | Chọn cache offline recents/favorites và chế độ tải media | G01+ G13+ G17+ | Sau PORT-07, quota/Wi-Fi/tắt cache, không mất bản gốc |
+| PORT-14 | HOÃN CÓ ĐIỀU KIỆN | Giữ cả hai bản xung đột thay vì mất bản bị bỏ | G13+ G17+ | Sau PORT-07, merge/resolve có version, không tự xóa ghi chú |
 
 ### GATE — Nghiệm thu và vận hành (P0)
 
@@ -409,7 +426,7 @@ Các đề xuất A–E, P1–P5, I01–I06 quy đổi số theo thứ tự xu�
 | [G17 Obsidian #30](https://github.com/cavoixanh638/kho-tri-thuc/pull/30) | G17.5 Vault | PORT-01, PORT-02, PORT-03, PORT-05 |
 | [G17 Obsidian #30](https://github.com/cavoixanh638/kho-tri-thuc/pull/30) | G17.6 Canvas | VIS-01, VIS-05 |
 
-**Kiểm kê:** 176 ID trong 17 nhóm, 94/94 đề xuất gốc có ánh xạ. MỘT PHẦN: 51; THIẾU: 66; CÓ MÃ: 36; HOÃN CÓ ĐIỀU KIỆN: 23. Đây là số dòng, không phải tỷ lệ hoàn thành sản phẩm. Nguồn [INDEX 17 nghiên cứu](research/notes-apps-20261120/INDEX.md), [ma trận 38 nhóm cũ](workstreams/notes-ux-20261120/G00-FEATURE-TRACEABILITY.md), [G00 #47](https://github.com/cavoixanh638/kho-tri-thuc/pull/47).
+**Kiểm kê:** 193 ID trong 17 nhóm, 94/94 đề xuất gốc có ánh xạ. MỘT PHẦN: 58; THIẾU: 68; CÓ MÃ: 37; HOÃN CÓ ĐIỀU KIỆN: 30. Đây là số dòng, không phải tỷ lệ hoàn thành sản phẩm. Nguồn [INDEX 17 nghiên cứu](research/notes-apps-20261120/INDEX.md), [ma trận 38 nhóm cũ](workstreams/notes-ux-20261120/G00-FEATURE-TRACEABILITY.md), [G00 #47](https://github.com/cavoixanh638/kho-tri-thuc/pull/47).
 
 ## Thứ tự triển khai và ownership
 
@@ -425,6 +442,30 @@ Các đề xuất A–E, P1–P5, I01–I06 quy đổi số theo thứ tự xu�
 | 2B | VIS, PORT | Canvas và offline từng bước, trigger ca dùng |
 
 Mỗi nhóm có thể chia thành PR nhỏ theo ID và file sở hữu, không gộp thay đổi lớn. Không tự merge. Ưu tiên test có chọn lọc ở mỗi checkpoint, full gate trước release.
+
+## Rà soát lại toàn bộ 17 báo cáo ngày 26/11/2026 (vòng bổ sung)
+
+Đã mở lại **17 báo cáo độc lập tại đúng PR nguồn #30–46** (bản nghiên cứu 20/11, không tự suy tình trạng sản phẩm hiện tại). Đọc ma trận tính năng và phần đề xuất, đối chiếu với HEAD và danh mục. Bảng dưới giữ từng sản phẩm; các ID chi tiết phía trên mới là đơn vị nghiệm thu. Mục ngoài 94 đề xuất gốc dùng hậu tố +, không sửa/giả lập đề xuất gốc. Không tự triển khai hệ sinh thái SaaS, gói phí, SDK độc quyền, recorder trùng, cloud/AI mới, hoặc tính năng marketing chưa phát hành; lý do/điều kiện ở từng dòng. Đợt này ưu tiên không làm mất raw, UUID, quyền owner và draft.
+
+| Báo cáo nguồn | Điểm mạnh kiểm lại | ID liên quan | Kết luận sau bổ sung mã |
+| --- | --- | --- | --- |
+| G01 — [Notion #43](https://github.com/cavoixanh638/kho-tri-thuc/pull/43) | Blocks/toolbar, connected views, properties/relation/rollup, AI review, clip, offline chọn bài | EDIT-04, EDIT-05/06, TYPE-04–11, VIEW-04–09, AI-14, PORT-13 | Toolbar đã thêm; inline editor, typed fields, rollup chưa |
+| G02 — [Google Keep #42](https://github.com/cavoixanh638/kho-tri-thuc/pull/42) | Ghi nhanh, checklist, pin/màu, archive, bộ lọc theo loại, OCR, voice/reminder | EDIT-04/08, CAP-07–15, VIEW-15 | Chèn checklist Markdown; checklist tương tác, archive, màu, voice chưa |
+| G03 — [Lark #45](https://github.com/cavoixanh638/kho-tri-thuc/pull/45) | Paste-to-fields, Smart Tags, Base nhiều view, Wiki, source evidence, Minutes click-to-seek và highlight | ORG-04–06, VIEW-04/14, SOURCE-03–06, PORT-12 | Tùy chỉnh cột có code; trường tùy chỉnh, đồng bộ transcript còn thiếu |
+| G04 — [Evernote #46](https://github.com/cavoixanh638/kho-tri-thuc/pull/46) | Clip nhiều chế độ, tìm hit theo nguồn, AI Edit patch, nested tags, outline tùy chỉnh, PDF annotation/history, waveform | CLIP-03/04/11, SEARCH-06/07, EDIT-13/16, SOURCE-15–17, AI-14 | Outline tùy chỉnh có code; các mục khác giữ riêng |
+| G05 — [OneNote #40](https://github.com/cavoixanh638/kho-tri-thuc/pull/40) | Timed annotations, preview tổ chức, clip vùng, source-set, page/subpage và ghi cạnh nguồn, portable package | SOURCE-09/10, WS-05/08, AI-04, PORT-02 | Xem cạnh bản chữ read-only có code; chưa PDF/media split và timed annotation |
+| G06 — [Apple Notes #41](https://github.com/cavoixanh638/kho-tri-thuc/pull/41) | Quick note, Smart Folders, heading collapse, link tới section, audio seek, scan/OCR, Markdown/PDF, ngày sửa | EDIT-10/11/16, VIEW-14/15, PORT-11/12, SOURCE-16 | Heading/TOC và cột cập nhật có code; copy/export PDF và scan chưa |
+| G07 — [Mem.ai #38](https://github.com/cavoixanh638/kho-tri-thuc/pull/38) | Heads Up liên quan/cùng nhóm, timeline, clip vào bài cũ, AI diff, portable, citation đúng nguồn | WS-09, LINK-05–09, CAP-05, AI-03, SOURCE-02/03 | Xem bài cạnh bên đã thêm; panel related chủ động và dismiss bền vững chưa |
+| G08 — [Coda #36](https://github.com/cavoixanh638/kho-tri-thuc/pull/36) | Connected views, relation, button actions, AI review queue, presets, automation/formula/pivot | VIEW-04/05/07–09/12/16, TYPE-06/09/11, ORG-03 | Cột hiển thị/reorder/resize có code; editable data và schema chưa |
+| G09 — [Reflect #34](https://github.com/cavoixanh638/kho-tri-thuc/pull/34) | Quick note/ngày, wiki/autocomplete, source cards, Ctrl+K, export, AI opt-in/diff | NAV-05/06, EDIT-15, PORT-11/14, AI-12 | Preview link có code; daily notes và conflict offline chưa |
+| G10 — [Superpowered #39](https://github.com/cavoixanh638/kho-tri-thuc/pull/39) | Mẫu họp, action items, mốc media, retention, calendar | TYPE-03, MEET-01–06, SOURCE-09, AI-10 | Mẫu cơ bản có; chưa xây recorder trùng Mốc Họp |
+| G11 — [Gemini Notebook #44](https://github.com/cavoixanh638/kho-tri-thuc/pull/44) | Cite chips, source-set, trạng thái trích, phân loại, FAQ/briefing, study/interactive, xuất đa dạng | AI-04–16, SOURCE-01/06, ORG-01 | Chưa gọi AI mới; các khả năng có phí/interactive có điều kiện |
+| G12 — [AFFiNE #32](https://github.com/cavoixanh638/kho-tri-thuc/pull/32) | Source cards, backlinks, views, block editor, Edgeless, import/export | EDIT-03–05, WS-05/08, VIEW-04/07/08, VIS-01–05, PORT-04 | Toolbar và preview cạnh, cột có code; BlockSuite/whiteboard chưa |
+| G13 — [Capacities #37](https://github.com/cavoixanh638/kho-tri-thuc/pull/37) | Typed object, backlinks theo context, web/PDF highlights, share, daily note, selective cache và conflict | TYPE-04–10, LINK-05/06, CLIP-08, SOURCE-07, PORT-13/14 | Preview cạnh hỗ trợ xem bài; object/highlights chưa |
+| G14 — [Tana #33](https://github.com/cavoixanh638/kho-tri-thuc/pull/33) | Supertag, outliner references, saved search, related panel, lanes/calendar/tabs/pivot, autofill | TREE-10/11, TYPE-04/08/12, VIEW-06–08/10/16, ORG-05 | Tabs trước đây có; typed schema, pivot và live queries chưa |
+| G15 — [Granola #31](https://github.com/cavoixanh638/kho-tri-thuc/pull/31) | Raw/enhanced/approved, transcript evidence, templates/action items, API adapter, claim citations | MEET-01–08, SOURCE-12, AI-06/10/14 | Mẫu có một phần; không suy AI summary hay tích hợp đã làm |
+| G16 — [Heptabase #35](https://github.com/cavoixanh638/kho-tri-thuc/pull/35) | PDF/highlight card, video/web insight, related, tag/table/kanban, inbox triage, whiteboard, AI citations | SOURCE-07/08/15, VIEW-04/14, CAP-07, VIS-01–05, AI-09 | Cột có code; highlight card, triage/boards chưa |
+| G17 — [Obsidian #30](https://github.com/cavoixanh638/kho-tri-thuc/pull/30) | Live Preview + shortcuts, tree/tab/split, links/mentions, Bases, clip, vault, canvas, offline conflict | WS-05/08/09, EDIT-03/04/11/15, VIEW-04–08/17, PORT-11/13/14, VIS-01 | Toolbar, xem cạnh chỉ đọc và tùy chọn cột đã thêm; không gọi là full Live Preview |
 
 ## Nhật ký tiến độ (cập nhật mỗi PR)
 
@@ -444,5 +485,9 @@ Mỗi nhóm có thể chia thành PR nhỏ theo ID và file sở hữu, không g
 
 | 26/11/2026 | GATE-01, WS-02/03/04/06, EDIT-10, TREE-08 | 4f85fe45926c71897189fd646dd50f7275294fdc / be83e8e17f9abf77f169b03c6a51b7b00074089f | [Run 45735408565](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/45735408565): **scaffold + G2 SUCCESS**. Frontend 349/349; Django 414 ca (405 PASS, 9 skipped); P08 13/13; P15 104/104; J7 tab switch draft recovery, pin/close/reopen, resize/collapse/search PASS; 10k text/1k topic/PG backup restore và J6B synthetic PDF page 2/MP4 2.5s PASS. Không suy screen reader, native Android, Drive/provider thật, dữ liệu 100GB hoặc Windows production UAT từ synthetic gate. NOT_DEPLOYED. |
 | 26/11/2026 | GATE-09 | 9cc9e4fce273a8c77c2ddb1317e462ad9892592e / kiểm logic offline + CI HEAD mới chưa chạy | Thêm validator 176 ID tối thiểu, 94 đề xuất đúng PR và forward/reverse, totals/status, 6 negative fixtures; chạy trong smoke hiện có trước Compose, không thêm job/runner. Checkpoint này chỉ thêm kiểm tra/tài liệu, không đổi app đã PASS ở 4f85fe4. NEXT: kiểm CI test-only và triển khai WS05/08/09, EDIT-03/04 theo gate; không merge/deploy tự động. |
+
+| 26/11/2026 | GATE-09/01 | bf03a2648858f1ac23a46571f3540ae3783f2537 / [Run 45735962764](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/45735962764) | Cổng danh mục 176/176 + 94/94 + 6 negative PASS; 349/349 frontend và G2 PASS; scaffold FAIL ở bước screenshot thật do Chromium launch timed out (không giả PASS). Bổ sung một retry startup profile mới, mọi assertion giữ nguyên. |
+| 26/11/2026 | ALL | baseline bf03a2648858f1ac23a46571f3540ae3783f2537 / static | Rà lại 17 báo cáo gốc #30–46, bổ sung 17 ID không có dòng riêng (độ sâu TOC, archive, facets, updated date, PDF annotation summary, OCR handwriting, waveform, clip YT, Ask/Edit, xuất cục bộ, offline conflict và các biến thể view/AI). Giữ 94 đề xuất cũ; cập nhật validator bảo vệ ID mới. |
+| 26/11/2026 | EDIT-04/15/16, WS-05/08, VIEW-04/14 | 6d1d444bd37d1127b4ce4b85d87dd138d8bc52b9 / NOT_RUN | CODE: toolbar Markdown thao tác selection giữ CR/LF/NFC/NFD, undo/redo định dạng và chèn block; TOC ẩn/hiện + depth; xem cạnh 6000 ký tự authored read-only (owner scope, không chuyển route, xếp cạnh/dưới); bảng tùy chọn cột ẩn/hiện, reorder, resize qua separator hoặc phím, reset và sessionStorage theo owner/view; cột updated_at và trạng thái. Không có inline Live Preview, slash-trigger thực, editor kép/PDF/media hoặc hover prefetch, rename header/sort updated_at toàn kho; trạng thái tương ứng MỘT PHẦN. Test unit/DB mới và J2 browser; chưa nghiệm thu Windows. Không migration/provider. Rollback revert code/test, giữ ledger và ID. NEXT: kiểm CI đúng HEAD, tiếp local Markdown export, related dismiss bền, source reader, schema types theo gate. |
 
 **Prompt chuyển tiếp:** Vào repo, đọc file này + AGENTS.md + CURRENT_STATE; kiểm HEAD và PR đang mở, chọn đúng ID, thực hiện code, regression, cập nhật ID + checkpoint, commit/PR, không tự merge/deploy. Giữ tất cả ánh xạ và dòng chưa làm/hoãn.

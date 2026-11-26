@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 
 function validateCatalog(markdown){
-  const minimum={WS:10,TREE:11,EDIT:15,TYPE:12,VIEW:13,LINK:10,NAV:6,CAP:14,CLIP:10,SOURCE:14,SEARCH:8,ORG:8,AI:13,MEET:8,VIS:5,PORT:10,GATE:9};
+  const minimum={WS:10,TREE:11,EDIT:16,TYPE:12,VIEW:17,LINK:10,NAV:6,CAP:15,CLIP:11,SOURCE:17,SEARCH:8,ORG:8,AI:16,MEET:8,VIS:5,PORT:14,GATE:9};
   const reports=[[43,6],[42,6],[45,6],[46,6],[40,6],[41,6],[38,6],[36,5],[34,6],[39,5],[44,5],[32,5],[37,5],[33,5],[31,5],[35,5],[30,6]];
   const expected=new Map();
   reports.forEach(([pr,n],i)=>{const group='G'+String(i+1).padStart(2,'0');for(let j=1;j<=n;j++)expected.set(group+'.'+j,{pr,group});});
