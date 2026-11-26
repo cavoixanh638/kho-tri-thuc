@@ -6,6 +6,7 @@ x-django-environment: &django-environment
   DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1,api}
   UPLOAD_STAGING_ROOT: /var/lib/kho-tri-thuc/staging
   THUMBNAIL_CACHE_DIR: /var/lib/kho-tri-thuc/thumbnails
+  SEARCH_BGE_MODEL_DIR: "${SEARCH_BGE_MODEL_DIR-/var/lib/kho-tri-thuc/models/bge-reranker-v2-m3}"
   POSTGRES_HOST: db
   POSTGRES_PORT: "5432"
   POSTGRES_DB: ${POSTGRES_DB:?Set POSTGRES_DB}
@@ -43,6 +44,7 @@ services:
     volumes:
       - upload-staging:/var/lib/kho-tri-thuc/staging
       - thumbnail-cache:/var/lib/kho-tri-thuc/thumbnails
+      - search-models:/var/lib/kho-tri-thuc/models
     command:
       - sh
       - -ec
@@ -67,6 +69,7 @@ services:
     volumes:
       - upload-staging:/var/lib/kho-tri-thuc/staging
       - thumbnail-cache:/var/lib/kho-tri-thuc/thumbnails
+      - search-models:/var/lib/kho-tri-thuc/models
     command: ["python", "manage.py", "run_worker"]
     depends_on:
       api:
@@ -93,3 +96,4 @@ volumes:
   postgres-data:
   upload-staging:
   thumbnail-cache:
+  search-models:
