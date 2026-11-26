@@ -265,6 +265,7 @@ def measure(index, encode_batch, rerank, samples=20, *, candidate_k=8, lexical=N
                 lexical=(lexical_finished - start) / 1e6,
                 rrf_fusion=(fused - scanned) / 1e6,
                 hybrid=(fused - lexical_finished) / 1e6,
+                lexical_and_hybrid=(fused - start) / 1e6,
                 pipeline=durations["total"],
             )
         return durations, candidates, ranked
