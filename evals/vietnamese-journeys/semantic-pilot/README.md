@@ -35,6 +35,20 @@ Trước khi chấm, dịch vụ `SearchService` thực chạy trên PostgreSQL 
 
 Nhóm dùng đồ thị ONNX FP32 do AITeamVN phát hành, lấy vector CLS 1.024 chiều và chuẩn hóa L2. Bộ xếp hạng lại dùng bản ONNX lượng tử hóa 8 bit của BGE. Hai mô hình chạy bằng ONNX Runtime CPU với 4 luồng và giới hạn 512 token mỗi đầu vào. Tệp tin được ghim theo phiên bản và kiểm tra mã băm sau khi tải. [Vietnamese Embedding v2](https://huggingface.co/AITeamVN/Vietnamese_Embedding_v2/tree/18b44161e041bf1d3a333ab5144b5b7b93f914d2) · [BGE reranker gốc](https://huggingface.co/BAAI/bge-reranker-v2-m3) · [Bản ONNX đã dùng](https://huggingface.co/onnx-community/bge-reranker-v2-m3-ONNX/tree/6f5ff65298512715a1e669753bc754d2bc8f367b)
 
+## Thời gian tìm trên 10.000 ghi chú
+
+Trên Windows với CPU Intel Core i5-12400, ONNX Runtime 1.32.0 dùng 4 luồng. Lần tạo mới 10.000 vector 1.024 chiều theo lô 32 ghi chú mất **12 phút 40 giây**, sau khi mô hình đã nạp. Dữ liệu vector float32 chiếm **40.960.000 byte**, khoảng 39,1 MiB. Cùng một bộ gồm 20 ghi chú đích tự soạn và 9.980 ghi chú được sinh từ mẫu tiếng Việt đã được đưa vào cả PostgreSQL QA và chỉ mục vector. [Bộ ghi chú và truy vấn](scale.py) · [Kết quả tạo chỉ mục](scale-build-windows.json)
+
+| Thời gian tính từ khi nhận truy vấn | Trung vị | P95 |
+| --- | ---: | ---: |
+| Đến khi SearchService trả kết quả từ khóa, gồm lượt mở rộng nếu có nút | 1,191 s | 1,268 s |
+| Đến khi gộp xong ứng viên từ khóa và embedding | 1,247 s | 1,326 s |
+| Đến khi xếp hạng lại xong tám ứng viên | 1,589 s | 1,680 s |
+
+Nhóm đo tuần tự 20 truy vấn khác nhau, mỗi truy vấn một lần sau ba lượt làm nóng. Từng truy vấn được mã hóa lại. Ở P95, riêng mã hóa câu hỏi mất 72,69 ms, quét toàn bộ vector và lấy các ứng viên đầu mất 1,66 ms, còn xếp hạng lại mất 381,66 ms. Các mốc tích lũy trong bảng được tính từ từng lượt đo. P95 là giá trị thứ 19 trong 20 lượt đã sắp theo thời gian.
+
+Mỗi truy vấn ở phép đo độ trễ đều chạy đến hết bước xếp hạng lại. Có 19/20 ghi chú đích lọt vào tám ứng viên và 17/20 đứng đầu sau khi xếp hạng. Phép đo dùng ghi chú ngắn tự soạn và chạy nối tiếp trong một tiến trình đã nạp mô hình. Thời gian người dùng chờ trong trình duyệt cần đo riêng. Dữ liệu trong PostgreSQL QA đã được hoàn tác và kiểm tra lại sau khi đo. [Thời gian và thứ hạng theo từng truy vấn](scale-windows.json)
+
 ## Chạy lại từ gốc repo
 
 Dùng Python của môi trường thử có Django, driver PostgreSQL của backend, NumPy, ONNX Runtime CPU, tokenizers và requests. Trỏ các biến kết nối Django vào cơ sở dữ liệu QA trống `kt_eval_edge_pairs` đã migrate. Đo trên kho khác hoặc mô hình khác sẽ cho kết quả khác. [Hướng dẫn PostgreSQL QA](../README.md#chạy-từ-gốc-repo) · [Phiên bản thư viện thực đo](results-windows.json)

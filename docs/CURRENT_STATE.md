@@ -1,5 +1,13 @@
 # HIỆN TRẠNG THỰC TẾ — KHO TRI THỨC
 
+<a id="thu-tim-kiem-ngu-nghia-windows"></a>
+
+## Thử tìm kiếm ngữ nghĩa trên Windows
+
+Ngày 26/11/2026, nhóm đối chiếu dịch vụ tìm kiếm hiện tại với Vietnamese Embedding v2 và bộ xếp hạng lại BGE trên 120 câu đã chốt đáp án. Ngưỡng hiển thị được xác định riêng từ 51 câu cũ. Bản hiện tại đạt 92/120 khi dùng gợi ý, thêm embedding đạt 93/120, thêm cả bộ xếp hạng lại đạt 99/120. Cấu hình cuối tăng nhóm nhớ ý từ 28 lên 29/40, đồng thời làm số câu không có đáp án nhận gợi ý sai tăng từ 14 lên 18/26. Nếu chỉ thay cách xếp hạng ở nơi nút **Tìm gần đúng** vốn xuất hiện, cấu hình cuối đạt 93/120 và 14/26 câu không có đáp án vẫn nhận gợi ý sai. Mọi kết quả đều thuộc đúng phạm vi. **Đề xuất giữ cách tìm hiện tại cho người dùng.** [Phép thử, trường hợp hồi quy và cách chạy lại](../evals/vietnamese-journeys/semantic-pilot/README.md)
+
+Trên 10.000 ghi chú tự soạn và 20 truy vấn sau ba lượt làm nóng, thời gian P95 từ lúc nhận câu hỏi đến khi trả kết quả từ khóa là 1,268 giây, đến khi gộp thêm ứng viên vector là 1,326 giây, đến khi xếp hạng lại xong là 1,680 giây. Máy dùng CPU i5-12400. Quét và chọn các vector gần nhất riêng trong bộ nhớ mất 1,66 ms ở P95. [Số đo từng truy vấn](../evals/vietnamese-journeys/semantic-pilot/scale-windows.json)
+
 <a id="tim-kiem-120-ca"></a>
 
 ## Tìm kiếm tiếng Việt trên 120 tình huống mới

@@ -287,6 +287,7 @@ def measure(index, encode_batch, rerank, samples=20, *, candidate_k=8, lexical=N
                 "expected_note": f"KTJ9TERM{case_id:05d}",
                 "expected_candidate_rank": _rank(candidates, case_id),
                 "expected_reranked_rank": _rank(ranked, case_id),
+                "latency_ms": ms,
             }
         )
     return {
