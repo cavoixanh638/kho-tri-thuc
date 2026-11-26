@@ -24,15 +24,15 @@ BGE chạy trên CPU và giữ trọng số tại máy chạy ứng dụng. Lầ
 khoảng 588 MB tải xuống. Lệnh chuẩn bị kiểm SHA-256 và dùng lại các tệp đã hợp lệ.
 Ứng dụng dùng xếp hạng dự phòng khi chưa có model.
 
-Windows: `python tools/windows/launch.py setup` tự chuẩn bị model tại
+Trên Windows, `python tools/windows/launch.py setup` tự chuẩn bị model tại
 `%LOCALAPPDATA%/KhoTriThuc/models/bge-reranker-v2-m3`. Nếu bước tải thất bại,
-setup tiếp tục. Để chạy lại riêng bước này, mở `apps/backend` và chạy:
+setup tiếp tục. Có thể chạy lại riêng bước này từ `apps/backend`.
 
 ```powershell
 & "$env:LOCALAPPDATA/KhoTriThuc/venv/Scripts/python.exe" -m search.prepare_bge
 ```
 
-Docker Compose: chạy lệnh một lần trước khi khởi động stack để đưa trọng số vào
+Với Docker Compose, chạy lệnh sau một lần trước khi khởi động stack để đưa trọng số vào
 volume `search-models`. Thư mục mặc định trong container là
 `/var/lib/kho-tri-thuc/models/bge-reranker-v2-m3`.
 

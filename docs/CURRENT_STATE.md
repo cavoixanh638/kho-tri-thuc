@@ -1,5 +1,9 @@
 # HIỆN TRẠNG THỰC TẾ — KHO TRI THỨC
 
+## Xếp lại gợi ý bằng BGE cục bộ
+
+Ngày 26/11/2026, bản `d28e6a2` giữ PostgreSQL cho lượt mặc định và dùng BGE để sắp xếp tối đa năm mục đầu khi bấm **Tìm gần đúng**. Chạy lại 120 câu qua dịch vụ và API có đăng nhập cho kết quả **77/120** ở lượt đầu, **107/120** khi dùng gợi ý, tăng một ca so với **106/120**. Toàn bộ 26 câu không có đáp án đều trả rỗng. Chromium xác nhận ở L16, ghi chú đúng từ hạng 4 lên hạng 1 và nút quay lại khôi phục lượt tìm ban đầu. [Phép thử tích hợp, thứ hạng từng câu và cách chạy lại](../evals/vietnamese-journeys/scenario-matrix/README.md#bge-xếp-lại-gợi-ý-khi-bấm-tìm-gần-đúng)
+
 ## Sửa gợi ý sai ở 14 câu không có đáp án
 
 Ngày 26/11/2026, bản `b284142` giữ tìm kiếm từ khóa PostgreSQL và kiểm tra bằng chứng trước khi hiển thị. Chạy lại đủ 120 câu trên 122 ghi chú tự soạn, lượt đầu tăng từ **71 lên 77/120**, khi dùng **Tìm gần đúng** tăng từ **92 lên 106/120**. Cả 26 câu không có đáp án đều trả rỗng ở hai lượt. Cả 80 câu có đáp án từng đạt khi dùng gợi ý đều tiếp tục đạt. Còn 14 câu có đáp án chưa đạt. [Nguyên nhân theo từng ca và kết quả đối chứng](../evals/vietnamese-journeys/scenario-matrix/README.md#kết-quả-sau-khi-sửa-14-câu-gợi-ý-sai) · [120 kết quả thực đo](../evals/vietnamese-journeys/scenario-matrix/results-evidence-windows.json)

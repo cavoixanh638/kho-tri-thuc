@@ -1,5 +1,31 @@
 # 120 tình huống tìm kiếm tiếng Việt
 
+## BGE xếp lại gợi ý khi bấm Tìm gần đúng
+
+Ngày 26/11/2026, bản `d28e6a2` chạy lại đủ 120 ca qua `SearchService` và API có đăng nhập trên PostgreSQL 18.4. Mô hình BGE chạy bằng ONNX trên CPU cục bộ. Cả hai đường đều dùng đúng 122 ghi chú, bộ lọc và đáp án đã khóa. [Kết quả mới theo từng câu và từng đường gọi](results-bge-integrated-windows.json) · [Bản chỉ dùng PostgreSQL](results-evidence-windows.json)
+
+| Tiêu chí | Trước khi tích hợp | Sau khi tích hợp |
+| --- | ---: | ---: |
+| Đạt ở lượt mặc định | 77/120 | 77/120 |
+| Đạt sau khi bấm **Tìm gần đúng** nếu có nút | 106/120 | **107/120** |
+| Câu một đáp án có bài đúng đứng đầu khi dùng gợi ý | 70/81 | **71/81** |
+| Câu nhiều đáp án có đủ bài trong năm kết quả đầu | 10/13 | 10/13 |
+| Câu không có đáp án trả rỗng | 26/26 | 26/26 |
+
+Mỗi đường gọi ghi nhận 34 lần mở gợi ý. BGE xếp lại cả 26 danh sách có từ hai mục trở lên. Tám danh sách chỉ có một mục. Thứ tự thay đổi ở 19 câu. L16 chuyển từ trượt sang đạt và cả 106 ca từng đạt đều tiếp tục đạt. Ở cả 120 câu, lượt mặc định giữ nguyên từng mã và thứ tự. Tập ghi chú và phạm vi của mỗi danh sách mở rộng cũng khớp với bản đối chứng.
+
+Ở giao diện Chromium với 25 mục mỗi trang, L16 hỏi *“Cúp điện chỗ học hát, cuối cùng học bên nào mà vẫn tập đúng buổi?”*. Sau khi bấm **Tìm gần đúng**, ghi chú LN16 từ hạng 4 lên hạng 1. Bấm **Về kết quả ban đầu** trả về đúng danh sách mặc định với cùng câu hỏi và chủ đề. [Ghi nhận thứ tự trong trình duyệt](bge-browser-windows.json)
+
+Trong bộ câu hỏi nhớ ý cũ, số câu có ghi chú đúng đứng đầu tăng từ 29 lên 33/36 khi cho phép mở gợi ý. Số câu tìm thấy đúng ghi chú trong năm kết quả đầu vẫn là 34/36 và 10/15 câu không có đáp án vẫn nhận gợi ý. Bộ 21 ca dễ nhầm giữ nguyên phán định của cả 21 ca, đạt 18/21. [Bộ nhớ ý](../recall-check.json) · [Bộ ca dễ nhầm](../confusable-cases/fixture.json)
+
+BGE chỉ sắp xếp tối đa năm mục đầu trang mở rộng đầu tiên, sau khi PostgreSQL đã chọn ứng viên theo chủ kho, bộ lọc và bằng chứng. Các điểm `score` và con trỏ phân trang vẫn do PostgreSQL cấp. API trả `ranking=bge` khi đã tính điểm bằng mô hình và `ranking=lexical` khi dùng thứ tự PostgreSQL, kể cả lúc thiếu trọng số hoặc suy luận gặp lỗi. [Chuẩn bị mô hình cục bộ](../../../docs/operations/LOCAL_SETUP.md#trọng-số-bge-cho-tìm-kiếm-gần-nghĩa)
+
+Để chạy lại trên cơ sở QA `kt_eval_edge_pairs` đã migrate, đặt `KT_EVAL_ALLOW_DISPOSABLE=1` và cấu hình PostgreSQL như phần hướng dẫn bên dưới. Dùng Python của backend và một đường dẫn báo cáo mới.
+
+```powershell
+python -B evals/vietnamese-journeys/confusable-cases/run.py --matrix --expected-source d28e6a2 --check-bge-against evals/vietnamese-journeys/scenario-matrix/results-evidence-windows.json --report matrix-bge-local.json
+```
+
 ## Kết quả sau khi sửa 14 câu gợi ý sai
 
 Ngày 26/11/2026, dịch vụ tìm kiếm từ khóa PostgreSQL ở bản `b284142` chạy lại đủ 120 câu trên cùng 122 ghi chú tự soạn. Ba tệp đề và đáp án có cùng SHA-256 với lần đầu. Mỗi câu được chấm ở lượt đầu và sau khi người dùng chọn **Tìm gần đúng** nếu có nút. [Kết quả mới theo từng mã](results-evidence-windows.json) · [Kết quả trước khi sửa](results-windows.json)
