@@ -54,6 +54,7 @@ class SearchEvidenceControlTests(TestCase):
 
         self.assert_supported("tháo lưới lọc trước khi xả bồn", before, "Tháo lưới lọc trước khi xả bồn")
         self.assert_supported("tháo lưới lọc sau khi xả bồn", after, "Tháo lưới lọc sau khi xả bồn")
+        self.assert_supported("Ghi chú tháo lưới lọc sau khi xả bồn", after, "Tháo lưới lọc sau khi xả bồn")
 
     def test_preview_shows_the_supported_action_when_an_earlier_passage_forbids_it(self):
         item = self.note("Không nên kéo chốt bạc khi còi vang. " + "Kiểm kê cuối ngày. " * 80

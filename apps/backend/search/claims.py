@@ -88,6 +88,7 @@ def _condition(text):
     # Drop an outer "ghi chú nào bảo ..." without dropping an unknown inside
     # the actual condition (e.g. "thiếu dụng cụ nào thì ...").
     statement = FRAMING.sub("", text)
+    statement = re.sub(r"^(?:(?:tìm|xem) (?:lại )?)?(?:ghi chú|tài liệu|hướng dẫn)\s*[: ]\s*", "", statement)
     if OPEN_SLOT.search(statement):
         return
     if " thì " in statement:
@@ -156,7 +157,7 @@ def _sufficiency(text):
                 yield _either(witness + NEAR + value, value + NEAR + r"\m(?:la\s+du|khong\s+bat\s+buoc)\M")
 
 
-TRANSFER = r"(?:giao|trao|tặng|biếu|gửi|chuyển)"
+TRANSFER = r"(?:bàn giao|chuyển giao|giao|trao|tặng|biếu|gửi|chuyển)"
 GIVING = r"\m(?:giao|trao|tang|bieu|gui|chuyen)\M"
 PAYING = r"\m(?:tra|thanh\s+toan|chi\s+tra|tai\s+tro|ho\s+tro)\M"
 
@@ -175,7 +176,9 @@ def _transfer(text):
             continue
         if not indirect and not re.search(r"\b(?:sang|đến|tới)$", left):
             continue
-        subject = re.split(r"\b(?:đem|mang|đã|sẽ|sang|phải)\b", left)[0]
+        # "lúc bàn giao cho ..." requests an event and names no sender.
+        actor_clause = re.split(r"\b(?:lúc|khi)\b", left)[-1]
+        subject = re.split(r"\b(?:đem|mang|đã|sẽ|sang|phải)\b", actor_clause)[0]
         subject_words = _words(subject)[-2:]
         recipient = right[indirect.end():] if indirect else right
         if not subject_words or not recipient or OPEN_SLOT.search(recipient):
