@@ -25,7 +25,35 @@ def validate(fixture):
             raise ValueError(f"Unknown result ID at {case['id']}")
 
 
-def measure(repo, fixture):
+def service_page(page, labels):
+    return {
+        "hits": [labels[hit.item_id] for hit in page.hits],
+        "can_expand": page.can_expand,
+        "ranking": getattr(page, "ranking", None),
+    }
+
+
+def api_page(client, case, filters, labels, expand):
+    params = {
+        f"{name}_id": value for name in ("topic", "project", "tag")
+        if (value := getattr(filters, f"{name}_id")) is not None
+    }
+    if filters.exclude_item_id is not None:
+        params["exclude_item_id"] = str(filters.exclude_item_id)
+    if expand:
+        params["expand"] = "true"
+    response = client.get("/api/v1/search", {"q": case["query"], "limit": 5, **params})
+    if response.status_code != 200:
+        raise RuntimeError(f"Search API returned HTTP {response.status_code} for {case['id']} (expand={expand})")
+    page = response.json()
+    return {
+        "hits": [labels[hit["item_id"]] for hit in page["results"]],
+        "can_expand": page.get("can_expand"),
+        "ranking": page.get("ranking"),
+    }
+
+
+def measure(repo, fixture, *, check_bge=False):
     database = os.environ.get("POSTGRES_DB")
     if (database != "kt_eval_edge_pairs"
             or os.environ.get("KT_EVAL_ALLOW_DISPOSABLE") != "1"
@@ -40,6 +68,7 @@ def measure(repo, fixture):
     from catalog.models import Item
     from django.contrib.auth import get_user_model
     from django.db import connection, transaction
+    from django.test import Client
     from search.services import SearchService
 
     if connection.vendor != "postgresql":
@@ -56,23 +85,100 @@ def measure(repo, fixture):
         labels, filters_by_case = seed_search_cases(fixture)
         service = SearchService()
         rows = []
+        clients = {}
+        api_labels = {str(pk): label for pk, label in labels.items()}
         for case in fixture["cases"]:
             filters = filters_by_case[case["id"]]
             page = service.search(filters, case["query"], limit=5)
             offered = bool(getattr(page, "can_expand", False))
             follow = service.search(filters, case["query"], limit=5, expand=True) if offered else None
-            rows.append({
+            row = {
                 "id": case["id"],
                 "kind": case["kind"],
                 "accept": case["accept"],
                 "initial": [labels[hit.item_id] for hit in page.hits],
                 "offered": offered,
                 "expanded": [labels[hit.item_id] for hit in follow.hits] if offered else None,
-            })
+            }
+            if check_bge:
+                row["service"] = {"initial": service_page(page, labels), "expanded": service_page(follow, labels) if offered else None}
+                if filters.owner_id not in clients:
+                    client = Client(SERVER_NAME="localhost")
+                    client.force_login(users.get(pk=filters.owner_id))
+                    clients[filters.owner_id] = client
+                client = clients[filters.owner_id]
+                api_initial = api_page(client, case, filters, api_labels, expand=False)
+                api_expanded = (
+                    api_page(client, case, filters, api_labels, expand=True)
+                    if api_initial["can_expand"] is True else None
+                )
+                row["api"] = {"initial": api_initial, "expanded": api_expanded}
+            rows.append(row)
         transaction.set_rollback(True)
     if users.exists() or Item.objects.exists():
         raise RuntimeError("Unexpected rows after evaluation rollback")
     return rows
+
+
+def check_bge_report(report, baseline):
+    errors = []
+    for key in ("fixture_sha256", "scenario_module_sha256", "evaluation_module_sha256", "notes"):
+        if key not in baseline or report[key] != baseline[key]:
+            errors.append(f"Frozen baseline mismatch: {key}")
+    rows = report["cases"]
+    frozen = baseline.get("cases", [])
+    if [row["id"] for row in rows] != [row["id"] for row in frozen]:
+        errors.append("Frozen baseline case IDs or ordering differ")
+    if errors:
+        return {"errors": errors}
+
+    counts = {
+        path: {"initial_requests": len(rows), "expanded_requests": 0, "eligible": 0, "bge": 0, "fallback": 0}
+        for path in ("service", "api")
+    }
+    for row, old in zip(rows, frozen, strict=True):
+        case_id = row["id"]
+
+        def expect(condition, detail):
+            if not condition:
+                errors.append(f"{case_id}: {detail}")
+
+        for field in ("kind", "accept", "suite"):
+            expect(row[field] == old.get(field), f"frozen case {field} changed")
+        service = row["service"]
+        expect(service["initial"]["hits"] == old.get("initial"), "initial lexical order changed")
+        expect(service["initial"]["can_expand"] is old.get("offered"), "initial can_expand changed")
+        if old["offered"] and service["expanded"] is not None:
+            hits = service["expanded"]["hits"]
+            frozen_hits = old["expanded"]
+            window = min(5, len(frozen_hits))
+            expect(sorted(hits[:window]) == sorted(frozen_hits[:window]), "expanded shortlist changed")
+            expect(hits[window:] == frozen_hits[window:], "expanded results after shortlist changed")
+            if not old["accept"]:
+                expect(not hits, "expanded negative query returned hits")
+        expect(row["api"] == service, "authenticated API and service differ")
+
+        size = len(old["expanded"] or [])
+        for path, totals in counts.items():
+            pages = row[path]
+            expect(pages["initial"]["ranking"] == "lexical", f"{path} initial ranking must be lexical")
+            expanded = pages["expanded"]
+            expect((expanded is not None) == old["offered"], f"{path} expansion followed a different case set")
+            eligible = old["offered"] and size >= 2
+            totals["eligible"] += eligible
+            totals["fallback"] += eligible and (expanded is None or expanded["ranking"] != "bge")
+            if expanded is None:
+                continue
+            totals["expanded_requests"] += 1
+            expect(expanded["can_expand"] is False, f"{path} expanded can_expand must be false")
+            ranking = expanded["ranking"]
+            totals["bge"] += ranking == "bge"
+            expected = "bge" if eligible else "lexical"
+            expect(ranking == expected, f"{path} expanded ranking {ranking!r}; expected {expected} for {size} candidates")
+    for path, totals in counts.items():
+        if not totals["eligible"]:
+            errors.append(f"No eligible {path} BGE calls measured")
+    return {**counts, "errors": errors}
 
 
 def summarize(rows, follow_suggestions):
@@ -101,7 +207,13 @@ def main():
     parser.add_argument("--require-all", action="store_true", help="Exit nonzero if either mode misses any matrix case")
     parser.add_argument("--expected-source", help="Commit whose backend is being measured")
     parser.add_argument("--report", type=Path)
+    parser.add_argument(
+        "--check-bge-against", type=Path, metavar="LEXICAL_REPORT",
+        help="Require real BGE ranking on eligible service and authenticated API requests",
+    )
     args = parser.parse_args()
+    if args.check_bge_against and (not args.matrix or args.validate_only):
+        parser.error("--check-bge-against applies to a live --matrix run")
     if args.require_all and (not args.matrix or args.validate_only):
         parser.error("--require-all applies to a live --matrix run")
     if not args.validate_only and (not args.expected_source or not args.report):
@@ -127,7 +239,8 @@ def main():
         if subprocess.check_output([*freeze, "status", "--porcelain", "--", *(p.name for p in MATRIX_FILES)]).strip():
             raise RuntimeError("Commit all matrix fixtures before measuring")
         fixture_commit = subprocess.check_output([*freeze, "rev-parse", "HEAD"], text=True).strip()
-    rows = measure(repo, fixture)
+    baseline = read(args.check_bge_against) if args.check_bge_against else None
+    rows = measure(repo, fixture, check_bge=args.check_bge_against is not None)
     report = {
         "tested_source": source,
         "backend_tree": backend_tree,
@@ -148,7 +261,15 @@ def main():
         report["by_suite"] = judge_matrix(rows, fixture)
     else:
         report["fixture_sha256"] = fingerprint(fixture_file)
+    if args.check_bge_against:
+        report["bge_check"] = check_bge_report(report, baseline)
+        report["bge_check"]["baseline_sha256"] = fingerprint(args.check_bge_against)
+        report["bge_check"]["baseline_source"] = baseline.get("tested_source")
     write(args.report, report, exclusive=True)
+    if args.check_bge_against:
+        print(report["bge_check"])
+        if report["bge_check"]["errors"]:
+            raise SystemExit("Report written: BGE verification failed")
     if args.matrix:
         totals = report["by_suite"]["all"]
         print(totals)
