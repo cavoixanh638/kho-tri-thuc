@@ -2,7 +2,7 @@
 
 ## Thử mở rộng ứng viên cho câu chỉ nhớ ý
 
-Ngày 27/11/2026, bản thử `f6c7a21` được so với `f62b32c` trên 120 câu cũ và 400 câu mới, gồm 100 tình huống với 304 ghi chú tự soạn ở bộ mới. Cả **520 phản hồi mặc định** trùng nguyên JSON giữa hai bản. Khi bấm **Tìm gần đúng**, mở rộng danh sách ngắn giúp bộ cũ tăng **117 lên 118/120**, bộ mới tăng **235 lên 236/400**, nhóm nhớ ý một đáp án giữ **179/224**. Chênh lệch bộ mới là +0,25 điểm phần trăm, khoảng bootstrap theo cụm 95% từ 0 đến +0,75. Cả hai bản đều còn gợi ý sai ở **108/125** câu khó không có đáp án. P95 một lượt bấm tăng từ 638 lên 1.113 ms. Phép thử qua API tiếp tục tắt sẵn.
+Ngày 27/11/2026, bản thử `f6c7a21` được so với `f62b32c` trên 120 câu cũ và 400 câu mới, gồm 100 tình huống với 304 ghi chú tự soạn ở bộ mới. Cả **520 phản hồi mặc định** trùng nguyên JSON giữa hai bản. Khi dùng **Tìm gần đúng** nếu có nút, mở rộng danh sách ngắn giúp bộ cũ tăng **117 lên 118/120**, bộ mới tăng **235 lên 236/400**, nhóm nhớ ý một đáp án giữ **179/224**. Chênh lệch bộ mới là +0,25 điểm phần trăm, khoảng bootstrap theo cụm 95% từ 0 đến +0,75. Cả hai bản đều có kết quả sai ở **108/125** câu khó không có đáp án, gồm 105 câu có kết quả sai sau khi bấm và 3 câu chỉ có kết quả mặc định. P95 một lượt bấm tăng từ 638 lên 1.113 ms. Phép thử qua API tiếp tục tắt sẵn.
 
 Một phép thăm dò ngoại tuyến mở rộng bằng Vietnamese Embedding v2, kể cả khi đã có năm ứng viên, đạt **230/400** và **165/224** ở nhóm nhớ ý. Ngưỡng lọc giúp giảm số câu âm có gợi ý xuống 94/125, đồng thời làm mất đáp án ở nhiều câu nhớ ý. Chromium đã kiểm chứng được một lợi ích cụ thể của phép mở rộng hẹp khi L13 tìm thêm đúng bài ráp bè. [Thiết kế, chấm chéo, kết quả từng câu và cách tái lập](../evals/vietnamese-journeys/memory-400/README.md)
 
