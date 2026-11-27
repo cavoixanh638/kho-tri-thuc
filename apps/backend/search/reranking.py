@@ -9,6 +9,9 @@ from django.conf import settings
 
 
 WINDOW_SIZE = 5
+EXTRA_CANDIDATES = 8
+MIN_NEW_LOGIT = -2.0
+MIN_LEAD = 1.0
 MAX_PASSAGE_CHARS = 8192
 MAX_TOKENS = 512
 _RETRY_SECONDS = 30
@@ -46,7 +49,7 @@ class _BgeReranker:
         if not {"input_ids", "attention_mask"} <= self.inputs.keys():
             raise ValueError("Unexpected BGE model inputs")
 
-    def order(self, query, passages):
+    def scores(self, query, passages):
         pairs = self.tokenizer.encode_batch([(query, passage) for passage in passages])
         inputs = {
             name: self.np.asarray([getattr(pair, attr) for pair in pairs], dtype=dtype)
@@ -55,15 +58,39 @@ class _BgeReranker:
         logits = self.np.asarray(self.session.run(["logits"], inputs)[0])
         if logits.shape not in {(len(pairs),), (len(pairs), 1)} or not self.np.isfinite(logits).all():
             raise ValueError("Invalid BGE pair scores")
+        return tuple(map(float, logits.ravel()))
+
+    def order(self, query, passages):
+        logits = self.scores(query, passages)
         # Python's stable sort preserves PostgreSQL order on tied logits.
-        return tuple(sorted(range(len(pairs)), key=logits.ravel().__getitem__, reverse=True))
+        return tuple(sorted(range(len(logits)), key=logits.__getitem__, reverse=True))
 
 
 def rerank_order(query: str, passages: list[str]) -> tuple[int, ...] | None:
     """Return a permutation, or None to retain lexical order on an unavailable model."""
+    if not 2 <= len(passages) <= WINDOW_SIZE:
+        return None
+    return _infer(query, passages, scores=False)
+
+
+def best_addition(query, original, extra):
+    """Admit one challenger when it clearly outscores all the existing suggestions."""
+    if not (0 < len(original) < WINDOW_SIZE and 0 < len(extra) <= EXTRA_CANDIDATES):
+        return None
+    logits = _infer(query, original + extra, scores=True)
+    if logits is None:
+        return None
+    boundary = len(original)
+    winner = max(range(boundary, len(logits)), key=logits.__getitem__)
+    if logits[winner] >= max(MIN_NEW_LOGIT, max(logits[:boundary]) + MIN_LEAD):
+        return winner - boundary
+    return None
+
+
+def _infer(query, passages, *, scores):
     global _directory, _model, _retry_after
     configured = settings.SEARCH_BGE_MODEL_DIR
-    if not configured or not 2 <= len(passages) <= WINDOW_SIZE:
+    if not configured:
         return None
     # One session per API worker. Serialize bounded CPU batches, and keep
     # lexical requests entirely outside the lock.
@@ -75,7 +102,7 @@ def rerank_order(query: str, passages: list[str]) -> tuple[int, ...] | None:
         try:
             if _model is None:
                 _model = _BgeReranker(Path(configured))
-            return _model.order(query, passages)
+            return _model.scores(query, passages) if scores else _model.order(query, passages)
         except Exception as error:
             # Optional native libraries can also fail to initialize or run.
             # Retry transient failures; never log note text or the query.

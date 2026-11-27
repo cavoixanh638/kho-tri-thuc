@@ -97,6 +97,7 @@ class SearchService:
         match_kind = "standard"
         can_expand = False
         passages = []
+        added = False
         with connection.cursor() as db_cursor:
             db_cursor.execute(SEARCH_SQL, params)
             rows = db_cursor.fetchall()
@@ -139,6 +140,25 @@ class SearchService:
                     rows = [row[:-2] for row in candidates if expand or row[-2]]
                     if window and has_suggestions:
                         passages = [row[-1] for row in candidates[:window]]
+                        if (settings.SEARCH_MEMORY_CANDIDATES and len(candidates) < window
+                                and len(partial["terms"]) >= 4 and not probes
+                                and not any(char.isdigit() for char in query)
+                                and not params["claim_patterns"] and not params["claim_opposite"]
+                                and not params["quantity_required"]):
+                            # This page already has a button and no next cursor. Add at
+                            # most one hit in the free space, without displacing any page.
+                            db_cursor.execute(RECALL_SQL, {
+                                **params, **partial, "widen_memory": True,
+                                "existing_ids": [row[0] for row in candidates], "suggestion_count": 1,
+                                "page_size": reranking.EXTRA_CANDIDATES, "rerank_window": reranking.EXTRA_CANDIDATES,
+                                "passage_chars": reranking.MAX_PASSAGE_CHARS,
+                            })
+                            extra = db_cursor.fetchall()
+                            if extra:
+                                selected = reranking.best_addition(query, passages, [row[-1] for row in extra])
+                                if selected is not None:
+                                    rows.append(extra[selected][:-2])
+                                    added = True
                 if rows:
                     match_kind = "partial"
 
@@ -166,6 +186,10 @@ class SearchService:
         if len(passages) >= 2 and (order := reranking.rerank_order(query, passages)) is not None:
             hits = tuple(hits[index] for index in order) + hits[len(order):]
             ranking = "bge"
+        if added:
+            # The winning challenger was appended after the original candidates.
+            hits = (hits[-1], *hits[:-1])
+            ranking = "bge"
         return SearchPage(hits, next_cursor, match_kind, can_expand, ranking)
 
 
@@ -182,6 +206,7 @@ def _search_params(filters, query, cursor, limit):
         "width_from": WIDE_GRAPHIC, "width_to": ASCII_GRAPHIC,
         "vi_lower": VI_LOWER, "vi_upper": VI_LOWER.upper(),
         "digit_probes": None, "indexed_digits": False,
+        "widen_memory": False, "existing_ids": [],
         **claim_params(query),
         **quantity_params(query),
         "identifier_patterns": identifier_patterns(query),

@@ -117,7 +117,7 @@ scored AS (
        AND bool_or(frequency BETWEEN 1 AND %(postings_limit)s - 1 AND (typed OR folded))
        -- A long description mostly absent from the visible collection needs
        -- more evidence than the usual two or three shared search terms.
-       AND (count(*) < 9 OR 2 * count(*) FILTER (WHERE frequency = 0) <= count(*)
+       AND (%(widen_memory)s OR count(*) < 9 OR 2 * count(*) FILTER (WHERE frequency = 0) <= count(*)
             OR 3 * count(*) FILTER (WHERE typed OR folded) >= count(*))
 ),
 phrase_query AS (
@@ -145,7 +145,8 @@ ranked AS (
 ),
 page AS (
     SELECT id, score, strong FROM ranked
-    WHERE %(cursor_id)s::uuid IS NULL OR (score, id) < (%(cursor_score)s::real, %(cursor_id)s::uuid)
+    WHERE (%(cursor_id)s::uuid IS NULL OR (score, id) < (%(cursor_score)s::real, %(cursor_id)s::uuid))
+      AND (NOT %(widen_memory)s OR id <> ALL(%(existing_ids)s::uuid[]))
     ORDER BY score DESC, id DESC LIMIT %(page_size)s
 ),
 headline_query AS (
