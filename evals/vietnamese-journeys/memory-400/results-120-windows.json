@@ -1,0 +1,3168 @@
+{
+  "suite": "120",
+  "notes": 122,
+  "fixtures": {
+    "language.json": "d87dbd94e996ed5be8bf2817dc008acf942a13e5bee830eb8a1f3c8791fbe753",
+    "values.json": "dd3764fd89ab210b847d1899aa718c834cba313db4c9b0a114b600eb7503dafd",
+    "scope.json": "f55703ff82ef434d0258de0d330f74e9cb7b400ea625c5cde41e15e2c99f79cd"
+  },
+  "runner_sha256": "12a86e6f0d7371200bc8dfbffcc7e478d3b3c22a84d6c5c8870498933a7f728f",
+  "comparison_sha256": "cb310130897fb9a08836288cfc067cc064c26f7fff9cb19a1de1b9b279e5190a",
+  "control_source": "f62b32c5d04e7d7b603443e298146ada62b78c63",
+  "trial_source": "f6c7a219cd978f5e17fe29e478470784cf0d9381",
+  "control_backend_tree": "93a3e82a24b618ad40a7b0c92ff618f0a77e086e",
+  "trial_backend_tree": "97a8b3f434181d3f93a9051e743281dac4f30b65",
+  "identical_default_responses": 120,
+  "outside_scope": 0,
+  "metrics": {
+    "all": {
+      "n": 120,
+      "initial_pass": 87,
+      "offered": 34,
+      "with_challengers_scored": 21,
+      "challengers_scored": 161,
+      "displayed_additions": 1,
+      "gains": 1,
+      "losses": 0,
+      "negative_n": 26,
+      "singleton_n": 81,
+      "multi_n": 13,
+      "control": {
+        "pass": 117,
+        "singleton_top1": 78,
+        "singleton_found_top5": 79,
+        "multi_all_top5": 13,
+        "negative_with_hits": 0,
+        "negative_hits": 0,
+        "click_median_ms": 340.0,
+        "click_p95_ms": 523.5
+      },
+      "trial": {
+        "pass": 118,
+        "singleton_top1": 79,
+        "singleton_found_top5": 80,
+        "multi_all_top5": 13,
+        "negative_with_hits": 0,
+        "negative_hits": 0,
+        "click_median_ms": 732.34,
+        "click_p95_ms": 1244.45
+      }
+    },
+    "clicked": {
+      "n": 34,
+      "initial_pass": 1,
+      "offered": 34,
+      "with_challengers_scored": 21,
+      "challengers_scored": 161,
+      "displayed_additions": 1,
+      "gains": 1,
+      "losses": 0,
+      "negative_n": 0,
+      "singleton_n": 29,
+      "multi_n": 5,
+      "control": {
+        "pass": 31,
+        "singleton_top1": 26,
+        "singleton_found_top5": 27,
+        "multi_all_top5": 5,
+        "negative_with_hits": 0,
+        "negative_hits": 0,
+        "click_median_ms": 340.0,
+        "click_p95_ms": 523.5
+      },
+      "trial": {
+        "pass": 32,
+        "singleton_top1": 27,
+        "singleton_found_top5": 28,
+        "multi_all_top5": 5,
+        "negative_with_hits": 0,
+        "negative_hits": 0,
+        "click_median_ms": 732.34,
+        "click_p95_ms": 1244.45
+      }
+    },
+    "scored": {
+      "n": 21,
+      "initial_pass": 0,
+      "offered": 21,
+      "with_challengers_scored": 21,
+      "challengers_scored": 161,
+      "displayed_additions": 1,
+      "gains": 1,
+      "losses": 0,
+      "negative_n": 0,
+      "singleton_n": 20,
+      "multi_n": 1,
+      "control": {
+        "pass": 18,
+        "singleton_top1": 17,
+        "singleton_found_top5": 18,
+        "multi_all_top5": 1,
+        "negative_with_hits": 0,
+        "negative_hits": 0,
+        "click_median_ms": 230.4,
+        "click_p95_ms": 384.5
+      },
+      "trial": {
+        "pass": 19,
+        "singleton_top1": 18,
+        "singleton_found_top5": 19,
+        "multi_all_top5": 1,
+        "negative_with_hits": 0,
+        "negative_hits": 0,
+        "click_median_ms": 984.34,
+        "click_p95_ms": 1244.45
+      }
+    },
+    "language": {
+      "n": 40,
+      "initial_pass": 10,
+      "offered": 30,
+      "with_challengers_scored": 20,
+      "challengers_scored": 160,
+      "displayed_additions": 1,
+      "gains": 1,
+      "losses": 0,
+      "negative_n": 8,
+      "singleton_n": 28,
+      "multi_n": 4,
+      "control": {
+        "pass": 37,
+        "singleton_top1": 25,
+        "singleton_found_top5": 26,
+        "multi_all_top5": 4,
+        "negative_with_hits": 0,
+        "negative_hits": 0,
+        "click_median_ms": 349.77,
+        "click_p95_ms": 523.5
+      },
+      "trial": {
+        "pass": 38,
+        "singleton_top1": 26,
+        "singleton_found_top5": 27,
+        "multi_all_top5": 4,
+        "negative_with_hits": 0,
+        "negative_hits": 0,
+        "click_median_ms": 812.07,
+        "click_p95_ms": 1244.45
+      }
+    },
+    "scope": {
+      "n": 40,
+      "initial_pass": 38,
+      "offered": 2,
+      "with_challengers_scored": 1,
+      "challengers_scored": 1,
+      "displayed_additions": 0,
+      "gains": 0,
+      "losses": 0,
+      "negative_n": 10,
+      "singleton_n": 25,
+      "multi_n": 5,
+      "control": {
+        "pass": 40,
+        "singleton_top1": 25,
+        "singleton_found_top5": 25,
+        "multi_all_top5": 5,
+        "negative_with_hits": 0,
+        "negative_hits": 0,
+        "click_median_ms": 79.2,
+        "click_p95_ms": 82.34
+      },
+      "trial": {
+        "pass": 40,
+        "singleton_top1": 25,
+        "singleton_found_top5": 25,
+        "multi_all_top5": 5,
+        "negative_with_hits": 0,
+        "negative_hits": 0,
+        "click_median_ms": 192.17,
+        "click_p95_ms": 241.59
+      }
+    },
+    "values": {
+      "n": 40,
+      "initial_pass": 39,
+      "offered": 2,
+      "with_challengers_scored": 0,
+      "challengers_scored": 0,
+      "displayed_additions": 0,
+      "gains": 0,
+      "losses": 0,
+      "negative_n": 8,
+      "singleton_n": 28,
+      "multi_n": 4,
+      "control": {
+        "pass": 40,
+        "singleton_top1": 28,
+        "singleton_found_top5": 28,
+        "multi_all_top5": 4,
+        "negative_with_hits": 0,
+        "negative_hits": 0,
+        "click_median_ms": 354.35,
+        "click_p95_ms": 386.45
+      },
+      "trial": {
+        "pass": 40,
+        "singleton_top1": 28,
+        "singleton_found_top5": 28,
+        "multi_all_top5": 4,
+        "negative_with_hits": 0,
+        "negative_hits": 0,
+        "click_median_ms": 339.04,
+        "click_p95_ms": 367.77
+      }
+    }
+  },
+  "cases": [
+    {
+      "id": "L01",
+      "kind": "từ địa phương",
+      "suite": "language",
+      "accept": [
+        "LN01"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "LN01",
+        "SN27",
+        "LN04"
+      ],
+      "trial": [
+        "LN01",
+        "SN27",
+        "LN04"
+      ],
+      "added": [],
+      "challengers": 8,
+      "initial_pass": false,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 308.23,
+      "trial_ms": 1086.04,
+      "control_ranking": "bge",
+      "trial_ranking": "bge"
+    },
+    {
+      "id": "L02",
+      "kind": "từ địa phương",
+      "suite": "language",
+      "accept": [
+        "LN02"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "LN02"
+      ],
+      "trial": [
+        "LN02"
+      ],
+      "added": [],
+      "challengers": 8,
+      "initial_pass": false,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 82.02,
+      "trial_ms": 713.27,
+      "control_ranking": "lexical",
+      "trial_ranking": "lexical"
+    },
+    {
+      "id": "L03",
+      "kind": "nói giảm",
+      "suite": "language",
+      "accept": [
+        "LN03"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "LN03",
+        "VN42",
+        "VN01",
+        "LN23"
+      ],
+      "trial": [
+        "LN03",
+        "VN42",
+        "VN01",
+        "LN23"
+      ],
+      "added": [],
+      "challengers": 8,
+      "initial_pass": false,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 453.31,
+      "trial_ms": 1293.27,
+      "control_ranking": "bge",
+      "trial_ranking": "bge"
+    },
+    {
+      "id": "L04",
+      "kind": "diễn đạt vòng",
+      "suite": "language",
+      "accept": [
+        "LN04"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "LN04",
+        "LN24",
+        "LN08",
+        "SN24"
+      ],
+      "trial": [
+        "LN04",
+        "LN24",
+        "LN08",
+        "SN24"
+      ],
+      "added": [],
+      "challengers": 8,
+      "initial_pass": false,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 384.5,
+      "trial_ms": 1147.02,
+      "control_ranking": "bge",
+      "trial_ranking": "bge"
+    },
+    {
+      "id": "L05",
+      "kind": "đa nghĩa",
+      "suite": "language",
+      "accept": [
+        "LN05"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "VN19",
+        "LN05",
+        "VN50"
+      ],
+      "trial": [
+        "VN19",
+        "LN05",
+        "VN50"
+      ],
+      "added": [],
+      "challengers": 8,
+      "initial_pass": false,
+      "control_pass": false,
+      "trial_pass": false,
+      "control_ms": 302.23,
+      "trial_ms": 1121.9,
+      "control_ranking": "bge",
+      "trial_ranking": "bge"
+    },
+    {
+      "id": "L06",
+      "kind": "dấu hiệu thay cho thời lượng",
+      "suite": "language",
+      "accept": [
+        "LN06"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "LN06"
+      ],
+      "trial": [
+        "LN06"
+      ],
+      "added": [],
+      "challengers": 8,
+      "initial_pass": false,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 81.5,
+      "trial_ms": 813.98,
+      "control_ranking": "lexical",
+      "trial_ranking": "lexical"
+    },
+    {
+      "id": "L07",
+      "kind": "vai người trao và người nhận",
+      "suite": "language",
+      "accept": [
+        "LN07"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "LN07"
+      ],
+      "trial": [
+        "LN07"
+      ],
+      "added": [],
+      "challengers": 8,
+      "initial_pass": false,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 92.46,
+      "trial_ms": 751.4,
+      "control_ranking": "lexical",
+      "trial_ranking": "lexical"
+    },
+    {
+      "id": "L08",
+      "kind": "thuộc tính phân biệt",
+      "suite": "language",
+      "accept": [
+        "LN08"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "LN08"
+      ],
+      "trial": [
+        "LN08"
+      ],
+      "added": [],
+      "challengers": 8,
+      "initial_pass": false,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 92.55,
+      "trial_ms": 810.15,
+      "control_ranking": "lexical",
+      "trial_ranking": "lexical"
+    },
+    {
+      "id": "L09",
+      "kind": "nguyên nhân",
+      "suite": "language",
+      "accept": [
+        "LN09"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "LN09",
+        "VN01"
+      ],
+      "trial": [
+        "LN09",
+        "VN01"
+      ],
+      "added": [],
+      "challengers": 8,
+      "initial_pass": false,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 198.21,
+      "trial_ms": 984.34,
+      "control_ranking": "bge",
+      "trial_ranking": "bge"
+    },
+    {
+      "id": "L10",
+      "kind": "ứng phó khi có sự cố",
+      "suite": "language",
+      "accept": [
+        "LN10"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "LN13",
+        "LN22"
+      ],
+      "trial": [
+        "LN13",
+        "LN22"
+      ],
+      "added": [],
+      "challengers": 8,
+      "initial_pass": false,
+      "control_pass": false,
+      "trial_pass": false,
+      "control_ms": 164.53,
+      "trial_ms": 917.45,
+      "control_ranking": "bge",
+      "trial_ranking": "bge"
+    },
+    {
+      "id": "L11",
+      "kind": "ngoại lệ có điều kiện",
+      "suite": "language",
+      "accept": [
+        "LN11"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "LN11",
+        "SN17",
+        "VN13",
+        "SN26"
+      ],
+      "trial": [
+        "LN11",
+        "SN17",
+        "VN13",
+        "SN26"
+      ],
+      "added": [],
+      "challengers": 8,
+      "initial_pass": false,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 297.29,
+      "trial_ms": 1148.51,
+      "control_ranking": "bge",
+      "trial_ranking": "bge"
+    },
+    {
+      "id": "L12",
+      "kind": "điều kiện dừng",
+      "suite": "language",
+      "accept": [
+        "LN12"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "LN12",
+        "LN33",
+        "LN34",
+        "LN27",
+        "LN24"
+      ],
+      "trial": [
+        "LN12",
+        "LN33",
+        "LN34",
+        "LN27",
+        "LN24"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": false,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 424.2,
+      "trial_ms": 449.03,
+      "control_ranking": "bge",
+      "trial_ranking": "bge"
+    },
+    {
+      "id": "L13",
+      "kind": "phạm vi phủ định",
+      "suite": "language",
+      "accept": [
+        "LN13"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "LN21",
+        "LN10"
+      ],
+      "trial": [
+        "LN13",
+        "LN21",
+        "LN10"
+      ],
+      "added": [
+        "LN13"
+      ],
+      "challengers": 8,
+      "initial_pass": false,
+      "control_pass": false,
+      "trial_pass": true,
+      "control_ms": 213.08,
+      "trial_ms": 881.13,
+      "control_ranking": "bge",
+      "trial_ranking": "bge"
+    },
+    {
+      "id": "L14",
+      "kind": "quyền theo đối tượng",
+      "suite": "language",
+      "accept": [
+        "LN14"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "LN14",
+        "LN30",
+        "SN22",
+        "SN29",
+        "SN30"
+      ],
+      "trial": [
+        "LN14",
+        "LN30",
+        "SN22",
+        "SN29",
+        "SN30"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": false,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 403.36,
+      "trial_ms": 410.74,
+      "control_ranking": "bge",
+      "trial_ranking": "bge"
+    },
+    {
+      "id": "L15",
+      "kind": "thứ tự thao tác",
+      "suite": "language",
+      "accept": [
+        "LN15"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "LN15",
+        "LN08",
+        "LN02",
+        "LN17"
+      ],
+      "trial": [
+        "LN15",
+        "LN08",
+        "LN02",
+        "LN17"
+      ],
+      "added": [],
+      "challengers": 8,
+      "initial_pass": false,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 378.09,
+      "trial_ms": 1210.0,
+      "control_ranking": "bge",
+      "trial_ranking": "bge"
+    },
+    {
+      "id": "L16",
+      "kind": "giữ giờ đổi địa điểm",
+      "suite": "language",
+      "accept": [
+        "LN16"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "LN16",
+        "LN13",
+        "LN21",
+        "VN19",
+        "VN13"
+      ],
+      "trial": [
+        "LN16",
+        "LN13",
+        "LN21",
+        "VN19",
+        "VN13"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": false,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 439.56,
+      "trial_ms": 409.7,
+      "control_ranking": "bge",
+      "trial_ranking": "bge"
+    },
+    {
+      "id": "L17",
+      "kind": "đề nghị chưa duyệt",
+      "suite": "language",
+      "accept": [
+        "LN17"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "LN17",
+        "VN35",
+        "LN22",
+        "VN37"
+      ],
+      "trial": [
+        "LN17",
+        "VN35",
+        "LN22",
+        "VN37"
+      ],
+      "added": [],
+      "challengers": 8,
+      "initial_pass": false,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 343.33,
+      "trial_ms": 1188.93,
+      "control_ranking": "bge",
+      "trial_ranking": "bge"
+    },
+    {
+      "id": "L18",
+      "kind": "thời gian qua nửa đêm",
+      "suite": "language",
+      "accept": [
+        "LN18"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "LN18",
+        "SN18",
+        "LN21",
+        "LN14"
+      ],
+      "trial": [
+        "LN18",
+        "SN18",
+        "LN21",
+        "LN14"
+      ],
+      "added": [],
+      "challengers": 8,
+      "initial_pass": false,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 356.71,
+      "trial_ms": 1244.45,
+      "control_ranking": "bge",
+      "trial_ranking": "bge"
+    },
+    {
+      "id": "L19",
+      "kind": "đơn vị tính và phần lẻ",
+      "suite": "language",
+      "accept": [
+        "LN19"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "LN19",
+        "VN17"
+      ],
+      "trial": [
+        "LN19",
+        "VN17"
+      ],
+      "added": [],
+      "challengers": 8,
+      "initial_pass": false,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 230.4,
+      "trial_ms": 896.98,
+      "control_ranking": "bge",
+      "trial_ranking": "bge"
+    },
+    {
+      "id": "L20",
+      "kind": "lượng từ theo nhóm",
+      "suite": "language",
+      "accept": [
+        "LN20"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "LN20",
+        "LN21",
+        "LN03",
+        "LN05"
+      ],
+      "trial": [
+        "LN20",
+        "LN21",
+        "LN03",
+        "LN05"
+      ],
+      "added": [],
+      "challengers": 8,
+      "initial_pass": false,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 336.66,
+      "trial_ms": 1240.83,
+      "control_ranking": "bge",
+      "trial_ranking": "bge"
+    },
+    {
+      "id": "L21",
+      "kind": "thành ngữ",
+      "suite": "language",
+      "accept": [
+        "LN21"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "LN21"
+      ],
+      "trial": [
+        "LN21"
+      ],
+      "added": [],
+      "challengers": 8,
+      "initial_pass": false,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 86.34,
+      "trial_ms": 638.54,
+      "control_ranking": "lexical",
+      "trial_ranking": "lexical"
+    },
+    {
+      "id": "L22",
+      "kind": "mục đích suy ra từ kết quả",
+      "suite": "language",
+      "accept": [
+        "LN22"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "LN22",
+        "LN05",
+        "VN19",
+        "VN18",
+        "LN39"
+      ],
+      "trial": [
+        "LN22",
+        "LN05",
+        "VN19",
+        "VN18",
+        "LN39"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": false,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 436.26,
+      "trial_ms": 417.64,
+      "control_ranking": "bge",
+      "trial_ranking": "bge"
+    },
+    {
+      "id": "L23",
+      "kind": "tham chiếu theo thứ tự",
+      "suite": "language",
+      "accept": [
+        "LN23"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "LN23",
+        "VN47",
+        "VN09",
+        "LN35",
+        "LN17"
+      ],
+      "trial": [
+        "LN23",
+        "VN47",
+        "VN09",
+        "LN35",
+        "LN17"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": false,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 379.27,
+      "trial_ms": 416.78,
+      "control_ranking": "bge",
+      "trial_ranking": "bge"
+    },
+    {
+      "id": "L24",
+      "kind": "người nói và người chuyển lời",
+      "suite": "language",
+      "accept": [
+        "LN24"
+      ],
+      "initial": [
+        "LN24"
+      ],
+      "initial_sha256": "221682ed621fb4aac60ac66d95ef926bfd02adc1d24951bb705ab7f2bbbfea7b",
+      "offered": false,
+      "control": [
+        "LN24"
+      ],
+      "trial": [
+        "LN24"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "L25",
+      "kind": "nghĩa của việc tắt thiết bị",
+      "suite": "language",
+      "accept": [
+        "LN25"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "LN25",
+        "LN39",
+        "LN05",
+        "VN13",
+        "SN14"
+      ],
+      "trial": [
+        "LN25",
+        "LN39",
+        "LN05",
+        "VN13",
+        "SN14"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": false,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 401.45,
+      "trial_ms": 413.69,
+      "control_ranking": "bge",
+      "trial_ranking": "bge"
+    },
+    {
+      "id": "L26",
+      "kind": "so sánh theo đặc tính",
+      "suite": "language",
+      "accept": [
+        "LN26"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "LN26"
+      ],
+      "trial": [
+        "LN26"
+      ],
+      "added": [],
+      "challengers": 8,
+      "initial_pass": false,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 91.91,
+      "trial_ms": 691.14,
+      "control_ranking": "lexical",
+      "trial_ranking": "lexical"
+    },
+    {
+      "id": "L27",
+      "kind": "điều kiện đồng thời",
+      "suite": "language",
+      "accept": [
+        "LN27"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "LN27",
+        "LN14",
+        "LN34",
+        "VN02",
+        "VN17"
+      ],
+      "trial": [
+        "LN27",
+        "LN14",
+        "LN34",
+        "VN02",
+        "VN17"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": false,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 523.5,
+      "trial_ms": 461.98,
+      "control_ranking": "bge",
+      "trial_ranking": "bge"
+    },
+    {
+      "id": "L28",
+      "kind": "điều kiện thay thế",
+      "suite": "language",
+      "accept": [
+        "LN28"
+      ],
+      "initial": [
+        "LN28"
+      ],
+      "initial_sha256": "1ee3a562f84f423333d853630b1ee88dada45a5a12b056257f11529fd2c1bfb0",
+      "offered": false,
+      "control": [
+        "LN28"
+      ],
+      "trial": [
+        "LN28"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "L29",
+      "kind": "hai hình thức hỗ trợ",
+      "suite": "language",
+      "accept": [
+        "LN29",
+        "LN30"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "LN29",
+        "LN30",
+        "VN19",
+        "LN05",
+        "SN26"
+      ],
+      "trial": [
+        "LN29",
+        "LN30",
+        "VN19",
+        "LN05",
+        "SN26"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": false,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 518.08,
+      "trial_ms": 515.03,
+      "control_ranking": "bge",
+      "trial_ranking": "bge"
+    },
+    {
+      "id": "L30",
+      "kind": "đối chiếu cùng điều kiện",
+      "suite": "language",
+      "accept": [
+        "LN31",
+        "LN32"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "LN31",
+        "LN32",
+        "VN14",
+        "LN21",
+        "VN22"
+      ],
+      "trial": [
+        "LN31",
+        "LN32",
+        "VN14",
+        "LN21",
+        "VN22"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": false,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 453.82,
+      "trial_ms": 473.34,
+      "control_ranking": "bge",
+      "trial_ranking": "bge"
+    },
+    {
+      "id": "L31",
+      "kind": "phạm vi qua hai khâu phục vụ",
+      "suite": "language",
+      "accept": [
+        "LN33",
+        "LN34"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "LN33",
+        "LN34",
+        "VN51",
+        "VN24",
+        "SN15"
+      ],
+      "trial": [
+        "LN33",
+        "LN34",
+        "VN51",
+        "VN24",
+        "SN15"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": false,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 530.77,
+      "trial_ms": 508.28,
+      "control_ranking": "bge",
+      "trial_ranking": "bge"
+    },
+    {
+      "id": "L32",
+      "kind": "đối chiếu hai nguồn về khoản phải trả",
+      "suite": "language",
+      "accept": [
+        "LN35",
+        "LN36"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "LN36",
+        "LN35",
+        "VN28"
+      ],
+      "trial": [
+        "LN36",
+        "LN35",
+        "VN28"
+      ],
+      "added": [],
+      "challengers": 8,
+      "initial_pass": false,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 356.21,
+      "trial_ms": 1198.81,
+      "control_ranking": "bge",
+      "trial_ranking": "bge"
+    },
+    {
+      "id": "L33",
+      "kind": "nguyên nhân bị gán nhầm",
+      "suite": "language",
+      "accept": [],
+      "initial": [],
+      "initial_sha256": "b083e0ec581877433be76527cc90df445257da2cbca6a571790b1886b64d9b0a",
+      "offered": false,
+      "control": [],
+      "trial": [],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "L34",
+      "kind": "áp ngoại lệ sai chỗ",
+      "suite": "language",
+      "accept": [],
+      "initial": [],
+      "initial_sha256": "b083e0ec581877433be76527cc90df445257da2cbca6a571790b1886b64d9b0a",
+      "offered": false,
+      "control": [],
+      "trial": [],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "L35",
+      "kind": "đảo bên trao và bên nhận",
+      "suite": "language",
+      "accept": [],
+      "initial": [],
+      "initial_sha256": "b083e0ec581877433be76527cc90df445257da2cbca6a571790b1886b64d9b0a",
+      "offered": false,
+      "control": [],
+      "trial": [],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "L36",
+      "kind": "quá hạn giao nhận",
+      "suite": "language",
+      "accept": [],
+      "initial": [],
+      "initial_sha256": "b083e0ec581877433be76527cc90df445257da2cbca6a571790b1886b64d9b0a",
+      "offered": false,
+      "control": [],
+      "trial": [],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "L37",
+      "kind": "nhầm loại khoản hỗ trợ",
+      "suite": "language",
+      "accept": [],
+      "initial": [],
+      "initial_sha256": "b083e0ec581877433be76527cc90df445257da2cbca6a571790b1886b64d9b0a",
+      "offered": false,
+      "control": [],
+      "trial": [],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "L38",
+      "kind": "gán nhầm tín hiệu cho hành động",
+      "suite": "language",
+      "accept": [],
+      "initial": [],
+      "initial_sha256": "b083e0ec581877433be76527cc90df445257da2cbca6a571790b1886b64d9b0a",
+      "offered": false,
+      "control": [],
+      "trial": [],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "L39",
+      "kind": "ghép nhầm đối tượng và đặc tính",
+      "suite": "language",
+      "accept": [],
+      "initial": [],
+      "initial_sha256": "b083e0ec581877433be76527cc90df445257da2cbca6a571790b1886b64d9b0a",
+      "offered": false,
+      "control": [],
+      "trial": [],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "L40",
+      "kind": "đánh đồng điều kiện đồng thời với lựa chọn",
+      "suite": "language",
+      "accept": [],
+      "initial": [],
+      "initial_sha256": "b083e0ec581877433be76527cc90df445257da2cbca6a571790b1886b64d9b0a",
+      "offered": false,
+      "control": [],
+      "trial": [],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V01",
+      "kind": "Ấn phẩm gần tên",
+      "suite": "values",
+      "accept": [
+        "VN01"
+      ],
+      "initial": [
+        "VN01",
+        "VN02",
+        "VN49"
+      ],
+      "initial_sha256": "48c66e5d0e02a2721ee4a5f6341ff7b349891cb8266e11ea6e1ada388cec2d05",
+      "offered": false,
+      "control": [
+        "VN01",
+        "VN02",
+        "VN49"
+      ],
+      "trial": [
+        "VN01",
+        "VN02",
+        "VN49"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V02",
+      "kind": "Ấn phẩm gần tên",
+      "suite": "values",
+      "accept": [
+        "VN02"
+      ],
+      "initial": [
+        "VN02"
+      ],
+      "initial_sha256": "1aa553b2ecb63a287402e1a8c7b8b2859c10e44325e6225b3f7f528cbda8aa73",
+      "offered": true,
+      "control": [
+        "VN02",
+        "VN01",
+        "VN49",
+        "LN21",
+        "VN48"
+      ],
+      "trial": [
+        "VN02",
+        "VN01",
+        "VN49",
+        "LN21",
+        "VN48"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 386.45,
+      "trial_ms": 367.77,
+      "control_ranking": "bge",
+      "trial_ranking": "bge"
+    },
+    {
+      "id": "V03",
+      "kind": "Kích thước có thứ tự",
+      "suite": "values",
+      "accept": [
+        "VN03"
+      ],
+      "initial": [
+        "VN03"
+      ],
+      "initial_sha256": "6972f9fb12229696cac9c3732a22fb5fe9f498fcc98d57d47aad7f90a86e2878",
+      "offered": false,
+      "control": [
+        "VN03"
+      ],
+      "trial": [
+        "VN03"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V04",
+      "kind": "Định dạng số thập phân và hàng nghìn",
+      "suite": "values",
+      "accept": [
+        "VN04"
+      ],
+      "initial": [
+        "VN04"
+      ],
+      "initial_sha256": "691e59ce24f2706a1ebc2ebdfccab0fa023304f9f733ccd71fcc71b78744b58f",
+      "offered": false,
+      "control": [
+        "VN04"
+      ],
+      "trial": [
+        "VN04"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V05",
+      "kind": "Trọng số đo âm thanh",
+      "suite": "values",
+      "accept": [
+        "VN05"
+      ],
+      "initial": [
+        "VN05"
+      ],
+      "initial_sha256": "a403d4c45f4f81c2868362541191f1b469ee915a80eda25e01c562337e236a66",
+      "offered": false,
+      "control": [
+        "VN05"
+      ],
+      "trial": [
+        "VN05"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V06",
+      "kind": "Dán nội dung và dấu cách",
+      "suite": "values",
+      "accept": [
+        "VN06"
+      ],
+      "initial": [
+        "VN06"
+      ],
+      "initial_sha256": "555a98eb4ac1aed34cb0129fa5ebef374b277babd5389cda40dbc601903dcff7",
+      "offered": false,
+      "control": [
+        "VN06"
+      ],
+      "trial": [
+        "VN06"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V07",
+      "kind": "Dấu hai chấm trong văn bản",
+      "suite": "values",
+      "accept": [
+        "VN07"
+      ],
+      "initial": [
+        "VN07"
+      ],
+      "initial_sha256": "18880753f10e012a438870904f7920b0648da59924eb22f8ad55f3ba3ebdf588",
+      "offered": false,
+      "control": [
+        "VN07"
+      ],
+      "trial": [
+        "VN07"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V08",
+      "kind": "Dải giá trị và điều kiện biên",
+      "suite": "values",
+      "accept": [
+        "VN08"
+      ],
+      "initial": [
+        "VN08"
+      ],
+      "initial_sha256": "678bca25b220a0f46f8e922ff86b61881330850986556aae72a1271d4f7154b5",
+      "offered": false,
+      "control": [
+        "VN08"
+      ],
+      "trial": [
+        "VN08"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V09",
+      "kind": "Số phiên bản và số phụ lục",
+      "suite": "values",
+      "accept": [
+        "VN09"
+      ],
+      "initial": [
+        "VN09"
+      ],
+      "initial_sha256": "91fda720a51b2fcecd3f7a24c1ac68369ec84774fe4f0e519dc71b6af2932fa6",
+      "offered": false,
+      "control": [
+        "VN09"
+      ],
+      "trial": [
+        "VN09"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V10",
+      "kind": "Định dạng và vai trò ngày tháng",
+      "suite": "values",
+      "accept": [
+        "VN10"
+      ],
+      "initial": [
+        "VN10"
+      ],
+      "initial_sha256": "80e9a4f42a5398f1cb9297dd29e859da6866a3ea54746a18e6bb3b686ab9df7f",
+      "offered": false,
+      "control": [
+        "VN10"
+      ],
+      "trial": [
+        "VN10"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V11",
+      "kind": "Mã ghép và mã có dấu câu",
+      "suite": "values",
+      "accept": [
+        "VN11"
+      ],
+      "initial": [
+        "VN11"
+      ],
+      "initial_sha256": "bd312af286fbd028ceda8cc74dbb28deb5daf0b1505e5074dbadf38465f4397d",
+      "offered": false,
+      "control": [
+        "VN11"
+      ],
+      "trial": [
+        "VN11"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V12",
+      "kind": "Ký tự dễ nhầm trong mã",
+      "suite": "values",
+      "accept": [
+        "VN12"
+      ],
+      "initial": [
+        "VN12"
+      ],
+      "initial_sha256": "2dd006b7597211ba5aec1766e7a95e92152953a4947e19d723a86cffe5a65226",
+      "offered": false,
+      "control": [
+        "VN12"
+      ],
+      "trial": [
+        "VN12"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V13",
+      "kind": "Ký tự dễ nhầm trong mã",
+      "suite": "values",
+      "accept": [
+        "VN13"
+      ],
+      "initial": [
+        "VN13"
+      ],
+      "initial_sha256": "fb72d3e418d72035189829f39a131b9ebd120f6802d6ce9886d972d2ad1d0fe3",
+      "offered": false,
+      "control": [
+        "VN13"
+      ],
+      "trial": [
+        "VN13"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V14",
+      "kind": "Ký tự dễ nhầm trong mã",
+      "suite": "values",
+      "accept": [
+        "VN14"
+      ],
+      "initial": [
+        "VN14"
+      ],
+      "initial_sha256": "aeac4d116e4ec840d686ba81105153dd485c384d8079cb3ffa100ea4c8b1a1df",
+      "offered": false,
+      "control": [
+        "VN14"
+      ],
+      "trial": [
+        "VN14"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V15",
+      "kind": "Dấu âm và dấu cộng",
+      "suite": "values",
+      "accept": [
+        "VN15"
+      ],
+      "initial": [
+        "VN15"
+      ],
+      "initial_sha256": "778d6ac7e72941549a8c11dcde4c0d149658386ff467e6c0c72d9fb71c207525",
+      "offered": false,
+      "control": [
+        "VN15"
+      ],
+      "trial": [
+        "VN15"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V16",
+      "kind": "Cách nhập dấu tiếng Việt",
+      "suite": "values",
+      "accept": [
+        "VN16"
+      ],
+      "initial": [
+        "VN16"
+      ],
+      "initial_sha256": "1f8864ea33667002f9798c4bee0b46075d06d1de1ce40bf9f588869107929a83",
+      "offered": false,
+      "control": [
+        "VN16"
+      ],
+      "trial": [
+        "VN16"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V17",
+      "kind": "Cách nhập dấu tiếng Việt",
+      "suite": "values",
+      "accept": [
+        "VN17"
+      ],
+      "initial": [
+        "VN17"
+      ],
+      "initial_sha256": "128ccfcb7d0372e3c0eb2262606d002d8a6d0b3d35acf9a7e6a6a0bbe278f0e3",
+      "offered": false,
+      "control": [
+        "VN17"
+      ],
+      "trial": [
+        "VN17"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V18",
+      "kind": "Dán nội dung và dấu cách",
+      "suite": "values",
+      "accept": [
+        "VN18"
+      ],
+      "initial": [
+        "VN18"
+      ],
+      "initial_sha256": "3f045075d1e66ec3335695a79074822f4702ec6a9340a3ba2e20f0b165597e77",
+      "offered": false,
+      "control": [
+        "VN18"
+      ],
+      "trial": [
+        "VN18"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V19",
+      "kind": "Vị trí của bằng chứng",
+      "suite": "values",
+      "accept": [
+        "VN19"
+      ],
+      "initial": [
+        "VN19"
+      ],
+      "initial_sha256": "b077b63888452515b95966fc23bf4349edf38aa0b865d5b867559732ba478264",
+      "offered": false,
+      "control": [
+        "VN19"
+      ],
+      "trial": [
+        "VN19"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V20",
+      "kind": "Số hoặc mã gắn với đúng đối tượng",
+      "suite": "values",
+      "accept": [
+        "VN20"
+      ],
+      "initial": [
+        "VN20"
+      ],
+      "initial_sha256": "48b98d60d3bc06a22e8fdb4b650a1d42e93a1005499d21a181d1011ef7a68e00",
+      "offered": false,
+      "control": [
+        "VN20"
+      ],
+      "trial": [
+        "VN20"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V21",
+      "kind": "Số phiên bản và số phụ lục",
+      "suite": "values",
+      "accept": [
+        "VN21"
+      ],
+      "initial": [
+        "VN21",
+        "VN51"
+      ],
+      "initial_sha256": "1c6e4cbfa64f3dd73ae5d9d34d551755fa72179112a951438bb28ff8d165a80d",
+      "offered": false,
+      "control": [
+        "VN21",
+        "VN51"
+      ],
+      "trial": [
+        "VN21",
+        "VN51"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V22",
+      "kind": "Đơn vị và ký hiệu đại lượng",
+      "suite": "values",
+      "accept": [
+        "VN22"
+      ],
+      "initial": [
+        "VN22"
+      ],
+      "initial_sha256": "743b4be90038ffcf8690a861c1b5b8d9a78352b1c4076dabb4514061bcf2840c",
+      "offered": false,
+      "control": [
+        "VN22"
+      ],
+      "trial": [
+        "VN22"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V23",
+      "kind": "Ký tự toàn chiều rộng",
+      "suite": "values",
+      "accept": [
+        "VN23"
+      ],
+      "initial": [
+        "VN23"
+      ],
+      "initial_sha256": "47511e3d4aedfa36cdbd26f7bb1fe11af4a4d2e47e2ae25a335eebc01557fa3f",
+      "offered": false,
+      "control": [
+        "VN23"
+      ],
+      "trial": [
+        "VN23"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V24",
+      "kind": "Dấu hai chấm trong văn bản",
+      "suite": "values",
+      "accept": [
+        "VN24"
+      ],
+      "initial": [
+        "VN24"
+      ],
+      "initial_sha256": "6e5d62c25400d2bb94b3fd1ed5b206a655ea1229baa08225986939bcda5e9ba9",
+      "offered": false,
+      "control": [
+        "VN24"
+      ],
+      "trial": [
+        "VN24"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V25",
+      "kind": "Phần mở rộng tên tệp",
+      "suite": "values",
+      "accept": [
+        "VN25"
+      ],
+      "initial": [
+        "VN25"
+      ],
+      "initial_sha256": "7c8efa02c81a05d82019814a45d1491a24ddbf024046ebb4eb7972842d29cb4a",
+      "offered": false,
+      "control": [
+        "VN25"
+      ],
+      "trial": [
+        "VN25"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V26",
+      "kind": "Vị trí của bằng chứng",
+      "suite": "values",
+      "accept": [
+        "VN26"
+      ],
+      "initial": [
+        "VN26"
+      ],
+      "initial_sha256": "b2f8b9662207abdb1327d02c0c3c5c6739295adb2f58e1c3f1184a731f3f5d35",
+      "offered": false,
+      "control": [
+        "VN26"
+      ],
+      "trial": [
+        "VN26"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V27",
+      "kind": "Đơn vị và ký hiệu đại lượng",
+      "suite": "values",
+      "accept": [
+        "VN27"
+      ],
+      "initial": [
+        "VN27"
+      ],
+      "initial_sha256": "e7e63872a8cf1b80390b17c5f909df155736dd69d237e3a8935364c7ddae917f",
+      "offered": false,
+      "control": [
+        "VN27"
+      ],
+      "trial": [
+        "VN27"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V28",
+      "kind": "Định dạng số thập phân và hàng nghìn",
+      "suite": "values",
+      "accept": [
+        "VN28"
+      ],
+      "initial": [
+        "VN28"
+      ],
+      "initial_sha256": "43bd92e9964d93120a964d0c8b734ccf236adae4c6a50cd4224665b3253a5f95",
+      "offered": false,
+      "control": [
+        "VN28"
+      ],
+      "trial": [
+        "VN28"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V29",
+      "kind": "Ấn phẩm gần tên",
+      "suite": "values",
+      "accept": [
+        "VN29",
+        "VN30"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "VN30",
+        "VN29",
+        "VN31"
+      ],
+      "trial": [
+        "VN30",
+        "VN29",
+        "VN31"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": false,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 322.24,
+      "trial_ms": 310.32,
+      "control_ranking": "bge",
+      "trial_ranking": "bge"
+    },
+    {
+      "id": "V30",
+      "kind": "Số hoặc mã gắn với đúng đối tượng",
+      "suite": "values",
+      "accept": [
+        "VN32",
+        "VN33"
+      ],
+      "initial": [
+        "VN33",
+        "VN32"
+      ],
+      "initial_sha256": "c371f18b187beeddd81a4a1864151b846e96bdf1ce05f9697daa00730972c99f",
+      "offered": false,
+      "control": [
+        "VN33",
+        "VN32"
+      ],
+      "trial": [
+        "VN33",
+        "VN32"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V31",
+      "kind": "Mã ghép và mã có dấu câu",
+      "suite": "values",
+      "accept": [
+        "VN35",
+        "VN36"
+      ],
+      "initial": [
+        "VN36",
+        "VN35"
+      ],
+      "initial_sha256": "28e9bfe74bbe45a21eb7aeab789cd83af0126d02a0506dbde251e7b019f8ed0f",
+      "offered": false,
+      "control": [
+        "VN36",
+        "VN35"
+      ],
+      "trial": [
+        "VN36",
+        "VN35"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V32",
+      "kind": "Dấu âm và dấu cộng",
+      "suite": "values",
+      "accept": [
+        "VN38",
+        "VN39",
+        "VN40"
+      ],
+      "initial": [
+        "VN38",
+        "VN40",
+        "VN39"
+      ],
+      "initial_sha256": "27964fbf400fcccc10182abc190b6052568df0d72270a81cf5cfbcf57d42312f",
+      "offered": false,
+      "control": [
+        "VN38",
+        "VN40",
+        "VN39"
+      ],
+      "trial": [
+        "VN38",
+        "VN40",
+        "VN39"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V33",
+      "kind": "Ấn phẩm gần tên",
+      "suite": "values",
+      "accept": [],
+      "initial": [],
+      "initial_sha256": "b083e0ec581877433be76527cc90df445257da2cbca6a571790b1886b64d9b0a",
+      "offered": false,
+      "control": [],
+      "trial": [],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V34",
+      "kind": "Trọng số đo âm thanh",
+      "suite": "values",
+      "accept": [],
+      "initial": [],
+      "initial_sha256": "b083e0ec581877433be76527cc90df445257da2cbca6a571790b1886b64d9b0a",
+      "offered": false,
+      "control": [],
+      "trial": [],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V35",
+      "kind": "Mã ghép và mã có dấu câu",
+      "suite": "values",
+      "accept": [],
+      "initial": [],
+      "initial_sha256": "b083e0ec581877433be76527cc90df445257da2cbca6a571790b1886b64d9b0a",
+      "offered": false,
+      "control": [],
+      "trial": [],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V36",
+      "kind": "Kích thước có thứ tự",
+      "suite": "values",
+      "accept": [],
+      "initial": [],
+      "initial_sha256": "b083e0ec581877433be76527cc90df445257da2cbca6a571790b1886b64d9b0a",
+      "offered": false,
+      "control": [],
+      "trial": [],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V37",
+      "kind": "Định dạng và vai trò ngày tháng",
+      "suite": "values",
+      "accept": [],
+      "initial": [],
+      "initial_sha256": "b083e0ec581877433be76527cc90df445257da2cbca6a571790b1886b64d9b0a",
+      "offered": false,
+      "control": [],
+      "trial": [],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V38",
+      "kind": "Đơn vị và ký hiệu đại lượng",
+      "suite": "values",
+      "accept": [],
+      "initial": [],
+      "initial_sha256": "b083e0ec581877433be76527cc90df445257da2cbca6a571790b1886b64d9b0a",
+      "offered": false,
+      "control": [],
+      "trial": [],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V39",
+      "kind": "Dải giá trị và điều kiện biên",
+      "suite": "values",
+      "accept": [],
+      "initial": [],
+      "initial_sha256": "b083e0ec581877433be76527cc90df445257da2cbca6a571790b1886b64d9b0a",
+      "offered": false,
+      "control": [],
+      "trial": [],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "V40",
+      "kind": "Phần mở rộng tên tệp",
+      "suite": "values",
+      "accept": [],
+      "initial": [],
+      "initial_sha256": "b083e0ec581877433be76527cc90df445257da2cbca6a571790b1886b64d9b0a",
+      "offered": false,
+      "control": [],
+      "trial": [],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S01",
+      "kind": "Giao chủ đề, dự án và thẻ",
+      "suite": "scope",
+      "accept": [
+        "SN01"
+      ],
+      "initial": [
+        "SN01"
+      ],
+      "initial_sha256": "6d84bf0783eb66e2ceef090c21fec373fe356d6497260df5b554d7b5928e8dda",
+      "offered": false,
+      "control": [
+        "SN01"
+      ],
+      "trial": [
+        "SN01"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S02",
+      "kind": "Nhiều bản trong cùng dự án và thẻ",
+      "suite": "scope",
+      "accept": [
+        "SN01",
+        "SN02"
+      ],
+      "initial": [
+        "SN01",
+        "SN02"
+      ],
+      "initial_sha256": "ae2deda4fbb1412e0469734bd4e0fec3857b0e4a24c658253e9b223f8632f912",
+      "offered": false,
+      "control": [
+        "SN01",
+        "SN02"
+      ],
+      "trial": [
+        "SN01",
+        "SN02"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S03",
+      "kind": "Bản đề xuất trong một tập nhiều phiên bản",
+      "suite": "scope",
+      "accept": [
+        "SN04"
+      ],
+      "initial": [
+        "SN04"
+      ],
+      "initial_sha256": "cf820abf187fd0e0596a69e3f2675cda45f2c2354270d0ede1bc0f98102e3dca",
+      "offered": false,
+      "control": [
+        "SN04"
+      ],
+      "trial": [
+        "SN04"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S04",
+      "kind": "Thu hẹp theo địa điểm của dự án",
+      "suite": "scope",
+      "accept": [
+        "SN03"
+      ],
+      "initial": [
+        "SN03"
+      ],
+      "initial_sha256": "45de8407105e2df671993e0f6a6158b791244c520b8aa6f89f654b25c948571a",
+      "offered": false,
+      "control": [
+        "SN03"
+      ],
+      "trial": [
+        "SN03"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S05",
+      "kind": "Một ghi chú có nhiều nhãn trên cả ba chiều",
+      "suite": "scope",
+      "accept": [
+        "SN05"
+      ],
+      "initial": [
+        "SN05"
+      ],
+      "initial_sha256": "28a283bf86954270019caeac9b837c3d3ddb62117670109ef0cc889e427f698c",
+      "offered": false,
+      "control": [
+        "SN05"
+      ],
+      "trial": [
+        "SN05"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S06",
+      "kind": "Lấy một ghi chú qua nhóm học liệu còn lại",
+      "suite": "scope",
+      "accept": [
+        "SN05"
+      ],
+      "initial": [
+        "SN05"
+      ],
+      "initial_sha256": "01bfc7676b6d65f3d96e20717a43fd65afb4d16b0e705279dc3507d268ae7f1a",
+      "offered": false,
+      "control": [
+        "SN05"
+      ],
+      "trial": [
+        "SN05"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S07",
+      "kind": "Cùng loại sơ đồ với hai đối tượng sử dụng",
+      "suite": "scope",
+      "accept": [
+        "SN07"
+      ],
+      "initial": [
+        "SN07"
+      ],
+      "initial_sha256": "f7faa844a93d68a91ef70ae89cde836e489177344cef57d82591b1bec8b22c8d",
+      "offered": false,
+      "control": [
+        "SN07"
+      ],
+      "trial": [
+        "SN07"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S08",
+      "kind": "Chủ kho mặc định và nhãn trùng tên",
+      "suite": "scope",
+      "accept": [
+        "SN08"
+      ],
+      "initial": [
+        "SN08"
+      ],
+      "initial_sha256": "36349b6fb8cac1fc6e81483a4f554ed28f8af67f78b059bb64f1ee58aa3d39b6",
+      "offered": false,
+      "control": [
+        "SN08"
+      ],
+      "trial": [
+        "SN08"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S09",
+      "kind": "Chủ kho thứ hai và tín hiệu khớp hai bản",
+      "suite": "scope",
+      "accept": [
+        "SN09"
+      ],
+      "initial": [
+        "SN09"
+      ],
+      "initial_sha256": "09216bf4b7c4f72d003d1da6027b6cb77a3a371ce5e2b1d8774e7a07fd401a63",
+      "offered": false,
+      "control": [
+        "SN09"
+      ],
+      "trial": [
+        "SN09"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S10",
+      "kind": "Hai ca hoạt động cùng khớp trong một dự án",
+      "suite": "scope",
+      "accept": [
+        "SN13",
+        "SN14"
+      ],
+      "initial": [
+        "SN14",
+        "SN13"
+      ],
+      "initial_sha256": "5fccfdc981dbe18d5cca39de7917ecc6a46ec665253e56f426b235b7ae135618",
+      "offered": false,
+      "control": [
+        "SN14",
+        "SN13"
+      ],
+      "trial": [
+        "SN14",
+        "SN13"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S11",
+      "kind": "Xóa mềm giữa hai bản cùng metadata",
+      "suite": "scope",
+      "accept": [
+        "SN10"
+      ],
+      "initial": [
+        "SN10"
+      ],
+      "initial_sha256": "fd2b457e444382a376c198d33873bbecfef47c45aaf6b445887fff28f153b81d",
+      "offered": false,
+      "control": [
+        "SN10"
+      ],
+      "trial": [
+        "SN10"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S12",
+      "kind": "Trạng thái hiện hành theo chi tiết bàn giao",
+      "suite": "scope",
+      "accept": [
+        "SN10"
+      ],
+      "initial": [
+        "SN10"
+      ],
+      "initial_sha256": "6b297674da96e8f991c8900d322b7cd5daa898a5b3026ecccc2cf9f829d9ab9a",
+      "offered": false,
+      "control": [
+        "SN10"
+      ],
+      "trial": [
+        "SN10"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S13",
+      "kind": "Loại ghi chú đang mở để tìm ca còn lại",
+      "suite": "scope",
+      "accept": [
+        "SN14"
+      ],
+      "initial": [
+        "SN14"
+      ],
+      "initial_sha256": "5ed54d71d962eafc237f41507e9ca130f0d929617b31a11196813682071a6e9d",
+      "offered": false,
+      "control": [
+        "SN14"
+      ],
+      "trial": [
+        "SN14"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S14",
+      "kind": "Loại một mục và nhận mục thuộc dự án khác",
+      "suite": "scope",
+      "accept": [
+        "SN15"
+      ],
+      "initial": [
+        "SN15"
+      ],
+      "initial_sha256": "10005e0826158ef173219edad4fd2b9a6f7a28d8403584ebb52469a9969f7fc9",
+      "offered": false,
+      "control": [
+        "SN15"
+      ],
+      "trial": [
+        "SN15"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S15",
+      "kind": "Kết quả nhiều mục khi loại một mục mà không khóa dự án",
+      "suite": "scope",
+      "accept": [
+        "SN13",
+        "SN15"
+      ],
+      "initial": [
+        "SN15",
+        "SN13"
+      ],
+      "initial_sha256": "af3105c86fc333d606807db87a1749c3d80a7243cb305098df4ca6a9848980d6",
+      "offered": false,
+      "control": [
+        "SN15",
+        "SN13"
+      ],
+      "trial": [
+        "SN15",
+        "SN13"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S16",
+      "kind": "Từ khóa chỉ nằm trong tiêu đề",
+      "suite": "scope",
+      "accept": [
+        "SN16"
+      ],
+      "initial": [
+        "SN16"
+      ],
+      "initial_sha256": "f2deda2e0101c8b52431993bdab3ef39dd2f5fa0b0ebcc46e7836505825206ab",
+      "offered": false,
+      "control": [
+        "SN16"
+      ],
+      "trial": [
+        "SN16"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S17",
+      "kind": "Từ khóa chỉ nằm trong mô tả",
+      "suite": "scope",
+      "accept": [
+        "SN17"
+      ],
+      "initial": [
+        "SN17"
+      ],
+      "initial_sha256": "01a3eed4167338437cb8087a62bcd77e2f10662e038df2fe97a0020f6f9729c5",
+      "offered": false,
+      "control": [
+        "SN17"
+      ],
+      "trial": [
+        "SN17"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S18",
+      "kind": "Từ khóa chỉ nằm trong nội dung ghi chú",
+      "suite": "scope",
+      "accept": [
+        "SN18"
+      ],
+      "initial": [
+        "SN18"
+      ],
+      "initial_sha256": "fa72f65734b251a2083a8f59e5c5dc804ec8be7f7275b618804a72f3382e1750",
+      "offered": false,
+      "control": [
+        "SN18"
+      ],
+      "trial": [
+        "SN18"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S19",
+      "kind": "Câu nhớ ý trong phạm vi dự án",
+      "suite": "scope",
+      "accept": [
+        "SN19"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "SN19"
+      ],
+      "trial": [
+        "SN19"
+      ],
+      "added": [],
+      "challengers": 1,
+      "initial_pass": false,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 76.06,
+      "trial_ms": 241.59,
+      "control_ranking": "lexical",
+      "trial_ranking": "lexical"
+    },
+    {
+      "id": "S20",
+      "kind": "Tìm gần đúng vẫn giữ thẻ",
+      "suite": "scope",
+      "accept": [
+        "SN21"
+      ],
+      "initial": [],
+      "initial_sha256": "97dd0bc2e1f69159361915806985fbf3dbd8964d677569f954884c5b2b24ef24",
+      "offered": true,
+      "control": [
+        "SN21"
+      ],
+      "trial": [
+        "SN21"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": false,
+      "control_pass": true,
+      "trial_pass": true,
+      "control_ms": 82.34,
+      "trial_ms": 142.74,
+      "control_ranking": "lexical",
+      "trial_ranking": "lexical"
+    },
+    {
+      "id": "S21",
+      "kind": "Liên ngành đo vi khí hậu và hỗ trợ xe lăn",
+      "suite": "scope",
+      "accept": [
+        "SN23"
+      ],
+      "initial": [
+        "SN23"
+      ],
+      "initial_sha256": "ff6f7fe1515a2b156d562666fd26338adbfca5f6ab26df20c309dd187ef381da",
+      "offered": false,
+      "control": [
+        "SN23"
+      ],
+      "trial": [
+        "SN23"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S22",
+      "kind": "Chiều lọc tiếp cận với kích thước cụ thể",
+      "suite": "scope",
+      "accept": [
+        "SN25"
+      ],
+      "initial": [
+        "SN25"
+      ],
+      "initial_sha256": "59e3e51ecb22f075b3f8035113390590f014e66d659baa74904248d3b352b121",
+      "offered": false,
+      "control": [
+        "SN25"
+      ],
+      "trial": [
+        "SN25"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S23",
+      "kind": "Tìm cả hai lần đo trong một chủ đề",
+      "suite": "scope",
+      "accept": [
+        "SN23",
+        "SN24"
+      ],
+      "initial": [
+        "SN23",
+        "SN24"
+      ],
+      "initial_sha256": "db74ecac8357601c5ada37c62da7aa325838f647b7053c11355ce0454b733b36",
+      "offered": false,
+      "control": [
+        "SN23",
+        "SN24"
+      ],
+      "trial": [
+        "SN23",
+        "SN24"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S24",
+      "kind": "Thẻ phân biệt thực đơn với khẩu phần",
+      "suite": "scope",
+      "accept": [
+        "SN27"
+      ],
+      "initial": [
+        "SN27"
+      ],
+      "initial_sha256": "a1814ec64d6019dd966b6ae6c9358fac8ed4be77f9683bcbcdb8b152df70e80a",
+      "offered": false,
+      "control": [
+        "SN27"
+      ],
+      "trial": [
+        "SN27"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S25",
+      "kind": "Cùng dự án và chủ đề nhưng khác chức năng ghi chú",
+      "suite": "scope",
+      "accept": [
+        "SN26"
+      ],
+      "initial": [
+        "SN26"
+      ],
+      "initial_sha256": "e27cce7191e4c390a244bf5c9533671e570efa8da4f65891bb6ffc47d11f635f",
+      "offered": false,
+      "control": [
+        "SN26"
+      ],
+      "trial": [
+        "SN26"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S26",
+      "kind": "Ghi chú thuộc hai dự án có cùng một chức năng",
+      "suite": "scope",
+      "accept": [
+        "SN28"
+      ],
+      "initial": [
+        "SN28"
+      ],
+      "initial_sha256": "2cedb7f261b23e8e9c6fee2cdfe3cac0bc51525bf00ae69b8fc98aa72d20fb35",
+      "offered": false,
+      "control": [
+        "SN28"
+      ],
+      "trial": [
+        "SN28"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S27",
+      "kind": "Tên đối tượng gần trùng và vật liệu phân biệt",
+      "suite": "scope",
+      "accept": [
+        "SN29"
+      ],
+      "initial": [
+        "SN29"
+      ],
+      "initial_sha256": "72ba5af1974c4a73a6e61dc08ef5963e2a2d5d2efe791fe3a8c07542ddee81e2",
+      "offered": false,
+      "control": [
+        "SN29"
+      ],
+      "trial": [
+        "SN29"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S28",
+      "kind": "Một nguồn khớp khi không dùng bộ lọc",
+      "suite": "scope",
+      "accept": [
+        "SN32"
+      ],
+      "initial": [
+        "SN32"
+      ],
+      "initial_sha256": "85efff6b247266a9fa253ca9640ae1d86da134cd873537a09079330062988b35",
+      "offered": false,
+      "control": [
+        "SN32"
+      ],
+      "trial": [
+        "SN32"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S29",
+      "kind": "Lọc dự án theo công dụng thay vì vật liệu",
+      "suite": "scope",
+      "accept": [
+        "SN31"
+      ],
+      "initial": [
+        "SN31"
+      ],
+      "initial_sha256": "9e0c1666da08c62bdd6138fef34f0cbf9e325aa397f04ddd922b4df969d772df",
+      "offered": false,
+      "control": [
+        "SN31"
+      ],
+      "trial": [
+        "SN31"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S30",
+      "kind": "Đủ hai tài liệu phù hợp trong một lô trưng bày",
+      "suite": "scope",
+      "accept": [
+        "SN29",
+        "SN30"
+      ],
+      "initial": [
+        "SN29",
+        "SN30"
+      ],
+      "initial_sha256": "00571cadefeb634439a72cde4b5b87dccd2abdec542fcdc44a8a6d729bbe70e4",
+      "offered": false,
+      "control": [
+        "SN29",
+        "SN30"
+      ],
+      "trial": [
+        "SN29",
+        "SN30"
+      ],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S31",
+      "kind": "Chỉ còn bản trong thùng rác",
+      "suite": "scope",
+      "accept": [],
+      "initial": [],
+      "initial_sha256": "b083e0ec581877433be76527cc90df445257da2cbca6a571790b1886b64d9b0a",
+      "offered": false,
+      "control": [],
+      "trial": [],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S32",
+      "kind": "Chi tiết riêng chỉ còn ở phiên bản đã xóa",
+      "suite": "scope",
+      "accept": [],
+      "initial": [],
+      "initial_sha256": "b083e0ec581877433be76527cc90df445257da2cbca6a571790b1886b64d9b0a",
+      "offered": false,
+      "control": [],
+      "trial": [],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S33",
+      "kind": "Cụm chính xác chỉ thuộc chủ kho khác",
+      "suite": "scope",
+      "accept": [],
+      "initial": [],
+      "initial_sha256": "b083e0ec581877433be76527cc90df445257da2cbca6a571790b1886b64d9b0a",
+      "offered": false,
+      "control": [],
+      "trial": [],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S34",
+      "kind": "Cô lập chủ kho trong câu hỏi nhớ ý",
+      "suite": "scope",
+      "accept": [],
+      "initial": [],
+      "initial_sha256": "b083e0ec581877433be76527cc90df445257da2cbca6a571790b1886b64d9b0a",
+      "offered": false,
+      "control": [],
+      "trial": [],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S35",
+      "kind": "Bỏ mục đang mở là bỏ đáp án duy nhất",
+      "suite": "scope",
+      "accept": [],
+      "initial": [],
+      "initial_sha256": "b083e0ec581877433be76527cc90df445257da2cbca6a571790b1886b64d9b0a",
+      "offered": false,
+      "control": [],
+      "trial": [],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S36",
+      "kind": "Thẻ hợp lệ chưa gán cho tài liệu liên quan",
+      "suite": "scope",
+      "accept": [],
+      "initial": [],
+      "initial_sha256": "b083e0ec581877433be76527cc90df445257da2cbca6a571790b1886b64d9b0a",
+      "offered": false,
+      "control": [],
+      "trial": [],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S37",
+      "kind": "Giao ba bộ lọc rỗng dù từng nhãn đều hợp lệ",
+      "suite": "scope",
+      "accept": [],
+      "initial": [],
+      "initial_sha256": "b083e0ec581877433be76527cc90df445257da2cbca6a571790b1886b64d9b0a",
+      "offered": false,
+      "control": [],
+      "trial": [],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S38",
+      "kind": "Tìm gần đúng bị chặn đúng ở phạm vi dự án",
+      "suite": "scope",
+      "accept": [],
+      "initial": [],
+      "initial_sha256": "b083e0ec581877433be76527cc90df445257da2cbca6a571790b1886b64d9b0a",
+      "offered": false,
+      "control": [],
+      "trial": [],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S39",
+      "kind": "Từ khóa trong mô tả không vượt qua thẻ",
+      "suite": "scope",
+      "accept": [],
+      "initial": [],
+      "initial_sha256": "b083e0ec581877433be76527cc90df445257da2cbca6a571790b1886b64d9b0a",
+      "offered": false,
+      "control": [],
+      "trial": [],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    },
+    {
+      "id": "S40",
+      "kind": "Không suy ra thuộc tính từ một kết quả có chung chủ đề",
+      "suite": "scope",
+      "accept": [],
+      "initial": [],
+      "initial_sha256": "b083e0ec581877433be76527cc90df445257da2cbca6a571790b1886b64d9b0a",
+      "offered": false,
+      "control": [],
+      "trial": [],
+      "added": [],
+      "challengers": 0,
+      "initial_pass": true,
+      "control_pass": true,
+      "trial_pass": true
+    }
+  ]
+}
