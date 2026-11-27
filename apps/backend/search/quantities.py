@@ -22,7 +22,10 @@ MEASUREMENT = re.compile(
     r"|kg|mg|[kM]?Hz|m[sL]|g|s|°\s*[CF]|%)(?![\w/])"
 )
 COUNT_NUMBER = r"(?:[0-9]{1,3}(?:[.][0-9]{3})+|[0-9]+)"
-COUNT_UNITS = {"tờ": "[tT][ờỜ]", "hộp": "[hH][ộỘ][pP]"}
+COUNT_UNITS = {
+    unit: "".join(f"[{letter}{letter.upper()}]" for letter in unit)
+    for unit in "bộ chai chiếc cuốn gói hạt hộp lon món miếng quả quyển tấm tờ túi viên".split()
+}
 COUNT = re.compile(rf"{NUMBER_START}(?P<number>{COUNT_NUMBER})"
                    rf"\s+(?P<unit>{'|'.join(COUNT_UNITS.values())})(?!\w)")
 DATE = (r"(?:[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}|[0-9]{4}/[0-9]{1,2}/[0-9]{1,2}|"
@@ -55,6 +58,8 @@ AXIS_CONTINUATION = (r"[[:space:]]*(?:(?:chiều|chieu|bề|be|độ|do|và|còn
 NO_READING = (r"\m(?:(?:chua|khong)\s+(?:(?:duoc|co)\s+)?"
               r"(?:ghi|do|xac dinh|biet|cong bo|so lieu|du lieu|ket qua)|"
               r"no\s+(?:reading|measurement|data)|not\s+(?:yet\s+)?(?:recorded|measured|available))\M")
+DATE_DIRECT = r"^[^[:alnum:]]*(?:(?:da|dang|se|vua|moi|hom qua|hom nay|ngay mai)[[:space:]]+)*"
+DATE_NESTED = r"^[^[:alnum:]]*(?:[[:alpha:]]+[[:space:]]+){2,}"
 CLUE_STOP = frozenset("ai cac cho cua co da den duoc gi giup hay hoi khi la ma minh nao ngay nho "
                       "o tai theo thi tim toi trong tu va ve voi".split())
 ENGLISH_CLUE_STOP = frozenset("a an at by for of on the with".split())
@@ -190,7 +195,8 @@ def quantity_params(query):
         contexts.append((pattern, SQL_NUMBER_START + COUNT_NUMBER + _count_unit(count)))
         clue_text[count.start():count.end()] = " " * len(count[0])
 
-    for match, pattern in _calendar_dates(query):
+    dates = list(_calendar_dates(query))
+    for match, pattern in dates:
         required.append(pattern)
         contexts.append((pattern, SQL_DATE_START + DATE + SQL_DATE_END))
         clue_text[match.start():match.end()] = " " * len(match[0])
@@ -205,16 +211,27 @@ def quantity_params(query):
     # With several requested dates, rates or versions a single bag of clues cannot say
     # which role belongs to which value. Only reject a competing assignment
     # when there is one unambiguous target to compare within the source.
-    clues = []
+    clues, date_role = [], None
     if len(contexts) == 1:
         # Even an unaccented Vietnamese query can use "in" as the predicate
         # or the distinguishing part of "máy in" (printer).
         stop = CLUE_STOP | ENGLISH_CLUE_STOP if query.isascii() else CLUE_STOP
-        clues = sorted(set(re.findall(r"[^\W\d_]+", _fold("".join(clue_text)))) - stop)
+        words = re.findall(r"[^\W\d_]+", _fold("".join(clue_text)))
+        clues = sorted(set(words) - stop)
+        if dates:
+            # Only use placement to distinguish a direct clause from a
+            # nested mention of the same ordered phrase.
+            prefix = _fold(query[:dates[0][0].start()])
+            words = re.findall(r"[^\W\d_]+", prefix)
+            start = next((i for i, word in enumerate(words) if word not in stop), len(words))
+            role_words = words[start:start + 3]
+            if len(set(role_words) - stop) >= 2:
+                date_role = r"\m" + "[[:space:]]+".join(role_words) + r"\M"
     target, family = contexts[0] if clues else (None, None)
     return {
         "quantity_required": required or None, "quantity_labels": labelled or None, "quantity_pair": paired_labels,
         "quantity_target": target, "quantity_family": family, "quantity_clues": clues,
+        "quantity_date_role": date_role,
     }
 
 
@@ -236,11 +253,18 @@ def quantity_condition(source):
             SELECT 1 FROM (
                 SELECT clause ~ %(quantity_target)s AS wanted,
                        (SELECT count(*) FROM unnest(%(quantity_clues)s::text[]) clues(word)
-                        WHERE word = ANY(regexp_split_to_array(public.kt_search_fold(clause),
-                                                               '[^[:alnum:]]+'))) AS anchors
+                        WHERE word = ANY(regexp_split_to_array(folded, '[^[:alnum:]]+'))) AS anchors,
+                       CASE WHEN %(quantity_date_role)s::text IS NOT NULL AND clause ~ %(quantity_family)s
+                            THEN CASE WHEN folded ~ ('{DATE_DIRECT}' || %(quantity_date_role)s) THEN 2
+                                      WHEN folded ~ ('{DATE_NESTED}' || %(quantity_date_role)s) THEN 0 ELSE 1 END
+                            ELSE 1 END AS placement
                 FROM regexp_split_to_table({source}, '{separators}') AS clauses(clause)
-                WHERE clause ~ %(quantity_family)s OR public.kt_search_fold(clause) ~ '{NO_READING}'
+                CROSS JOIN LATERAL (SELECT public.kt_search_fold(clause) AS folded) normalized
+                WHERE clause ~ %(quantity_family)s OR folded ~ '{NO_READING}'
             ) support
             HAVING max(anchors) FILTER (WHERE NOT wanted) > coalesce(max(anchors) FILTER (WHERE wanted), 0)
+                OR (max(anchors) FILTER (WHERE NOT wanted AND placement = 2) = max(anchors) FILTER (WHERE wanted)
+                    AND max(anchors) FILTER (WHERE wanted) >
+                        coalesce(max(anchors) FILTER (WHERE wanted AND placement <> 0), -1))
         ))
     )"""

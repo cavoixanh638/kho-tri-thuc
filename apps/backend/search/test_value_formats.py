@@ -2,7 +2,7 @@ import re
 from unittest import TestCase
 
 from .identifiers import identifier_patterns
-from .quantities import quantity_params
+from .quantities import DATE_DIRECT, DATE_NESTED, quantity_params
 
 
 def python_pattern(pattern):
@@ -12,6 +12,9 @@ def python_pattern(pattern):
             .replace("[[:alnum:]_", r"[\w")
             .replace("[[:alnum:]]", r"[^\W_]")
             .replace("[[:digit:]]", r"\d")
+            .replace("[[:alpha:]]", r"[^\W\d_]")
+            .replace("[[:space:]]", r"\s")
+            .replace("[^[:alnum:]]", r"[\W_]")
             .replace(r"\y", r"\b").replace(r"\m", r"\b").replace(r"\M", r"\b"))
 
 
@@ -40,6 +43,8 @@ class ValueFormatTests(TestCase):
         self.assert_patterns("1250 tờ", ("1.250 tờ", "1250 tờ", "1.250 TỜ"),
                              ("1,250 tờ", "1250 mm", "1.250 hộp", "01.250 tờ"))
         self.assert_patterns("1.250 tờ", ("1250 tờ",), ("1,250 mm", "2.1250 tờ"))
+        self.assert_patterns("3.472 HẠT", ("3472 hạt", "3.472 Hạt"), ("3.472 túi", "3.472 hạt67"))
+        self.assert_patterns("3472 quyển", ("3.472 quyển",), ("3,472 quyển", "3.472 cuốn"))
 
     def test_calendar_dates_follow_day_month_year_and_keep_constraints(self):
         self.assert_patterns("đo 04/06/2025", ("Đo 2025-06-04", "4/6/2025", "4.6.2025."),
@@ -73,3 +78,14 @@ class ValueFormatTests(TestCase):
                 self.assertTrue(wanted.search(target))
                 self.assertTrue(family.search(competing))
                 self.assertFalse(wanted.search(competing))
+
+    def test_a_date_can_use_direct_clause_placement_to_break_a_clue_tie(self):
+        role = quantity_params("tìm ngày nhập mẫu gốm vân mây 7/3/2028")["quantity_date_role"]
+        direct = re.compile(python_pattern(DATE_DIRECT + role))
+        nested = re.compile(python_pattern(DATE_NESTED + role))
+        self.assertTrue(direct.search("  nhap mau gom van may ngay 2028-03-09"))
+        self.assertTrue(direct.search("hom qua nhap mau gom van may ngay 2028-03-09"))
+        self.assertFalse(direct.search("ky phieu nhap mau gom van may ngay 2028-03-07"))
+        self.assertTrue(nested.search("ky phieu nhap mau gom van may ngay 2028-03-07"))
+        self.assertIsNone(quantity_params("2028-03-07")["quantity_date_role"])
+        self.assertIsNone(quantity_params("nhập mẫu gốm 2028-03-07 và 2028-03-09")["quantity_date_role"])
