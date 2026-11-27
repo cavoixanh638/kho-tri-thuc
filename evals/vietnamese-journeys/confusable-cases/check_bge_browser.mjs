@@ -11,6 +11,7 @@ assert.match(origin.origin, /^http:\/\/127\.0\.0\.1:\d+$/u);
 const runnerRoot = fileURLToPath(new URL('../../../', import.meta.url));
 const json = async (path) => JSON.parse(await readFile(path, 'utf8'));
 const seed = await json(process.env.KT_EVAL_BROWSER_SEED);
+const memoryTrial = seed.case === 'L13';
 assert.equal(seed.username, 'kt-eval-edge-pairs-main');
 const baseline = process.env.KT_EVAL_BROWSER_LEXICAL_REPORT
   ? await json(process.env.KT_EVAL_BROWSER_LEXICAL_REPORT) : null;
@@ -101,8 +102,8 @@ try {
 
   const initial = await checkScreen('initial', false, 'lexical', 0);
   await click('.search-results a', 'Tìm gần đúng');
-  const expanded = await checkScreen('expanded', true, baseline ? 'bge' : 'lexical', 1);
-  assert.equal(expanded.target_rank, baseline ? 1 : 4);
+  const expanded = await checkScreen('expanded', true, memoryTrial || baseline ? 'bge' : 'lexical', 1);
+  assert.equal(expanded.target_rank, baseline ? 1 : (memoryTrial ? 0 : 4));
   await click('.search-results a', 'Về kết quả ban đầu');
   const returned = await checkScreen('returned', false, 'lexical', 2);
   assert.deepEqual(returned.results, initial.results);
@@ -111,15 +112,19 @@ try {
     assert.deepEqual(baseline.fixture_sha256, seed.fixture_sha256);
     assert.equal(baseline.chromium, chromium);
     assert.deepEqual(baseline.initial, initial);
-    assert.equal(baseline.expanded.ranking, 'lexical');
-    assert.equal(baseline.expanded.target_rank, 4);
+    assert.equal(baseline.expanded.ranking, memoryTrial ? 'bge' : 'lexical');
+    assert.equal(baseline.expanded.target_rank, memoryTrial ? 0 : 4);
     assert.equal(baseline.expanded.route, expanded.route);
-    assert.deepEqual([...baseline.expanded.results.slice(0, 5)].sort(), [...expanded.results.slice(0, 5)].sort());
-    assert.deepEqual(baseline.expanded.results.slice(5), expanded.results.slice(5));
+    if (memoryTrial) {
+      assert.deepEqual(expanded.results, [seed.target, ...baseline.expanded.results]);
+    } else {
+      assert.deepEqual([...baseline.expanded.results.slice(0, 5)].sort(), [...expanded.results.slice(0, 5)].sort());
+      assert.deepEqual(baseline.expanded.results.slice(5), expanded.results.slice(5));
+    }
   }
   const report = {
     code_sha: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: runnerRoot, encoding: 'utf8' }).trim(),
-    chromium, case: 'L16', target: seed.target, fixture_sha256: seed.fixture_sha256, initial, expanded, returned,
+    chromium, case: seed.case || 'L16', target: seed.target, fixture_sha256: seed.fixture_sha256, initial, expanded, returned,
   };
   await writeFile(process.env.KT_EVAL_BROWSER_REPORT, JSON.stringify(report, null, 2) + '\n', { flag: 'wx' });
   console.log(JSON.stringify(report));

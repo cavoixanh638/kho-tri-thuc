@@ -24,7 +24,8 @@ def main():
     from django.db import connection, transaction
 
     fixture = load_matrix()
-    case = next(case for case in fixture["cases"] if case["id"] == "L16")
+    case_id = os.environ.get("KT_EVAL_BROWSER_CASE", "L16")
+    case = next(case for case in fixture["cases"] if case["id"] == case_id)
     users = get_user_model().objects
     with transaction.atomic():
         with connection.cursor() as cursor:
@@ -34,7 +35,7 @@ def main():
         if users.exists() or Item.objects.exists():
             raise RuntimeError("Expected an empty migrated browser database")
         labels, filters = seed_search_cases(fixture)
-        owner = users.get(pk=filters["L16"].owner_id)
+        owner = users.get(pk=filters[case_id].owner_id)
         owner.set_password(os.environ["KT_EVAL_BROWSER_PASSWORD"])
         owner.save(update_fields=["password"])
         topic = Topic.objects.create(owner=owner, name="QA BGE")
@@ -46,6 +47,7 @@ def main():
         write(Path(os.environ["KT_EVAL_BROWSER_SEED"]), {
             "fixture_sha256": {path.name: fingerprint(path) for path in MATRIX_FILES},
             "username": owner.username,
+            "case": case_id,
             "query": case["query"],
             "topic_id": str(topic.pk),
             "target": case["accept"][0],
