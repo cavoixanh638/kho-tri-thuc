@@ -610,7 +610,7 @@
       "id": "T03a",
       "block": "T03",
       "kind": "memory",
-      "query": "Nước dâng mà vẫn cần ra điểm theo dõi ở Gáo Rỗ, vệt đường nào khô?",
+      "query": "Nước dâng mà vẫn cần ra điểm theo dõi ở Gáo Rỗ, còn vệt đường nào đi được?",
       "accept": [
         "TN03b"
       ],
@@ -741,7 +741,7 @@
       "id": "T06b",
       "block": "T06",
       "kind": "memory",
-      "query": "Dấu chỉ mức thấp cho bọn nhỏ ở sân chuyền nằm phía cột nào?",
+      "query": "Cần tìm vạch chỉnh lưới cho lượt nhóm nhỏ ở sân chuyền, coi phía cột nào?",
       "accept": [
         "TN06b"
       ],

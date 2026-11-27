@@ -971,7 +971,7 @@
       "id": "H10b",
       "block": "H10",
       "kind": "memory",
-      "query": "Áo treo tiền sảnh ráo bên ngoài mà giữa thân còn ỉu, hồi đó đổi đồ treo loại chi?",
+      "query": "Hai vạt áo mưa treo tiền sảnh cứ dính nhau, nếp lưng hong mãi còn ỉu, hồi đó đổi sang đồ treo loại chi?",
       "accept": [
         "HN10b"
       ],
@@ -1275,7 +1275,7 @@
       "id": "H18a",
       "block": "H18",
       "kind": "memory",
-      "query": "Mừng lợp mái xong, trái tím bày đãi khách bị loang vỏ do nước tạt, bê vô đâu thì giữ được màu bột đều?",
+      "query": "Hồi mừng sửa mái, rổ trái tím đãi khách bị nước hắt làm loang vỏ, bê vô đâu thì giữ được lớp phấn đều?",
       "accept": [
         "HN18a"
       ],

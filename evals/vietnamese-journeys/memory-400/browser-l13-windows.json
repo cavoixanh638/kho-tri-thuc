@@ -1,0 +1,79 @@
+{
+  "control": {
+    "code_sha": "726f14d660151e055ac761517bb75ac29e0e5a67",
+    "chromium": "Chrome/158.0.8127.88",
+    "case": "L13",
+    "target": "LN13",
+    "fixture_sha256": {
+      "language.json": "d87dbd94e996ed5be8bf2817dc008acf942a13e5bee830eb8a1f3c8791fbe753",
+      "values.json": "dd3764fd89ab210b847d1899aa718c834cba313db4c9b0a114b600eb7503dafd",
+      "scope.json": "f55703ff82ef434d0258de0d330f74e9cb7b400ea625c5cde41e15e2c99f79cd"
+    },
+    "initial": {
+      "step": "initial",
+      "route": "q=B%E1%BB%AFa+n%C3%A0o+th%E1%BA%A7y+b%E1%BA%A3o+gh%C3%A9p+gi%E1%BB%8Dng+%E1%BB%9F+kh%C3%BAc+ch%C3%B3t+th%C3%B4i%2C+khoan+h%C3%A1t+nguy%C3%AAn+b%C3%A0i%3F&topic_id=15",
+      "limit": 25,
+      "ranking": "lexical",
+      "results": [],
+      "target_rank": 0
+    },
+    "expanded": {
+      "step": "expanded",
+      "route": "q=B%E1%BB%AFa+n%C3%A0o+th%E1%BA%A7y+b%E1%BA%A3o+gh%C3%A9p+gi%E1%BB%8Dng+%E1%BB%9F+kh%C3%BAc+ch%C3%B3t+th%C3%B4i%2C+khoan+h%C3%A1t+nguy%C3%AAn+b%C3%A0i%3F&topic_id=15&expand=true",
+      "limit": 25,
+      "ranking": "bge",
+      "results": [
+        "LN21",
+        "LN10"
+      ],
+      "target_rank": 0
+    },
+    "returned": {
+      "step": "returned",
+      "route": "q=B%E1%BB%AFa+n%C3%A0o+th%E1%BA%A7y+b%E1%BA%A3o+gh%C3%A9p+gi%E1%BB%8Dng+%E1%BB%9F+kh%C3%BAc+ch%C3%B3t+th%C3%B4i%2C+khoan+h%C3%A1t+nguy%C3%AAn+b%C3%A0i%3F&topic_id=15",
+      "limit": 25,
+      "ranking": "lexical",
+      "results": [],
+      "target_rank": 0
+    }
+  },
+  "trial": {
+    "code_sha": "726f14d660151e055ac761517bb75ac29e0e5a67",
+    "chromium": "Chrome/158.0.8127.88",
+    "case": "L13",
+    "target": "LN13",
+    "fixture_sha256": {
+      "language.json": "d87dbd94e996ed5be8bf2817dc008acf942a13e5bee830eb8a1f3c8791fbe753",
+      "values.json": "dd3764fd89ab210b847d1899aa718c834cba313db4c9b0a114b600eb7503dafd",
+      "scope.json": "f55703ff82ef434d0258de0d330f74e9cb7b400ea625c5cde41e15e2c99f79cd"
+    },
+    "initial": {
+      "step": "initial",
+      "route": "q=B%E1%BB%AFa+n%C3%A0o+th%E1%BA%A7y+b%E1%BA%A3o+gh%C3%A9p+gi%E1%BB%8Dng+%E1%BB%9F+kh%C3%BAc+ch%C3%B3t+th%C3%B4i%2C+khoan+h%C3%A1t+nguy%C3%AAn+b%C3%A0i%3F&topic_id=15",
+      "limit": 25,
+      "ranking": "lexical",
+      "results": [],
+      "target_rank": 0
+    },
+    "expanded": {
+      "step": "expanded",
+      "route": "q=B%E1%BB%AFa+n%C3%A0o+th%E1%BA%A7y+b%E1%BA%A3o+gh%C3%A9p+gi%E1%BB%8Dng+%E1%BB%9F+kh%C3%BAc+ch%C3%B3t+th%C3%B4i%2C+khoan+h%C3%A1t+nguy%C3%AAn+b%C3%A0i%3F&topic_id=15&expand=true",
+      "limit": 25,
+      "ranking": "bge",
+      "results": [
+        "LN13",
+        "LN21",
+        "LN10"
+      ],
+      "target_rank": 1
+    },
+    "returned": {
+      "step": "returned",
+      "route": "q=B%E1%BB%AFa+n%C3%A0o+th%E1%BA%A7y+b%E1%BA%A3o+gh%C3%A9p+gi%E1%BB%8Dng+%E1%BB%9F+kh%C3%BAc+ch%C3%B3t+th%C3%B4i%2C+khoan+h%C3%A1t+nguy%C3%AAn+b%C3%A0i%3F&topic_id=15",
+      "limit": 25,
+      "ranking": "lexical",
+      "results": [],
+      "target_rank": 0
+    }
+  }
+}
