@@ -1,5 +1,11 @@
 # HIỆN TRẠNG THỰC TẾ — KHO TRI THỨC
 
+## Thử mở rộng ứng viên cho câu chỉ nhớ ý
+
+Ngày 27/11/2026, bản thử `f6c7a21` được so với `f62b32c` trên 120 câu cũ và 400 câu mới, gồm 100 tình huống với 304 ghi chú tự soạn ở bộ mới. Cả **520 phản hồi mặc định** trùng nguyên JSON giữa hai bản. Khi bấm **Tìm gần đúng**, mở rộng danh sách ngắn giúp bộ cũ tăng **117 lên 118/120**, bộ mới tăng **235 lên 236/400**, nhóm nhớ ý một đáp án giữ **179/224**. Chênh lệch bộ mới là +0,25 điểm phần trăm, khoảng bootstrap theo cụm 95% từ 0 đến +0,75. Cả hai bản đều còn gợi ý sai ở **108/125** câu khó không có đáp án. P95 một lượt bấm tăng từ 638 lên 1.113 ms. Phép thử qua API tiếp tục tắt sẵn.
+
+Một phép thăm dò ngoại tuyến mở rộng bằng Vietnamese Embedding v2, kể cả khi đã có năm ứng viên, đạt **230/400** và **165/224** ở nhóm nhớ ý. Ngưỡng lọc giúp giảm số câu âm có gợi ý xuống 94/125, đồng thời làm mất đáp án ở nhiều câu nhớ ý. Chromium đã kiểm chứng được một lợi ích cụ thể của phép mở rộng hẹp khi L13 tìm thêm đúng bài ráp bè. [Thiết kế, chấm chéo, kết quả từng câu và cách tái lập](../evals/vietnamese-journeys/memory-400/README.md)
+
 ## Tìm đúng ghi chú theo giá trị và trích dẫn
 
 Ngày 27/11/2026, bản `6764783` đạt **87/120 ở lượt mặc định** và **117/120 khi dùng Tìm gần đúng**, so với 77 và 107 ở bản trước. PostgreSQL tìm đúng thêm mười câu về mã, ngày giờ, số đo và trích dẫn ngay ở lượt đầu. Cả 107 ca đã đạt tiếp tục đạt, cả 13 câu nhiều đáp án tìm đủ ghi chú trong năm kết quả đầu và cả 26 câu cần trả rỗng đều trả rỗng. Ba câu còn trượt là câu hỏi nhớ ý. Phép đo dùng dữ liệu tự soạn, API có đăng nhập và mô hình BGE chạy cục bộ khi mở gợi ý. [So sánh ba cấu hình và kết quả từng câu](../evals/vietnamese-journeys/scenario-matrix/README.md#tìm-theo-mã-số-đo-ngày-giờ-và-trích-dẫn)
