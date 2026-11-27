@@ -1,5 +1,6 @@
 """Keep the value, written unit and local context of a measurement together."""
 
+from datetime import date
 import re
 import unicodedata
 
@@ -10,12 +11,31 @@ WEIGHTED_DB = r"[dD][bB]\s*(?:\(\s*[ACZacz]\s*\)|[ACZ])"
 LENGTH = r"(?:[cmunkµμ]?m)"
 NUMBER = r"[+−-]?\d+(?:[.,]\d+)?"
 UNIT_GAP = r"\s*(?:[-‑]\s*)?"
+DASH = r"[-‐‑‒–—−]"
+RANGE_SPACE = "[ \t\u00a0\u202f]*"
+RANGE_GAP = f"{RANGE_SPACE}{DASH}{RANGE_SPACE}"
+NUMBER_START = rf"(?<![\w.,/+−-])(?<!\d{DASH})"
+SQL_NUMBER_START = rf"(?<![[:alnum:]_.,/+−-])(?<![[:digit:]]{DASH})"
 MEASUREMENT = re.compile(
-    rf"(?<![\w.,+−-])(?P<number>{NUMBER}){UNIT_GAP}(?P<unit>{WEIGHTED_DB}|{RATE}|{LENGTH}"
+    rf"{NUMBER_START}(?:(?P<start>{NUMBER}){RANGE_GAP})?"
+    rf"(?P<number>{NUMBER}){UNIT_GAP}(?P<unit>{WEIGHTED_DB}|{RATE}|{LENGTH}"
     r"|kg|mg|[kM]?Hz|m[sL]|g|s|°\s*[CF]|%)(?![\w/])"
 )
-DATE = r"(?:\d{4}[-/]\d{1,2}[-/]\d{1,2}|\d{1,2}[./-]\d{1,2}[./-]\d{4})"
-DATE_KEY = re.compile(rf"(?<![\w/-]){DATE}(?![\w/-])")
+COUNT_NUMBER = r"(?:[0-9]{1,3}(?:[.][0-9]{3})+|[0-9]+)"
+COUNT_UNITS = {"tờ": "[tT][ờỜ]", "hộp": "[hH][ộỘ][pP]"}
+COUNT = re.compile(rf"{NUMBER_START}(?P<number>{COUNT_NUMBER})"
+                   rf"\s+(?P<unit>{'|'.join(COUNT_UNITS.values())})(?!\w)")
+DATE = (r"(?:[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}|[0-9]{4}/[0-9]{1,2}/[0-9]{1,2}|"
+        r"[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}|[0-9]{1,2}[.][0-9]{1,2}[.][0-9]{4}|"
+        r"[0-9]{1,2}-[0-9]{1,2}-[0-9]{4})")
+DATE_KEY = re.compile(rf"(?<![\w/-])(?<!\d[.]){DATE}(?![\w/-]|[.]\d)")
+SQL_DATE_START = r"(?<![[:alnum:]_/-])(?<![[:digit:]][.])"
+SQL_DATE_END = r"(?![[:alnum:]_/-]|[.][[:digit:]])"
+VERSION = r"(?:[vV]?[0-9]+(?:[.][0-9]+){2,})"
+VERSION_KEY = re.compile(rf"(?<![\w/-])(?<!\w[.]){VERSION}(?![\w/-]|[.]\w)")
+VERSION_LABEL = re.compile(r"\b(?:bản|ban|ver|version)\s*[:=]?\s*$", re.IGNORECASE)
+SQL_VERSION_START = r"(?<![[:alnum:]_/-])(?<![[:alnum:]][.])"
+SQL_VERSION_END = r"(?![[:alnum:]_/-]|[.][[:alnum:]])"
 DIMENSIONS = {
     "width": ("ngang", "rộng", "rong", "width"),
     "height": ("cao", "height"),
@@ -49,11 +69,65 @@ def _written_number(value):
     # A fragment of a decimal or a negative value cannot satisfy a positive
     # request. The hyphen and the typographic minus are equivalent signs.
     sign = "[-−]" if value.startswith(("-", "−")) else "[+]?"
-    return sign + re.escape(value.lstrip("+−-"))
+    magnitude = value.lstrip("+−-")
+    decimal = re.fullmatch(r"([0-9]+)[.,]([0-9]+)", magnitude)
+    # Three trailing digits can also be a grouping separator. Preserve the
+    # written separator when the magnitude has that ambiguity.
+    if decimal and len(decimal[2]) != 3:
+        return sign + decimal[1] + "[.,]" + decimal[2]
+    return sign + re.escape(magnitude)
 
 
 def _number(value):
-    return r"(?<![[:alnum:]_.,+−-])" + _written_number(value)
+    return SQL_NUMBER_START + _written_number(value)
+
+
+def _count_pattern(match):
+    digits = match["number"].replace(".", "")
+    group_start = len(digits) % 3 or 3
+    if len(digits) > 3 and not digits.startswith("0"):
+        grouped = digits[:group_start] + "".join(
+            "." + digits[start:start + 3] for start in range(group_start, len(digits), 3))
+        digits = rf"(?:{digits}|{re.escape(grouped)})"
+    elif "." in match["number"]:
+        digits = re.escape(match["number"])
+    return SQL_NUMBER_START + digits + _count_unit(match)
+
+
+def _count_unit(match):
+    return r"\s+" + COUNT_UNITS[match["unit"].lower()] + r"(?![[:alnum:]_])"
+
+
+def _date_pattern(value):
+    first, second, third = re.split(r"[./-]", value)
+    if len(first) == 4:
+        year, month, day = first, second, third
+    else:
+        day, month, year = first, second, third
+    try:
+        calendar_date = date(int(year), int(month), int(day))
+    except ValueError:
+        return None
+    month, day = (f"0?{part}" if part < 10 else str(part)
+                  for part in (calendar_date.month, calendar_date.day))
+    alternatives = [f"{year}{sep}{month}{sep}{day}" for sep in "-/"]
+    alternatives.extend(f"{day}{sep}{month}{sep}{year}" for sep in ("-", "/", "[.]"))
+    return SQL_DATE_START + "(?:" + "|".join(alternatives) + ")" + SQL_DATE_END
+
+
+def _calendar_dates(query):
+    for match in DATE_KEY.finditer(query):
+        if "." in match[0] and VERSION_LABEL.search(query, 0, match.start()):
+            continue
+        if pattern := _date_pattern(match[0]):
+            yield match, pattern
+
+
+def quantity_key_spans(query):
+    """Locate spans already enforced by quantity predicates in an NFC query."""
+    yield from (match.span() for match in MEASUREMENT.finditer(query))
+    yield from (match.span() for match in COUNT.finditer(query))
+    yield from (match.span() for match, _ in _calendar_dates(query))
 
 
 def _unit(value):
@@ -78,15 +152,20 @@ def quantity_params(query):
     clue_text = list(query)
     for match in MEASUREMENT.finditer(query):
         value, unit = match.group("number", "unit")
-        pattern = _number(value) + UNIT_GAP + _unit(unit) + r"(?![[:alnum:]_/²³])"
+        reading = (_number(match["start"]) + RANGE_GAP + _written_number(value)
+                   if match["start"] else _number(value))
+        pattern = reading + UNIT_GAP + _unit(unit) + r"(?![[:alnum:]_/²³])"
         required.append(pattern)
         clue_text[match.start():match.end()] = " " * len(match[0])
         if re.fullmatch(RATE, unit):
-            contexts.append((pattern, rf"(?<![[:alnum:]_.,+−-]){NUMBER}{UNIT_GAP}{RATE}(?![[:alnum:]_])"))
-        if re.fullmatch(LENGTH, unit) and (field := FIELD.search(query[:match.start()].casefold())):
+            contexts.append((pattern, rf"{SQL_NUMBER_START}{NUMBER}{UNIT_GAP}{RATE}(?![[:alnum:]_])"))
+        if (not match["start"] and re.fullmatch(LENGTH, unit)
+                and (field := FIELD.search(query[:match.start()].casefold()))):
             axis, aliases = next((k, v) for k, v in DIMENSIONS.items() if field[1] in v)
             label = r"\m(?:" + "|".join(aliases) + r")\M" + ASSIGNMENT
             labelled.append(label + pattern)
+            family = label + SQL_NUMBER_START + NUMBER + UNIT_GAP + _unit(unit) + r"(?![[:alnum:]_/²³])"
+            contexts.append((f"(?i){labelled[-1]}", f"(?i){family}"))
             size[axis] = (value, unit, len(required) - 1, len(labelled) - 1)
 
     # A compact width × height has one shared unit on many sketches. Either
@@ -105,13 +184,25 @@ def quantity_params(query):
             labelled[field_at] = f"(?:{labelled[field_at]}|{pair})"
         paired_labels = [labelled[size[axis][3]] for axis in ("width", "height")]
 
-    for date in DATE_KEY.finditer(query):
-        pattern = r"(?<![[:alnum:]_/-])" + re.escape(date[0]) + r"(?![[:alnum:]_/-])"
+    for count in COUNT.finditer(query):
+        pattern = _count_pattern(count)
         required.append(pattern)
-        contexts.append((pattern, r"(?<![[:alnum:]_/-])" + DATE + r"(?![[:alnum:]_/-])"))
-        clue_text[date.start():date.end()] = " " * len(date[0])
+        contexts.append((pattern, SQL_NUMBER_START + COUNT_NUMBER + _count_unit(count)))
+        clue_text[count.start():count.end()] = " " * len(count[0])
 
-    # With several requested dates/rates a single bag of clues cannot say
+    for match, pattern in _calendar_dates(query):
+        required.append(pattern)
+        contexts.append((pattern, SQL_DATE_START + DATE + SQL_DATE_END))
+        clue_text[match.start():match.end()] = " " * len(match[0])
+
+    for match in VERSION_KEY.finditer("".join(clue_text)):
+        literal = "[vV]" + re.escape(match[0][1:]) if match[0][0] in "vV" else re.escape(match[0])
+        pattern = SQL_VERSION_START + literal + SQL_VERSION_END
+        required.append(pattern)
+        contexts.append((pattern, SQL_VERSION_START + VERSION + SQL_VERSION_END))
+        clue_text[match.start():match.end()] = " " * len(match[0])
+
+    # With several requested dates, rates or versions a single bag of clues cannot say
     # which role belongs to which value. Only reject a competing assignment
     # when there is one unambiguous target to compare within the source.
     clues = []
