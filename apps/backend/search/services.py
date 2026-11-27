@@ -1,6 +1,5 @@
 import json
 import math
-import unicodedata
 from dataclasses import dataclass
 from typing import Literal
 from uuid import UUID
@@ -14,6 +13,7 @@ from .identifiers import identifier_patterns
 from .quantities import quantity_params
 from .queries import SEARCH_SQL
 from .recall import RECALL_SQL, recall_params
+from .structured import ASCII_GRAPHIC, VI_LOWER, WIDE_GRAPHIC, digit_probes, lookup, normalize_query
 
 
 CAPTURE_SCAN_LIMIT = 1000
@@ -81,20 +81,33 @@ class SearchService:
             raise ValueError(f"limit must be between 1 and {MAX_PAGE_SIZE}")
         if cursor is not None and not math.isfinite(cursor.score):
             raise ValueError("cursor score must be finite")
-        query = " ".join(unicodedata.normalize("NFC", query).split())
+        query = normalize_query(query)
         if len(query) > MAX_QUERY_LENGTH or "\0" in query:
             raise ValueError(f"query must be at most {MAX_QUERY_LENGTH} characters without NUL")
         if not any(character.isalnum() for character in query):
             return SearchPage()
 
         params = _search_params(filters, query, cursor, limit)
+        probes, quoted, contextual = lookup(query)
+        params["fts_probes"] = probes
+        if quoted:
+            params["quote_pattern"], params["quote_fold"] = quoted
+        elif probes:
+            params["digit_probes"], params["indexed_digits"] = digit_probes(query)
         match_kind = "standard"
         can_expand = False
         passages = []
         with connection.cursor() as db_cursor:
             db_cursor.execute(SEARCH_SQL, params)
             rows = db_cursor.fetchall()
-            if not rows and allow_partial and (partial := recall_params(query)):
+            if not rows and allow_partial and not quoted:
+                partial = recall_params(query)
+                if contextual and (contextual["lookup_names"] or not partial or "lookup_key" not in partial):
+                    if contextual["fts_probes"] == probes:
+                        return SearchPage()
+                    partial = contextual
+                if not partial:
+                    return SearchPage()
                 if cursor is not None:
                     # Existing clients carry only a score and UUID. Never append
                     # the partial ranking to the end of a nonempty standard one.
@@ -102,11 +115,17 @@ class SearchService:
                                                    "page_size": 1})
                     if db_cursor.fetchone():
                         return SearchPage()
-                if "lookup_key" in partial:
+                if "fts_probes" in partial:
+                    db_cursor.execute(SEARCH_SQL, {
+                        **params, **partial, "substring": False, "typo": False,
+                        "claim_patterns": [*(params["claim_patterns"] or []), *partial["lookup_names"]] or None,
+                    })
+                    rows = db_cursor.fetchall()
+                elif "lookup_key" in partial:
                     # Use the indexed literal lookup. Keep the original patterns
                     # so every other written number/code must be present on the same source.
                     db_cursor.execute(SEARCH_SQL, {**params, "query": partial["lookup_key"],
-                                                   "substring": True, "typo": False})
+                                                   "fts_probes": None, "substring": True, "typo": False})
                     rows = db_cursor.fetchall()
                 else:
                     window = min(limit, reranking.WINDOW_SIZE) if (
@@ -158,6 +177,11 @@ def _search_params(filters, query, cursor, limit):
         "project_id": filters.project_id,
         "tag_id": filters.tag_id,
         "query": query,
+        "fts_probes": None, "lookup_min": 0, "lookup_clues": [],
+        "quote_pattern": None, "quote_fold": False,
+        "width_from": WIDE_GRAPHIC, "width_to": ASCII_GRAPHIC,
+        "vi_lower": VI_LOWER, "vi_upper": VI_LOWER.upper(),
+        "digit_probes": None, "indexed_digits": False,
         **claim_params(query),
         **quantity_params(query),
         "identifier_patterns": identifier_patterns(query),

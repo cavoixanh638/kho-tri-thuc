@@ -151,6 +151,34 @@ class StructuredLookupTests(TestCase):
                 hits = self.service.search(self.filters, '"mực tím - giỏ tre"', expand=expand).hits
                 self.assertCountEqual([hit.item_id for hit in hits], [straight.pk, curly.pk])
 
+    def test_quoted_accents_and_order_survive_the_folded_index(self):
+        right = self.note("Đặt máy ở “bến gỗ” để đo.")
+        self.note("Đặt máy ở “bên gỗ” để đo.")
+        self.note("Đặt máy ở “gỗ bên” để đo.")
+        self.assert_exact_note('"bến gỗ"', right, "bến gỗ")
+
+    def test_code_width_in_query_and_source_preserves_letters_and_leading_zeros(self):
+        ascii_note = self.note("Mã van AX-041Z dùng cho ống lớn.")
+        wide_note = self.note("Mã van ＡＸ－０４１Ｚ dùng cho ống nhỏ.")
+        self.note("Mã van AX-41Z dùng cho ống mới.")
+        self.note("Mã van ＡＸ－０４１ dùng cho ống cũ.")
+        for query in ("mã van AX-041Z", "mã van ＡＸ－０４１Ｚ", "AX-041Z"):
+            with self.subTest(query=query):
+                hits = self.service.search(self.filters, query).hits
+                self.assertCountEqual([hit.item_id for hit in hits], [ascii_note.pk, wide_note.pk])
+
+    def test_list_of_locations_cannot_admit_a_third_location_at_the_same_time(self):
+        targets = [self.note(f"Lịch tầng {floor} bên Mộc Hương, giờ mở 08:25–10:45.")
+                   for floor in ("trên", "dưới")]
+        self.note("Lịch tầng giữa bên Mộc Hương, giờ mở 08:25–10:45.")
+        self.note("Lịch tầng dưới bên Mộc Hương, giờ mở 08:25–10:46.")
+        self.note("Lịch tầng trên bên Mộc Mây, giờ mở 08:25–10:45.")
+        query = "mọi lịch tầng trên và tầng dưới bên Mộc Hương 08:25-10:45"
+        for expand in (False, True):
+            with self.subTest(expand=expand):
+                page = self.service.search(self.filters, query, expand=expand)
+                self.assertCountEqual([hit.item_id for hit in page.hits], [item.pk for item in targets])
+
     def test_scoped_pages_keep_matching_sources_and_exclude_ineligible_items(self):
         topic = Topic.objects.create(owner=self.owner, name="Khu thử kính")
         project = Project.objects.create(owner=self.owner, name="Đo độ lệch")

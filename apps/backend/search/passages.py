@@ -1,11 +1,19 @@
 """Display the passage witnessing an explicit constraint on a ranked source."""
 
 
+def quote_text(source):
+    text = f"translate({source}, %(width_from)s, %(width_to)s)"
+    return f"""(CASE WHEN %(quote_fold)s THEN public.kt_search_fold({text})
+                ELSE lower(translate({text}, %(vi_upper)s, %(vi_lower)s)) END)"""
+
+
 def evidence_excerpt(source, fallback):
     # Work on paged rows only. Keep the original spelling and unit case in
     # the excerpt. Vietnamese folding preserves NFC character offsets.
     last_claim = "coalesce(%(claim_action)s, (%(claim_patterns)s::text[])[cardinality(%(claim_patterns)s::text[])])"
-    return rf"""CASE WHEN %(claim_patterns)s::text[] IS NULL AND %(claim_action)s::text IS NULL
+    return rf"""CASE WHEN %(quote_pattern)s::text IS NOT NULL THEN
+            substring({source} FROM greatest(1, regexp_instr({quote_text(source)}, %(quote_pattern)s) - 16) FOR 320)
+        WHEN %(claim_patterns)s::text[] IS NULL AND %(claim_action)s::text IS NULL
                      AND %(quantity_required)s::text[] IS NULL
         THEN {fallback}
         ELSE coalesce((

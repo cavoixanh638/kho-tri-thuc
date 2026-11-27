@@ -1,6 +1,6 @@
 from .claims import claim_condition
 from .identifiers import identifier_condition
-from .passages import evidence_excerpt
+from .passages import evidence_excerpt, quote_text
 from .quantities import quantity_condition
 
 
@@ -20,7 +20,28 @@ ITEM_PASSAGE = r"normalize(concat_ws(E'\n', i.title, left(i.description, 20000),
 
 def source_condition(source):
     passage = ITEM_PASSAGE if source == ITEM_TEXT else source
-    return f"({identifier_condition(source)} AND {claim_condition(passage)} AND {quantity_condition(passage)})"
+    # Both width forms have one character per code point. Keep the actual
+    # passage for snippets, and use the equivalent ASCII form to check keys.
+    key_source = f"translate({source}, %(width_from)s, %(width_to)s)"
+    key_passage = f"translate({passage}, %(width_from)s, %(width_to)s)"
+    # Use the existing trigram index for a distinctive digit fragment in
+    # an Item. Small numeric fragments and the other sources are cheap
+    # literal checks on the already scoped candidates.
+    digits = "ANY(%(digit_probes)s::text[])"
+    if source == ITEM_TEXT:
+        digit_check = f"""(%(digit_probes)s::text[] IS NULL
+            OR (%(indexed_digits)s AND {ITEM_FOLD} LIKE {digits})
+            OR (NOT %(indexed_digits)s AND
+                (i.title LIKE {digits} OR i.description LIKE {digits} OR i.note LIKE {digits})))"""
+    else:
+        digit_check = f"(%(digit_probes)s::text[] IS NULL OR {source} LIKE {digits})"
+    return f"""({digit_check} AND {identifier_condition(key_source)} AND {claim_condition(passage)}
+        AND {quantity_condition(key_passage)}
+        AND (%(quote_pattern)s::text IS NULL OR {quote_text(passage)} ~ %(quote_pattern)s)
+        AND (%(lookup_min)s = 0 OR (
+            SELECT count(*) FROM unnest(%(lookup_clues)s::text[]) AS clues(word)
+            WHERE word = ANY(regexp_split_to_array(public.kt_search_fold({passage}), '[^[:alnum:]]+'))
+        ) >= %(lookup_min)s))"""
 
 EVIDENCE_TEXT = f"""CASE e.source WHEN 'item' THEN {ITEM_TEXT}
     WHEN 'derived_content' THEN {DERIVED_TEXT} ELSE {CAPTURE_TEXT} END"""
@@ -54,7 +75,9 @@ visible_items AS NOT MATERIALIZED (
 
 SEARCH_SQL = rf"""
 WITH input AS NOT MATERIALIZED (
-    SELECT plainto_tsquery('public.kt_vi', %(query)s) AS tsq,
+    SELECT CASE WHEN %(fts_probes)s::text[] IS NULL THEN plainto_tsquery('public.kt_vi', %(query)s)
+                ELSE (SELECT string_agg(nullif(plainto_tsquery('public.kt_vi', probe)::text, ''), ' | ')::tsquery
+                      FROM unnest(%(fts_probes)s::text[]) probes(probe)) END AS tsq,
            public.kt_search_fold(%(query)s) AS folded
 ),
 {VISIBLE_ITEMS},
@@ -63,12 +86,14 @@ WITH input AS NOT MATERIALIZED (
 -- A bounded FTS probe lets PostgreSQL skip the costly fuzzy branch entirely
 -- without changing the first-page Item ranking or next_cursor. Keep fuzzy
 -- enabled on cursor pages so results below the FTS tier remain reachable.
+-- Structured probes can share very common context words. In that case test
+-- the value once and let the original literal substring use its own index.
 fts_first_page AS MATERIALIZED (
     SELECT count(*) >= %(page_size)s AS enough
     FROM (
         SELECT i.id
         FROM visible_items i CROSS JOIN input
-        WHERE {ITEM_VECTOR} @@ tsq AND {source_condition(ITEM_TEXT)}
+        WHERE %(fts_probes)s::text[] IS NULL AND {ITEM_VECTOR} @@ tsq AND {source_condition(ITEM_TEXT)}
         LIMIT %(page_size)s
     ) qualified
 ),
