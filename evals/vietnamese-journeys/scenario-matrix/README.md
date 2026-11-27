@@ -18,6 +18,8 @@ Ba câu còn trượt đều thuộc nhóm nhớ ý. Ở L05, ghi chú đúng v�
 
 Đối chứng trên cùng bản backend, bộ 21 ca dễ nhầm đạt 18/21 và giữ nguyên danh sách kết quả từng câu. Trên 86 câu P16, Recall@5 đạt 73/77, Precision@5 đạt 73/76 và đủ 13 câu không có đáp án trả rỗng. Chromium xác nhận ở L16, ghi chú đúng lên từ hạng 4 ở thứ tự từ khóa lên hạng 1 khi dùng BGE, rồi quay lại đúng màn hình ban đầu. Bộ Django chạy 475 kiểm thử, trong đó 466 đạt và 9 bỏ qua. [Bộ 21 ca](../confusable-cases/fixture.json) · [Phép đo P16](../../../tools/search/p16_eval.py) · [Hành trình Chromium](../confusable-cases/check_bge_browser.mjs)
 
+Trên 10.000 ghi chú giả lập, mỗi truy vấn mặc định chạy một lượt làm nóng rồi đo 20 lượt. P95 của tìm mã chính xác là 9,08 ms và của cụm từ xuất hiện khắp kho là 713,59 ms. Kế hoạch thực thi của cả sáu truy vấn đều không quét tuần tự bảng ghi chú. [Thời gian và các chỉ mục của từng truy vấn](structured-scale-windows.json)
+
 Để tái lập phép đo trên PostgreSQL QA `kt_eval_edge_pairs`, cấu hình như bên dưới, dùng hai tên báo cáo mới và trỏ BGE tới bộ trọng số đã chuẩn bị trên máy.
 
 ```powershell

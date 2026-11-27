@@ -20,7 +20,7 @@ def read(path):
 
 
 def write(path, data, exclusive=False):
-    with path.open("x" if exclusive else "w", encoding="utf-8") as output:
+    with path.open("x" if exclusive else "w", encoding="utf-8", newline="\n") as output:
         json.dump(data, output, ensure_ascii=False, indent=2)
         output.write("\n")
 
