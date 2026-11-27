@@ -307,3 +307,6 @@ time { font-variant-numeric: tabular-nums; }
 .gemini-settings details summary { cursor: pointer; font-weight: 600; }
 .gemini-settings details ul { padding-inline-start: 20px; font-size: 12px; }
 .gemini-settings .section-note { line-height: 1.6; }
+
+/* Search highlighting renders only React text nodes, never source HTML. */
+.search-evidence mark,.search-result h3 mark { background:#fff0a8; color:#242424; border-radius:2px; }

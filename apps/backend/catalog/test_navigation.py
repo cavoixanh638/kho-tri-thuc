@@ -186,3 +186,45 @@ class NavigationTests(TestCase):
         self.assertEqual(
             self.client.get("/api/v1/navigation", {"kind": "sql"}).status_code, 422
         )
+
+
+    def test_tab_metadata_is_bounded_owner_scoped_ordered_and_read_only(self):
+        a = Item.objects.create(owner=self.owner, kind="text", title="Một", note="Raw A")
+        b = Item.objects.create(owner=self.owner, kind="text", title="Hai", note="Raw B")
+        hidden = Item.objects.create(owner=self.other, kind="text", title="Không lộ")
+        deleted = Item.objects.create(
+            owner=self.owner, kind="text", title="Đã xóa", deleted_at=timezone.now()
+        )
+        ids = ",".join(str(row.pk) for row in (b, hidden, a, deleted, b))
+        response = self.client.get("/api/v1/navigation/tabs", {"ids": ids})
+        self.assertEqual(response.status_code, 200)
+        rows = response.json()["items"]
+        self.assertEqual([row["item_id"] for row in rows], [str(b.pk), str(a.pk)])
+        self.assertEqual([row["title"] for row in rows], ["Hai", "Một"])
+        self.assertTrue(all(set(row) == {"item_id", "title", "saved_at"} for row in rows))
+        self.assertNotIn("Không lộ", response.content.decode())
+        self.assertNotIn("Raw", response.content.decode())
+        self.assertEqual(Item.objects.count(), 4)
+        for invalid in ("", "bad", ",".join([str(a.pk)] * 21), "x" * 36):
+            self.assertEqual(self.client.get("/api/v1/navigation/tabs", {"ids": invalid}).status_code, 422)
+        self.client.logout()
+        self.assertEqual(self.client.get("/api/v1/navigation/tabs", {"ids": str(a.pk)}).status_code, 401)
+
+
+    def test_read_only_preview_bounded_and_owner_scoped(self):
+        row = Item.objects.create(
+            owner=self.owner, kind="text", title="Bài xem cạnh", note="Tiếng Việt " * 1000
+        )
+        hidden = Item.objects.create(owner=self.other, kind="text", note="Không lộ")
+        deleted = Item.objects.create(owner=self.owner, kind="text", deleted_at=timezone.now())
+        value = self.client.get(f"/api/v1/items/{row.pk}/preview").json()
+        self.assertEqual(value["item_id"], str(row.pk))
+        self.assertEqual(value["excerpt"], row.note[:6000])
+        self.assertTrue(value["truncated"])
+        self.assertNotIn("note", value)
+        for item in (hidden, deleted):
+            self.assertEqual(self.client.get(f"/api/v1/items/{item.pk}/preview").status_code, 404)
+        row.refresh_from_db()
+        self.assertEqual(row.note, "Tiếng Việt " * 1000)
+        self.client.logout()
+        self.assertEqual(self.client.get(f"/api/v1/items/{row.pk}/preview").status_code, 401)

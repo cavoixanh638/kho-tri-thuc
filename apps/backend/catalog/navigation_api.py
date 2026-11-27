@@ -73,6 +73,44 @@ def navigation(
     }
 
 
+@router.get("/navigation/tabs")
+def navigation_tabs(request, ids: str):
+    """Bounded metadata lookup for restoring tabs. Never return body or assets."""
+    parts = ids.split(",")
+    if not 1 <= len(parts) <= 20 or any(len(part) != 36 for part in parts):
+        return JsonResponse({"code": "invalid_tab_ids"}, status=422)
+    try:
+        keys = list(dict.fromkeys(UUID(part) for part in parts))
+    except ValueError:
+        return JsonResponse({"code": "invalid_tab_ids"}, status=422)
+    rows = (
+        Item.objects.filter(owner=request.user, deleted_at__isnull=True, pk__in=keys)
+        .annotate(preview=Substr("note", 1, 120))
+        .only("id", "title", "saved_at")
+    )
+    visible = {row.pk: hit(row) for row in rows}
+    return {"items": [visible[key] for key in keys if key in visible]}
+
+
+@router.get("/items/{item_id}/preview")
+def note_preview(request, item_id: UUID):
+    """Bounded read-only authored excerpt; never infer content of media."""
+    row = get_object_or_404(
+        Item.objects.filter(owner=request.user, deleted_at__isnull=True)
+        .annotate(preview=Substr("note", 1, 6001))
+        .only("id", "title", "kind", "saved_at", "content_extract", "source_fetch"),
+        pk=item_id,
+    )
+    return {
+        **hit(row),
+        "kind": row.kind,
+        "excerpt": row.preview[:6000],
+        "truncated": len(row.preview) > 6000,
+        "content_extract": row.content_extract,
+        "source_fetch": row.source_fetch,
+    }
+
+
 @router.get("/items/{item_id}/links")
 def note_links(request, item_id: UUID):
     item = get_object_or_404(

@@ -68,7 +68,9 @@ test('P09 same UUID across three folder entries; no capture',async()=>{
  const anchors=[...container.querySelectorAll('a[href="#/muc/'+ID+'"]')];
  assert.equal(anchors.length,3);
  assert.equal(new Set(anchors.map(entry=>entry.getAttribute('href'))).size,1);
- assert.equal(container.textContent.split('Lối tắt · cùng một bài').length-1,2);
+ const shortcuts=[...container.querySelectorAll('.explorer-shortcut[aria-label="Lối tắt · cùng một bài"]')];
+ assert.equal(shortcuts.length,2);
+ assert.ok(shortcuts.every(icon=>icon.getAttribute('title')==='Lối tắt · cùng một bài'&&icon.closest('a').getAttribute('href')==='#/muc/'+ID));
  assert.equal(writes.length,0);
 });
 test('P09 stale move surfaces conflict without new CaptureEvent',async()=>{

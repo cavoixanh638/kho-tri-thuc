@@ -130,3 +130,40 @@ test('storage quota failure is visible and the live draft remains saveable', asy
     await click('Lưu thay đổi'); assert.equal(saved.note, 'Nháp còn trong bộ nhớ');
   } finally { prototype.setItem = original; }
 });
+
+
+test('WS-03 tab navigation persists dirty Markdown before switch; storage failure blocks tab navigation',async()=>{
+ await render();await click('Chỉnh sửa');await input('Nháp khi đổi tab');
+ const event=new window.Event('knowledge-before-tab-navigation',{cancelable:true});
+ assert.equal(window.dispatchEvent(event),true);
+ assert.ok(sessionStorage.getItem('kt-markdown-draft-v1:kt115').includes('Nháp khi đổi tab'));
+ const original=window.Storage.prototype.setItem;
+ window.Storage.prototype.setItem=function(){throw Error('quota');};
+ try{
+   const denied=new window.Event('knowledge-before-tab-navigation',{cancelable:true});
+   await ui.act(async()=>{assert.equal(window.dispatchEvent(denied),false);await settle();});
+   assert.equal(field().value,'Nháp khi đổi tab');assert.match(container.textContent,/Không lưu được bản nháp trong tab/);
+ }finally{window.Storage.prototype.setItem=original;}
+});
+
+
+test('EDIT-04 formatting helper preserves raw mixed line endings and decomposed Unicode inside selection',()=>{
+ const raw='Đầu\r\nTiếng Việt\nCuối\rKhác';
+ const display=raw.replace(/\r\n?/g,'\n');
+ const start=display.indexOf('Tie'),end=display.indexOf('Cuối')+4;
+ assert.equal(ui.formatMarkdown(raw,start,end,'bold').raw,'Đầu\r\n**Tiếng Việt\nCuối**\rKhác');
+ assert.equal(ui.formatMarkdown(raw,start,end,'bullet').raw,'Đầu\r\n- Tiếng Việt\n- Cuối\rKhác');
+});
+test('EDIT-04 toolbar formats selected Markdown, explicit undo/redo, no save until confirmed',async()=>{
+ saved.note='Trước Tiếng Việt sau';await render();await click('Chỉnh sửa');
+ await ui.act(async()=>{field().focus();field().setSelectionRange(6,16);await settle();});
+ const bold=container.querySelector('button[aria-label="In đậm"]');
+ await ui.act(async()=>{bold.click();await new Promise(r=>setTimeout(r,30));});
+ assert.equal(field().value,'Trước **Tiếng Việt** sau');
+ await ui.act(async()=>{container.querySelector('button[aria-label="Hoàn tác định dạng"]').click();await settle();});
+ assert.equal(field().value,'Trước Tiếng Việt sau');
+ await ui.act(async()=>{container.querySelector('button[aria-label="Làm lại định dạng"]').click();await settle();});
+ assert.equal(field().value,'Trước **Tiếng Việt** sau');
+ assert.equal(requests.filter(row=>row.method==='PATCH').length,0);
+ await click('Lưu thay đổi');assert.equal(saved.note,'Trước **Tiếng Việt** sau');
+});

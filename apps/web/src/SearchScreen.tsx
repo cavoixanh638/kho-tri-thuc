@@ -1,5 +1,6 @@
 import { Button, NativeSelect, TextInput } from '@mantine/core';
-import { useState, type SubmitEvent } from 'react';
+import { Fragment, useState, type SubmitEvent } from 'react';
+import { highlightSearch } from './SearchHighlight';
 import { groupKinds, type GroupFilter, type Groups } from './groups';
 import { Empty, ErrorNotice, itemHref, Loading, PageTitle, useResource } from './views';
 
@@ -56,6 +57,10 @@ function formatLocator(value: unknown) {
   }
 }
 
+function SearchHighlighted({text,query}:{text:string;query:string}){
+  return <>{highlightSearch(text,query).map((part,i)=>part.match?<mark key={i}>{part.text}</mark>:<Fragment key={i}>{part.text}</Fragment>)}</>;
+}
+
 function SearchResults({ criteria, expanded }: { criteria: Criteria; expanded: boolean }) {
   const [cursors, setCursors] = useState<(Cursor | null)[]>([null]);
   const cursor = cursors.at(-1);
@@ -75,13 +80,13 @@ function SearchResults({ criteria, expanded }: { criteria: Criteria; expanded: b
       : !results.data ? <Loading />
         : results.data.results.length ? <ol className="search-list" aria-describedby={partial ? 'search-partial-match' : undefined}>
           {results.data.results.map((result) => <li key={result.item_id} className="search-result">
-            <h3><a href={itemHref(result.item_id)}>{result.title || 'Mở mục trong thư viện'}</a></h3>
+            <h3><a href={itemHref(result.item_id)}><SearchHighlighted text={result.title || 'Mở mục trong thư viện'} query={criteria.q}/></a></h3>
             {result.evidence.map((evidence, index) => {
               const label = Object.hasOwn(sourceLabels, evidence.source) ? sourceLabels[evidence.source] : 'Nội dung đã lưu';
               const locator = formatLocator(evidence.locator);
               return <div className="search-evidence" key={index}>
                 <span className="list-meta">{label}{locator && ` · ${locator}`}</span>
-                {evidence.snippet && <p>{evidence.snippet}</p>}
+                {evidence.snippet && <p><SearchHighlighted text={evidence.snippet} query={criteria.q}/></p>}
               </div>;
             })}
           </li>)}

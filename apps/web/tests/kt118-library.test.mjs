@@ -69,3 +69,32 @@ test('changing mode preserves query/page and issues no new fetch; filter and bra
   await ui.act(async()=>root.unmount());container.remove();
 });
 function locationSafe(){return window.location.hash;}
+
+
+test('VIEW-04/14 table columns toggle, reorder, resize, restore owner preferences and keep identical IDs',async()=>{
+ const owner='kt-table-test',key='kt-table-layout-v1:'+owner;
+ window.sessionStorage.removeItem(key);
+ const container=document.createElement('div');document.body.append(container);let root=ui.createRoot(container);
+ const items=[item(1),item(2)];const props={items,mode:'table',preferenceKey:owner};
+ const draw=()=>ui.act(async()=>{root.render(ui.createElement(ui.LibraryViews,props));await settle();});
+ await draw();
+ const initial=[...container.querySelectorAll('tr[data-library-item]')].map(n=>n.dataset.libraryItem);
+ assert.equal(container.querySelector('th[data-column=updated]'),null);
+ const updated=[...container.querySelectorAll('.library-column-options label')].find(x=>x.textContent.includes('Cập nhật gần nhất')).querySelector('input');
+ await ui.act(async()=>{updated.click();await settle();});
+ assert.ok(container.querySelector('td[data-column=updated] time'));
+ const separator=container.querySelector('th[data-column=updated] [role=separator]');
+ const before=Number(separator.getAttribute('aria-valuenow'));
+ await ui.act(async()=>{separator.dispatchEvent(new window.KeyboardEvent('keydown',{key:'ArrowRight',bubbles:true,cancelable:true}));await settle();});
+ assert.equal(Number(separator.getAttribute('aria-valuenow')),before+20);
+ const move=container.querySelector('button[aria-label="Đưa Cập nhật gần nhất lên"]');
+ await ui.act(async()=>{move.click();await settle();});
+ const order=[...container.querySelectorAll('th[data-column]')].map(n=>n.dataset.column);
+ assert.ok(order.indexOf('updated')<order.indexOf('assets'));
+ assert.deepEqual([...container.querySelectorAll('tr[data-library-item]')].map(n=>n.dataset.libraryItem),initial);
+ assert.ok(!window.sessionStorage.getItem(key).includes(items[0].title));
+ await ui.act(async()=>root.unmount());root=ui.createRoot(container);await draw();
+ assert.deepEqual([...container.querySelectorAll('th[data-column]')].map(n=>n.dataset.column),order);
+ assert.equal(container.querySelector('th[data-column=updated] [role=separator]').getAttribute('aria-valuenow'),String(before+20));
+ await ui.act(async()=>root.unmount());container.remove();window.sessionStorage.removeItem(key);
+});

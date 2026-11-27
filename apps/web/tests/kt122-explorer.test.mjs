@@ -30,6 +30,9 @@ beforeEach(()=>{
   }
   if(url.pathname.endsWith('/structure'))return Response.json({item_id:id,parent_item_id:null,home_topic_id:1,sort_order:0,structure_version:0,origin:'user',ancestors:[],children:[{...note,item_id:child,title:'Chương con',parent_item_id:id,child_count:0}]});
   if(url.pathname.endsWith('/knowledge-tree'))return Response.json({nodes:[folder]});
+  if(url.pathname.endsWith('/collections'))return Response.json({results:[]});
+  if(url.pathname.endsWith('/navigation/tabs'))return Response.json({items:[]});
+  if(url.pathname.endsWith('/navigation'))return Response.json({items:[{item_id:id,title:note.title,saved_at:'2026-11-21T00:00:00Z'}],folders:[{id:1,name:folder.name,parent_id:null}],next_offset:null});
   if(url.pathname.endsWith('/explorer/find'))return Response.json({results:[{...note,item_id:child,title:'Bài cha đã chọn'}]});
   return Response.json({user_edit_version:4});
  };
@@ -77,4 +80,200 @@ test('create command opens note composer at current selected folder',async()=>{
  await render(ui.KnowledgeExplorer,{data:{nodes:[folder]},onRetry(){},selectedId:1,unfiled:false,csrf:'fixture-csrf',onSaved(){}});
  await ui.act(async()=>{window.dispatchEvent(new window.CustomEvent('knowledge-command',{detail:{action:'create'}}));await settle();});assert.match(container.querySelector('.explorer-note-form h2').textContent,/Sách tiếng Việt/);
  await input('.explorer-note-form textarea','Nội dung');await click('Tạo ghi chú');assert.equal(mutations.at(-1).body.home_topic_id,1);
+});
+
+test('folder collapse releases DOM, reopening cached branch does not request it again',async()=>{
+ await render();await click('Mở Sách tiếng Việt');
+ const before=calls.filter(path=>path.includes('/explorer/children')).length;
+ await click('Thu gọn Sách tiếng Việt');
+ const closing=container.querySelector('.explorer-branch-reveal[aria-hidden="true"]');
+ assert.ok(closing.hasAttribute('inert'));
+ await ui.act(async()=>{await new Promise(r=>setTimeout(r,220));});
+ assert.equal(container.querySelector('a[href="#/muc/'+id+'"]'),null);
+ await click('Mở Sách tiếng Việt');
+ assert.ok(container.querySelector('a[href="#/muc/'+id+'"]'));
+ assert.equal(calls.filter(path=>path.includes('/explorer/children')).length,before);
+});
+test('workspace retains the same explorer DOM across library, note and other authenticated routes',async()=>{
+ const draw=path=>render(ui.KnowledgeWorkspace,{path,csrf:'fixture-csrf',children:ui.createElement('article',null,'Content '+path)});
+ await draw('#/thu-vien?node=1');
+ const sidebar=container.querySelector('.library-tree-shell');
+ const row=container.querySelector('.explorer-folder-item');
+ assert.ok(sidebar&&row);
+ assert.equal(row.getAttribute('aria-expanded'),'true');
+ const before=calls.filter(path=>path.includes('/explorer/children')).length;
+ await draw('#/muc/'+id);
+ assert.equal(container.querySelector('.library-tree-shell'),sidebar);
+ assert.equal(container.querySelector('.explorer-folder-item'),row);
+ assert.equal(row.getAttribute('aria-expanded'),'true');
+ assert.equal(container.querySelector('a[href="#/muc/'+id+'"]').getAttribute('aria-current'),'page');
+ await draw('#/thu-vien?unfiled=1');
+ assert.equal(container.querySelector('.library-tree-shell'),sidebar);
+ assert.equal(container.querySelector('.explorer-folder-item'),row);
+ assert.equal(row.getAttribute('aria-expanded'),'true');
+ await draw('#/tim-kiem');
+ assert.equal(container.querySelector('.library-tree-shell'),sidebar);
+ assert.equal(row.getAttribute('aria-expanded'),'true');
+ assert.equal(calls.filter(path=>path.includes('/explorer/children')).length,before);
+});
+
+
+test('TREE-07 collapse all and reopen cached expanded branches without duplicate fetch',async()=>{
+ await render();await click('Mở Sách tiếng Việt');await click('Mở bài con Bài Tiếng Việt');
+ const before=calls.filter(path=>path.includes('/explorer/children')).length;
+ await click('Thu gọn tất cả');
+ await ui.act(async()=>{await new Promise(r=>setTimeout(r,220));});
+ assert.equal(container.querySelector('.explorer-folder-item').getAttribute('aria-expanded'),'false');
+ assert.equal(container.querySelector('a[href="#/muc/'+child+'"]'),null);
+ await click('Mở lại nhánh vừa thu gọn');
+ assert.equal(container.querySelector('.explorer-folder-item').getAttribute('aria-expanded'),'true');
+ assert.ok(container.querySelector('a[href="#/muc/'+child+'"]'));
+ assert.equal(calls.filter(path=>path.includes('/explorer/children')).length,before);
+});
+test('TREE-08 malformed optional sidebar payloads do not crash current route; retry recovers',async()=>{
+ const fetchValid=globalThis.fetch;let incompatible=true;
+ globalThis.fetch=async(path,options)=>{
+  const url=new URL(path,'http://127.0.0.1');
+  if(incompatible&&(url.pathname.endsWith('/knowledge-tree')||url.pathname.endsWith('/collections')))return Response.json({unexpected:true});
+  return fetchValid(path,options);
+ };
+ await render(ui.KnowledgeWorkspace,{path:'#/gui',csrf:'fixture-csrf',children:ui.createElement('article',null,'Current capture content')});
+ assert.equal(container.querySelector('.workspace-content article').textContent,'Current capture content');
+ assert.match(container.querySelector('.knowledge-explorer').textContent,/Chưa tải được mục lục/);
+ assert.match(container.querySelector('.saved-collections-panel').textContent,/Chưa tải được bộ sưu tập/);
+ incompatible=false;
+ await ui.act(async()=>{
+  container.querySelector('.knowledge-explorer [role=alert] button').click();
+  container.querySelector('.saved-collections-panel [role=alert] button').click();
+  await new Promise(r=>setTimeout(r,40));
+ });
+ assert.ok(container.querySelector('.explorer-folder-item'));
+ assert.match(container.querySelector('.saved-collections-panel').textContent,/Chưa có bộ lọc đã lưu/);
+ assert.equal(container.querySelector('.workspace-content article').textContent,'Current capture content');
+});
+test('WS-02 sidebar resize by keyboard, pointer, reset and persistence across reload',async()=>{
+ window.sessionStorage.removeItem('kt-explorer-width');
+ const props={path:'#/thu-vien',csrf:'fixture-csrf',children:ui.createElement('article',null,'Content')};
+ await render(ui.KnowledgeWorkspace,props);
+ const divider=container.querySelector('.workspace-divider');
+ const width=()=>container.querySelector('.knowledge-workspace').style.getPropertyValue('--kt-explorer-width');
+ assert.equal(width(),'286px');
+ const press=async key=>ui.act(async()=>{divider.dispatchEvent(new window.KeyboardEvent('keydown',{key,bubbles:true}));await settle();});
+ await press('ArrowRight');assert.equal(width(),'306px');
+ await press('End');assert.equal(width(),'480px');await press('ArrowRight');assert.equal(width(),'480px');
+ await press('Home');assert.equal(width(),'240px');
+ await ui.act(async()=>{
+  for(const [type,x] of [['pointerdown',100],['pointermove',160],['pointerup',160]]){
+   const event=new window.MouseEvent(type,{clientX:x,button:0,bubbles:true,cancelable:true});
+   Object.defineProperty(event,'pointerId',{value:1});divider.dispatchEvent(event);
+  }
+  await settle();
+ });
+ assert.equal(width(),'300px');
+ await render(ui.KnowledgeWorkspace,{...props,key:'remounted'});assert.equal(width(),'300px');
+ await ui.act(async()=>{container.querySelector('.workspace-divider').dispatchEvent(new window.MouseEvent('dblclick',{bubbles:true}));await settle();});
+ assert.equal(width(),'286px');window.sessionStorage.removeItem('kt-explorer-width');
+});
+
+
+test('TREE-09 quick search uses bounded navigation and keeps the original tree mounted',async()=>{
+ await render();await click('Mở Sách tiếng Việt');
+ const row=container.querySelector('.explorer-folder-item');
+ await input('input[aria-label="Tìm nhanh trong cây"]','Tiếng Việt');
+ await ui.act(async()=>{await new Promise(r=>setTimeout(r,180));});
+ assert.ok(calls.some(path=>path.includes('/navigation?')&&decodeURIComponent(path).includes('Tiếng Việt')));
+ const results=container.querySelector('.explorer-search-results');
+ assert.ok(results.querySelector('a[href="#/muc/'+id+'"]'));
+ assert.ok(results.querySelector('a[href="#/thu-vien?node=1"]'));
+ assert.equal(container.querySelector('.explorer-folder-item'),row);
+ assert.equal(row.getAttribute('aria-expanded'),'true');
+ assert.equal(mutations.length,0);
+ await ui.act(async()=>{container.querySelector('input[aria-label="Tìm nhanh trong cây"]').dispatchEvent(new window.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));await settle();});
+ assert.equal(container.querySelector('.explorer-search-results'),null);
+ assert.equal(container.querySelector('.explorer-folder-item'),row);
+});
+test('TREE-06 active canonical note scrolls the navigator only after lazy expansion',async()=>{
+ const draw=path=>render(ui.KnowledgeWorkspace,{path,csrf:'fixture-csrf',children:ui.createElement('article',null,'Content')});
+ await draw('#/thu-vien?node=1');
+ await draw('#/muc/'+id);
+ const shell=container.querySelector('.library-tree-shell');
+ const anchor=shell.querySelector('a[data-explorer-primary="true"][aria-current="page"]');
+ assert.ok(anchor);
+ shell.getBoundingClientRect=()=>({top:0,bottom:100,height:100});
+ anchor.getBoundingClientRect=()=>({top:230,bottom:250,height:20});
+ shell.scrollTop=0;
+ await ui.act(async()=>{await new Promise(r=>setTimeout(r,240));});
+ assert.equal(shell.scrollTop,158);
+ assert.equal(container.querySelector('.workspace-content article').textContent,'Content');
+});
+
+
+test('malformed optional structure response shows retry without crashing the note shell',async()=>{
+ const validFetch=globalThis.fetch;let invalid=true;
+ globalThis.fetch=async(path,options)=>String(path).endsWith('/structure')&&invalid?Response.json({item_id:id}):validFetch(path,options);
+ await render(ui.ItemStructurePanel,{id,csrf:'fixture-csrf'});
+ assert.match(container.textContent,/Chưa tải được cấu trúc bài/);assert.equal(container.querySelector('details'),null);
+ invalid=false;await click('Thử lại');
+ assert.match(container.textContent,/Bài con \(1\)/);assert.ok(container.querySelector('a[href="#/muc/'+child+'"]'));
+ assert.equal(mutations.length,0);
+});
+
+
+test('WS-03/04/06 tabs select, pin, reorder, close, reopen, and persist UUIDs only',async()=>{
+ const owner='workspace-fixture';window.sessionStorage.removeItem('kt-workspace-tabs-v1:'+owner);
+ const draw=activeId=>render(ui.WorkspaceTabs,{activeId,owner,fallbackHref:'#/thu-vien?node=1'});
+ await draw(id);await draw(child);
+ const strip=container.querySelector('.workspace-tab-strip');
+ assert.equal(strip.querySelectorAll('.workspace-tab').length,2);
+ const childButton=strip.querySelector('[data-tab-id="'+child+'"] .workspace-tab-open');
+ await ui.act(async()=>{childButton.dispatchEvent(new window.KeyboardEvent('keydown',{key:'ArrowLeft',altKey:true,bubbles:true,cancelable:true}));await settle();});
+ assert.equal(strip.querySelector('.workspace-tab').dataset.tabId,child);
+ await ui.act(async()=>{window.dispatchEvent(new window.CustomEvent('knowledge-tab-title',{detail:{id,title:'Tiêu đề riêng'}}));await settle();});
+ assert.ok(strip.textContent.includes('Tiêu đề riêng'));
+ await click('Ghim Tiêu đề riêng');
+ assert.equal(strip.querySelector('.workspace-tab').dataset.tabId,id);
+ const first=strip.querySelector('.workspace-tab[data-tab-id="'+id+'"] .workspace-tab-open');
+ await ui.act(async()=>{first.click();await settle();});
+ assert.equal(window.location.hash,'#/muc/'+id);
+ const block=event=>event.preventDefault();window.addEventListener('knowledge-before-tab-navigation',block);
+ await click('Đóng tab Bài '+child.slice(0,8));
+ // The currently active tab (child in controlled props) must not be closed.
+ assert.ok(strip.querySelector('[data-tab-id="'+child+'"]'));
+ window.removeEventListener('knowledge-before-tab-navigation',block);
+ await click('Đóng tab Bài '+child.slice(0,8));assert.equal(strip.querySelectorAll('.workspace-tab').length,1);
+ await draw(id);await click('Mở lại tab đã đóng');await draw(child);
+ assert.equal(strip.querySelectorAll('.workspace-tab').length,2);
+ const stored=window.sessionStorage.getItem('kt-workspace-tabs-v1:'+owner);
+ assert.ok(stored.includes(id)&&stored.includes(child));assert.ok(!stored.includes('Tiêu đề riêng'));
+ await ui.act(async()=>root.unmount());root=ui.createRoot(container);
+ const priorFetch=globalThis.fetch;
+ globalThis.fetch=async(path,options)=>{
+  if(String(path).includes('/navigation/tabs?'))return Response.json({items:[{item_id:id,title:'Tên đã khôi phục'},{item_id:child,title:'Bài con đã khôi phục'}]});
+  return priorFetch(path,options);
+ };
+ await draw(child);assert.equal(container.querySelectorAll('.workspace-tab').length,2);
+ assert.equal(container.querySelector('.workspace-tab').dataset.tabId,id);
+ assert.match(container.querySelector('.workspace-tab-strip').textContent,/Tên đã khôi phục/);
+ await ui.act(async()=>root.unmount());root=ui.createRoot(container);
+ await render(ui.WorkspaceTabs,{activeId:child,owner:'other-fixture',fallbackHref:'#/thu-vien'});
+ assert.equal(container.querySelectorAll('.workspace-tab').length,1);
+ window.sessionStorage.removeItem('kt-workspace-tabs-v1:'+owner);window.sessionStorage.removeItem('kt-workspace-tabs-v1:other-fixture');
+});
+
+
+test('WS-05/08 Alt-click opens bounded read-only pane without navigating or remounting current content',async()=>{
+ const original=globalThis.fetch;
+ globalThis.fetch=async(path,options)=>String(path).endsWith('/items/'+child+'/preview')
+   ?Response.json({item_id:child,title:'Bài xem cạnh',kind:'text',excerpt:'<script>không chạy</script> Nội dung',truncated:true,content_extract:'not_available',source_fetch:'not_applicable',saved_at:'2026-11-21T00:00:00Z'})
+   :original(path,options);
+ const content=ui.createElement('article',null,ui.createElement('a',{href:'#/muc/'+child},'Mở bài con'));
+ await render(ui.KnowledgeWorkspace,{path:'#/muc/'+id,owner:'preview-test',csrf:'fixture',children:content});
+ const main=container.querySelector('.workspace-main-pane article'),link=main.querySelector('a'),hash=window.location.hash;
+ await ui.act(async()=>{link.dispatchEvent(new window.MouseEvent('click',{bubbles:true,cancelable:true,button:0,altKey:true}));await new Promise(r=>setTimeout(r,30));});
+ const pane=container.querySelector('.workspace-preview-pane');
+ assert.ok(pane);assert.match(pane.textContent,/Bài xem cạnh/);assert.match(pane.textContent,/6000/);assert.equal(pane.querySelector('script'),null);
+ assert.equal(container.querySelector('.workspace-main-pane article'),main);assert.equal(window.location.hash,hash);
+ await click('Đổi bố cục xem cạnh');assert.ok(container.querySelector('.workspace-reader-layout.layout-below'));
+ await click('Đóng xem cạnh');assert.equal(container.querySelector('.workspace-preview-pane'),null);assert.equal(document.activeElement,link);
+ assert.equal(mutations.length,0);
 });

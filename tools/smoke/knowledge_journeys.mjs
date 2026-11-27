@@ -242,6 +242,11 @@ if (prerequisitesReady) {
       await attempt('J2', async () => {
         await route('#/muc/' + context.parent);
         await click('Chỉnh sửa');
+        const initialDraft=await page.eval(()=>document.querySelector('.markdown-editor textarea').value);
+        await page.eval(()=>{const t=document.querySelector('.markdown-editor textarea');t.focus();t.setSelectionRange(0,Math.min(3,t.value.length));document.querySelector('[aria-label="In đậm"]').click();});
+        await wait(before=>document.querySelector('.markdown-editor textarea').value!==before,initialDraft,'format selected text');
+        await page.eval(()=>document.querySelector('[aria-label="Hoàn tác định dạng"]').click());
+        await wait(before=>document.querySelector('.markdown-editor textarea').value===before,initialDraft,'undo format without modifying draft');
         await page.eval(() => { const t = document.querySelector('.markdown-editor textarea'); t.focus(); t.setSelectionRange(t.value.length, t.value.length); });
         await page.send('Input.insertText', { text: '\n[[' });
         await wait(() => !!document.querySelector('.wiki-completion [role="option"]'), undefined, 'wiki choices');
@@ -258,6 +263,28 @@ if (prerequisitesReady) {
         await wait((child) => !!document.querySelector('a[href="#/muc/' + child + '"]'), context.child, 'renamed link rendered');
         const headings = await page.eval(() => [...document.querySelectorAll('.knowledge-text h2[id],.knowledge-text h3[id],.knowledge-text h4[id],.knowledge-text h5[id],.knowledge-text h6[id]')].map(n => n.tagName));
         assert.deepEqual(headings, ['H2', 'H3', 'H4', 'H4', 'H5', 'H6'], 'H1-H6 markdown levels follow the page H1 without flattening H1/H2');
+        const beforeFold=(await get('/items/'+context.parent)).note;
+        await page.eval(()=>{const select=document.querySelector('[aria-label="Số cấp mục lục"]');select.value='2';select.dispatchEvent(new Event('change',{bubbles:true}));});
+        await wait(()=>document.querySelector('.note-outline').dataset.outlineDepth==='2',undefined,'custom outline depth');
+        assert.equal(await page.eval(()=>getComputedStyle(document.querySelector('.note-outline li[data-depth="3"]')).display),'none');
+        await page.eval(()=>{const select=document.querySelector('[aria-label="Số cấp mục lục"]');select.value='6';select.dispatchEvent(new Event('change',{bubbles:true}));});
+        await page.eval(id=>{const link=document.querySelector('.knowledge-text a[href="#/muc/'+id+'"]');link.nextElementSibling.click();},context.child);
+        await wait(()=>document.querySelector('.workspace-preview-pane')?.textContent.includes('P08 Chương Một'),undefined,'read-only related preview');
+        assert.equal(await page.eval(()=>document.documentElement.scrollWidth>innerWidth),false,'preview split overflow');
+        assert.equal(await page.eval(()=>location.hash),'#/muc/'+context.parent);
+        await page.eval(()=>document.querySelector('[aria-label="Đóng xem cạnh"]').click());
+        await wait(()=>!document.querySelector('.workspace-preview-pane'),undefined,'close preview without route change');
+        assert.equal((await get('/items/'+context.parent)).note,beforeFold);
+        const outer=await page.eval(()=>document.querySelector('.knowledge-text details.kt-fold-section')?.id);
+        assert.ok(outer,'Foldable Markdown section rendered');
+        await page.eval(id=>document.getElementById(id).querySelector(':scope > summary').click(),outer);
+        await wait(({id,item})=>document.getElementById(id)?.open===false&&JSON.parse(sessionStorage.getItem('kt-heading-fold-v1:'+item)||'[]').includes(id),{id:outer,item:context.parent},'native heading fold and preference persisted');
+        await page.send('Page.reload',{ignoreCache:true});
+        await wait(id=>document.getElementById(id)?.open===false,outer,'fold preference survives reload');
+        // Select an explicitly nested heading via the outline.
+        await page.eval(()=>[...document.querySelectorAll('.note-outline a')].find(a=>a.textContent==='Kết luận').click());
+        await wait(id=>document.getElementById(id)?.open===true,outer,'outline reopens ancestor');
+        assert.equal((await get('/items/'+context.parent)).note,beforeFold,'folding must never mutate Markdown');
         await page.eval(() => document.body.focus());
         await page.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'k', code: 'KeyK', windowsVirtualKeyCode: 75, modifiers: 2 });
         await page.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'k', code: 'KeyK', windowsVirtualKeyCode: 75, modifiers: 2 });
@@ -405,6 +432,7 @@ if (prerequisitesReady) {
           if (mobileToggle) await page.eval(() => { const el = document.querySelector('.library-tree-toggle'); if (el.getAttribute('aria-expanded') !== 'true') el.click(); });
           await wait(() => !!document.querySelector('.library-tree-content') && document.querySelector('.library-tree-content').getBoundingClientRect().height > 0, undefined, 'tree visible ' + width);
           assert.equal(await page.eval(() => document.documentElement.scrollWidth > innerWidth), false, 'overflow at ' + width);
+          assert.equal(await page.eval(()=>getComputedStyle(document.querySelector('.workspace-divider')).display!=='none'),width>900,'resize handle visibility '+width);
           assert.equal(await page.eval(() => matchMedia('(prefers-reduced-motion: reduce)').matches), true);
           let idsBaseline;
           for (const view of ['list', 'table', 'card', 'timeline']) {
@@ -420,7 +448,94 @@ if (prerequisitesReady) {
             screenshot_bytes: evidence.bytes, visible_folder: true, same_distinct_ids_4_modes: true, horizontal_overflow: false, reduced_motion: true });
           persist();
         }
-        return { status: 'PASS', actual: '4 viewport widths + four library modes, identical Item IDs and no overflow', evidence: report.viewports.map((row) => row.screenshot) };
+        // A real route change must retain the very same sidebar node and
+        // expanded folder, not merely create an identical-looking replacement.
+        await page.setViewport({width:1440,height:900});
+        await route('#/thu-vien?node='+context.folder);
+        await wait(id=>!!document.querySelector('.knowledge-explorer a[href="#/muc/'+id+'"]'),context.parent,'parent visible in explorer');
+        await page.eval(folder=>{
+          window.__ktWorkspaceSidebar=document.querySelector('.library-tree-shell');
+          window.__ktWorkspaceFolder=document.querySelector('.knowledge-explorer a[href="#/thu-vien?node='+folder+'"]').closest('[role="treeitem"]');
+        },context.folder);
+        await route('#/muc/'+context.parent);
+        await wait(id=>!!document.querySelector('.knowledge-explorer a[href="#/muc/'+id+'"][aria-current="page"]')&&!!document.querySelector('.markdown-item-detail'),context.parent,'active note in persistent sidebar');
+        assert.equal(await page.eval(()=>window.__ktWorkspaceSidebar===document.querySelector('.library-tree-shell')&&window.__ktWorkspaceFolder?.isConnected&&window.__ktWorkspaceFolder?.getAttribute('aria-expanded')==='true'),true);
+        assert.equal(await page.eval(()=>document.documentElement.scrollWidth>innerWidth),false,'detail workspace overflow');
+        const detailEvidence=await screenshot('p08-persistent-explorer-detail.png');
+        // Switching actual routes via tabs must preserve an unsaved editor draft,
+        // not mount a second Item editor or create a new capture.
+        const authorBefore=(await get('/items/'+context.parent)).note;
+        const parentEvents=(await get('/items/'+context.parent+'/captures')).results.length;
+        await wait(({parent,child})=>!!document.querySelector('.workspace-tab[data-tab-id="'+parent+'"]')&&!!document.querySelector('.workspace-tab[data-tab-id="'+child+'"]'),{parent:context.parent,child:context.child},'two open note tabs');
+        await click('Chỉnh sửa','.markdown-item-detail');
+        await input('Nội dung tri thức (Markdown)',authorBefore+'\n\nNháp tab chưa lưu.','.markdown-editor');
+        await page.eval(id=>document.querySelector('.workspace-tab[data-tab-id="'+id+'"] .workspace-tab-open').click(),context.child);
+        await wait(id=>location.hash==='#/muc/'+id,context.child,'switch to second note tab');
+        await wait(()=>!!document.querySelector('.markdown-item-detail'),undefined,'second note detail');
+        await page.eval(id=>document.querySelector('.workspace-tab[data-tab-id="'+id+'"] .workspace-tab-open').click(),context.parent);
+        await wait(()=>document.querySelector('.markdown-editor textarea')?.value.endsWith('Nháp tab chưa lưu.'),undefined,'unsaved Markdown restored');
+        assert.equal((await get('/items/'+context.parent)).note,authorBefore);
+        assert.equal((await get('/items/'+context.parent+'/captures')).results.length,parentEvents);
+        await click('Hủy','.markdown-item-detail');await click('Bỏ bản nháp','.markdown-item-detail');
+        await wait(()=>!document.querySelector('.markdown-editor'),undefined,'discard synthetic tab draft');
+        await page.eval(id=>document.querySelector('.workspace-tab[data-tab-id="'+id+'"] button[aria-pressed]').click(),context.parent);
+        await wait(id=>document.querySelector('.workspace-tab[data-tab-id="'+id+'"] button[aria-pressed]')?.getAttribute('aria-pressed')==='true',context.parent,'pin tab');
+        await page.eval(id=>document.querySelector('.workspace-tab[data-tab-id="'+id+'"] button[aria-label^="Đóng tab"]').click(),context.child);
+        await wait(id=>!document.querySelector('.workspace-tab[data-tab-id="'+id+'"]'),context.child,'close inactive tab');
+        await click('Mở lại tab đã đóng','.workspace-tabs');
+        await wait(id=>location.hash==='#/muc/'+id&&!!document.querySelector('.workspace-tab[data-tab-id="'+id+'"]'),context.child,'reopen tab');
+        await route('#/muc/'+context.parent);
+        await wait(()=>!!document.querySelector('.markdown-item-detail'),undefined,'parent note after reopen');
+        // Real Chromium pointer capture, not a synthetic React event.
+        await page.eval(()=>window.scrollTo(0,0));
+        const start=await page.eval(()=>{
+          const divider=document.querySelector('.workspace-divider');
+          const r=divider.getBoundingClientRect();
+          const x=r.left+r.width/2,y=Math.min(innerHeight-40,Math.max(90,r.top+r.height/2));
+          return {x,y,hit:!!document.elementFromPoint(x,y)?.closest('.workspace-divider'),width:document.querySelector('.library-tree-shell').getBoundingClientRect().width,value:Number(divider.getAttribute('aria-valuenow'))};
+        });
+        assert.ok(start.hit&&start.value===286,JSON.stringify(start));
+        await page.send('Input.dispatchMouseEvent',{type:'mousePressed',x:start.x,y:start.y,button:'left',buttons:1,clickCount:1});
+        await page.send('Input.dispatchMouseEvent',{type:'mouseMoved',x:start.x+70,y:start.y,button:'left',buttons:1});
+        await page.send('Input.dispatchMouseEvent',{type:'mouseReleased',x:start.x+70,y:start.y,button:'left',buttons:0,clickCount:1});
+        await wait(before=>document.querySelector('.library-tree-shell').getBoundingClientRect().width>=before+50,start.width,'real workspace resize');
+        const resized=await page.eval(()=>({width:document.querySelector('.library-tree-shell').getBoundingClientRect().width,value:Number(document.querySelector('.workspace-divider').getAttribute('aria-valuenow')),saved:Number(sessionStorage.getItem('kt-explorer-width'))}));
+        assert.ok(resized.width>start.width&&resized.value>=start.value+50&&resized.saved===resized.value,JSON.stringify(resized));
+        assert.equal(await page.eval(()=>document.documentElement.scrollWidth>innerWidth),false,'resize overflow');
+        await page.eval(()=>document.querySelector('.workspace-divider').focus());
+        await page.send('Input.dispatchKeyEvent',{type:'keyDown',key:'ArrowLeft',code:'ArrowLeft',windowsVirtualKeyCode:37});
+        await page.send('Input.dispatchKeyEvent',{type:'keyUp',key:'ArrowLeft',code:'ArrowLeft',windowsVirtualKeyCode:37});
+        await wait(value=>Number(document.querySelector('.workspace-divider').getAttribute('aria-valuenow'))===value-20,resized.value,'keyboard sidebar resize');
+        await page.eval(()=>document.querySelector('.workspace-divider').dispatchEvent(new MouseEvent('dblclick',{bubbles:true})));
+        await wait(()=>document.querySelector('.workspace-divider').getAttribute('aria-valuenow')==='286',undefined,'sidebar reset');
+        await input('Tìm nhanh trong cây','P08 Giáo trình','.knowledge-explorer');
+        await wait(id=>!!document.querySelector('.explorer-search-results a[href="#/muc/'+id+'"]'),context.parent,'real explorer search');
+        assert.equal(await page.eval(()=>window.__ktWorkspaceSidebar===document.querySelector('.library-tree-shell')),true);
+        await page.eval(id=>document.querySelector('.explorer-search-results a[href="#/muc/'+id+'"]').click(),context.parent);
+        await wait(()=>!document.querySelector('.explorer-search-results'),undefined,'quick search clears after selection');
+        await route('#/thu-vien?node='+context.folder);
+        assert.equal(await page.eval(()=>window.__ktWorkspaceSidebar===document.querySelector('.library-tree-shell')),true);
+        await click('Thu gọn tất cả','.knowledge-explorer');
+        await wait(()=>![...document.querySelectorAll('.knowledge-explorer [role="treeitem"]')].some(row=>row.getAttribute('aria-expanded')==='true'),undefined,'collapse all');
+        await click('Mở lại nhánh vừa thu gọn','.knowledge-explorer');
+        await wait(id=>!!document.querySelector('.knowledge-explorer a[href="#/muc/'+id+'"]'),context.parent,'restore collapsed branches');
+        await page.send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'no-preference'}]});
+        const animation=await page.eval(async folder=>{
+          const row=document.querySelector('.knowledge-explorer a[href="#/thu-vien?node='+folder+'"]').closest('[role="treeitem"]');
+          const toggle=row.querySelector('.explorer-row > button');
+          const branch=row.querySelector(':scope > .explorer-branch-reveal');
+          if(row.getAttribute('aria-expanded')==='true')toggle.click();
+          await new Promise(resolve=>setTimeout(resolve,240));
+          const closed=branch.getBoundingClientRect().height;
+          toggle.click();
+          await new Promise(resolve=>setTimeout(resolve,400));
+          return {closed,open:branch.getBoundingClientRect().height,transition:getComputedStyle(branch).transitionDuration,ariaExpanded:row.getAttribute('aria-expanded')};
+        },context.folder);
+        assert.ok(animation.closed<2&&animation.open>10&&animation.ariaExpanded==='true'&&animation.transition.split(',').some(v=>parseFloat(v)>0),JSON.stringify(animation));
+        await page.send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});
+        report.persistent_explorer={same_dom_across_route:true,active_note:true,expanded_folder_preserved:true,animation,resize:{before:start.width,after:resized.width,keyboard:true,pointer_capture:true},quick_search:true,collapse_restore:true,tabs:{switched:true,draft_recovered:true,source_unchanged:true,close_reopen:true,pin:true},detail_screenshot:detailEvidence.filename};
+        persist();
+        return { status: 'PASS', actual: '4 widths and four views, same Item IDs, persistent explorer across note route, real pointer/keyboard resize, quick search, collapse/restore, tabs with preserved draft, animated folder and no overflow', evidence: [...report.viewports.map((row) => row.screenshot),detailEvidence.filename] };
       });
       await attempt('J8', async () => {
         if (!context.parent || !context.child) return {

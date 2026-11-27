@@ -14,7 +14,7 @@ export function StructureParentEditor({id,version,currentParent,onSaved,csrf}:{i
   const [order,setOrder]=useState(0);
   const [busy,setBusy]=useState(false);
   const [error,setError]=useState('');
-  useEffect(()=>{if(!query.trim()){setHits([]);return;}const controller=new AbortController();const timer=window.setTimeout(()=>{void request<{results:ExplorerNote[]}>('/explorer/find?q='+encodeURIComponent(query),{signal:controller.signal}).then((data)=>setHits(data.results.filter((row)=>row.item_id!==id))).catch(()=>{if(!controller.signal.aborted)setError('Chưa tìm được bài cha.');});},200);return()=>{controller.abort();window.clearTimeout(timer);};},[query,id]);
+  useEffect(()=>{if(!query.trim()){setHits([]);return;}const controller=new AbortController();const timer=window.setTimeout(()=>{void request<{results:ExplorerNote[]}>('/explorer/find?q='+encodeURIComponent(query),{signal:controller.signal}).then((data)=>{if(controller.signal.aborted)return;if(!Array.isArray(data?.results))throw Error('invalid_results');setHits(data.results.filter((row)=>row&&typeof row.item_id==='string'&&row.item_id!==id));}).catch(()=>{if(!controller.signal.aborted)setError('Chưa tìm được bài cha.');});},200);return()=>{controller.abort();window.clearTimeout(timer);};},[query,id]);
   async function apply(parentId:string|null){
     setBusy(true);setError('');
     try{await request('/items/'+id+'/structure',{method:'PATCH',csrf,body:{parent_item_id:parentId,sort_order:order,expected_version:version}});onSaved();setParent('');setQuery('');}
@@ -32,7 +32,18 @@ export function StructureParentEditor({id,version,currentParent,onSaved,csrf}:{i
 }
 
 export function ItemStructurePanel({id,csrf,refreshKey,onChanged}:{id:string;csrf:string;refreshKey?:string;onChanged?:()=>void}){
-  const info=useResource<Structure>('/items/'+encodeURIComponent(id)+'/structure',{refreshKey});
+  const resource=useResource<Structure>('/items/'+encodeURIComponent(id)+'/structure',{refreshKey});
+  // Rolling upgrades and fixtures can return an unrelated/older DTO. Fail
+  // closed instead of letting an optional module throw into the note boundary.
+  const value=resource.data;
+  const valid=value!==undefined&&value!==null&&value.item_id===id
+    &&Array.isArray(value.ancestors)&&Array.isArray(value.children)
+    &&value.ancestors.every(entry=>entry&&typeof entry.item_id==='string'&&typeof entry.title==='string')
+    &&value.children.every(entry=>entry&&typeof entry.item_id==='string'&&typeof entry.title==='string')
+    &&Number.isInteger(value.structure_version)&&value.structure_version>=0
+    &&(value.home_topic_id===null||Number.isInteger(value.home_topic_id))
+    &&(value.parent_item_id===null||typeof value.parent_item_id==='string');
+  const info=value!==undefined&&!valid?{...resource,data:undefined,error:true}:resource;
   const [creating,setCreating]=useState(false);
   const [title,setTitle]=useState('');
   const [text,setText]=useState('');
@@ -44,7 +55,7 @@ export function ItemStructurePanel({id,csrf,refreshKey,onChanged}:{id:string;csr
   const [folders,setFolders]=useState<KnowledgeTreeData>();
   const [folder,setFolder]=useState('');
   useEffect(()=>{const command=(event:Event)=>{const detail=(event as CustomEvent).detail;if(detail?.action==='move'&&detail.itemId===id&&placementDetails.current){placementDetails.current.open=true;folderField.current?.focus();}};window.addEventListener('knowledge-command',command);return()=>window.removeEventListener('knowledge-command',command);},[id]);
-  async function loadFolders(){try{setFolders(await request<KnowledgeTreeData>('/knowledge-tree'));}catch{setError('Chưa tải được danh sách thư mục.');}}
+  async function loadFolders(){try{const value=await request<KnowledgeTreeData>('/knowledge-tree');if(!Array.isArray(value?.nodes))throw Error('invalid_tree');setFolders(value);}catch{setError('Chưa tải được danh sách thư mục.');}}
   async function place(action:'move'|'add'|'remove'){
     if(!info.data)return;setBusy(true);setError('');
     try{await request('/items/'+id+'/placement',{method:'PATCH',csrf,body:{action,folder_id:folder?Number(folder):null,expected_version:info.data.structure_version}});changed();}

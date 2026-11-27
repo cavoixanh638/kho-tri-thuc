@@ -26,6 +26,11 @@ export function useMarkdownDraft(item: Item) {
   function clear() { try { sessionStorage.removeItem(key); } catch { /* No persistent draft exists. */ } }
   function finish() { clear(); setEditing(false); setRecovered(false); }
   function start() { setDraft(fields(item)); setBase(fields(item)); setEditing(true); setRecovered(false); }
+  function persistDraft(){
+    if(!dirty)return true;
+    try{sessionStorage.setItem(key,JSON.stringify({draft,base}));setStorageError(false);return true;}
+    catch{setStorageError(true);return false;}
+  }
 
   useEffect(() => {
     if (!editing) return;
@@ -50,5 +55,5 @@ export function useMarkdownDraft(item: Item) {
     window.addEventListener('session-expired', expired);
     return () => window.removeEventListener('session-expired', expired);
   }, [item]);
-  return { draft, setDraft, base, editing, dirty, recovered, storageError, start, finish };
+  return { draft, setDraft, base, editing, dirty, recovered, storageError, start, finish, persistDraft };
 }

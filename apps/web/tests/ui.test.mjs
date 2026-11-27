@@ -348,7 +348,10 @@ test('P01: unavailable structure payload never hides the source note, editor or 
   assert.equal(container.querySelector('h1').textContent, 'Ghi chú có nguồn');
   assert.equal(container.querySelector('.knowledge-text strong').textContent, 'người dùng viết');
   assert.ok(container.querySelector('.source-description a[href="https://example.org/article"]'));
-  assert.match(container.querySelector('[aria-label="Cấu trúc bài"]').textContent, /Chưa hiển thị được cấu trúc bài/);
+  const structure=container.querySelector('[aria-label="Cấu trúc bài cha và bài con"]');
+  assert.ok(structure,'Optional structure panel remains mounted');
+  assert.match(structure.textContent, /Chưa tải được cấu trúc bài/);
+  assert.ok(structure.querySelector('[role="alert"] button'),'Recoverable malformed structure offers retry');
   assert.ok(container.querySelector('#item-clipper .research-clipper'), 'Clipper remains mounted');
 
   const urlField = container.querySelector('#item-clipper input[type="url"]');

@@ -2,6 +2,7 @@ import type { Item } from './api';
 import { knowledgePreview } from './KnowledgeText';
 import { itemHref, itemTitle, itemKindLabel, ServerTime } from './views';
 import './LibraryViews.css';
+import { LibraryTable } from './LibraryTable';
 
 export type LibraryMode = 'list' | 'table' | 'card' | 'timeline';
 export type LibraryFilter = 'all' | 'unclassified' | 'favorite' | 'deleted';
@@ -41,22 +42,13 @@ function EntryText({ item }: { item: Item }) {
   </span>;
 }
 
-export function LibraryViews({ items, mode, sort = 'saved_desc' }: { items: Item[]; mode: LibraryMode; sort?: string }) {
+export function LibraryViews({ items, mode, sort = 'saved_desc', preferenceKey }: { items: Item[]; mode: LibraryMode; sort?: string; preferenceKey?:string }) {
   // Every view preserves the server page order, including saved collections with
   // published/date/title sorts. Timeline groups only contiguous date runs.
   const caption = sort === 'saved_asc' ? 'Thứ tự nhận lần đầu, cũ nhất trước'
     : sort === 'published_desc' ? 'Thứ tự ngày nguồn mới nhất trước'
       : sort === 'title' ? 'Thứ tự theo tiêu đề' : 'Thứ tự nhận lần đầu, mới nhất trước';
-  if (mode === 'table') return <div className="library-table-frame" role="region" aria-label="Bảng tri thức" tabIndex={0}>
-    <table className="library-table"><caption>{caption}</caption>
-      <thead><tr><th scope="col">Bài tri thức</th><th scope="col">Loại</th><th scope="col">Nhận lần đầu</th><th scope="col">Ngày nguồn đăng</th><th scope="col" className="library-number">Tệp minh họa</th></tr></thead>
-      <tbody>{items.map((item) => <tr key={item.item_id} data-library-item={item.item_id}>
-        <td><a href={itemHref(item.item_id)}>{itemTitle(item)}</a><p>{knowledgePreview(item.note || item.knowledge_excerpt || '')}</p></td>
-        <td>{itemKindLabel(item)}</td><td><ServerTime value={item.saved_at} /></td>
-        <td>{item.published_at ? <ServerTime value={item.published_at} /> : '—'}</td><td className="library-number">{item.assets.length}</td>
-      </tr>)}</tbody>
-    </table>
-  </div>;
+  if (mode === 'table') return <LibraryTable key={preferenceKey??'default'} items={items} caption={caption} preferenceKey={preferenceKey}/>;
   if (mode === 'timeline') {
     const groups: { day: string; rows: Item[] }[] = [];
     for (const item of items) {
