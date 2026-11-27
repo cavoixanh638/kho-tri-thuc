@@ -1,0 +1,1800 @@
+{
+  "items": [
+    {
+      "id": "TN01a",
+      "title": "Chìa khóa sân Vòm Vôi",
+      "note": "Người trông sân Vòm Vôi để chìa cửa hông trong hộc sau bảng tin trước giờ sinh hoạt. Ai đến kê ghế sớm có thể tự lấy rồi móc lại vào dây đỏ."
+    },
+    {
+      "id": "TN01b",
+      "title": "Ổ cắm sân Vòm Vôi",
+      "note": "Ổ sát chân cột giữa còn điện khi đóng nhà kho. Tổ chiếu phim kéo dây qua mép thảm để lối sang vòi nước vẫn thông."
+    },
+    {
+      "id": "TN01c",
+      "title": "Lối vào phòng Vòm Vôi",
+      "note": "Cửa chính nhìn ra hẻm lò bánh và có một bậc cao. Xe chở ghế đi vòng sau công tơ, ở đó mới có dốc thoải."
+    },
+    {
+      "id": "TN02a",
+      "title": "Thẻ đọc thử ở Hộc Giấy",
+      "note": "Hộc Giấy cấp thẻ khách dùng trong ngày khi ghi tên vào sổ dưới trệt. Thẻ chỉ để ngồi xem tại phòng, chưa được mang sách về.",
+      "topics": [
+        "Phòng đọc dân cư"
+      ]
+    },
+    {
+      "id": "TN02b",
+      "title": "Mượn qua đêm ở Hộc Giấy",
+      "note": "Quầy yêu cầu thẻ tháng có dấu tròn trước khi cho sách ra khỏi cửa. Sách đem về phải nộp lại trước hai buổi mở kế tiếp.",
+      "topics": [
+        "Phòng đọc dân cư"
+      ]
+    },
+    {
+      "id": "TN02c",
+      "title": "Cho khách mượn về bằng thẻ ngày",
+      "note": "Góc sách nhà chờ đò bên kia bãi lau cho dùng thẻ ngày đem một cuốn về qua đêm. Đây là mô hình thử riêng của tủ sách bến Cành.",
+      "topics": [
+        "Nhà chờ và bến đò"
+      ]
+    },
+    {
+      "id": "TN03a",
+      "title": "Đi ván ngang đầm Gáo Rỗ",
+      "note": "Dãy ván sát đám bần nổi lên khi con nước rút, lúc ấy mới thấy các cọc có dây bện cam. Theo dây ra chòi quan trắc mất mười phút."
+    },
+    {
+      "id": "TN03b",
+      "title": "Đường đất trên bờ Gáo Rỗ",
+      "note": "Đoạn gờ đất từ quán nước tới chòi quan trắc đi được cả lúc triều lên. Tới guồng gỗ bỏ lâu thì ôm mé trái qua dứa dại."
+    },
+    {
+      "id": "TN03c",
+      "title": "Bệ ngắm ở Gáo Rỗ",
+      "note": "Sàn ngoài chòi nhìn về khoảnh nước lặng đã thay lan can một bên. Biển yêu cầu hạ giọng lúc có cò đứng ở bãi bùn."
+    },
+    {
+      "id": "TN04a",
+      "title": "Lễ đổi cây ở xưởng Ngói Lẻ",
+      "note": "Bàn đổi cây nhận chậu nhỏ lẫn cành giâm còn bầu rễ. Mỗi người dán băng giấy ghi cách tưới lên món mình mang."
+    },
+    {
+      "id": "TN04b",
+      "title": "Gửi khay xốp tại xưởng Ngói Lẻ",
+      "note": "Khay trống xếp cạnh vòi rửa sau cổng kéo để đội ươm giống dùng tiếp. Tấm chắn cạnh bàn đổi chỉ để chậu đang chờ chủ mới."
+    },
+    {
+      "id": "TN04c",
+      "title": "Góc hỏi bệnh lá hôm đổi cây",
+      "note": "Nhóm làm vườn mở bàn soi lá ở gian sát bếp đất vào cuối buổi. Đem hình chụp mặt dưới lá là đủ, mang cả cây dễ lây rệp."
+    },
+    {
+      "id": "TN05a",
+      "title": "Đò Cát Nêm đưa xe qua lạch",
+      "note": "Chuyến sớm Cát Nêm chở xe đạp nếu tháo túi bên hông trước khi dắt qua cầu ván. Đò cập sân gạch sau lò nước mắm.",
+      "projects": [
+        "Đạp xe qua lạch"
+      ]
+    },
+    {
+      "id": "TN05b",
+      "title": "Xe gom từ bến Cát Nêm",
+      "note": "Xe bán tải đoàn đợi bên hàng dừa, chở người và xe đạp vượt đoạn đường mới rải đá. Nhà xe buộc bánh bằng quai vải, khách ngồi cabin.",
+      "projects": [
+        "Đạp xe qua lạch"
+      ]
+    },
+    {
+      "id": "TN05c",
+      "title": "Chuyến đò xe đạp đội kiểm kê",
+      "note": "Đội kiểm kê thuê đò Cát Nêm chở xe đạp qua lạch, không tháo túi vì sàn rộng. Đò trả khách ở cầu cân của vựa đá lạnh.",
+      "projects": [
+        "Kiểm kê mé lạch"
+      ]
+    },
+    {
+      "id": "TN06a",
+      "title": "Đèn sân Mành Tre",
+      "note": "Sân bóng chuyền Mành Tre dùng công tắc dây dưới mái tôn chỗ cất chổi. Hết lượt tối kéo hai lần vì lần đầu chỉ tắt bóng sát tường."
+    },
+    {
+      "id": "TN06b",
+      "title": "Hạ lưới Mành Tre",
+      "note": "Sau buổi thiếu niên, thả khóa căng cột bên giàn hoa giấy để hạ lưới. Có vạch trắng trên cột cho lượt nhóm nhỏ."
+    },
+    {
+      "id": "TN06c",
+      "title": "Bóng từ kho Mành Tre",
+      "note": "Túi lưới đen trong kho có hai quả dành tập chuyền cổ tay. Bóng thi đấu để giỏ dưới bệ trọng tài."
+    },
+    {
+      "id": "TN07a",
+      "title": "Góc thêu bên hiên Lưng Đồi",
+      "note": "Nhóm thêu mang khung tròn đến hiên buổi sáng khi nắng vừa đủ xem mặt chỉ. Người mới nhận mảnh vải thô để tập đường viền."
+    },
+    {
+      "id": "TN07b",
+      "title": "Buổi vá đồ ở hiên Lưng Đồi",
+      "note": "Phiên sửa đồ mở dưới hiên sau trưa, ai đem đồ rách ghim giấy chỉ vị trí thủng. Nhóm phát kim đầu tù cho người lần đầu khâu tất."
+    },
+    {
+      "id": "TN07c",
+      "title": "Mượn khung ở Lưng Đồi",
+      "note": "Móc sắt đầu bàn treo khung vuông cho tấm vải lớn. Trả khung thì nới ốc trước để tránh bẹp cạnh gỗ."
+    },
+    {
+      "id": "TN08a",
+      "title": "Lối xe lăn ở trạm Mái Rong",
+      "note": "Từ đường lớn, đoạn lát phẳng nằm giữa tiệm gạo và gốc me cụt ngọn. Đi hết là lên sàn đón xe Mái Rong, tránh hai bậc bên mái che."
+    },
+    {
+      "id": "TN08b",
+      "title": "Lối tắt ga xép Mái Rong",
+      "note": "Qua đường nhỏ sau hàng rào phòng trực sẽ tới cửa soát vé từ khu tập thể. Cuối lối có ba vũng trũng, ngày mưa phải đi men gạch."
+    },
+    {
+      "id": "TN08c",
+      "title": "Ghế xoay xe Mái Rong",
+      "note": "Buýt nhánh Mái Rong có ghế xoay sát cửa khi khách khó lên xuống. Ghế để trống đối diện cửa giữa, phụ xe giúp xoay."
+    },
+    {
+      "id": "TN09a",
+      "title": "Hong áo hội kể chuyện Sân Đèn Sậy",
+      "note": "Treo áo ướt trên sào dưới mái nhựa cạnh quầy vé. Mỗi móc mang mảnh bìa cùng số phát cho người gửi."
+    },
+    {
+      "id": "TN09b",
+      "title": "Móc dù hội Sân Đèn Sậy",
+      "note": "Ô gập cài vào vòng chun trên khung sắt phía trong sảnh. Ô cán dài cắm vào thùng cát dưới cầu thang."
+    },
+    {
+      "id": "TN09c",
+      "title": "Bán áo mưa ở Sân Đèn Sậy",
+      "note": "Tổ thiếu niên mở bàn bán áo mưa giấy cạnh bãi xe đúng đêm chiếu bóng. Tiền thu bỏ vào hũ mua pin đèn sân."
+    },
+    {
+      "id": "TN10a",
+      "title": "Bậc rửa chân bãi Núi Keo",
+      "note": "Từ cát leo bậc gỗ lên thấy vòi thấp, van dưới gờ bê tông. Vòi lấy nước mưa, biển đen ghi chỉ rửa chân."
+    },
+    {
+      "id": "TN10b",
+      "title": "Chum nước uống dọc bãi Núi Keo",
+      "note": "Quán lá đầu dải phi lao đặt chum nước đun để nguội trên bàn con. Kế bên có ca múc nhôm và rổ hứng nước thừa."
+    },
+    {
+      "id": "TN10c",
+      "title": "Tráng đồ lặn ở Núi Keo",
+      "note": "Nhóm lặn xếp đồ dưới mái tôn cuối bãi, nơi có bồn nước ngọt để tráng kính và chân vịt. Họ đậy nắp gỗ sau mỗi lượt."
+    },
+    {
+      "id": "TN11a",
+      "title": "Gác đàn của nhóm Mưa Qua Ngõ",
+      "note": "Nhóm đàn chừa cạnh cửa sổ cho người ôm nhạc cụ cồng kềnh. Bao đàn đặt dưới ghế dài, khóa quay ra ngoài dễ lấy khi tắt đèn."
+    },
+    {
+      "id": "TN11b",
+      "title": "Ca nghe đĩa ở Mưa Qua Ngõ",
+      "note": "Nhóm nhường máy phát cho ai ghi tên trên bảng con cạnh quầy trà trước. Mỗi người chọn một mặt đĩa rồi chuyển lượt."
+    },
+    {
+      "id": "TN11c",
+      "title": "Mượn giá nhạc ở Mưa Qua Ngõ",
+      "note": "Chân sắt gập đặt trong ống bìa cạnh lối lên gác, mặt đỡ bản nhạc xếp riêng sau rèm. Tập xong lau mặt đỡ rồi mới xếp."
+    },
+    {
+      "id": "TN12a",
+      "title": "Xếp lượt dùng ống ngắm Đồi Mõ",
+      "note": "Người trực kẹp phiếu chờ lên dây gai theo thứ tự đến. Trẻ không tới thị kính mượn bục gỗ thấp dưới bàn phiếu."
+    },
+    {
+      "id": "TN12b",
+      "title": "Hạ ánh sáng ở Đồi Mõ",
+      "note": "Đoàn xem trời hạ độ sáng màn hình rồi phủ phim đỏ trước khi lên bệ. Khu trong lan can không bật đèn trắng vì mọi người đã quen tối."
+    },
+    {
+      "id": "TN12c",
+      "title": "Chỗ đứng máy ảnh Đồi Mõ",
+      "note": "Mảnh đất phẳng có ba vạch vôi cho người dựng chân máy riêng. Đừng cho chân máy lấn qua dây căng quanh đường lên bệ kính."
+    },
+    {
+      "id": "TN13a",
+      "title": "Tập nhập môn ở bể Vỏ Ốc",
+      "note": "Lớp làm quen ván đứng tập đầu bể nông, cho khách thử quỳ trên ván trước. Thầy đưa đai nổi sát hông và kiểm tra khóa.",
+      "tags": [
+        "Thử môn lần đầu"
+      ]
+    },
+    {
+      "id": "TN13b",
+      "title": "Đường dạo ván hồ Vỏ Ốc",
+      "note": "Ven bờ yên gió có phao vàng làm vòng quay về, đủ rộng tập chèo khi đứng. Buổi làm quen có người kèm và phát đai nổi ở đầu cầu gỗ.",
+      "tags": [
+        "Thử môn lần đầu"
+      ]
+    },
+    {
+      "id": "TN13c",
+      "title": "Chèo ván giữa hồ Vỏ Ốc ngày gió",
+      "note": "Đội mở lượt ra giữa hồ lúc gió lên cho thành viên đã tự đứng vững. Có dây kéo ván và đai nổi cho quãng xa.",
+      "tags": [
+        "Đội tập nâng cao"
+      ]
+    },
+    {
+      "id": "TN14a",
+      "title": "Trạm khắc dấu men ở Cổng Lò",
+      "note": "Tuyến ngày mở lò có trạm in dấu vảy cá sau bậc đón. Vé giấy đóng dấu xong làm dấu trang tại bàn gấp cạnh cửa."
+    },
+    {
+      "id": "TN14b",
+      "title": "Gom vé cuối tuyến Cổng Lò",
+      "note": "Ở trạm kết khách bỏ cuống vé vào bình miệng rộng để tổ đếm lượt. Nhân viên không giữ phần đã in dấu."
+    },
+    {
+      "id": "TN14c",
+      "title": "Ghi hình tại Cổng Lò",
+      "note": "Tổ đặt nền vải mộc ở gian ra để khách tự chụp bằng máy của mình. Quầy trong chỉ phát bản đồ giấy."
+    },
+    {
+      "id": "TN15a",
+      "title": "Rẽ lên đồi sim từ nhà chờ Bìm",
+      "note": "Từ nhà chờ đếm hai cột đèn rồi vào nhánh gạch đỏ bên trái. Đường đó tới chân đồi sim và tránh sân đất nhà dân."
+    },
+    {
+      "id": "TN15b",
+      "title": "Đường về nhà chờ Bìm",
+      "note": "Xuống theo dải bê tông có rãnh răng cưa sẽ ra mé ngoài nhà chờ, cách điểm lên một nhà. Đoạn này đủ rộng để hai đoàn đi tránh nhau."
+    },
+    {
+      "id": "TN15c",
+      "title": "Mép đồi sim sau mưa",
+      "note": "Trên chót đồi dễ trượt vì đá có rêu mỏng ngay chân bảng cao độ. Hôm đất ướt nên dừng ngắm ở ụ dưới, có hàng trâm chắn gió."
+    },
+    {
+      "id": "TN16a",
+      "title": "Lịch dành bàn số 6 ở Tiệm Cờ Than",
+      "note": "Tiệm để bàn 6 cho người cần quân cờ vây nam châm vì mặt bàn cạnh cửa hay rung. Cần báo trước để người giữ hộp quân mở ngăn."
+    },
+    {
+      "id": "TN16b",
+      "title": "Bàn đấu cờ nhanh Tiệm Cờ Than",
+      "note": "Bàn cạnh kệ lịch đặt đồng hồ cho cờ vua nhanh chiều thứ tư. Khách làm quen trước lượt có thể dùng bộ quân nhựa thường."
+    },
+    {
+      "id": "TN16c",
+      "title": "Chờ lượt bàn cờ tướng Than",
+      "note": "Bàn ở mái ngoài có bảng phấn thấp để ghi người chờ. Cặp kế tự xóa tên khi vào bàn."
+    },
+    {
+      "id": "TN17a",
+      "title": "Máy nghe kể chuyện Hẻm Rêu",
+      "note": "Nhà đón phát máy nhỏ có dây đeo để nghe từng chặng. Biển hình vỏ sò báo bấm nút tròn mở đoạn tương ứng."
+    },
+    {
+      "id": "TN17b",
+      "title": "Bản in nổi Hẻm Rêu",
+      "note": "Ban dẫn đường đặt sơ đồ nổi bằng bìa cứng ở góc bàn đầu hẻm. Sợi len gồ lên là đường đi, nốt nhám là chỗ băng qua rãnh."
+    },
+    {
+      "id": "TN17c",
+      "title": "Bản đồ khảo sát Hẻm Rêu",
+      "note": "Bản khảo sát ghi các nền nhà bị ẩm sau mép gạch, chưa in cho khách. Vòng tròn nhỏ trên bản này đánh dấu miệng cống."
+    },
+    {
+      "id": "TN18a",
+      "title": "Ghế mượn bên Nhà Chiếu Bốn Bậc",
+      "note": "Quầy tiếp khách giữ ghế gấp lưng cao dưới kệ áp phích. Người khó đứng lâu dùng ở sảnh rồi trả trước khi vào rạp.",
+      "owner": "main"
+    },
+    {
+      "id": "TN18b",
+      "title": "Vào rạp Bốn Bậc khi bỏ sảnh",
+      "note": "Ngách giữa tiệm đèn và vách chiếu đi thẳng tới hàng ghế sát màn, nhờ soát vé mở tay nắm phía trong. Lối giữ trống cho người cần vào chậm.",
+      "owner": "main"
+    },
+    {
+      "id": "TN18c",
+      "title": "Ghế mượn mang vào rạp Bốn Bậc",
+      "note": "Sổ nhóm thử máy cho mang ghế gấp lưng cao vào trong, miễn giữ lối giữa trống. Đội dành ghế cho buổi tổng duyệt đóng cửa.",
+      "owner": "guest"
+    },
+    {
+      "id": "TN19a",
+      "title": "Tách rác sau phiên Vườn Hạt Dẻ",
+      "note": "Cuối dãy có sọt gỗ đựng vỏ quả và rau dập để làm đất ủ. Quầy ăn phải gắp dây chun ra trước khi đổ."
+    },
+    {
+      "id": "TN19b",
+      "title": "Cất bao bì sạch Vườn Hạt Dẻ",
+      "note": "Thùng thiếc bên gốc xoài nhận bao giấy đã giũ hết vụn và gập miệng. Sáng sau tổ gói rau dùng lại."
+    },
+    {
+      "id": "TN19c",
+      "title": "Đổi chai lấy giống Vườn Hạt Dẻ",
+      "note": "Bàn sát cổng lùa nhận chai thủy tinh đã tráng để đổi hạt giống rau. Chai đựng dầu phải đem về vì mùi còn bám."
+    },
+    {
+      "id": "TN20a",
+      "title": "Bữa tối công cộng cạnh Phên Trúc",
+      "note": "Người dọn treo ba dây cờ ở mái che nhận nồi dùng chung. Bát mượn ở giá gỗ và đặt úp vào thùng đỏ khi xong."
+    },
+    {
+      "id": "TN20b",
+      "title": "Nhãn món ăn Phên Trúc",
+      "note": "Bàn nhận món có miếng cài trắng cho đậu phộng và miếng nâu cho mè. Ai chuyển bàn thì giữ miếng cài theo nồi."
+    },
+    {
+      "id": "TN20c",
+      "title": "Suất mang về Phên Trúc",
+      "note": "Khi người trực rung chuông hai lần, đồ ăn thừa múc vào hộp khách mang. Suất chừa đội thu gọn có nắp đỏ."
+    },
+    {
+      "id": "TN21a",
+      "title": "Đưa hàng qua hành lang Hội Mộc Tháp Đá",
+      "note": "Hàng nhẹ đi xe sàn chữ nhật ở hành lang phía ống thoát nước, chỗ rẽ có gương cầu. Kiện hàng xếp thấp hơn tay đẩy để còn thấy người tới."
+    },
+    {
+      "id": "TN21b",
+      "title": "Ròng rọc treo biển Hội Mộc Tháp Đá",
+      "note": "Kho dưới gác dùng ròng rọc đưa tấm biển gỗ lên sàn dựng lúc chưa đón khách. Có người đứng ở chốt gác đợi biển."
+    },
+    {
+      "id": "TN21c",
+      "title": "Xe gom bìa đợt trước Tháp Đá",
+      "note": "Hội Mộc từng dẫn xe sàn xuyên giữa lối khách để gom bìa sau buổi dỡ gian. Lịch thuộc lần bố trí thử đã bỏ.",
+      "trashed": true
+    },
+    {
+      "id": "TN22a",
+      "title": "Nút báo xuống tuyến Đồi Rạ",
+      "note": "Xe vòng có nút vuông cạnh cửa, bấm trước nhà máy gạch để xuống đầu xóm. Chuông ngắn báo buồng lái nhận yêu cầu."
+    },
+    {
+      "id": "TN22b",
+      "title": "Vẫy xe từ nhà chờ Đồi Rạ",
+      "note": "Nơi đón trước xưởng rèn có dải phân cách làm tài xế thấy khách hơi muộn. Người chờ đứng sau vạch và giơ bảng tuyến treo sẵn."
+    },
+    {
+      "id": "TN22c",
+      "title": "Xe quay đầu cuối Đồi Rạ",
+      "note": "Buổi chiều xe quay ở bãi sỏi, nghỉ mười phút trước lượt lên dốc. Khách có thể ngồi trong xe nếu đã mua lượt tiếp."
+    },
+    {
+      "id": "TN23a",
+      "title": "Phấn tay ở vách leo Xà Gồ",
+      "note": "Túi phấn lớn nằm sát tấm nệm ngoài để người leo chấm tay trước lượt. Không đem cả túi lên nệm trong vì bột bám vào mặt đỡ."
+    },
+    {
+      "id": "TN23b",
+      "title": "Vạch dừng tập rơi Xà Gồ",
+      "note": "Người tập rơi có kiểm soát chỉ leo tới miếng bám tím ngang vai. Đến đó nhìn xuống vùng nệm không có người rồi mới thả."
+    },
+    {
+      "id": "TN23c",
+      "title": "Vệ sinh miếng bám Xà Gồ",
+      "note": "Chổi lông mềm để trong ống dài cạnh bình nước, dùng quét phấn trên tay bám. Nếu cần chổi nối dài, khớp vặn nằm dưới cùng ống."
+    },
+    {
+      "id": "TN24a",
+      "title": "Bàn mới làm quen ở câu lạc bộ Bên Ấm",
+      "note": "Ngồi quanh bàn ngắn ở Bên Ấm thì bốc một tranh để kể bằng tiếng đang học. Nếu bí từ, úp tranh để nhờ bạn gợi ý rồi tự nói tiếp."
+    },
+    {
+      "id": "TN24b",
+      "title": "Góc trao đổi phát âm Bên Ấm",
+      "note": "Góc gần bếp học theo từng cặp, mỗi lượt nghe một câu rồi lặp lại trên nền tiếng quạt nhỏ. Miếng kẹp gỗ ở mé bàn báo ai đến lượt nghe."
+    },
+    {
+      "id": "TN24c",
+      "title": "Sổ từ bỏ túi Bên Ấm",
+      "note": "Quầy cuối phòng để thẻ giấy nhặt từ vừa học. Viết cụm từ ở một mặt và tình huống dùng ở mặt kia trước khi bỏ vào hộp mang về."
+    },
+    {
+      "id": "TN25a",
+      "title": "Kênh quầy bánh Hội Bãi Bồ",
+      "note": "Người đón bánh lấy đá cây từ thùng cách nhiệt phía bậc cao để lót khay nhân chưa nướng. Đá đã tan phải gạn vào chậu kẽm, đừng đổ ngay mép đường."
+    },
+    {
+      "id": "TN25b",
+      "title": "Thùng giữ mát quầy rau Hội Bãi Bồ",
+      "note": "Khay rau thơm ở đầu dãy được kê trên chai nước đã đông cứng cho khỏi héo. Đến giữa buổi thì đổi chai ở lều sau mái bạt."
+    },
+    {
+      "id": "TN25c",
+      "title": "Bàn đá mài Hội Bãi Bồ",
+      "note": "Bàn phía cổng tre có hai viên đá nhám để mài lưỡi liềm mang tới. Người thợ nhúng viên đá vào máng nước trước khi dùng."
+    },
+    {
+      "id": "TN26a",
+      "title": "Sân bóng rổ giấy Nhà Lưới",
+      "note": "Trong trò ném banh giấy, rổ số một ngang thắt lưng, dành cho người ngồi hoặc đứng thấp. Mỗi lượt ném ba viên bằng một tay."
+    },
+    {
+      "id": "TN26b",
+      "title": "Bàn gập banh giấy Nhà Lưới",
+      "note": "Góc ghép dụng cụ đưa từng xấp giấy đã dùng một mặt cho khách vo lại thành banh. Hộp nắp vàng đựng giấy khô; giấy ẩm đặt vào rổ để hong."
+    },
+    {
+      "id": "TN26c",
+      "title": "Thang điểm theo nhóm Nhà Lưới",
+      "note": "Nhóm nào trúng hai rổ khác nhau trong một lượt thì được kẹp tên lên dây phía trên. Người trực gỡ kẹp và trả vào hộp thiếc sau vòng cuối."
+    },
+    {
+      "id": "TN27a",
+      "title": "Tuyến chuông gió qua Khe Mỏm",
+      "note": "Chặng rẽ bên sườn đá có ba ống tre khác độ dài, gõ chiếc dài nhất để người ở đầu kia nhận ra có đoàn qua. Khi mưa phải bỏ chặng này vì nước chảy xiết."
+    },
+    {
+      "id": "TN27b",
+      "title": "Đường vòng gốc sến Khe Mỏm",
+      "note": "Lối đường vòng từ tán sến qua sân đá tới chòi trú đã được cắm ba cọc thấp sơn chóp lam. Ngày mưa đi lối này để tránh phải lội qua khe."
+    },
+    {
+      "id": "TN27c",
+      "title": "Đường thẳng qua bậc ngầm Khe Mỏm",
+      "note": "Đường ngầm sau phiến đá phẳng có cọc đầu lam dẫn qua đoạn nước tới bậc dưới chòi. Lối này đi được lúc trời ráo, mưa thì nước phủ bậc."
+    },
+    {
+      "id": "TN28a",
+      "title": "Đầu toa phía quầy cháo ở ga Nếp Xanh",
+      "note": "Tàu đường ngắn tới ga Nếp Xanh có toa xe đạp dừng ngang quầy cháo. Khách tháo gương rời trước rồi móc bánh trước lên móc treo."
+    },
+    {
+      "id": "TN28b",
+      "title": "Cửa toa nhìn đồng nếp",
+      "note": "Cửa sổ khung gỗ ở toa cuối có chốt móc cao giữ cánh mở khi tàu dừng ngắm đồng. Khi nghe còi, khách tự gài lại chốt ngang phía dưới."
+    },
+    {
+      "id": "TN28c",
+      "title": "Quầy hành lý ga Nếp Xanh",
+      "note": "Kệ có khóa phía quầy vé nhận túi vải nhỏ trong giờ có nhân viên trực. Khi lấy túi, khách đưa nửa vé giấy có phần số lỗ bấm."
+    },
+    {
+      "id": "TN29a",
+      "title": "Dạo xe thích ứng ở Vành Sen",
+      "note": "Nhóm làm quen xe đạp tay khởi hành từ vòng sơn xanh cạnh bốt bảo vệ. Băng dính trắng đóng dấu địa điểm chuyển về vòng trong nếu muốn bỏ lượt."
+    },
+    {
+      "id": "TN29b",
+      "title": "Lớp dùng xe ba bánh ở Vành Sen",
+      "note": "Xe ba bánh tựa lưng tập bên hàng trúc, có hai vạch đen cách xa để tập dừng. Hướng dẫn viên chỉnh lại đai hông trước khi thả xe thử."
+    },
+    {
+      "id": "TN29c",
+      "title": "Lượt xe tự do Vành Sen",
+      "note": "Sau giờ có hướng dẫn, xe đạp hai bánh thường được mượn ở bàn gần giàn chanh và đi vòng ngoài. Khách tự chỉnh yên trước khi rời bàn."
+    },
+    {
+      "id": "TN30a",
+      "title": "Xâu đèn giấy tại Bến Mật",
+      "note": "Lồng giấy mang đến bàn dây thì luồn qua khoen sắt nhỏ dưới thanh ngang. Dây đỏ dành cho đèn treo trên sân trước, dây nâu treo dưới mái."
+    },
+    {
+      "id": "TN30b",
+      "title": "Thu đèn pin Bến Mật",
+      "note": "Đèn cầm tay đánh số thu lại ở cửa ra sau khi tắt, người trực kiểm tra ô pin còn đóng. Hộp vải giữ riêng dây đeo tháo rời."
+    },
+    {
+      "id": "TN30c",
+      "title": "Giờ thắp dàn đèn Bến Mật",
+      "note": "Đội kéo dàn lên lúc tiếng trống ngừng, sau đó bật công tắc hộp cạnh chân cột cờ. Đèn lối đi bật từ lúc nhận khách."
+    },
+    {
+      "id": "TN31a",
+      "title": "Kính quan sát ở Chòi Yến Nâu",
+      "note": "Kính hai mắt của chòi tre có thẻ vải xanh đánh dấu đã cân chỉnh xong. Khách mượn qua ô cửa rồi kê khuỷu lên bệ dài nhìn vào doi cát."
+    },
+    {
+      "id": "TN31b",
+      "title": "Chỗ đứng nhóm chép tiếng Chòi Yến Nâu",
+      "note": "Đội ghi tiếng buổi rạng sáng đứng sau vách liếp, cách bệ nhìn chim một quãng để không thu cả tiếng trò chuyện. Chân máy kê trên tấm bìa để bớt rung."
+    },
+    {
+      "id": "TN31c",
+      "title": "Vành im lặng quanh Chòi Yến Nâu",
+      "note": "Dải sỏi trước bảng hình tổ chim là chỗ dừng người xem khi có chim mang rơm về. Chờ đội trực nâng dây vải ngang lối rồi mới đi sát bụi."
+    },
+    {
+      "id": "TN32a",
+      "title": "Bảng nổi hẻm Thềm Mây",
+      "note": "Chữ bằng gỗ nhô trên bảng để người dùng tay đọc tên hẻm, cách mép vỉa bằng bốn viên lát trắng. Đầu bảng có góc tròn quay về đường chính."
+    },
+    {
+      "id": "TN32b",
+      "title": "Tấm chỉ hướng ngày họp Thềm Mây",
+      "note": "Tấm bìa hình mũi tên tạm buộc vào cột điện đối diện hàng chè để khách tìm hội trường. Người trực tháo sau khi cuộc họp bắt đầu."
+    },
+    {
+      "id": "TN32c",
+      "title": "Giá treo bản đồ Thềm Mây",
+      "note": "Giá nhỏ ở góc đầu hẻm cho lấy bản đồ giấy của các quầy mới mở. Ngăn trên cùng để riêng bản chữ lớn."
+    },
+    {
+      "id": "TN33a",
+      "title": "Khoanh vùng thả diều bãi Chân Mía",
+      "note": "Bãi cắt sát gốc gạo dành cho diều nhỏ tập lấy gió. Cọc chụp trắng đánh dấu vệt đi bộ để dây diều không cắt ngang người qua."
+    },
+    {
+      "id": "TN33b",
+      "title": "Kéo dây diều lớn Chân Mía",
+      "note": "Diều có đuôi dài xuống bãi phía ngoài đường mòn để căng dây từ từ. Người giữ ống cuộn đứng bên trái người nâng diều, có cọc chụp xanh làm mốc."
+    },
+    {
+      "id": "TN33c",
+      "title": "Góc ráp khung ở bãi Chân Mía",
+      "note": "Dưới bạt vàng có bàn thay nan và cắt giấy theo khuôn. Không giũ cuộn dây tránh vướng kéo của người đang ráp."
+    }
+  ],
+  "cases": [
+    {
+      "id": "T01a",
+      "block": "T01",
+      "kind": "memory",
+      "query": "Bữa xếp chỗ ngồi trước khi có người trực Vòm Vôi, lấy đồ mở cổng phụ chỗ nào ấy nhỉ?",
+      "accept": [
+        "TN01a"
+      ],
+      "why": "Hộc sau bảng tin có chìa cửa hông."
+    },
+    {
+      "id": "T01b",
+      "block": "T01",
+      "kind": "memory",
+      "query": "Cái sân tối xem phim cắm nguồn chỗ nào để khỏi mở lại kho?",
+      "accept": [
+        "TN01b"
+      ],
+      "why": "Ổ cạnh cột giữa còn điện khi đóng kho."
+    },
+    {
+      "id": "T01c",
+      "block": "T01",
+      "kind": "negative",
+      "query": "Vòm Vôi vào nhà vệ sinh từ chính ngõ xe đẩy đi vòng được không?",
+      "accept": [],
+      "why": "Đường vòng chỉ được ghi là dẫn vào phòng, không chỉ nhà vệ sinh."
+    },
+    {
+      "id": "T01d",
+      "block": "T01",
+      "kind": "multi",
+      "query": "Gửi cả hai mẩu giúp nhóm kê ghế vào Vòm Vôi, một về đồ mở cửa, một về ngõ đẩy hàng.",
+      "accept": [
+        "TN01a",
+        "TN01c"
+      ],
+      "why": "Một mẩu chỉ vị trí chìa, một chỉ dốc vòng cho xe chở ghế."
+    },
+    {
+      "id": "T02a",
+      "block": "T02",
+      "kind": "memory",
+      "query": "Ở Hộc Giấy lần đầu tạt vô coi vài trang tại chỗ thì có cần đăng ký dài hạn không?",
+      "accept": [
+        "TN02a"
+      ],
+      "why": "Ghi tên vào sổ là đủ lấy thẻ ngày đọc tại chỗ."
+    },
+    {
+      "id": "T02b",
+      "block": "T02",
+      "kind": "memory",
+      "query": "Đóng dấu trên giấy loại gì mới đem truyện ra cổng Hộc Giấy được?",
+      "accept": [
+        "TN02b"
+      ],
+      "why": "Cần thẻ tháng có dấu tròn để mượn đem về."
+    },
+    {
+      "id": "T02c",
+      "block": "T02",
+      "kind": "negative",
+      "query": "Trong mục Phòng đọc dân cư, có chính sách thẻ vãng lai cầm sách về ngủ một đêm không?",
+      "accept": [],
+      "why": "Chỗ cho mượn bằng thẻ ngày nằm ở mục bến đò.",
+      "filters": {
+        "topic": "Phòng đọc dân cư"
+      }
+    },
+    {
+      "id": "T02d",
+      "block": "T02",
+      "kind": "negative",
+      "query": "Qua ca trực Hộc Giấy thì trả qua khe ngoài cửa ở đoạn nào?",
+      "accept": [],
+      "why": "Không có ghi chú về khe nhận sách hay quy trình ngoài giờ."
+    },
+    {
+      "id": "T03a",
+      "block": "T03",
+      "kind": "memory",
+      "query": "Nước dâng mà vẫn cần ra điểm theo dõi ở Gáo Rỗ, vệt đường nào khô?",
+      "accept": [
+        "TN03b"
+      ],
+      "why": "Gờ đất có guồng gỗ làm mốc đi được lúc triều lên."
+    },
+    {
+      "id": "T03b",
+      "block": "T03",
+      "kind": "memory",
+      "query": "Từng lưu chỗ nhìn chim bên Gáo Rỗ có quy ước đừng ồn khi chúng xuống kiếm ăn.",
+      "accept": [
+        "TN03c"
+      ],
+      "why": "Biển tại sàn ngoài chòi nhắc hạ giọng khi có cò."
+    },
+    {
+      "id": "T03c",
+      "block": "T03",
+      "kind": "negative",
+      "query": "Ở Gáo Rỗ lấy ủng cho khách qua vùng lầy chỗ nào?",
+      "accept": [],
+      "why": "Không có ghi chú về việc cấp ủng."
+    },
+    {
+      "id": "T03d",
+      "block": "T03",
+      "kind": "memory",
+      "query": "Có sợi màu nóng hiện ra theo mực nước, bám dấu đó tới cái lán đo. Tờ nào nhỉ?",
+      "accept": [
+        "TN03a"
+      ],
+      "why": "Dây cam lộ khi nước rút là dấu trên lối ván tới chòi."
+    },
+    {
+      "id": "T04a",
+      "block": "T04",
+      "kind": "memory",
+      "query": "Mấy đồ kê bầu bằng mút đã dùng muốn gửi lại cho người ươm ở Ngói Lẻ, để đâu?",
+      "accept": [
+        "TN04b"
+      ],
+      "why": "Khay xốp xếp cạnh vòi rửa sau cổng kéo."
+    },
+    {
+      "id": "T04b",
+      "block": "T04",
+      "kind": "memory",
+      "query": "Đem ảnh bộ phận nào của cây bên bàn tư vấn giao lưu là được, khỏi xách nguyên chậu?",
+      "accept": [
+        "TN04c"
+      ],
+      "why": "Bàn soi lá nhận ảnh mặt dưới."
+    },
+    {
+      "id": "T04c",
+      "block": "T04",
+      "kind": "negative",
+      "query": "Ngói Lẻ có giữ hộ chậu sống vài ngày rồi đến lấy lại sau lễ không?",
+      "accept": [],
+      "why": "Có đổi cây và gom khay trống, không có hình thức giữ hộ."
+    },
+    {
+      "id": "T04d",
+      "block": "T04",
+      "kind": "control",
+      "query": "Lễ đổi cây ở xưởng Ngói Lẻ",
+      "accept": [
+        "TN04a"
+      ],
+      "why": "Tiêu đề khớp ghi chú tiếp nhận cây và dán cách tưới."
+    },
+    {
+      "id": "T05a",
+      "block": "T05",
+      "kind": "memory",
+      "query": "Bánh tới băng gỗ xuống ghe Cát Nêm, có phải gỡ đồ gì gắn trên xe không?",
+      "accept": [
+        "TN05a"
+      ],
+      "why": "Phải tháo túi hông trước khi dắt qua cầu ván."
+    },
+    {
+      "id": "T05b",
+      "block": "T05",
+      "kind": "memory",
+      "query": "Phần đường đá dăm sau lên bờ thì chiếc bốn bánh trung chuyển đón chỗ nào?",
+      "accept": [
+        "TN05b"
+      ],
+      "why": "Xe bán tải đợi ở hàng dừa."
+    },
+    {
+      "id": "T05c",
+      "block": "T05",
+      "kind": "negative",
+      "query": "Trong Đạp xe qua lạch ghi nhà đò thả mình bên cái cân của vựa đá chứ?",
+      "accept": [],
+      "why": "Cầu cân là điểm trả của chuyến kiểm kê riêng.",
+      "filters": {
+        "project": "Đạp xe qua lạch"
+      }
+    },
+    {
+      "id": "T05d",
+      "block": "T05",
+      "kind": "multi",
+      "query": "Bên Đạp xe qua lạch gửi hai mẩu phương tiện đưa cả người lẫn xe, từ sang dòng nước tới đoạn đường xóc.",
+      "accept": [
+        "TN05a",
+        "TN05b"
+      ],
+      "why": "Hai mẩu ghi đò qua lạch và bán tải qua đoạn đá.",
+      "filters": {
+        "project": "Đạp xe qua lạch"
+      }
+    },
+    {
+      "id": "T06a",
+      "block": "T06",
+      "kind": "memory",
+      "query": "Tắt sạch chỗ chơi ban đêm Mành Tre mà lần đầu vẫn sáng một phía, làm sao tiếp?",
+      "accept": [
+        "TN06a"
+      ],
+      "why": "Công tắc dây cần kéo hai lần mới tắt cả hai dãy."
+    },
+    {
+      "id": "T06b",
+      "block": "T06",
+      "kind": "memory",
+      "query": "Dấu chỉ mức thấp cho bọn nhỏ ở sân chuyền nằm phía cột nào?",
+      "accept": [
+        "TN06b"
+      ],
+      "why": "Vạch trắng ở cột bên giàn hoa giấy."
+    },
+    {
+      "id": "T06c",
+      "block": "T06",
+      "kind": "negative",
+      "query": "Mành Tre có cho thuê giày chơi theo số chân không?",
+      "accept": [],
+      "why": "Các ghi chú về thiết bị sân không có thuê giày."
+    },
+    {
+      "id": "T06d",
+      "block": "T06",
+      "kind": "negative",
+      "query": "Túi bóng bài tập Mành Tre thiếu một quả thì báo vào sổ để ở đâu?",
+      "accept": [],
+      "why": "Có vị trí túi tập và giỏ thi đấu, không có sổ báo thiếu."
+    },
+    {
+      "id": "T07a",
+      "block": "T07",
+      "kind": "memory",
+      "query": "Bữa dùng vòng căng vải ở Lưng Đồi, người chưa biết mũi nào tập bằng chất liệu gì?",
+      "accept": [
+        "TN07a"
+      ],
+      "why": "Người nhập môn thêu dùng mảnh vải thô."
+    },
+    {
+      "id": "T07b",
+      "block": "T07",
+      "kind": "memory",
+      "query": "Ở hiên chuyên cứu quần áo thủng, đánh dấu chỗ cần sửa bằng gì?",
+      "accept": [
+        "TN07b"
+      ],
+      "why": "Người đem đồ vá ghim giấy chỉ chỗ thủng."
+    },
+    {
+      "id": "T07c",
+      "block": "T07",
+      "kind": "negative",
+      "query": "Nhóm may vá Lưng Đồi nhận lên lai quần bằng máy lấy liền buổi sáng không?",
+      "accept": [],
+      "why": "Sáng có thêu, sau trưa có vá; không có ghi chú lên lai bằng máy."
+    },
+    {
+      "id": "T07d",
+      "block": "T07",
+      "kind": "memory",
+      "query": "Tìm tờ nhắc nới cái vít khi trả dụng cụ căng cho mảng vải to.",
+      "accept": [
+        "TN07c"
+      ],
+      "why": "Khung vuông dùng cho mảng lớn và phải nới ốc trước khi trả."
+    },
+    {
+      "id": "T08a",
+      "block": "T08",
+      "kind": "memory",
+      "query": "Dắt ghế có bánh vào điểm chờ Mái Rong để né bậc thì tìm mốc nào?",
+      "accept": [
+        "TN08a"
+      ],
+      "why": "Lối lát phẳng nằm giữa tiệm gạo và gốc me cụt."
+    },
+    {
+      "id": "T08b",
+      "block": "T08",
+      "kind": "memory",
+      "query": "Chân khó bước lên buýt Mái Rong, có chỗ ngồi nào đưa ra gần cửa giúp không?",
+      "accept": [
+        "TN08c"
+      ],
+      "why": "Ghế xoay gần cửa giữa và phụ xe hỗ trợ."
+    },
+    {
+      "id": "T08c",
+      "block": "T08",
+      "kind": "negative",
+      "query": "Đi xe lăn vào cửa kiểm vé ga xép Mái Rong có đoạn dốc sẵn không?",
+      "accept": [],
+      "why": "Đường ga chỉ ghi vũng trũng và lối men, còn đường không bậc thuộc điểm buýt."
+    },
+    {
+      "id": "T08d",
+      "block": "T08",
+      "kind": "control",
+      "query": "Lối tắt ga xép Mái Rong từ khu tập thể",
+      "accept": [
+        "TN08b"
+      ],
+      "why": "Note về ga xép xác nhận lối sau hàng rào tới cửa soát vé."
+    },
+    {
+      "id": "T09a",
+      "block": "T09",
+      "kind": "memory",
+      "query": "Áo ngoài đang nhỏ tong tong trước khi vô nghe kể thì gửi đâu để dễ lấy lại?",
+      "accept": [
+        "TN09a"
+      ],
+      "why": "Sào kế quầy vé có móc đánh số cho áo ướt."
+    },
+    {
+      "id": "T09b",
+      "block": "T09",
+      "kind": "memory",
+      "query": "Đi Sân Đèn Sậy với cái dù không xếp ngắn được thì bỏ tạm đâu?",
+      "accept": [
+        "TN09b"
+      ],
+      "why": "Ô cán dài bỏ vào thùng cát ở chân cầu thang."
+    },
+    {
+      "id": "T09c",
+      "block": "T09",
+      "kind": "negative",
+      "query": "Có đổi áo mưa giấy rách tại bàn lấy vé đêm kể chuyện không?",
+      "accept": [],
+      "why": "Bàn bán ở đêm chiếu bóng và không ghi đổi tại quầy vé."
+    },
+    {
+      "id": "T09d",
+      "block": "T09",
+      "kind": "multi",
+      "query": "Kiếm chỗ cất đồ che mưa khi khách vào hội, cả loại mặc người lẫn loại bung ra cầm tay.",
+      "accept": [
+        "TN09a",
+        "TN09b"
+      ],
+      "why": "Một mẩu hướng dẫn gửi áo, một mẩu chỉ chỗ cất ô."
+    },
+    {
+      "id": "T10a",
+      "block": "T10",
+      "kind": "memory",
+      "query": "Ra khỏi cát Núi Keo muốn xối bàn chân, núm khóa mở nằm tầm nào?",
+      "accept": [
+        "TN10a"
+      ],
+      "why": "Van ở dưới gờ bê tông sau bậc gỗ."
+    },
+    {
+      "id": "T10b",
+      "block": "T10",
+      "kind": "memory",
+      "query": "Khát ở đoạn cây lá kim bắt đầu mọc ven Núi Keo thì múc thứ uống được tại đâu?",
+      "accept": [
+        "TN10b"
+      ],
+      "why": "Chum nước uống ở quán lá đầu dải phi lao."
+    },
+    {
+      "id": "T10c",
+      "block": "T10",
+      "kind": "negative",
+      "query": "Có chỗ Núi Keo xịt nước áp lực vệ sinh ván lướt không?",
+      "accept": [],
+      "why": "Vòi rửa chân và bồn tráng đồ lặn không nói tới máy xịt hay ván lướt."
+    },
+    {
+      "id": "T10d",
+      "block": "T10",
+      "kind": "negative",
+      "query": "Thông báo chất lượng nước uống lấy từ bể mưa sát bậc Núi Keo?",
+      "accept": [],
+      "why": "Bể mưa chỉ cấp vòi rửa chân."
+    },
+    {
+      "id": "T11a",
+      "block": "T11",
+      "kind": "memory",
+      "query": "Sinh hoạt chỗ Mưa Qua Ngõ mà mang đàn to thì nhắm phần nào của phòng?",
+      "accept": [
+        "TN11a"
+      ],
+      "why": "Khoảng cạnh cửa sổ chừa cho người mang đồ cồng kềnh."
+    },
+    {
+      "id": "T11b",
+      "block": "T11",
+      "kind": "memory",
+      "query": "Muốn chen vào lượt mở một bên đĩa Mưa Qua Ngõ thì đăng ký đâu?",
+      "accept": [
+        "TN11b"
+      ],
+      "why": "Ghi tên trên bảng con cạnh quầy trà để chọn một mặt đĩa."
+    },
+    {
+      "id": "T11c",
+      "block": "T11",
+      "kind": "negative",
+      "query": "Có bộ tai nghe cách âm cho người muốn tự nghe tại Mưa Qua Ngõ không?",
+      "accept": [],
+      "why": "Ca nghe dùng máy phát chung, không nhắc tai nghe riêng."
+    },
+    {
+      "id": "T11d",
+      "block": "T11",
+      "kind": "memory",
+      "query": "Mấy thanh gấp và tấm kê giấy nhạc hình như để hai nơi, tìm lại mẩu nhắc ráp ở đâu.",
+      "accept": [
+        "TN11c"
+      ],
+      "why": "Giá nhạc có chân trong ống bìa, mặt đỡ sau rèm."
+    },
+    {
+      "id": "T12a",
+      "block": "T12",
+      "kind": "memory",
+      "query": "Bé dòm kính ở Đồi Mõ hụt tầm thì lấy đồ kê chân ở chỗ phát lượt phải không?",
+      "accept": [
+        "TN12a"
+      ],
+      "why": "Bục gỗ thấp đặt ngay dưới bàn phiếu."
+    },
+    {
+      "id": "T12b",
+      "block": "T12",
+      "kind": "memory",
+      "query": "Buổi soi bầu trời trên Đồi Mõ che điện thoại bằng màu gì cho người khác khỏi lóa?",
+      "accept": [
+        "TN12b"
+      ],
+      "why": "Đoàn phủ phim đỏ sau khi hạ sáng."
+    },
+    {
+      "id": "T12c",
+      "block": "T12",
+      "kind": "negative",
+      "query": "Có xem trực tiếp từ phòng dưới nếu không lên bệ kính Đồi Mõ được không?",
+      "accept": [],
+      "why": "Không có thông tin truyền hình từ kính về phòng."
+    },
+    {
+      "id": "T12d",
+      "block": "T12",
+      "kind": "control",
+      "query": "Chỗ đứng máy ảnh Đồi Mõ ba vạch vôi",
+      "accept": [
+        "TN12c"
+      ],
+      "why": "Tên và dấu vạch xác định ghi chú về vị trí chân máy."
+    },
+    {
+      "id": "T13a",
+      "block": "T13",
+      "kind": "memory",
+      "query": "Ngại loạng choạng khi thử miếng ván nổi Vỏ Ốc, buổi ở chỗ cạn có bắt đứng liền không?",
+      "accept": [
+        "TN13a"
+      ],
+      "why": "Lớp ở đầu bể nông cho quỳ trên ván trước."
+    },
+    {
+      "id": "T13b",
+      "block": "T13",
+      "kind": "memory",
+      "query": "Học đứng đưa mái chèo ven hồ Vỏ Ốc thì nhìn dấu gì để quay đầu?",
+      "accept": [
+        "TN13b"
+      ],
+      "why": "Phao vàng ven bờ là mốc quay."
+    },
+    {
+      "id": "T13c",
+      "block": "T13",
+      "kind": "negative",
+      "query": "Trong nhãn Thử môn lần đầu có buổi lên ván ra giữa hồ Vỏ Ốc lúc gió mạnh không?",
+      "accept": [],
+      "why": "Lượt giữa hồ thuộc nhãn người tập nâng cao.",
+      "filters": {
+        "tag": "Thử môn lần đầu"
+      }
+    },
+    {
+      "id": "T13d",
+      "block": "T13",
+      "kind": "multi",
+      "query": "Lấy mọi lượt nhập môn chèo ván có phát thứ giữ mình nổi ở Vỏ Ốc.",
+      "accept": [
+        "TN13a",
+        "TN13b"
+      ],
+      "why": "Lớp đầu bể nông và ven hồ đều phát đai nổi.",
+      "filters": {
+        "tag": "Thử môn lần đầu"
+      }
+    },
+    {
+      "id": "T14a",
+      "block": "T14",
+      "kind": "memory",
+      "query": "Mảnh vào cửa làm cái kẹp trang có hình giống da cá ấy đóng tầm nào trên đường xem lò?",
+      "accept": [
+        "TN14a"
+      ],
+      "why": "Trạm in vảy cá đặt ngay sau bậc đón."
+    },
+    {
+      "id": "T14b",
+      "block": "T14",
+      "kind": "memory",
+      "query": "Chỗ ra Cổng Lò kiểm số khách bằng cách giữ phần nào của giấy vào cửa?",
+      "accept": [
+        "TN14b"
+      ],
+      "why": "Trạm kết thu cuống, phần in dấu trả khách."
+    },
+    {
+      "id": "T14c",
+      "block": "T14",
+      "kind": "negative",
+      "query": "Cổng Lò gửi ảnh chụp trước tấm vải qua mã trên vé phải không?",
+      "accept": [],
+      "why": "Khách tự chụp, không có hướng dẫn nhận ảnh qua mã."
+    },
+    {
+      "id": "T14d",
+      "block": "T14",
+      "kind": "negative",
+      "query": "Cổng Lò xác thực vé cũ từ dấu vảy cá để đi lượt kế tiếp miễn phí chứ?",
+      "accept": [],
+      "why": "Hình vảy trang trí dấu trang, không có chính sách tái nhập miễn phí."
+    },
+    {
+      "id": "T15a",
+      "block": "T15",
+      "kind": "memory",
+      "query": "Từ chỗ ngồi chờ Bìm, qua mấy trụ chiếu sáng thì quẹo phía nào mới tới gốc dốc sim?",
+      "accept": [
+        "TN15a"
+      ],
+      "why": "Qua hai cột đèn, rẽ trái vào nhánh gạch đỏ."
+    },
+    {
+      "id": "T15b",
+      "block": "T15",
+      "kind": "memory",
+      "query": "Đoàn về nhà chờ Bìm muốn tránh đám đang leo trên đường hẹp thì kiếm vệt đường thế nào?",
+      "accept": [
+        "TN15b"
+      ],
+      "why": "Dải bê tông rãnh răng cưa đủ rộng để hai đoàn tránh nhau."
+    },
+    {
+      "id": "T15c",
+      "block": "T15",
+      "kind": "negative",
+      "query": "Đồi sim Bìm có dốc bê tông đi bằng ghế đẩy tới bảng cao độ không?",
+      "accept": [],
+      "why": "Đường bê tông dẫn về nhà chờ; không có dốc tiếp cận tới bảng được ghi."
+    },
+    {
+      "id": "T15d",
+      "block": "T15",
+      "kind": "memory",
+      "query": "Hôm mưa leo đồi sim hình như chỉ ngắm ở một chỗ có dãy cây đỡ gió. Coi lại đoạn ấy.",
+      "accept": [
+        "TN15c"
+      ],
+      "why": "Ụ đất dưới đỉnh có hàng trâm."
+    },
+    {
+      "id": "T16a",
+      "block": "T16",
+      "kind": "memory",
+      "query": "Bàn nào dùng quân dính mặt cho trận cờ đen trắng ở chỗ hay bị rung?",
+      "accept": [
+        "TN16a"
+      ],
+      "why": "Bàn 6 dùng bộ quân cờ vây nam châm."
+    },
+    {
+      "id": "T16b",
+      "block": "T16",
+      "kind": "memory",
+      "query": "Chờ cặp ngoài mái chơi xong bên cờ tướng Than thì lên thứ tự bằng cách nào?",
+      "accept": [
+        "TN16c"
+      ],
+      "why": "Ghi lên bảng phấn và xóa khi tới lượt."
+    },
+    {
+      "id": "T16c",
+      "block": "T16",
+      "kind": "negative",
+      "query": "Có đồng hồ đếm nước cho cờ vây tại bàn dùng quân hút từ Tiệm Cờ Than không?",
+      "accept": [],
+      "why": "Đồng hồ dành cho bàn cờ vua nhanh, bàn 6 không ghi có."
+    },
+    {
+      "id": "T16d",
+      "block": "T16",
+      "kind": "control",
+      "query": "Bàn đấu cờ nhanh Tiệm Cờ Than",
+      "accept": [
+        "TN16b"
+      ],
+      "why": "Tiêu đề xác định ghi chú về cờ vua nhanh chiều thứ tư."
+    },
+    {
+      "id": "T17a",
+      "block": "T17",
+      "kind": "memory",
+      "query": "Đi tuyến Hẻm Rêu thấy dấu gì mới mở từng phần trong hộp có dây đeo?",
+      "accept": [
+        "TN17a"
+      ],
+      "why": "Biển hình vỏ sò báo mở đoạn âm thanh."
+    },
+    {
+      "id": "T17b",
+      "block": "T17",
+      "kind": "memory",
+      "query": "Sờ tấm sơ đồ đầu Hẻm Rêu thì nhận ra đoạn vượt mương qua chấm có bề mặt gì?",
+      "accept": [
+        "TN17b"
+      ],
+      "why": "Nốt nhám chỉ điểm băng qua rãnh."
+    },
+    {
+      "id": "T17c",
+      "block": "T17",
+      "kind": "negative",
+      "query": "Có bản đồ nổi đánh đường tránh đoạn nhà thấm nước để khách Hẻm Rêu mang theo không?",
+      "accept": [],
+      "why": "Sơ đồ nổi để đầu hẻm, nền nhà ẩm chỉ ghi trong bản nội bộ."
+    },
+    {
+      "id": "T17d",
+      "block": "T17",
+      "kind": "multi",
+      "query": "Lấy cả mẩu hướng dẫn nghe bằng tai lẫn mẩu biết đường bằng đầu ngón tay cho đoàn Hẻm Rêu.",
+      "accept": [
+        "TN17a",
+        "TN17b"
+      ],
+      "why": "Một ghi chú về máy âm thanh, một về sơ đồ nổi."
+    },
+    {
+      "id": "T18a",
+      "block": "T18",
+      "kind": "memory",
+      "query": "Chờ mở cửa Bốn Bậc mà lưng đau, cái ghế tựa cao lấy từ chỗ bày hình quảng cáo hả?",
+      "accept": [
+        "TN18a"
+      ],
+      "why": "Ghế gấp lưng cao đặt dưới kệ áp phích trong sảnh."
+    },
+    {
+      "id": "T18b",
+      "block": "T18",
+      "kind": "memory",
+      "query": "Đi thẳng vào gần màn chiếu Bốn Bậc khỏi qua gian đợi thì ai mở cửa bên hông?",
+      "accept": [
+        "TN18b"
+      ],
+      "why": "Nhân viên soát vé mở tay nắm từ phía trong."
+    },
+    {
+      "id": "T18c",
+      "block": "T18",
+      "kind": "negative",
+      "query": "Ghi chú của mình có cho đem ghế tựa mượn ngoài sảnh Bốn Bậc vào xem phim không?",
+      "accept": [],
+      "why": "Ghi chú chủ main chỉ cho dùng ở sảnh; sổ tổng duyệt chủ guest cho mang vào.",
+      "filters": {
+        "owner": "main"
+      }
+    },
+    {
+      "id": "T18d",
+      "block": "T18",
+      "kind": "negative",
+      "query": "Đường bỏ sảnh Bốn Bậc có tay vịn hai bên để khách luyện lên dốc không?",
+      "accept": [],
+      "why": "Đường ngách có tay nắm cửa, không ghi dốc hay tay vịn."
+    },
+    {
+      "id": "T19a",
+      "block": "T19",
+      "kind": "memory",
+      "query": "Muốn để vỏ trái làm phân bên Vườn Hạt Dẻ thì nhặt thứ gì còn cột dính ra trước?",
+      "accept": [
+        "TN19a"
+      ],
+      "why": "Gắp dây chun trước khi bỏ vào sọt ủ."
+    },
+    {
+      "id": "T19b",
+      "block": "T19",
+      "kind": "memory",
+      "query": "Chỗ trả túi giấy dùng lại hôm sau ở Vườn Hạt Dẻ cạnh cây gì?",
+      "accept": [
+        "TN19b"
+      ],
+      "why": "Thùng tái dùng bao giấy ở gốc xoài."
+    },
+    {
+      "id": "T19c",
+      "block": "T19",
+      "kind": "negative",
+      "query": "Lọ dầu rửa qua đem lĩnh hạt rau Vườn Hạt Dẻ có tính không?",
+      "accept": [],
+      "why": "Bàn đổi giống loại trừ chai dầu vì còn mùi sau khi tráng."
+    },
+    {
+      "id": "T19d",
+      "block": "T19",
+      "kind": "memory",
+      "query": "Tờ nói cuộc đổi có cái đưa ra là vỏ đồ uống, cái lấy lại để đem gieo, ở đâu?",
+      "accept": [
+        "TN19c"
+      ],
+      "why": "Bàn sát cổng lùa nhận chai thủy tinh để đổi hạt."
+    },
+    {
+      "id": "T20a",
+      "block": "T20",
+      "kind": "memory",
+      "query": "Ăn bữa chung Phên Trúc xong úp đồ đựng phần mình mượn vào vật nào?",
+      "accept": [
+        "TN20a"
+      ],
+      "why": "Bát mượn úp vào thùng đỏ."
+    },
+    {
+      "id": "T20b",
+      "block": "T20",
+      "kind": "memory",
+      "query": "Mang hộp sang lấy phần dư Phên Trúc phải đợi tiếng báo ra sao?",
+      "accept": [
+        "TN20c"
+      ],
+      "why": "Hai tiếng chuông mở lượt chia phần thừa."
+    },
+    {
+      "id": "T20c",
+      "block": "T20",
+      "kind": "negative",
+      "query": "Bữa chung Phên Trúc có kẹp màu riêng cho món chứa trứng không?",
+      "accept": [],
+      "why": "Chỉ ghi kẹp trắng đậu phộng, kẹp nâu mè."
+    },
+    {
+      "id": "T20d",
+      "block": "T20",
+      "kind": "control",
+      "query": "Nhãn món ăn Phên Trúc đậu phộng và mè",
+      "accept": [
+        "TN20b"
+      ],
+      "why": "Tiêu đề cùng hai nguyên liệu chỉ ghi chú về miếng cài theo nồi."
+    },
+    {
+      "id": "T21a",
+      "block": "T21",
+      "kind": "memory",
+      "query": "Chở đồ bằng xe mặt phẳng bên ống ở Tháp Đá, qua khúc mù có vật nào giúp nhìn?",
+      "accept": [
+        "TN21a"
+      ],
+      "why": "Gương cầu đặt ngay chỗ rẽ hành lang của xe sàn."
+    },
+    {
+      "id": "T21b",
+      "block": "T21",
+      "kind": "memory",
+      "query": "Gian trên Tháp Đá nhận bảng gỗ từ kho dưới bằng đồ kéo nào?",
+      "accept": [
+        "TN21b"
+      ],
+      "why": "Dùng bộ ròng rọc kéo lên chỗ có người đợi nhận."
+    },
+    {
+      "id": "T21c",
+      "block": "T21",
+      "kind": "negative",
+      "query": "Phiên Tháp Đá sắp tới có cho xe sàn chạy giữa nơi khách đi để gom bìa không?",
+      "accept": [],
+      "why": "Lối qua giữa khách chỉ trong lịch thử đã bỏ và nằm thùng rác."
+    },
+    {
+      "id": "T21d",
+      "block": "T21",
+      "kind": "multi",
+      "query": "Kho Tháp Đá còn hướng dẫn các cách đưa đồ bài trí nào, một cách đẩy ngang sàn với một cách kéo lên cao?",
+      "accept": [
+        "TN21a",
+        "TN21b"
+      ],
+      "why": "Ghi chú còn hiệu lực có xe sàn và ròng rọc."
+    },
+    {
+      "id": "T22a",
+      "block": "T22",
+      "kind": "memory",
+      "query": "Trên xe vòng Đồi Rạ nghe âm gì biết mình xin xuống thành công?",
+      "accept": [
+        "TN22a"
+      ],
+      "why": "Chuông ngắn xác nhận buồng lái nhận được."
+    },
+    {
+      "id": "T22b",
+      "block": "T22",
+      "kind": "memory",
+      "query": "Đứng đón ở chỗ rèn sát đường có dải ngăn, cầm vật nào để người cầm lái thấy?",
+      "accept": [
+        "TN22b"
+      ],
+      "why": "Giơ bảng tuyến ở điểm chờ ngoài xưởng rèn."
+    },
+    {
+      "id": "T22c",
+      "block": "T22",
+      "kind": "negative",
+      "query": "Đồi Rạ cho chuyển vé lượt trước sang lượt leo dốc sau khi xe quay đầu miễn phí hả?",
+      "accept": [],
+      "why": "Chờ trong xe chỉ khi đã mua lượt tiếp."
+    },
+    {
+      "id": "T22d",
+      "block": "T22",
+      "kind": "negative",
+      "query": "Có đường dây nhắn trước để tuyến Đồi Rạ ghé bãi sỏi muộn hơn giờ nghỉ không?",
+      "accept": [],
+      "why": "Các ghi chú không có dịch vụ nhắn đổi giờ."
+    },
+    {
+      "id": "T23a",
+      "block": "T23",
+      "kind": "memory",
+      "query": "Buổi học thả người xuống đệm ở Xà Gồ, leo lên cữ nào là đủ chứ chưa lên đỉnh?",
+      "accept": [
+        "TN23b"
+      ],
+      "why": "Miếng bám tím ngang vai là giới hạn của bài tập rơi."
+    },
+    {
+      "id": "T23b",
+      "block": "T23",
+      "kind": "memory",
+      "query": "Chỗ lấy bột cho lòng bàn tay khỏi trơn là bên ngoài hay ngay trên phần đáp xuống của vách Xà Gồ?",
+      "accept": [
+        "TN23a"
+      ],
+      "why": "Túi phấn ở sát nệm ngoài, tránh mang vào nệm trong."
+    },
+    {
+      "id": "T23c",
+      "block": "T23",
+      "kind": "negative",
+      "query": "Xà Gồ cho buộc bảo hiểm dây trên cao khi học thả từ miếng tím không?",
+      "accept": [],
+      "why": "Ghi chú bài rơi chỉ nêu mốc thấp và nệm trống, không nói có hệ bảo hiểm dây."
+    },
+    {
+      "id": "T23d",
+      "block": "T23",
+      "kind": "memory",
+      "query": "Từng thấy cách ráp cán dài cho đồ phủi bột ở chỗ bám trên tường. Gọi lại mẩu đó.",
+      "accept": [
+        "TN23c"
+      ],
+      "why": "Note vệ sinh chỉ khớp vặn cán dài ở đáy ống đựng chổi."
+    },
+    {
+      "id": "T24a",
+      "block": "T24",
+      "kind": "memory",
+      "query": "Ở bàn người mới Bên Ấm mà đang kể vướng chữ, làm dấu sao cho bạn biết cần nhắc?",
+      "accept": [
+        "TN24a"
+      ],
+      "why": "Úp tranh để xin gợi ý rồi tiếp tục kể."
+    },
+    {
+      "id": "T24b",
+      "block": "T24",
+      "kind": "memory",
+      "query": "Có chỗ nhặt từ mới ở Bên Ấm, một bên ghi tiếng vừa học, mặt còn lại điền thứ gì?",
+      "accept": [
+        "TN24c"
+      ],
+      "why": "Mặt kia ghi tình huống dùng cụm từ."
+    },
+    {
+      "id": "T24c",
+      "block": "T24",
+      "kind": "negative",
+      "query": "Buổi Bên Ấm có chép lời từ máy ghi âm để người đi vắng luyện phát âm không?",
+      "accept": [],
+      "why": "Góc luyện chỉ nói nghe lặp theo cặp, không có chép lời hay thu sẵn."
+    },
+    {
+      "id": "T24d",
+      "block": "T24",
+      "kind": "control",
+      "query": "Góc trao đổi phát âm Bên Ấm",
+      "accept": [
+        "TN24b"
+      ],
+      "why": "Tiêu đề nhận diện ghi chú học theo cặp gần bếp."
+    },
+    {
+      "id": "T25a",
+      "block": "T25",
+      "kind": "memory",
+      "query": "Chỗ bán bánh Bãi Bồ đem khay còn sống tới thì lấy cục lạnh dưới bậc hay trên phần cao?",
+      "accept": [
+        "TN25a"
+      ],
+      "why": "Đá cây lót khay nhân ở thùng cách nhiệt phía bậc cao."
+    },
+    {
+      "id": "T25b",
+      "block": "T25",
+      "kind": "memory",
+      "query": "Đổi mấy chai đóng cứng kê dưới rau thơm Bãi Bồ giữa buổi ở đâu?",
+      "accept": [
+        "TN25b"
+      ],
+      "why": "Chai mới lấy ở lều nằm sau mái bạt."
+    },
+    {
+      "id": "T25c",
+      "block": "T25",
+      "kind": "negative",
+      "query": "Có chỗ ở Hội Bãi Bồ lấy đá viên sạch bỏ thẳng vào ly nước không?",
+      "accept": [],
+      "why": "Đá cây để lót khay, chai nước đông dùng kê rau, đá nhám để mài; không nêu đá uống."
+    },
+    {
+      "id": "T25d",
+      "block": "T25",
+      "kind": "multi",
+      "query": "Lấy đủ các note ở Bãi Bồ về giữ đồ ăn mát trong thời gian đứng quầy.",
+      "accept": [
+        "TN25a",
+        "TN25b"
+      ],
+      "why": "Quầy bánh dùng đá cho khay nhân, quầy rau dùng chai đông kê khay."
+    },
+    {
+      "id": "T26a",
+      "block": "T26",
+      "kind": "memory",
+      "query": "Ở màn quăng giấy Nhà Lưới, người chơi phải ngồi thì chọn mục tiêu số mấy?",
+      "accept": [
+        "TN26a"
+      ],
+      "why": "Rổ số một ngang thắt lưng được dành cho người ngồi hoặc đứng thấp."
+    },
+    {
+      "id": "T26b",
+      "block": "T26",
+      "kind": "memory",
+      "query": "Móc tên đội lên dây sau khi quăng trúng bao nhiêu cái khác nhau trong một lượt?",
+      "accept": [
+        "TN26c"
+      ],
+      "why": "Trúng hai rổ khác nhau thì được kẹp tên."
+    },
+    {
+      "id": "T26c",
+      "block": "T26",
+      "kind": "negative",
+      "query": "Banh vo ướt ở Nhà Lưới có được ném vòng tính điểm để đỡ bay lệch không?",
+      "accept": [],
+      "why": "Ghi chú xếp giấy ẩm hong riêng và không ghi luật cho banh ướt."
+    },
+    {
+      "id": "T26d",
+      "block": "T26",
+      "kind": "negative",
+      "query": "Đội ném trúng ba lần cùng rổ Nhà Lưới có được cộng điểm theo số lần trúng không?",
+      "accept": [],
+      "why": "Chỉ có quy tắc kẹp tên khi trúng hai rổ khác nhau, không có điểm lũy kế cho một rổ."
+    },
+    {
+      "id": "T27a",
+      "block": "T27",
+      "kind": "memory",
+      "query": "Ở Khe Mỏm cần báo người phía kia khi đoàn tới, gõ ống nào trong bộ kêu bằng tre?",
+      "accept": [
+        "TN27a"
+      ],
+      "why": "Gõ ống dài nhất để báo đoàn qua."
+    },
+    {
+      "id": "T27b",
+      "block": "T27",
+      "kind": "memory",
+      "query": "Ngày mưa ở Khe Mỏm, chỗ trú có thể tới bằng đường nào mà khỏi bước xuống dòng nước?",
+      "accept": [
+        "TN27b"
+      ],
+      "why": "Lối qua tán sến và sân đá tránh lội qua khe."
+    },
+    {
+      "id": "T27c",
+      "block": "T27",
+      "kind": "negative",
+      "query": "Bỏ phiếu đường vòng rồi, có đường theo cọc lam tới chòi Khe Mỏm mà đi khi trời mưa không?",
+      "accept": [],
+      "why": "Sau khi loại đường vòng đi mưa, lối còn cọc lam chỉ dùng lúc ráo.",
+      "filters": {
+        "exclude": "TN27b"
+      }
+    },
+    {
+      "id": "T27d",
+      "block": "T27",
+      "kind": "memory",
+      "query": "Tìm lại cái lối có nấc chìm lúc nước lên, lúc khô băng từ tảng mặt phẳng qua chỗ tránh mưa.",
+      "accept": [
+        "TN27c"
+      ],
+      "why": "Bậc ngầm sau phiến đá phẳng dẫn tới bậc dưới chòi và bị nước phủ khi mưa."
+    },
+    {
+      "id": "T28a",
+      "block": "T28",
+      "kind": "memory",
+      "query": "Lên đoàn tàu chở xe hai bánh chỗ hàng cháo Nếp Xanh, phải vặn rời món giúp nhìn phía sau phải không?",
+      "accept": [
+        "TN28a"
+      ],
+      "why": "Ghi chú toa xe đạp yêu cầu tháo gương rời."
+    },
+    {
+      "id": "T28b",
+      "block": "T28",
+      "kind": "memory",
+      "query": "Tàu qua cánh ruộng Nếp Xanh nghe còi thì móc lại thứ giữ cửa sổ ở trên hay ở dưới?",
+      "accept": [
+        "TN28b"
+      ],
+      "why": "Gài chốt ngang phía dưới khi nghe còi."
+    },
+    {
+      "id": "T28c",
+      "block": "T28",
+      "kind": "negative",
+      "query": "Quầy vé ga Nếp Xanh nhận khóa cả xe đạp tới tối như túi nhỏ được không?",
+      "accept": [],
+      "why": "Quầy hành lý chỉ ghi nhận túi vải nhỏ, xe đạp có toa riêng."
+    },
+    {
+      "id": "T28d",
+      "block": "T28",
+      "kind": "control",
+      "query": "Quầy hành lý ga Nếp Xanh",
+      "accept": [
+        "TN28c"
+      ],
+      "why": "Tiêu đề khớp ghi chú về kệ khóa và vé rút túi."
+    },
+    {
+      "id": "T29a",
+      "block": "T29",
+      "kind": "memory",
+      "query": "Ở vòng Vành Sen đang thử đạp bằng tay, để ngừng giữa chừng thì tìm mẩu màu gì đánh dấu đường cắt vào trong?",
+      "accept": [
+        "TN29a"
+      ],
+      "why": "Băng dính trắng đánh dấu chỗ rẽ vào vòng trong bỏ lượt."
+    },
+    {
+      "id": "T29b",
+      "block": "T29",
+      "kind": "memory",
+      "query": "Chỗ học chiếc ba chân có chỗ tựa lưng ở Vành Sen, tập thắng bằng những dấu màu nào?",
+      "accept": [
+        "TN29b"
+      ],
+      "why": "Hai vạch đen cách xa dùng để luyện dừng."
+    },
+    {
+      "id": "T29c",
+      "block": "T29",
+      "kind": "negative",
+      "query": "Bên bàn giàn chanh Vành Sen có mượn được xe đạp tay tự đi khi hết ca người hướng dẫn không?",
+      "accept": [],
+      "why": "Bàn giàn chanh chỉ có xe đạp thường; xe đạp tay thuộc buổi làm quen."
+    },
+    {
+      "id": "T29d",
+      "block": "T29",
+      "kind": "multi",
+      "query": "Lấy hai lựa chọn tập đi vòng Vành Sen cho người cần xe khác kiểu đạp hai bánh thường.",
+      "accept": [
+        "TN29a",
+        "TN29b"
+      ],
+      "why": "Có lớp xe đạp tay và lớp xe ba bánh tựa lưng; lượt tự do dùng xe thường."
+    },
+    {
+      "id": "T30a",
+      "block": "T30",
+      "kind": "memory",
+      "query": "Muốn treo đồ sáng bằng giấy lên khoảng trống trước Bến Mật thì xỏ vào dây màu nào?",
+      "accept": [
+        "TN30a"
+      ],
+      "why": "Dây đỏ dành cho đèn treo sân trước, dây nâu cho dưới mái."
+    },
+    {
+      "id": "T30b",
+      "block": "T30",
+      "kind": "memory",
+      "query": "Rời Bến Mật với thứ chiếu sáng cầm tay có số, phải bấm gì trước khi đưa người trực?",
+      "accept": [
+        "TN30b"
+      ],
+      "why": "Tắt đèn rồi nộp ở cửa ra."
+    },
+    {
+      "id": "T30c",
+      "block": "T30",
+      "kind": "negative",
+      "query": "Bến Mật cho châm nến thật bên trong lồng giấy dưới mái chứ?",
+      "accept": [],
+      "why": "Chỉ nêu cách xâu lồng và dàn đèn dùng công tắc, không nói dùng nến."
+    },
+    {
+      "id": "T30d",
+      "block": "T30",
+      "kind": "negative",
+      "query": "Sau lúc dàn đèn lên Bến Mật có phát pin thay cho đèn cầm tay của khách mang từ nhà không?",
+      "accept": [],
+      "why": "Ghi chú chỉ nêu thu đèn có số và kiểm tra ô pin, không có phát pin cho đèn riêng."
+    },
+    {
+      "id": "T31a",
+      "block": "T31",
+      "kind": "memory",
+      "query": "Bộ đồ nhìn xa bằng hai mắt mượn ở Yến Nâu, cái nào đã lấy nét sẵn thì nhận biết bằng gì?",
+      "accept": [
+        "TN31a"
+      ],
+      "why": "Thẻ vải xanh đánh dấu kính đã cân chỉnh."
+    },
+    {
+      "id": "T31b",
+      "block": "T31",
+      "kind": "memory",
+      "query": "Muốn thu âm đầu ngày ở Yến Nâu khỏi dính tiếng người đứng dòm chim, nhóm đặt máy bên nào?",
+      "accept": [
+        "TN31b"
+      ],
+      "why": "Đội ghi âm đứng sau vách liếp, cách bệ quan sát."
+    },
+    {
+      "id": "T31c",
+      "block": "T31",
+      "kind": "negative",
+      "query": "Chòi Yến Nâu mở loa phát tiếng chim để dụ lại lúc đoàn ghi âm tới không?",
+      "accept": [],
+      "why": "Ghi chú ghi âm nói thu âm tách tiếng người, không nêu phát loa dụ chim."
+    },
+    {
+      "id": "T31d",
+      "block": "T31",
+      "kind": "memory",
+      "query": "Có mẩu ghi phải chờ gỡ sợi chắn khi thấy con vật đang tha vật liệu xây ổ. Tìm lại dùm.",
+      "accept": [
+        "TN31c"
+      ],
+      "why": "Dải sỏi là điểm dừng khi chim mang rơm về, chờ nâng dây rồi mới vào sát bụi."
+    },
+    {
+      "id": "T32a",
+      "block": "T32",
+      "kind": "memory",
+      "query": "Mò bảng tên ngõ Thềm Mây bằng tay thì biết đầu hướng ra phố lớn bằng dạng mép nào?",
+      "accept": [
+        "TN32a"
+      ],
+      "why": "Góc tròn của bảng quay ra đường chính."
+    },
+    {
+      "id": "T32b",
+      "block": "T32",
+      "kind": "memory",
+      "query": "Tờ chỉ đường tìm hàng mới ở Thềm Mây mà cần cỡ chữ dễ đọc thì thò tay vào tầng nào của giá?",
+      "accept": [
+        "TN32c"
+      ],
+      "why": "Bản chữ lớn ở ngăn trên cùng."
+    },
+    {
+      "id": "T32c",
+      "block": "T32",
+      "kind": "negative",
+      "query": "Tấm chỉ lối hôm họp Thềm Mây sờ tay có đọc được tên hội trường bằng chữ gỗ nhô không?",
+      "accept": [],
+      "why": "Bảng tên hẻm mới có chữ gỗ; tấm chỉ tạm chỉ là mũi tên bìa."
+    },
+    {
+      "id": "T32d",
+      "block": "T32",
+      "kind": "control",
+      "query": "Tấm chỉ hướng ngày họp Thềm Mây",
+      "accept": [
+        "TN32b"
+      ],
+      "why": "Tiêu đề trùng ghi chú về dấu chỉ hội trường buộc cột điện."
+    },
+    {
+      "id": "T33a",
+      "block": "T33",
+      "kind": "memory",
+      "query": "Ra Chân Mía cho trẻ tập vật bay nhỏ, cái dấu màu nào chừa đường để khách không mắc dây?",
+      "accept": [
+        "TN33a"
+      ],
+      "why": "Cọc chụp trắng phân vệt đi bộ cạnh bãi tập."
+    },
+    {
+      "id": "T33b",
+      "block": "T33",
+      "kind": "memory",
+      "query": "Lượt diều đuôi dài ở Chân Mía, người ôm lõi quấn đứng phía nào của người giơ diều?",
+      "accept": [
+        "TN33b"
+      ],
+      "why": "Người giữ cuộn đứng bên trái."
+    },
+    {
+      "id": "T33c",
+      "block": "T33",
+      "kind": "negative",
+      "query": "Bàn dưới mái ở Chân Mía cân diều để cấp dấu được thả qua đường mòn không?",
+      "accept": [],
+      "why": "Bàn có dụng cụ ráp, còn diều lớn ra bãi ngoài đường mòn; không có cân hay dấu cho qua."
+    },
+    {
+      "id": "T33d",
+      "block": "T33",
+      "kind": "multi",
+      "query": "Lấy hai ghi chú để giao khu cất cánh Chân Mía cho diều tập nhỏ và loại dây dài của đội lớn.",
+      "accept": [
+        "TN33a",
+        "TN33b"
+      ],
+      "why": "Ghi chú khu gần gốc gạo dành diều nhỏ và khu ngoài đường mòn dành diều lớn."
+    }
+  ]
+}
