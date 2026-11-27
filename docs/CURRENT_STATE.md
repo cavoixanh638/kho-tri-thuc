@@ -1,5 +1,9 @@
 # HIỆN TRẠNG THỰC TẾ — KHO TRI THỨC
 
+## Tìm đúng ghi chú theo giá trị và trích dẫn
+
+Ngày 27/11/2026, bản `6764783` đạt **87/120 ở lượt mặc định** và **117/120 khi dùng Tìm gần đúng**, so với 77 và 107 ở bản trước. PostgreSQL tìm đúng thêm mười câu về mã, ngày giờ, số đo và trích dẫn ngay ở lượt đầu. Cả 107 ca đã đạt tiếp tục đạt, cả 13 câu nhiều đáp án tìm đủ ghi chú trong năm kết quả đầu và cả 26 câu cần trả rỗng đều trả rỗng. Ba câu còn trượt là câu hỏi nhớ ý. Phép đo dùng dữ liệu tự soạn, API có đăng nhập và mô hình BGE chạy cục bộ khi mở gợi ý. [So sánh ba cấu hình và kết quả từng câu](../evals/vietnamese-journeys/scenario-matrix/README.md#tìm-theo-mã-số-đo-ngày-giờ-và-trích-dẫn)
+
 ## Xếp lại gợi ý bằng BGE cục bộ
 
 Ngày 26/11/2026, bản `d28e6a2` giữ PostgreSQL cho lượt mặc định và dùng BGE để sắp xếp tối đa năm mục đầu khi bấm **Tìm gần đúng**. Chạy lại 120 câu qua dịch vụ và API có đăng nhập cho kết quả **77/120** ở lượt đầu, **107/120** khi dùng gợi ý, tăng một ca so với **106/120**. Toàn bộ 26 câu không có đáp án đều trả rỗng. Chromium xác nhận ở L16, ghi chú đúng từ hạng 4 lên hạng 1 và nút quay lại khôi phục lượt tìm ban đầu. [Phép thử tích hợp, thứ hạng từng câu và cách chạy lại](../evals/vietnamese-journeys/scenario-matrix/README.md#bge-xếp-lại-gợi-ý-khi-bấm-tìm-gần-đúng)

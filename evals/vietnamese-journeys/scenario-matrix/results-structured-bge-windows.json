@@ -1,0 +1,5349 @@
+{
+  "tested_source": "6764783aa6d35d2215d076e8128433557e1a5707",
+  "backend_tree": "93a3e82a24b618ad40a7b0c92ff618f0a77e086e",
+  "runner_sha256": "03164f3a7597e0005ba173f1c67739c6d23f4ff3e02eaf5e7fb887e130b581cb",
+  "scenario_module_sha256": "3104f1b9590935c4e87dee0b35b65f11b12ed1056d5ffdb0dc64a2bbb16865b7",
+  "evaluation_module_sha256": "3825c9bd8d7c2e29616951868b8b94f8dbeb14c839f0211fb8a7c9e844ed1266",
+  "notes": 122,
+  "initial": {
+    "positives": 94,
+    "top1_acceptable": 61,
+    "top5_any_acceptable": 61,
+    "top5_all_acceptable": 61,
+    "negatives": 26,
+    "negatives_with_hits": 0,
+    "negative_hits_total": 0
+  },
+  "with_suggestions": {
+    "positives": 94,
+    "top1_acceptable": 91,
+    "top5_any_acceptable": 92,
+    "top5_all_acceptable": 92,
+    "negatives": 26,
+    "negatives_with_hits": 0,
+    "negative_hits_total": 0
+  },
+  "suggestions_offered": 34,
+  "negative_suggestions_offered": 0,
+  "negative_expanded_hits_total": 0,
+  "cases": [
+    {
+      "id": "L01",
+      "kind": "từ địa phương",
+      "accept": [
+        "LN01"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "LN01",
+        "SN27",
+        "LN04"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN01",
+            "SN27",
+            "LN04"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN01",
+            "SN27",
+            "LN04"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L02",
+      "kind": "từ địa phương",
+      "accept": [
+        "LN02"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "LN02"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN02"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN02"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        }
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L03",
+      "kind": "nói giảm",
+      "accept": [
+        "LN03"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "LN03",
+        "VN42",
+        "VN01",
+        "LN23"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN03",
+            "VN42",
+            "VN01",
+            "LN23"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN03",
+            "VN42",
+            "VN01",
+            "LN23"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L04",
+      "kind": "diễn đạt vòng",
+      "accept": [
+        "LN04"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "LN04",
+        "LN24",
+        "LN08",
+        "SN24"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN04",
+            "LN24",
+            "LN08",
+            "SN24"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN04",
+            "LN24",
+            "LN08",
+            "SN24"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L05",
+      "kind": "đa nghĩa",
+      "accept": [
+        "LN05"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "VN19",
+        "LN05",
+        "VN50"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "VN19",
+            "LN05",
+            "VN50"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "VN19",
+            "LN05",
+            "VN50"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L06",
+      "kind": "dấu hiệu thay cho thời lượng",
+      "accept": [
+        "LN06"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "LN06"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN06"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN06"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        }
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L07",
+      "kind": "vai người trao và người nhận",
+      "accept": [
+        "LN07"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "LN07"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN07"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN07"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        }
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L08",
+      "kind": "thuộc tính phân biệt",
+      "accept": [
+        "LN08"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "LN08"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN08"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN08"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        }
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L09",
+      "kind": "nguyên nhân",
+      "accept": [
+        "LN09"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "LN09",
+        "VN01"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN09",
+            "VN01"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN09",
+            "VN01"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L10",
+      "kind": "ứng phó khi có sự cố",
+      "accept": [
+        "LN10"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "LN13",
+        "LN22"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN13",
+            "LN22"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN13",
+            "LN22"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L11",
+      "kind": "ngoại lệ có điều kiện",
+      "accept": [
+        "LN11"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "LN11",
+        "SN17",
+        "VN13",
+        "SN26"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN11",
+            "SN17",
+            "VN13",
+            "SN26"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN11",
+            "SN17",
+            "VN13",
+            "SN26"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L12",
+      "kind": "điều kiện dừng",
+      "accept": [
+        "LN12"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "LN12",
+        "LN33",
+        "LN34",
+        "LN27",
+        "LN24"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN12",
+            "LN33",
+            "LN34",
+            "LN27",
+            "LN24"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN12",
+            "LN33",
+            "LN34",
+            "LN27",
+            "LN24"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L13",
+      "kind": "phạm vi phủ định",
+      "accept": [
+        "LN13"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "LN21",
+        "LN10"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN21",
+            "LN10"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN21",
+            "LN10"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L14",
+      "kind": "quyền theo đối tượng",
+      "accept": [
+        "LN14"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "LN14",
+        "LN30",
+        "SN22",
+        "SN29",
+        "SN30"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN14",
+            "LN30",
+            "SN22",
+            "SN29",
+            "SN30"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN14",
+            "LN30",
+            "SN22",
+            "SN29",
+            "SN30"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L15",
+      "kind": "thứ tự thao tác",
+      "accept": [
+        "LN15"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "LN15",
+        "LN08",
+        "LN02",
+        "LN17"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN15",
+            "LN08",
+            "LN02",
+            "LN17"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN15",
+            "LN08",
+            "LN02",
+            "LN17"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L16",
+      "kind": "giữ giờ đổi địa điểm",
+      "accept": [
+        "LN16"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "LN16",
+        "LN13",
+        "LN21",
+        "VN19",
+        "VN13"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN16",
+            "LN13",
+            "LN21",
+            "VN19",
+            "VN13"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN16",
+            "LN13",
+            "LN21",
+            "VN19",
+            "VN13"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L17",
+      "kind": "đề nghị chưa duyệt",
+      "accept": [
+        "LN17"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "LN17",
+        "VN35",
+        "LN22",
+        "VN37"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN17",
+            "VN35",
+            "LN22",
+            "VN37"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN17",
+            "VN35",
+            "LN22",
+            "VN37"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L18",
+      "kind": "thời gian qua nửa đêm",
+      "accept": [
+        "LN18"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "LN18",
+        "SN18",
+        "LN21",
+        "LN14"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN18",
+            "SN18",
+            "LN21",
+            "LN14"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN18",
+            "SN18",
+            "LN21",
+            "LN14"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L19",
+      "kind": "đơn vị tính và phần lẻ",
+      "accept": [
+        "LN19"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "LN19",
+        "VN17"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN19",
+            "VN17"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN19",
+            "VN17"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L20",
+      "kind": "lượng từ theo nhóm",
+      "accept": [
+        "LN20"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "LN20",
+        "LN21",
+        "LN03",
+        "LN05"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN20",
+            "LN21",
+            "LN03",
+            "LN05"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN20",
+            "LN21",
+            "LN03",
+            "LN05"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L21",
+      "kind": "thành ngữ",
+      "accept": [
+        "LN21"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "LN21"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN21"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN21"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        }
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L22",
+      "kind": "mục đích suy ra từ kết quả",
+      "accept": [
+        "LN22"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "LN22",
+        "LN05",
+        "VN19",
+        "VN18",
+        "LN39"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN22",
+            "LN05",
+            "VN19",
+            "VN18",
+            "LN39"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN22",
+            "LN05",
+            "VN19",
+            "VN18",
+            "LN39"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L23",
+      "kind": "tham chiếu theo thứ tự",
+      "accept": [
+        "LN23"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "LN23",
+        "VN47",
+        "VN09",
+        "LN35",
+        "LN17"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN23",
+            "VN47",
+            "VN09",
+            "LN35",
+            "LN17"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN23",
+            "VN47",
+            "VN09",
+            "LN35",
+            "LN17"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L24",
+      "kind": "người nói và người chuyển lời",
+      "accept": [
+        "LN24"
+      ],
+      "initial": [
+        "LN24"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "LN24"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "LN24"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L25",
+      "kind": "nghĩa của việc tắt thiết bị",
+      "accept": [
+        "LN25"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "LN25",
+        "LN39",
+        "LN05",
+        "VN13",
+        "SN14"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN25",
+            "LN39",
+            "LN05",
+            "VN13",
+            "SN14"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN25",
+            "LN39",
+            "LN05",
+            "VN13",
+            "SN14"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L26",
+      "kind": "so sánh theo đặc tính",
+      "accept": [
+        "LN26"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "LN26"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN26"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN26"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        }
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L27",
+      "kind": "điều kiện đồng thời",
+      "accept": [
+        "LN27"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "LN27",
+        "LN14",
+        "LN34",
+        "VN02",
+        "VN17"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN27",
+            "LN14",
+            "LN34",
+            "VN02",
+            "VN17"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN27",
+            "LN14",
+            "LN34",
+            "VN02",
+            "VN17"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L28",
+      "kind": "điều kiện thay thế",
+      "accept": [
+        "LN28"
+      ],
+      "initial": [
+        "LN28"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "LN28"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "LN28"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L29",
+      "kind": "hai hình thức hỗ trợ",
+      "accept": [
+        "LN29",
+        "LN30"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "LN29",
+        "LN30",
+        "VN19",
+        "LN05",
+        "SN26"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN29",
+            "LN30",
+            "VN19",
+            "LN05",
+            "SN26"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN29",
+            "LN30",
+            "VN19",
+            "LN05",
+            "SN26"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L30",
+      "kind": "đối chiếu cùng điều kiện",
+      "accept": [
+        "LN31",
+        "LN32"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "LN31",
+        "LN32",
+        "VN14",
+        "LN21",
+        "VN22"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN31",
+            "LN32",
+            "VN14",
+            "LN21",
+            "VN22"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN31",
+            "LN32",
+            "VN14",
+            "LN21",
+            "VN22"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L31",
+      "kind": "phạm vi qua hai khâu phục vụ",
+      "accept": [
+        "LN33",
+        "LN34"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "LN33",
+        "LN34",
+        "VN51",
+        "VN24",
+        "SN15"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN33",
+            "LN34",
+            "VN51",
+            "VN24",
+            "SN15"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN33",
+            "LN34",
+            "VN51",
+            "VN24",
+            "SN15"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L32",
+      "kind": "đối chiếu hai nguồn về khoản phải trả",
+      "accept": [
+        "LN35",
+        "LN36"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "LN36",
+        "LN35",
+        "VN28"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN36",
+            "LN35",
+            "VN28"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "LN36",
+            "LN35",
+            "VN28"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L33",
+      "kind": "nguyên nhân bị gán nhầm",
+      "accept": [],
+      "initial": [],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L34",
+      "kind": "áp ngoại lệ sai chỗ",
+      "accept": [],
+      "initial": [],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L35",
+      "kind": "đảo bên trao và bên nhận",
+      "accept": [],
+      "initial": [],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L36",
+      "kind": "quá hạn giao nhận",
+      "accept": [],
+      "initial": [],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L37",
+      "kind": "nhầm loại khoản hỗ trợ",
+      "accept": [],
+      "initial": [],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L38",
+      "kind": "gán nhầm tín hiệu cho hành động",
+      "accept": [],
+      "initial": [],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L39",
+      "kind": "ghép nhầm đối tượng và đặc tính",
+      "accept": [],
+      "initial": [],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "L40",
+      "kind": "đánh đồng điều kiện đồng thời với lựa chọn",
+      "accept": [],
+      "initial": [],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "language",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V01",
+      "kind": "Ấn phẩm gần tên",
+      "accept": [
+        "VN01"
+      ],
+      "initial": [
+        "VN01",
+        "VN02",
+        "VN49"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "VN01",
+            "VN02",
+            "VN49"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN01",
+            "VN02",
+            "VN49"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V02",
+      "kind": "Ấn phẩm gần tên",
+      "accept": [
+        "VN02"
+      ],
+      "initial": [
+        "VN02"
+      ],
+      "offered": true,
+      "expanded": [
+        "VN02",
+        "VN01",
+        "VN49",
+        "LN21",
+        "VN48"
+      ],
+      "service": {
+        "initial": {
+          "hits": [
+            "VN02"
+          ],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "VN02",
+            "VN01",
+            "VN49",
+            "LN21",
+            "VN48"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN02"
+          ],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "VN02",
+            "VN01",
+            "VN49",
+            "LN21",
+            "VN48"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V03",
+      "kind": "Kích thước có thứ tự",
+      "accept": [
+        "VN03"
+      ],
+      "initial": [
+        "VN03"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "VN03"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN03"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V04",
+      "kind": "Định dạng số thập phân và hàng nghìn",
+      "accept": [
+        "VN04"
+      ],
+      "initial": [
+        "VN04"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "VN04"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN04"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V05",
+      "kind": "Trọng số đo âm thanh",
+      "accept": [
+        "VN05"
+      ],
+      "initial": [
+        "VN05"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "VN05"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN05"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V06",
+      "kind": "Dán nội dung và dấu cách",
+      "accept": [
+        "VN06"
+      ],
+      "initial": [
+        "VN06"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "VN06"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN06"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V07",
+      "kind": "Dấu hai chấm trong văn bản",
+      "accept": [
+        "VN07"
+      ],
+      "initial": [
+        "VN07"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "VN07"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN07"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V08",
+      "kind": "Dải giá trị và điều kiện biên",
+      "accept": [
+        "VN08"
+      ],
+      "initial": [
+        "VN08"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "VN08"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN08"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V09",
+      "kind": "Số phiên bản và số phụ lục",
+      "accept": [
+        "VN09"
+      ],
+      "initial": [
+        "VN09"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "VN09"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN09"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V10",
+      "kind": "Định dạng và vai trò ngày tháng",
+      "accept": [
+        "VN10"
+      ],
+      "initial": [
+        "VN10"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "VN10"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN10"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V11",
+      "kind": "Mã ghép và mã có dấu câu",
+      "accept": [
+        "VN11"
+      ],
+      "initial": [
+        "VN11"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "VN11"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN11"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V12",
+      "kind": "Ký tự dễ nhầm trong mã",
+      "accept": [
+        "VN12"
+      ],
+      "initial": [
+        "VN12"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "VN12"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN12"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V13",
+      "kind": "Ký tự dễ nhầm trong mã",
+      "accept": [
+        "VN13"
+      ],
+      "initial": [
+        "VN13"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "VN13"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN13"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V14",
+      "kind": "Ký tự dễ nhầm trong mã",
+      "accept": [
+        "VN14"
+      ],
+      "initial": [
+        "VN14"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "VN14"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN14"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V15",
+      "kind": "Dấu âm và dấu cộng",
+      "accept": [
+        "VN15"
+      ],
+      "initial": [
+        "VN15"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "VN15"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN15"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V16",
+      "kind": "Cách nhập dấu tiếng Việt",
+      "accept": [
+        "VN16"
+      ],
+      "initial": [
+        "VN16"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "VN16"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN16"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V17",
+      "kind": "Cách nhập dấu tiếng Việt",
+      "accept": [
+        "VN17"
+      ],
+      "initial": [
+        "VN17"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "VN17"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN17"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V18",
+      "kind": "Dán nội dung và dấu cách",
+      "accept": [
+        "VN18"
+      ],
+      "initial": [
+        "VN18"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "VN18"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN18"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V19",
+      "kind": "Vị trí của bằng chứng",
+      "accept": [
+        "VN19"
+      ],
+      "initial": [
+        "VN19"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "VN19"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN19"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V20",
+      "kind": "Số hoặc mã gắn với đúng đối tượng",
+      "accept": [
+        "VN20"
+      ],
+      "initial": [
+        "VN20"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "VN20"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN20"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V21",
+      "kind": "Số phiên bản và số phụ lục",
+      "accept": [
+        "VN21"
+      ],
+      "initial": [
+        "VN21",
+        "VN51"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "VN21",
+            "VN51"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN21",
+            "VN51"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V22",
+      "kind": "Đơn vị và ký hiệu đại lượng",
+      "accept": [
+        "VN22"
+      ],
+      "initial": [
+        "VN22"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "VN22"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN22"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V23",
+      "kind": "Ký tự toàn chiều rộng",
+      "accept": [
+        "VN23"
+      ],
+      "initial": [
+        "VN23"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "VN23"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN23"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V24",
+      "kind": "Dấu hai chấm trong văn bản",
+      "accept": [
+        "VN24"
+      ],
+      "initial": [
+        "VN24"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "VN24"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN24"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V25",
+      "kind": "Phần mở rộng tên tệp",
+      "accept": [
+        "VN25"
+      ],
+      "initial": [
+        "VN25"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "VN25"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN25"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V26",
+      "kind": "Vị trí của bằng chứng",
+      "accept": [
+        "VN26"
+      ],
+      "initial": [
+        "VN26"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "VN26"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN26"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V27",
+      "kind": "Đơn vị và ký hiệu đại lượng",
+      "accept": [
+        "VN27"
+      ],
+      "initial": [
+        "VN27"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "VN27"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN27"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V28",
+      "kind": "Định dạng số thập phân và hàng nghìn",
+      "accept": [
+        "VN28"
+      ],
+      "initial": [
+        "VN28"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "VN28"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN28"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V29",
+      "kind": "Ấn phẩm gần tên",
+      "accept": [
+        "VN29",
+        "VN30"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "VN30",
+        "VN29",
+        "VN31"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "VN30",
+            "VN29",
+            "VN31"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "VN30",
+            "VN29",
+            "VN31"
+          ],
+          "can_expand": false,
+          "ranking": "bge"
+        }
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V30",
+      "kind": "Số hoặc mã gắn với đúng đối tượng",
+      "accept": [
+        "VN32",
+        "VN33"
+      ],
+      "initial": [
+        "VN33",
+        "VN32"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "VN33",
+            "VN32"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN33",
+            "VN32"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V31",
+      "kind": "Mã ghép và mã có dấu câu",
+      "accept": [
+        "VN35",
+        "VN36"
+      ],
+      "initial": [
+        "VN36",
+        "VN35"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "VN36",
+            "VN35"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN36",
+            "VN35"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V32",
+      "kind": "Dấu âm và dấu cộng",
+      "accept": [
+        "VN38",
+        "VN39",
+        "VN40"
+      ],
+      "initial": [
+        "VN38",
+        "VN40",
+        "VN39"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "VN38",
+            "VN40",
+            "VN39"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "VN38",
+            "VN40",
+            "VN39"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V33",
+      "kind": "Ấn phẩm gần tên",
+      "accept": [],
+      "initial": [],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V34",
+      "kind": "Trọng số đo âm thanh",
+      "accept": [],
+      "initial": [],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V35",
+      "kind": "Mã ghép và mã có dấu câu",
+      "accept": [],
+      "initial": [],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V36",
+      "kind": "Kích thước có thứ tự",
+      "accept": [],
+      "initial": [],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V37",
+      "kind": "Định dạng và vai trò ngày tháng",
+      "accept": [],
+      "initial": [],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V38",
+      "kind": "Đơn vị và ký hiệu đại lượng",
+      "accept": [],
+      "initial": [],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V39",
+      "kind": "Dải giá trị và điều kiện biên",
+      "accept": [],
+      "initial": [],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "V40",
+      "kind": "Phần mở rộng tên tệp",
+      "accept": [],
+      "initial": [],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "values",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S01",
+      "kind": "Giao chủ đề, dự án và thẻ",
+      "accept": [
+        "SN01"
+      ],
+      "initial": [
+        "SN01"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "SN01"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "SN01"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S02",
+      "kind": "Nhiều bản trong cùng dự án và thẻ",
+      "accept": [
+        "SN01",
+        "SN02"
+      ],
+      "initial": [
+        "SN01",
+        "SN02"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "SN01",
+            "SN02"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "SN01",
+            "SN02"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S03",
+      "kind": "Bản đề xuất trong một tập nhiều phiên bản",
+      "accept": [
+        "SN04"
+      ],
+      "initial": [
+        "SN04"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "SN04"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "SN04"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S04",
+      "kind": "Thu hẹp theo địa điểm của dự án",
+      "accept": [
+        "SN03"
+      ],
+      "initial": [
+        "SN03"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "SN03"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "SN03"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S05",
+      "kind": "Một ghi chú có nhiều nhãn trên cả ba chiều",
+      "accept": [
+        "SN05"
+      ],
+      "initial": [
+        "SN05"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "SN05"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "SN05"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S06",
+      "kind": "Lấy một ghi chú qua nhóm học liệu còn lại",
+      "accept": [
+        "SN05"
+      ],
+      "initial": [
+        "SN05"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "SN05"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "SN05"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S07",
+      "kind": "Cùng loại sơ đồ với hai đối tượng sử dụng",
+      "accept": [
+        "SN07"
+      ],
+      "initial": [
+        "SN07"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "SN07"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "SN07"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S08",
+      "kind": "Chủ kho mặc định và nhãn trùng tên",
+      "accept": [
+        "SN08"
+      ],
+      "initial": [
+        "SN08"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "SN08"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "SN08"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S09",
+      "kind": "Chủ kho thứ hai và tín hiệu khớp hai bản",
+      "accept": [
+        "SN09"
+      ],
+      "initial": [
+        "SN09"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "SN09"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "SN09"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S10",
+      "kind": "Hai ca hoạt động cùng khớp trong một dự án",
+      "accept": [
+        "SN13",
+        "SN14"
+      ],
+      "initial": [
+        "SN14",
+        "SN13"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "SN14",
+            "SN13"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "SN14",
+            "SN13"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S11",
+      "kind": "Xóa mềm giữa hai bản cùng metadata",
+      "accept": [
+        "SN10"
+      ],
+      "initial": [
+        "SN10"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "SN10"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "SN10"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S12",
+      "kind": "Trạng thái hiện hành theo chi tiết bàn giao",
+      "accept": [
+        "SN10"
+      ],
+      "initial": [
+        "SN10"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "SN10"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "SN10"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S13",
+      "kind": "Loại ghi chú đang mở để tìm ca còn lại",
+      "accept": [
+        "SN14"
+      ],
+      "initial": [
+        "SN14"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "SN14"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "SN14"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S14",
+      "kind": "Loại một mục và nhận mục thuộc dự án khác",
+      "accept": [
+        "SN15"
+      ],
+      "initial": [
+        "SN15"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "SN15"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "SN15"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S15",
+      "kind": "Kết quả nhiều mục khi loại một mục mà không khóa dự án",
+      "accept": [
+        "SN13",
+        "SN15"
+      ],
+      "initial": [
+        "SN15",
+        "SN13"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "SN15",
+            "SN13"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "SN15",
+            "SN13"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S16",
+      "kind": "Từ khóa chỉ nằm trong tiêu đề",
+      "accept": [
+        "SN16"
+      ],
+      "initial": [
+        "SN16"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "SN16"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "SN16"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S17",
+      "kind": "Từ khóa chỉ nằm trong mô tả",
+      "accept": [
+        "SN17"
+      ],
+      "initial": [
+        "SN17"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "SN17"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "SN17"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S18",
+      "kind": "Từ khóa chỉ nằm trong nội dung ghi chú",
+      "accept": [
+        "SN18"
+      ],
+      "initial": [
+        "SN18"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "SN18"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "SN18"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S19",
+      "kind": "Câu nhớ ý trong phạm vi dự án",
+      "accept": [
+        "SN19"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "SN19"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "SN19"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "SN19"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        }
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S20",
+      "kind": "Tìm gần đúng vẫn giữ thẻ",
+      "accept": [
+        "SN21"
+      ],
+      "initial": [],
+      "offered": true,
+      "expanded": [
+        "SN21"
+      ],
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "SN21"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        }
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": true,
+          "ranking": "lexical"
+        },
+        "expanded": {
+          "hits": [
+            "SN21"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        }
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": false,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S21",
+      "kind": "Liên ngành đo vi khí hậu và hỗ trợ xe lăn",
+      "accept": [
+        "SN23"
+      ],
+      "initial": [
+        "SN23"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "SN23"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "SN23"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S22",
+      "kind": "Chiều lọc tiếp cận với kích thước cụ thể",
+      "accept": [
+        "SN25"
+      ],
+      "initial": [
+        "SN25"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "SN25"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "SN25"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S23",
+      "kind": "Tìm cả hai lần đo trong một chủ đề",
+      "accept": [
+        "SN23",
+        "SN24"
+      ],
+      "initial": [
+        "SN23",
+        "SN24"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "SN23",
+            "SN24"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "SN23",
+            "SN24"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S24",
+      "kind": "Thẻ phân biệt thực đơn với khẩu phần",
+      "accept": [
+        "SN27"
+      ],
+      "initial": [
+        "SN27"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "SN27"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "SN27"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S25",
+      "kind": "Cùng dự án và chủ đề nhưng khác chức năng ghi chú",
+      "accept": [
+        "SN26"
+      ],
+      "initial": [
+        "SN26"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "SN26"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "SN26"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S26",
+      "kind": "Ghi chú thuộc hai dự án có cùng một chức năng",
+      "accept": [
+        "SN28"
+      ],
+      "initial": [
+        "SN28"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "SN28"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "SN28"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S27",
+      "kind": "Tên đối tượng gần trùng và vật liệu phân biệt",
+      "accept": [
+        "SN29"
+      ],
+      "initial": [
+        "SN29"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "SN29"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "SN29"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S28",
+      "kind": "Một nguồn khớp khi không dùng bộ lọc",
+      "accept": [
+        "SN32"
+      ],
+      "initial": [
+        "SN32"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "SN32"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "SN32"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S29",
+      "kind": "Lọc dự án theo công dụng thay vì vật liệu",
+      "accept": [
+        "SN31"
+      ],
+      "initial": [
+        "SN31"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "SN31"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "SN31"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S30",
+      "kind": "Đủ hai tài liệu phù hợp trong một lô trưng bày",
+      "accept": [
+        "SN29",
+        "SN30"
+      ],
+      "initial": [
+        "SN29",
+        "SN30"
+      ],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [
+            "SN29",
+            "SN30"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [
+            "SN29",
+            "SN30"
+          ],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S31",
+      "kind": "Chỉ còn bản trong thùng rác",
+      "accept": [],
+      "initial": [],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S32",
+      "kind": "Chi tiết riêng chỉ còn ở phiên bản đã xóa",
+      "accept": [],
+      "initial": [],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S33",
+      "kind": "Cụm chính xác chỉ thuộc chủ kho khác",
+      "accept": [],
+      "initial": [],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S34",
+      "kind": "Cô lập chủ kho trong câu hỏi nhớ ý",
+      "accept": [],
+      "initial": [],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S35",
+      "kind": "Bỏ mục đang mở là bỏ đáp án duy nhất",
+      "accept": [],
+      "initial": [],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S36",
+      "kind": "Thẻ hợp lệ chưa gán cho tài liệu liên quan",
+      "accept": [],
+      "initial": [],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S37",
+      "kind": "Giao ba bộ lọc rỗng dù từng nhãn đều hợp lệ",
+      "accept": [],
+      "initial": [],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S38",
+      "kind": "Tìm gần đúng bị chặn đúng ở phạm vi dự án",
+      "accept": [],
+      "initial": [],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S39",
+      "kind": "Từ khóa trong mô tả không vượt qua thẻ",
+      "accept": [],
+      "initial": [],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    },
+    {
+      "id": "S40",
+      "kind": "Không suy ra thuộc tính từ một kết quả có chung chủ đề",
+      "accept": [],
+      "initial": [],
+      "offered": false,
+      "expanded": null,
+      "service": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "api": {
+        "initial": {
+          "hits": [],
+          "can_expand": false,
+          "ranking": "lexical"
+        },
+        "expanded": null
+      },
+      "suite": "scope",
+      "initial_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      },
+      "with_suggestions_verdict": {
+        "pass": true,
+        "out_of_scope": []
+      }
+    }
+  ],
+  "fixture_commit": "6764783aa6d35d2215d076e8128433557e1a5707",
+  "fixture_sha256": {
+    "language.json": "d87dbd94e996ed5be8bf2817dc008acf942a13e5bee830eb8a1f3c8791fbe753",
+    "values.json": "dd3764fd89ab210b847d1899aa718c834cba313db4c9b0a114b600eb7503dafd",
+    "scope.json": "f55703ff82ef434d0258de0d330f74e9cb7b400ea625c5cde41e15e2c99f79cd"
+  },
+  "by_suite": {
+    "language": {
+      "cases": 40,
+      "initial_pass": 10,
+      "with_suggestions_pass": 37
+    },
+    "all": {
+      "cases": 120,
+      "initial_pass": 87,
+      "with_suggestions_pass": 117
+    },
+    "values": {
+      "cases": 40,
+      "initial_pass": 39,
+      "with_suggestions_pass": 40
+    },
+    "scope": {
+      "cases": 40,
+      "initial_pass": 38,
+      "with_suggestions_pass": 40
+    }
+  },
+  "bge_check": {
+    "service": {
+      "initial_requests": 120,
+      "expanded_requests": 34,
+      "eligible": 26,
+      "bge": 26,
+      "fallback": 0
+    },
+    "api": {
+      "initial_requests": 120,
+      "expanded_requests": 34,
+      "eligible": 26,
+      "bge": 26,
+      "fallback": 0
+    },
+    "errors": [],
+    "baseline_sha256": "c8c8bde60a97aa87ea77f918a2d259f9d5b11c5b9059295c93df75920330f2c8",
+    "baseline_source": "6764783aa6d35d2215d076e8128433557e1a5707"
+  }
+}

@@ -1,5 +1,32 @@
 # 120 tình huống tìm kiếm tiếng Việt
 
+## Tìm theo mã, số đo, ngày giờ và trích dẫn
+
+Ngày 27/11/2026, bản `6764783` chạy lại cùng 120 câu trên 122 ghi chú tự soạn. Trong 13 câu từng trượt khi dùng BGE, chỉ L05 có ghi chú đúng trong năm ứng viên đầu. Mười câu thiếu ứng viên vì cách ghi giá trị hoặc vì câu hỏi có thêm từ mà ghi chú không dùng. PostgreSQL nay tìm theo phần văn bản còn lại và đối chiếu mã, số, đơn vị hay trích dẫn ngay trong nguồn trước khi phân trang. BGE tiếp tục xếp lại tối đa năm mục ở lượt **Tìm gần đúng**. [Mã chọn ứng viên](../../../apps/backend/search/structured.py) · [Đối chứng với dữ liệu riêng](../../../apps/backend/search/test_structured_lookup.py)
+
+| Tiêu chí | Bản trước có BGE | Bản mới chỉ PostgreSQL | Bản mới có BGE |
+| --- | ---: | ---: | ---: |
+| Đạt ngay ở lượt mặc định | 77/120 | 87/120 | 87/120 |
+| Đạt sau khi dùng gợi ý nếu có | 107/120 | 116/120 | **117/120** |
+| Một đáp án, ghi chú đúng đứng đầu khi dùng gợi ý | 71/81 | 77/81 | 78/81 |
+| Nhiều đáp án, có đủ trong năm kết quả đầu | 10/13 | 13/13 | 13/13 |
+| Câu không có đáp án trả rỗng | 26/26 | 26/26 | 26/26 |
+
+Mười câu mới đạt ngay ở lượt mặc định gồm V04, V08, V09, V10, V18, V23, V28, V30, V31 và V32. Chẳng hạn, `0.48 s` tìm thấy `0,48 s`, ngày `04/06/2025` tìm đúng lượt đo `2025-06-04`, và một truy vấn tìm đủ ba phiếu lúc `06:15` có mức `+7 cm`. Phiếu ghi `−7 cm` bị loại. Cả 107 câu đã đạt trước đó tiếp tục đạt. Dịch vụ và API có đăng nhập trả cùng kết quả ở cả 120 lượt đầu và 34 lượt mở rộng. Cả hai đường gọi thực sự dùng BGE ở đủ 26 lượt có ít nhất hai ứng viên. Cả 26 câu không có đáp án đều không hiện nút gợi ý. [Kết quả trước](results-bge-integrated-windows.json) · [Đối chứng chỉ PostgreSQL](results-structured-lexical-windows.json) · [Kết quả từng câu qua dịch vụ và API với BGE](results-structured-bge-windows.json)
+
+Ba câu còn trượt đều thuộc nhóm nhớ ý. Ở L05, ghi chú đúng về vị trí chờ sau rèm đứng thứ hai. Ở L10 và L13, ứng viên từ khóa thiếu ghi chú về cách bắt lại nhịp hát và về buổi ráp bè ở đoạn kết. Trên bộ nhớ ý cũ có câu chữ khác, sau khi mở gợi ý, 33/36 câu có ghi chú đúng đứng đầu và 10/15 câu không có đáp án vẫn trả kết quả. Hai bộ dùng dữ liệu tự soạn. [Ba truy vấn nhớ ý](language.json) · [Bộ nhớ ý cũ](../recall-check.json)
+
+Đối chứng trên cùng bản backend, bộ 21 ca dễ nhầm đạt 18/21 và giữ nguyên danh sách kết quả từng câu. Trên 86 câu P16, Recall@5 đạt 73/77, Precision@5 đạt 73/76 và đủ 13 câu không có đáp án trả rỗng. Chromium xác nhận ở L16, ghi chú đúng lên từ hạng 4 ở thứ tự từ khóa lên hạng 1 khi dùng BGE, rồi quay lại đúng màn hình ban đầu. Bộ Django chạy 475 kiểm thử, trong đó 466 đạt và 9 bỏ qua. [Bộ 21 ca](../confusable-cases/fixture.json) · [Phép đo P16](../../../tools/search/p16_eval.py) · [Hành trình Chromium](../confusable-cases/check_bge_browser.mjs)
+
+Để tái lập phép đo trên PostgreSQL QA `kt_eval_edge_pairs`, cấu hình như bên dưới, dùng hai tên báo cáo mới và trỏ BGE tới bộ trọng số đã chuẩn bị trên máy.
+
+```powershell
+$env:SEARCH_BGE_MODEL_DIR=' '
+python evals/vietnamese-journeys/confusable-cases/run.py --matrix --expected-source 6764783 --report matrix-lexical-local.json
+$env:SEARCH_BGE_MODEL_DIR=Join-Path $env:LOCALAPPDATA 'KhoTriThuc/models/bge-reranker-v2-m3'
+python evals/vietnamese-journeys/confusable-cases/run.py --matrix --expected-source 6764783 --check-bge-against matrix-lexical-local.json --report matrix-bge-local.json
+```
+
 ## BGE xếp lại gợi ý khi bấm Tìm gần đúng
 
 Ngày 26/11/2026, bản `d28e6a2` chạy lại đủ 120 ca qua `SearchService` và API có đăng nhập trên PostgreSQL 18.4. Mô hình BGE chạy bằng ONNX trên CPU cục bộ. Cả hai đường đều dùng đúng 122 ghi chú, bộ lọc và đáp án đã khóa. [Kết quả mới theo từng câu và từng đường gọi](results-bge-integrated-windows.json) · [Bản chỉ dùng PostgreSQL](results-evidence-windows.json)
