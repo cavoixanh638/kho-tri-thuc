@@ -88,6 +88,69 @@ class StructuredLookupTests(TestCase):
 
         self.assert_exact_note("độ lệch tấm Lưu Ly -14,6 mm", target, "−14,6 mm")
 
+    def test_decimal_separators_return_both_equivalent_measurements(self):
+        comma = self.note("Bệ Vân Trúc rộng 43,27 cm.")
+        point = self.note("Tập bản vẽ.")
+        extraction = DerivedContent.objects.create(
+            item=point, kind="pdf_text", text="Bệ Vân Trúc rộng 43.27 cm.",
+            processor="fixture", processor_version="1", input_hash="c" * 64,
+            source_locator={"page": 24},
+        )
+        self.note("Bệ Vân Trúc rộng 43.27 mm.")
+        self.note("Bệ Vân Trúc rộng 43,72 cm.")
+        self.note("Bệ Vân Trúc rộng 143.27 cm.")
+
+        for query in ("bệ vân trúc rộng 43,27 cm", "bệ vân trúc rộng 43.27 cm"):
+            for expand in (False, True):
+                with self.subTest(query=query, expand=expand):
+                    hits = self.service.search(self.filters, query, expand=expand).hits
+                    by_id = {hit.item_id: hit for hit in hits}
+                    self.assertEqual(set(by_id), {comma.pk, point.pk})
+                    item_evidence, = by_id[comma.pk].evidence
+                    self.assertEqual(item_evidence.source, "item")
+                    self.assertIn("43,27 cm", item_evidence.snippet)
+                    derived_evidence, = by_id[point.pk].evidence
+                    self.assertEqual(derived_evidence.source, "derived_content")
+                    self.assertIn("43.27 cm", derived_evidence.snippet)
+                    self.assertEqual(derived_evidence.locator, {"page": 24})
+                    self.assertEqual(derived_evidence.provenance["derived_content_id"], extraction.pk)
+
+    def test_day_first_date_and_iso_date_keep_the_activity_and_day(self):
+        iso = self.note("Nhập mẫu gốm vân mây ngày 2028-03-07.")
+        slashes = self.note("Nhập mẫu gốm vân mây ngày 7/3/2028.")
+        self.note("Nhập mẫu gốm vân mây ngày 2028-07-03.")
+        self.note("Nhập mẫu gốm vân mây ngày 2028-03-09. Ký phiếu nhập mẫu gốm vân mây ngày 2028-03-07.")
+
+        for query in ("nhập mẫu gốm vân mây ngày 7/3/2028", "nhập mẫu gốm vân mây ngày 2028-03-07"):
+            for expand in (False, True):
+                with self.subTest(query=query, expand=expand):
+                    hits = self.service.search(self.filters, query, expand=expand).hits
+                    self.assertCountEqual([hit.item_id for hit in hits], [iso.pk, slashes.pk])
+
+    def test_grouped_count_and_plain_count_keep_the_value_and_counted_unit(self):
+        plain = self.note("Khay Vệt Nắng chứa 3472 hạt.")
+        grouped = self.note("Khay Vệt Nắng chứa 3.472 hạt.")
+        self.note("Khay Vệt Nắng chứa 3.742 hạt.")
+        self.note("Khay Vệt Nắng chứa 3.472 túi.")
+
+        for query in ("khay vệt nắng chứa 3472 hạt", "khay vệt nắng chứa 3.472 hạt"):
+            for expand in (False, True):
+                with self.subTest(query=query, expand=expand):
+                    hits = self.service.search(self.filters, query, expand=expand).hits
+                    self.assertCountEqual([hit.item_id for hit in hits], [plain.pk, grouped.pk])
+
+    def test_quoted_phrase_accepts_typography_and_retains_words_and_punctuation(self):
+        straight = self.note('Nhãn ghi "mực tím - giỏ tre".')
+        curly = self.note("Nhãn ghi “mực tím – giỏ tre”.")
+        self.note("Nhãn ghi “giỏ tre – mực tím”.")
+        self.note("Nhãn ghi “mực nâu – giỏ tre”.")
+        self.note("Nhãn ghi “mực tím / giỏ tre”.")
+
+        for expand in (False, True):
+            with self.subTest(expand=expand):
+                hits = self.service.search(self.filters, '"mực tím - giỏ tre"', expand=expand).hits
+                self.assertCountEqual([hit.item_id for hit in hits], [straight.pk, curly.pk])
+
     def test_scoped_pages_keep_matching_sources_and_exclude_ineligible_items(self):
         topic = Topic.objects.create(owner=self.owner, name="Khu thử kính")
         project = Project.objects.create(owner=self.owner, name="Đo độ lệch")
