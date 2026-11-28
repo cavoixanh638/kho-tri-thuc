@@ -164,6 +164,67 @@ test('approximate search is explicit and keeps group filters and pagination in t
   assert.ok(container.querySelector('.empty-state'));
 });
 
+test('checked approximate results distinguish a cited no from a page without evidence', async () => {
+  const literal = 'Dùng ký hiệu <em>mẫu</em> & giữ nguyên.\nKý tên trước khi gửi.';
+  const next = { score: 3, item_id: 'boundary' };
+  globalThis.fetch = async path => {
+    const url = new URL(path, window.location.origin);
+    if (url.pathname === '/api/v1/groups') return response({ topics: [], projects: [], tags: [] });
+    const params = url.searchParams;
+    assert.equal(params.get('expand'), 'true');
+    assert.equal(params.get('topic_id'), '4');
+    const quote_check = { status: 'checked', elapsed_ms: 270 };
+    if (!params.has('cursor_item_id')) return response({ results: [], next_cursor: next, quote_check });
+    assert.equal(params.get('cursor_score'), '3');
+    assert.equal(params.get('cursor_item_id'), 'boundary');
+    return response({ match_kind: 'partial', next_cursor: null, quote_check, results: [
+      { item_id: 'yes-note', title: 'Bản hướng dẫn', evidence: [{ source: 'item', snippet: literal }],
+        verification: { answer: 'yes', quotes: [literal, 'Gửi bản chính cho thư ký.'] } },
+      { item_id: 'no-note', title: 'Quy định ngoại lệ', evidence: [],
+        verification: { answer: 'no', quotes: ['Bản sao không cần chữ ký.'] } },
+    ] });
+  };
+
+  await render(ui.SearchScreen, { path: '#/tim-kiem?q=ky&topic_id=4&expand=true' });
+  assert.match(container.querySelector('#search-insufficient-evidence').textContent, /trên trang này/);
+  assert.equal(container.querySelector('.search-verification'), null);
+  await click('Trang sau');
+  assert.equal(container.querySelector('#search-insufficient-evidence'), null);
+  assert.equal(container.querySelector('#search-partial-match'), null);
+  const rows = [...container.querySelectorAll('.search-list .search-result')];
+  assert.deepEqual(rows.map(row => row.querySelector('.search-verification strong').textContent), ['Có', 'Không']);
+  assert.deepEqual(rows.map(row => row.querySelector('h3 a').getAttribute('href')), ['#/muc/yes-note', '#/muc/no-note']);
+  const quotes = [...rows[0].querySelectorAll('blockquote')];
+  assert.deepEqual(quotes.map(quote => quote.textContent), [literal, 'Gửi bản chính cho thư ký.']);
+  assert.equal(quotes[0].getAttribute('cite'), '#/muc/yes-note');
+  assert.equal(rows[0].querySelector('em'), null);
+  assert.equal(rows[0].textContent.split(literal).length, 2);
+  await click('Trang trước');
+  assert.ok(container.querySelector('#search-insufficient-evidence'));
+});
+
+test('unavailable quote checks keep approximate suggestions and their original excerpts', async () => {
+  globalThis.fetch = async path => {
+    const url = new URL(path, window.location.origin);
+    if (url.pathname === '/api/v1/groups') return response({ topics: [], projects: [], tags: [] });
+    return response({ match_kind: 'partial', next_cursor: null,
+      quote_check: { status: 'unavailable', elapsed_ms: 4000 },
+      results: [{ item_id: 'suggestion', title: 'Ghi chú có liên quan', evidence: [
+        { source: 'item', snippet: 'Đoạn khớp từ khóa' },
+      ] }],
+    });
+  };
+
+  await render(ui.SearchScreen, { path: '#/tim-kiem?q=tu+khoa&expand=true' });
+  const status = container.querySelector('#search-quote-unavailable');
+  assert.equal(status.getAttribute('role'), 'status');
+  assert.match(status.textContent, /chưa được đối chiếu/);
+  const list = container.querySelector('ol[aria-describedby="search-quote-unavailable"]');
+  assert.equal(list.querySelector('.search-evidence p').textContent, 'Đoạn khớp từ khóa');
+  assert.equal(list.querySelector('blockquote'), null);
+  assert.equal(container.querySelector('#search-insufficient-evidence'), null);
+});
+
 test('a late expanded search cannot replace the current filtered query or its exact result', async () => {
   let finishOld, oldSignal;
   globalThis.fetch = async (path, options) => {

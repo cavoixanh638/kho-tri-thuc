@@ -208,6 +208,7 @@ time { font-variant-numeric: tabular-nums; }
 .search-result h3 { overflow-wrap: anywhere; }
 .search-evidence { margin-block-start: 8px; }
 .search-evidence p { margin: 3px 0 0; overflow-wrap: anywhere; white-space: pre-wrap; }
+.search-quote { margin: 6px 0 0; padding-inline-start: 12px; border-inline-start: 3px solid var(--rule); }
 
 @media (max-width: 600px) {
   .search-filter-grid { grid-template-columns: minmax(0, 1fr); gap: 8px; }
