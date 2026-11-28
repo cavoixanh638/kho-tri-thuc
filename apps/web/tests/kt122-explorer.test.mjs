@@ -30,6 +30,7 @@ beforeEach(()=>{
   }
   if(url.pathname.endsWith('/structure'))return Response.json({item_id:id,parent_item_id:null,home_topic_id:1,sort_order:0,structure_version:0,origin:'user',ancestors:[],children:[{...note,item_id:child,title:'Chương con',parent_item_id:id,child_count:0}]});
   if(url.pathname.endsWith('/knowledge-tree'))return Response.json({nodes:[folder]});
+  if(url.pathname.endsWith('/collections'))return Response.json({results:[]});
   if(url.pathname.endsWith('/explorer/find'))return Response.json({results:[{...note,item_id:child,title:'Bài cha đã chọn'}]});
   return Response.json({user_edit_version:4});
  };
@@ -77,4 +78,35 @@ test('create command opens note composer at current selected folder',async()=>{
  await render(ui.KnowledgeExplorer,{data:{nodes:[folder]},onRetry(){},selectedId:1,unfiled:false,csrf:'fixture-csrf',onSaved(){}});
  await ui.act(async()=>{window.dispatchEvent(new window.CustomEvent('knowledge-command',{detail:{action:'create'}}));await settle();});assert.match(container.querySelector('.explorer-note-form h2').textContent,/Sách tiếng Việt/);
  await input('.explorer-note-form textarea','Nội dung');await click('Tạo ghi chú');assert.equal(mutations.at(-1).body.home_topic_id,1);
+});
+
+test('folder collapse releases DOM, reopening cached branch does not request it again',async()=>{
+ await render();await click('Mở Sách tiếng Việt');
+ const before=calls.filter(path=>path.includes('/explorer/children')).length;
+ await click('Thu gọn Sách tiếng Việt');
+ const closing=container.querySelector('.explorer-branch-reveal[aria-hidden="true"]');
+ assert.ok(closing.hasAttribute('inert'));
+ await ui.act(async()=>{await new Promise(r=>setTimeout(r,220));});
+ assert.equal(container.querySelector('a[href="#/muc/'+id+'"]'),null);
+ await click('Mở Sách tiếng Việt');
+ assert.ok(container.querySelector('a[href="#/muc/'+id+'"]'));
+ assert.equal(calls.filter(path=>path.includes('/explorer/children')).length,before);
+});
+test('workspace retains the same explorer DOM across library, note and other authenticated routes',async()=>{
+ const draw=path=>render(ui.KnowledgeWorkspace,{path,csrf:'fixture-csrf',children:ui.createElement('article',null,'Content '+path)});
+ await draw('#/thu-vien?node=1');
+ const sidebar=container.querySelector('.library-tree-shell');
+ const row=container.querySelector('.explorer-folder-item');
+ assert.ok(sidebar&&row);
+ assert.equal(row.getAttribute('aria-expanded'),'true');
+ const before=calls.filter(path=>path.includes('/explorer/children')).length;
+ await draw('#/muc/'+id);
+ assert.equal(container.querySelector('.library-tree-shell'),sidebar);
+ assert.equal(container.querySelector('.explorer-folder-item'),row);
+ assert.equal(row.getAttribute('aria-expanded'),'true');
+ assert.equal(container.querySelector('a[href="#/muc/'+id+'"]').getAttribute('aria-current'),'page');
+ await draw('#/tim-kiem');
+ assert.equal(container.querySelector('.library-tree-shell'),sidebar);
+ assert.equal(row.getAttribute('aria-expanded'),'true');
+ assert.equal(calls.filter(path=>path.includes('/explorer/children')).length,before);
 });

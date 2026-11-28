@@ -420,7 +420,39 @@ if (prerequisitesReady) {
             screenshot_bytes: evidence.bytes, visible_folder: true, same_distinct_ids_4_modes: true, horizontal_overflow: false, reduced_motion: true });
           persist();
         }
-        return { status: 'PASS', actual: '4 viewport widths + four library modes, identical Item IDs and no overflow', evidence: report.viewports.map((row) => row.screenshot) };
+        // A real route change must retain the very same sidebar node and
+        // expanded folder, not merely create an identical-looking replacement.
+        await page.setViewport({width:1440,height:900});
+        await route('#/thu-vien?node='+context.folder);
+        await wait(id=>!!document.querySelector('.knowledge-explorer a[href="#/muc/'+id+'"]'),context.parent,'parent visible in explorer');
+        await page.eval(folder=>{
+          window.__ktWorkspaceSidebar=document.querySelector('.library-tree-shell');
+          window.__ktWorkspaceFolder=document.querySelector('.knowledge-explorer a[href="#/thu-vien?node='+folder+'"]').closest('[role="treeitem"]');
+        },context.folder);
+        await route('#/muc/'+context.parent);
+        await wait(id=>!!document.querySelector('.knowledge-explorer a[href="#/muc/'+id+'"][aria-current="page"]')&&!!document.querySelector('.markdown-item-detail'),context.parent,'active note in persistent sidebar');
+        assert.equal(await page.eval(()=>window.__ktWorkspaceSidebar===document.querySelector('.library-tree-shell')&&window.__ktWorkspaceFolder?.isConnected&&window.__ktWorkspaceFolder?.getAttribute('aria-expanded')==='true'),true);
+        assert.equal(await page.eval(()=>document.documentElement.scrollWidth>innerWidth),false,'detail workspace overflow');
+        const detailEvidence=await screenshot('p08-persistent-explorer-detail.png');
+        await route('#/thu-vien?node='+context.folder);
+        assert.equal(await page.eval(()=>window.__ktWorkspaceSidebar===document.querySelector('.library-tree-shell')),true);
+        await page.send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'no-preference'}]});
+        const animation=await page.eval(async folder=>{
+          const row=document.querySelector('.knowledge-explorer a[href="#/thu-vien?node='+folder+'"]').closest('[role="treeitem"]');
+          const toggle=row.querySelector('.explorer-row > button');
+          const branch=row.querySelector(':scope > .explorer-branch-reveal');
+          if(row.getAttribute('aria-expanded')==='true')toggle.click();
+          await new Promise(resolve=>setTimeout(resolve,240));
+          const closed=branch.getBoundingClientRect().height;
+          toggle.click();
+          await new Promise(resolve=>setTimeout(resolve,400));
+          return {closed,open:branch.getBoundingClientRect().height,transition:getComputedStyle(branch).transitionDuration,ariaExpanded:row.getAttribute('aria-expanded')};
+        },context.folder);
+        assert.ok(animation.closed<2&&animation.open>10&&animation.ariaExpanded==='true'&&animation.transition.split(',').some(v=>parseFloat(v)>0),JSON.stringify(animation));
+        await page.send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-motion',value:'reduce'}]});
+        report.persistent_explorer={same_dom_across_route:true,active_note:true,expanded_folder_preserved:true,animation,detail_screenshot:detailEvidence.filename};
+        persist();
+        return { status: 'PASS', actual: '4 widths and four views, same Item IDs, persistent explorer across note route, animated folder and no overflow', evidence: [...report.viewports.map((row) => row.screenshot),detailEvidence.filename] };
       });
       await attempt('J8', async () => {
         if (!context.parent || !context.child) return {

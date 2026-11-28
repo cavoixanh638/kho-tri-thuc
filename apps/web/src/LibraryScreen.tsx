@@ -1,42 +1,23 @@
 import { LibraryViews, libraryModes, libraryLocationHref, parseLibraryLocation, type LibraryLocation, type LibraryFilter } from './LibraryViews';
-import { knowledgeNodeHref, nodeKindLabels, type KnowledgeNode, type KnowledgeTreeData } from './KnowledgeTree';
-import { KnowledgeExplorer } from './KnowledgeExplorer';
-import { SavedCollectionsPanel, SavedCollectionScreen, collectionIdFromHash } from './SavedCollections';
+import { knowledgeNodeHref, nodeKindLabels, type KnowledgeNode } from './KnowledgeTree';
+import { SavedCollectionScreen, collectionIdFromHash } from './SavedCollections';
 import { Button, SegmentedControl } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import type { Item, Page } from './api';
 import { itemNeedsRefresh } from './itemProcessing';
 import { Empty, ErrorNotice, Loading, PageControls, PageTitle, useResource } from './views';
+import { KnowledgeWorkspace, useKnowledgeWorkspace } from './KnowledgeWorkspace';
 
 export function LibraryScreen({ csrf = '' }: { csrf?: string }) {
+  const workspace = useKnowledgeWorkspace();
+  return workspace ? <LibraryContent csrf={csrf} /> : <KnowledgeWorkspace csrf={csrf}><LibraryContent csrf={csrf} /></KnowledgeWorkspace>;
+}
+
+function LibraryContent({ csrf }: { csrf: string }) {
   const [scope, setScope] = useState(() => parseLibraryLocation(window.location.hash));
   const { filter, offset, view } = scope;
   const collectionId = collectionIdFromHash(window.location.hash);
-  const [revision, setRevision] = useState(0);
-  const [treeExpanded, setTreeExpanded] = useState(() => {
-    const narrow = typeof window.matchMedia === 'function'
-      && window.matchMedia('(max-width: 1100px)').matches;
-    // Let a user's explicit choice persist. Otherwise show the library list
-    // first on mobile/tablet, where the tall folder tree hid all note results.
-    try {
-      const saved = sessionStorage.getItem('kt-explorer-visible');
-      return saved === null ? !narrow : saved !== '0';
-    } catch { return !narrow; }
-  });
-  useEffect(() => {
-    // When resizing an already-open desktop browser to mobile, follow the
-    // responsive default unless the user explicitly toggled the tree.
-    const media = window.matchMedia?.('(max-width: 1100px)');
-    if (!media) return;
-    const update = () => {
-      try {
-        if (sessionStorage.getItem('kt-explorer-visible') !== null) return;
-      } catch { /* no persisted preference */ }
-      setTreeExpanded(!media.matches);
-    };
-    media.addEventListener?.('change', update);
-    return () => media.removeEventListener?.('change', update);
-  }, []);
+  const { tree, revision } = useKnowledgeWorkspace()!;
   useEffect(() => {
     function changeScope() { setScope(parseLibraryLocation(window.location.hash)); }
     window.addEventListener('hashchange', changeScope);
@@ -47,7 +28,6 @@ export function LibraryScreen({ csrf = '' }: { csrf?: string }) {
     setScope(next);
     window.location.hash = libraryLocationHref(next);
   }
-  const tree = useResource<KnowledgeTreeData>('/knowledge-tree', { refreshKey: String(revision) });
   const nodes = tree.data?.nodes ?? [];
   const selected = nodes.find((node) => node.id === scope.id);
   const ancestors = selected?.path_ids.map((id) => nodes.find((node) => node.id === id)).filter((node): node is KnowledgeNode => !!node) ?? [];
@@ -59,27 +39,8 @@ export function LibraryScreen({ csrf = '' }: { csrf?: string }) {
   if (filter === 'favorite') query.set('favorite', 'true');
   const library = useResource<Page<Item>>(`/items?${query}`, { pollWhile: (page) => page.results.some(itemNeedsRefresh), refreshKey: String(revision) });
 
-  function saved(node: KnowledgeNode) {
-    setRevision((value) => value + 1);
-    navigate({ id: node.id, unfiled: false, offset: 0, filter: 'all' });
-  }
-
   return <>
     <PageTitle title="Thư viện" description="Đi từ kho con, lĩnh vực đến bộ sách, chương và từng bài tri thức. Một bài có thể xuất hiện trong nhiều nhánh." />
-    <div className="knowledge-library-layout" onClick={(event) => {
-      if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
-      const target = event.target instanceof Element ? event.target.closest('a') : null;
-      const href = target?.getAttribute('href');
-      if (href?.startsWith('#/thu-vien') && !href.includes('collection=')) {
-        event.preventDefault();
-        const next = parseLibraryLocation(href);
-        navigate({ ...next, view });
-      }
-    }}>
-    <aside className={'library-tree-shell' + (treeExpanded ? ' is-open' : '')}>
-      <button className="library-tree-toggle" type="button" aria-expanded={treeExpanded} aria-controls="library-tree-content" onClick={() => setTreeExpanded((value) => {try{sessionStorage.setItem('kt-explorer-visible',value?'0':'1');}catch{/* preference is optional */}return !value;})}>{treeExpanded ? 'Thu gọn thư mục và ghi chú' : 'Mở thư mục và ghi chú'}</button>
-      <div className="library-tree-content" id="library-tree-content"><KnowledgeExplorer data={tree.data} error={tree.error} onRetry={()=>{tree.retry();library.retry();}} selectedId={scope.id} unfiled={scope.unfiled} csrf={csrf} onSaved={saved} /><SavedCollectionsPanel /></div>
-    </aside>
     {collectionId ? <SavedCollectionScreen csrf={csrf} id={collectionId === 'new' ? undefined : collectionId} /> : <section className="panel knowledge-library-content" aria-label="Danh sách mục">
       <nav className="knowledge-breadcrumb" aria-label="Đường dẫn mục lục">
         <a href={knowledgeNodeHref()}>Kho Tri Thức</a>
@@ -113,6 +74,5 @@ export function LibraryScreen({ csrf = '' }: { csrf?: string }) {
             : <Empty>{filter === 'favorite' ? 'Chưa có mục yêu thích.' : filter === 'deleted' ? 'Thùng rác trống.' : <span>Chưa có mục nào. <a href="#/gui">Gửi vào kho</a></span>}</Empty>}
       {library.data && <PageControls offset={offset} nextOffset={library.data.next_offset} onChange={(value) => navigate({ offset: value })} />}
     </section>}
-    </div>
   </>;
 }
