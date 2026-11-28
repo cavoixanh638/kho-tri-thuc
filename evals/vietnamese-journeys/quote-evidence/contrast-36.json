@@ -1,0 +1,711 @@
+{
+  "items": [
+    {
+      "id": "PC01N1",
+      "title": "Sổ bàn giao máy chiếu ở rạp Nếp",
+      "note": "Hạnh giao máy chiếu cho Lộc ngay sau suất chiều. Lộc ký bên nhận, còn Hạnh giữ bản giấy."
+    },
+    {
+      "id": "PC01N2",
+      "title": "Bàn giao màn chiếu ở rạp Nếp",
+      "note": "Lộc giao màn chiếu gấp cho Hạnh trước suất chiều. Hạnh kiểm góc vải rồi ký nhận."
+    },
+    {
+      "id": "PC02N1",
+      "title": "Đổi sách tại quầy Hoa Bấc",
+      "note": "Quầy Hoa Bấc nhận đổi sách trong bảy ngày. Sách đã ghi tên vẫn đổi được nếu tên chỉ viết trên bìa bọc tháo rời; tên viết thẳng lên trang thì quầy từ chối."
+    },
+    {
+      "id": "PC02N2",
+      "title": "Gửi tặng sách tại quầy Hoa Bấc",
+      "note": "Thùng tặng sách bên quầy Hoa Bấc nhận sách còn đọc được, kể cả sách có tên viết ngay trên trang."
+    },
+    {
+      "id": "PC03N1",
+      "title": "Tổng kết mẻ bánh Gò Cỏ",
+      "note": "Mẻ bánh Gò Cỏ giao quầy sáng có sáu hộp loại nhỏ, mỗi hộp bốn chiếc. Hai hộp bánh lớn để lại bếp cho buổi chiều."
+    },
+    {
+      "id": "PC03N2",
+      "title": "Mẻ bánh lớn để lại bếp Gò Cỏ",
+      "note": "Hai hộp loại lớn cho buổi chiều chứa sáu chiếc mỗi hộp. Chúng nằm ở bếp tới lúc mở cửa ca sau."
+    },
+    {
+      "id": "PC04N1",
+      "title": "Điểm gửi xe bên xưởng Tầm Mây",
+      "note": "Khi xưởng Tầm Mây mở lớp tối, xe đạp của học viên gửi ở sân lát gạch phía đông. Sân phía tây dành riêng cho xe giao vật liệu.",
+      "projects": [
+        "Tầm Mây – lớp tối"
+      ]
+    },
+    {
+      "id": "PC04N2",
+      "title": "Xe đạp lớp tối ở xưởng Sao Giấy",
+      "note": "Khách lớp tối xưởng Sao Giấy để xe đạp ở sân tây, gần cửa nhận vật liệu. Sân đông có giàn phơi giấy.",
+      "projects": [
+        "Sao Giấy – lớp tối"
+      ]
+    },
+    {
+      "id": "PC05N1",
+      "title": "Quy ước nhóm thử âm Chuông Giấy",
+      "note": "Lượt thử âm Chuông Giấy bắt đầu sau khi gõ hai tiếng ngắn. Một tiếng dài là tín hiệu ngừng để tổ kỹ thuật kiểm loa.",
+      "tags": [
+        "Thử âm trước buổi diễn"
+      ]
+    },
+    {
+      "id": "PC05N2",
+      "title": "Hiệu lệnh vào sân trong tiết mục Chuông Giấy",
+      "note": "Ở đêm diễn Chuông Giấy, một tiếng dài gọi đội múa vào sân. Hai tiếng ngắn dành cho người kéo phông.",
+      "tags": [
+        "Điều phối đêm diễn"
+      ]
+    },
+    {
+      "id": "PC06N1",
+      "title": "Sổ đặt chỗ chiếu phim Nắng Chàm",
+      "note": "Khách đặt chỗ chiếu phim Nắng Chàm có thể đưa mã trong tin nhắn trên máy. Chỉ khi màn hình hỏng mới cần bản giấy.",
+      "topics": [
+        "Soát cửa phòng chiếu"
+      ]
+    },
+    {
+      "id": "PC06N2",
+      "title": "Phiếu nhận quà tại sân Nắng Chàm",
+      "note": "Quầy phát quà tại sân Nắng Chàm chỉ nhận phiếu giấy có dấu đỏ. Ảnh phiếu lưu trong tin nhắn không dùng để nhận quà.",
+      "topics": [
+        "Hậu cần quà tặng"
+      ]
+    },
+    {
+      "id": "PC07N1",
+      "title": "Bản chốt màu cho bảng chỉ dẫn Đồng Vừng",
+      "note": "Tổ sơn đã chốt xanh rêu cho chữ trên bảng chỉ dẫn Đồng Vừng. Màu trắng dùng cho mũi tên; việc đổi nền hiện mới là đề xuất."
+    },
+    {
+      "id": "PC07N2",
+      "title": "Bảng chỉ dẫn thử cho Đồng Vừng",
+      "note": "Bảng thử dùng màu trắng cho chữ và xanh rêu cho mũi tên. Tổ mang bảng này vào kho sau buổi góp ý."
+    },
+    {
+      "id": "PC08N1",
+      "title": "Khăn chàm lấy khỏi bể Nếp Sáng",
+      "note": "Khăn chàm Nếp Sáng vừa lấy khỏi bể có vệt xanh nhạt. Chỉ sau khi hong trước quạt nửa giờ, vệt ấy mới sẫm."
+    },
+    {
+      "id": "PC08N2",
+      "title": "Khăn chàm khô trong rổ Nếp Sáng",
+      "note": "Để khăn đã khô trong rổ qua đêm thì xanh sẫm vẫn giữ nguyên. Bản này ghi riêng lượt cất khăn sau đóng gói."
+    },
+    {
+      "id": "PC09N1",
+      "title": "Lịch trực kho đạo cụ Mỏ Sẻ",
+      "note": "Sáng thứ Bảy, kho đạo cụ Mỏ Sẻ mở từ tám giờ đến mười một giờ. Sau mười một giờ cửa kho khóa tới sáng Chủ nhật."
+    },
+    {
+      "id": "PC09N2",
+      "title": "Lịch cửa nhà tập Mỏ Sẻ",
+      "note": "Nhà tập Mỏ Sẻ mở lại lúc hai giờ chiều thứ Bảy. Người trực nhà tập có chìa phòng nhạc chứ không giữ chìa kho."
+    },
+    {
+      "id": "PC10N1",
+      "title": "Xử lý tiếng cọ ở hộp kéo Đá Hát",
+      "note": "Ngăn kéo Đá Hát kêu khi tay nắm chạm mép khung. Thay bánh lăn vẫn còn tiếng cọ; dịch tay nắm vào trong mới hết."
+    },
+    {
+      "id": "PC10N2",
+      "title": "Hộp kéo Bờ Than bị kẹt bánh",
+      "note": "Hộp ngăn kéo Bờ Than phát tiếng cọ do bánh lăn nứt. Đổi bánh mới thì kéo êm, tay nắm vẫn để nguyên."
+    },
+    {
+      "id": "PC11N1",
+      "title": "Bảng chuyến đưa mẫu ở Trúc Ảnh",
+      "note": "Nhân viên đưa mẫu gốm Trúc Ảnh tới phòng chụp. Lượt đi chỉ chở gốm, lượt về mới lấy mẫu vải từ phòng ấy về kho. Mẫu giấy đang đợi xe ở bàn số ba."
+    },
+    {
+      "id": "PC11N2",
+      "title": "Giao nhận của tổ ảnh Trúc Ảnh",
+      "note": "Tổ ảnh chuyển mẫu vải xuống phòng chụp trong đợt chạy thử hôm trước. Thợ để mẫu gốm cũ trong kho qua đêm."
+    },
+    {
+      "id": "PC12N1",
+      "title": "Nồi chè ở quầy Mít Sương",
+      "note": "Quầy Mít Sương múc chè đậu từ nồi men riêng. Tất cả cốc chè đậu đều có nước cốt dừa trộn sẵn vào nồi. Ai tránh dừa được mời chọn thạch lá dứa."
+    },
+    {
+      "id": "PC12N2",
+      "title": "Chè bắp ở quầy Mít Sương",
+      "note": "Chè bắp rót cốt dừa lúc múc. Khách gọi riêng một cốc chè bắp không cốt dừa thì quầy bỏ qua bước ấy."
+    }
+  ],
+  "cases": [
+    {
+      "id": "PC01a",
+      "block": "PC01",
+      "kind": "memory",
+      "query": "Suất chiều ở rạp Nếp xong thì Hạnh giao máy chiếu cho Lộc, đúng chứ?",
+      "accept": [
+        "PC01N1"
+      ],
+      "polarity": "yes",
+      "why": "Xác nhận bằng ghi chú PC01N1.",
+      "evidence": [
+        {
+          "source_id": "PC01N1",
+          "field": "note",
+          "excerpt": "Hạnh giao máy chiếu cho Lộc ngay sau suất chiều."
+        }
+      ]
+    },
+    {
+      "id": "PC01b",
+      "block": "PC01",
+      "kind": "memory",
+      "query": "Lộc có phải người giao máy chiếu cho Hạnh sau suất chiều ở rạp Nếp không?",
+      "accept": [
+        "PC01N1"
+      ],
+      "polarity": "no",
+      "why": "Bác bỏ bằng ghi chú PC01N1.",
+      "evidence": [
+        {
+          "source_id": "PC01N1",
+          "field": "note",
+          "excerpt": "Hạnh giao máy chiếu cho Lộc ngay sau suất chiều."
+        }
+      ]
+    },
+    {
+      "id": "PC01c",
+      "block": "PC01",
+      "kind": "negative",
+      "query": "Lúc giao máy chiếu sau suất chiều ở rạp Nếp, dây nguồn đã được cuộn cùng máy chưa?",
+      "accept": [],
+      "polarity": "unknown",
+      "why": "Sổ chỉ ghi người giao, người nhận, lúc giao và bản giấy."
+    },
+    {
+      "id": "PC02a",
+      "block": "PC02",
+      "kind": "memory",
+      "query": "Ở quầy Hoa Bấc sách ghi tên trên bìa bọc tháo rời còn đổi được chứ?",
+      "accept": [
+        "PC02N1"
+      ],
+      "polarity": "yes",
+      "why": "Xác nhận bằng ghi chú PC02N1.",
+      "evidence": [
+        {
+          "source_id": "PC02N1",
+          "field": "note",
+          "excerpt": "Sách đã ghi tên vẫn đổi được nếu tên chỉ viết trên bìa bọc tháo rời"
+        }
+      ]
+    },
+    {
+      "id": "PC02b",
+      "block": "PC02",
+      "kind": "memory",
+      "query": "Hoa Bấc vẫn cho đổi sách có tên viết ngay trên trang hả?",
+      "accept": [
+        "PC02N1"
+      ],
+      "polarity": "no",
+      "why": "Bác bỏ bằng ghi chú PC02N1.",
+      "evidence": [
+        {
+          "source_id": "PC02N1",
+          "field": "note",
+          "excerpt": "tên viết thẳng lên trang thì quầy từ chối"
+        }
+      ]
+    },
+    {
+      "id": "PC02c",
+      "block": "PC02",
+      "kind": "negative",
+      "query": "Quầy Hoa Bấc có nhận đổi sách qua bưu điện không nhỉ?",
+      "accept": [],
+      "polarity": "unknown",
+      "why": "Quy định ghi tình trạng sách và hạn đổi, thiếu cách nhận từ xa."
+    },
+    {
+      "id": "PC03a",
+      "block": "PC03",
+      "kind": "memory",
+      "query": "Mẻ bánh giao quầy sáng Gò Cỏ, hộp nhỏ có bốn chiếc phải không?",
+      "accept": [
+        "PC03N1"
+      ],
+      "polarity": "yes",
+      "why": "Xác nhận bằng ghi chú PC03N1.",
+      "evidence": [
+        {
+          "source_id": "PC03N1",
+          "field": "note",
+          "excerpt": "sáu hộp loại nhỏ, mỗi hộp bốn chiếc"
+        }
+      ]
+    },
+    {
+      "id": "PC03b",
+      "block": "PC03",
+      "kind": "memory",
+      "query": "Hộp nhỏ trong mẻ giao quầy sáng Gò Cỏ đựng sáu chiếc à?",
+      "accept": [
+        "PC03N1"
+      ],
+      "polarity": "no",
+      "why": "Bác bỏ bằng ghi chú PC03N1.",
+      "evidence": [
+        {
+          "source_id": "PC03N1",
+          "field": "note",
+          "excerpt": "sáu hộp loại nhỏ, mỗi hộp bốn chiếc"
+        }
+      ]
+    },
+    {
+      "id": "PC03c",
+      "block": "PC03",
+      "kind": "negative",
+      "query": "Mấy hộp bánh nhỏ giao quầy sáng Gò Cỏ đã dán hạn dùng ở mặt đáy chưa?",
+      "accept": [],
+      "polarity": "unknown",
+      "why": "Sổ có số hộp và số bánh, thiếu thông tin nhãn hạn dùng."
+    },
+    {
+      "id": "PC04a",
+      "block": "PC04",
+      "kind": "memory",
+      "query": "Học viên lớp tối gửi xe đạp ở sân gạch phía đông, phải vậy không?",
+      "accept": [
+        "PC04N1"
+      ],
+      "polarity": "yes",
+      "why": "Xác nhận bằng ghi chú PC04N1.",
+      "evidence": [
+        {
+          "source_id": "PC04N1",
+          "field": "note",
+          "excerpt": "xe đạp của học viên gửi ở sân lát gạch phía đông"
+        }
+      ],
+      "filters": {
+        "project": "Tầm Mây – lớp tối"
+      }
+    },
+    {
+      "id": "PC04b",
+      "block": "PC04",
+      "kind": "memory",
+      "query": "Xe đạp của học viên lớp tối được gửi ở sân phía tây chứ?",
+      "accept": [
+        "PC04N1"
+      ],
+      "polarity": "no",
+      "why": "Bác bỏ bằng ghi chú PC04N1.",
+      "evidence": [
+        {
+          "source_id": "PC04N1",
+          "field": "note",
+          "excerpt": "Sân phía tây dành riêng cho xe giao vật liệu."
+        }
+      ],
+      "filters": {
+        "project": "Tầm Mây – lớp tối"
+      }
+    },
+    {
+      "id": "PC04c",
+      "block": "PC04",
+      "kind": "negative",
+      "query": "Sân giữ xe đạp lớp tối có cho mượn khóa dây không vậy?",
+      "accept": [],
+      "polarity": "unknown",
+      "why": "Ghi chú trong dự án xác định sân gửi xe, thiếu thông tin mượn khóa.",
+      "filters": {
+        "project": "Tầm Mây – lớp tối"
+      }
+    },
+    {
+      "id": "PC05a",
+      "block": "PC05",
+      "kind": "memory",
+      "query": "Bắt đầu lượt thử âm là nghe hai tiếng gõ ngắn rồi vào, nhỉ?",
+      "accept": [
+        "PC05N1"
+      ],
+      "polarity": "yes",
+      "why": "Xác nhận bằng ghi chú PC05N1.",
+      "evidence": [
+        {
+          "source_id": "PC05N1",
+          "field": "note",
+          "excerpt": "Lượt thử âm Chuông Giấy bắt đầu sau khi gõ hai tiếng ngắn."
+        }
+      ],
+      "filters": {
+        "tag": "Thử âm trước buổi diễn"
+      }
+    },
+    {
+      "id": "PC05b",
+      "block": "PC05",
+      "kind": "memory",
+      "query": "Nghe một tiếng dài thì bắt đầu lượt thử âm được chưa?",
+      "accept": [
+        "PC05N1"
+      ],
+      "polarity": "no",
+      "why": "Bác bỏ bằng ghi chú PC05N1.",
+      "evidence": [
+        {
+          "source_id": "PC05N1",
+          "field": "note",
+          "excerpt": "Một tiếng dài là tín hiệu ngừng để tổ kỹ thuật kiểm loa."
+        }
+      ],
+      "filters": {
+        "tag": "Thử âm trước buổi diễn"
+      }
+    },
+    {
+      "id": "PC05c",
+      "block": "PC05",
+      "kind": "negative",
+      "query": "Trong lượt thử âm, có tín hiệu riêng để đổi sang loa dự phòng không?",
+      "accept": [],
+      "polarity": "unknown",
+      "why": "Sổ thử âm chỉ ghi tín hiệu bắt đầu và dừng kiểm loa.",
+      "filters": {
+        "tag": "Thử âm trước buổi diễn"
+      }
+    },
+    {
+      "id": "PC06a",
+      "block": "PC06",
+      "kind": "memory",
+      "query": "Mở mã trong tin nhắn trên điện thoại thì được vào xem phim chứ?",
+      "accept": [
+        "PC06N1"
+      ],
+      "polarity": "yes",
+      "why": "Xác nhận bằng ghi chú PC06N1.",
+      "evidence": [
+        {
+          "source_id": "PC06N1",
+          "field": "note",
+          "excerpt": "có thể đưa mã trong tin nhắn trên máy"
+        }
+      ],
+      "filters": {
+        "topic": "Soát cửa phòng chiếu"
+      }
+    },
+    {
+      "id": "PC06b",
+      "block": "PC06",
+      "kind": "memory",
+      "query": "Điện thoại vẫn mở được tin nhắn mà mình vẫn phải in mã ra giấy à?",
+      "accept": [
+        "PC06N1"
+      ],
+      "polarity": "no",
+      "why": "Bác bỏ bằng ghi chú PC06N1.",
+      "evidence": [
+        {
+          "source_id": "PC06N1",
+          "field": "note",
+          "excerpt": "Chỉ khi màn hình hỏng mới cần bản giấy."
+        }
+      ],
+      "filters": {
+        "topic": "Soát cửa phòng chiếu"
+      }
+    },
+    {
+      "id": "PC06c",
+      "block": "PC06",
+      "kind": "negative",
+      "query": "Bé ngồi cùng ghế người lớn có cần mã đặt chỗ riêng không?",
+      "accept": [],
+      "polarity": "unknown",
+      "why": "Sổ quy định cách trình mã và ngoại lệ, thiếu quy định cho trẻ ngồi chung ghế.",
+      "filters": {
+        "topic": "Soát cửa phòng chiếu"
+      }
+    },
+    {
+      "id": "PC07a",
+      "block": "PC07",
+      "kind": "memory",
+      "query": "Màu xanh rêu cho phần chữ trên bảng chỉ dẫn Đồng Vừng đã được chốt chưa?",
+      "accept": [
+        "PC07N1"
+      ],
+      "polarity": "yes",
+      "why": "Xác nhận bằng ghi chú PC07N1.",
+      "evidence": [
+        {
+          "source_id": "PC07N1",
+          "field": "note",
+          "excerpt": "Tổ sơn đã chốt xanh rêu cho chữ trên bảng chỉ dẫn Đồng Vừng."
+        }
+      ]
+    },
+    {
+      "id": "PC07b",
+      "block": "PC07",
+      "kind": "memory",
+      "query": "Đổi màu nền bảng chỉ dẫn Đồng Vừng là quyết định chính thức rồi hả?",
+      "accept": [
+        "PC07N1"
+      ],
+      "polarity": "no",
+      "why": "Bác bỏ bằng ghi chú PC07N1.",
+      "evidence": [
+        {
+          "source_id": "PC07N1",
+          "field": "note",
+          "excerpt": "việc đổi nền hiện mới là đề xuất"
+        }
+      ]
+    },
+    {
+      "id": "PC07c",
+      "block": "PC07",
+      "kind": "negative",
+      "query": "Tổ sơn đã đặt mua sơn cho bảng chỉ dẫn Đồng Vừng chưa?",
+      "accept": [],
+      "polarity": "unknown",
+      "why": "Bản chốt phân biệt quyết định với đề xuất, thiếu chứng từ mua sơn."
+    },
+    {
+      "id": "PC08a",
+      "block": "PC08",
+      "kind": "memory",
+      "query": "Vệt trên khăn chàm Nếp Sáng sẫm lên sau khi hong nửa giờ phải không?",
+      "accept": [
+        "PC08N1"
+      ],
+      "polarity": "yes",
+      "why": "Xác nhận bằng ghi chú PC08N1.",
+      "evidence": [
+        {
+          "source_id": "PC08N1",
+          "field": "note",
+          "excerpt": "Chỉ sau khi hong trước quạt nửa giờ, vệt ấy mới sẫm."
+        }
+      ]
+    },
+    {
+      "id": "PC08b",
+      "block": "PC08",
+      "kind": "memory",
+      "query": "Khăn chàm Nếp Sáng vừa ra khỏi bể là vệt xanh đã sẫm ngay à?",
+      "accept": [
+        "PC08N1"
+      ],
+      "polarity": "no",
+      "why": "Bác bỏ bằng ghi chú PC08N1.",
+      "evidence": [
+        {
+          "source_id": "PC08N1",
+          "field": "note",
+          "excerpt": "Khăn chàm Nếp Sáng vừa lấy khỏi bể có vệt xanh nhạt. Chỉ sau khi hong trước quạt nửa giờ, vệt ấy mới sẫm."
+        }
+      ]
+    },
+    {
+      "id": "PC08c",
+      "block": "PC08",
+      "kind": "negative",
+      "query": "Hôm hong khăn chàm Nếp Sáng nửa giờ, quạt để số hai hả?",
+      "accept": [],
+      "polarity": "unknown",
+      "why": "Ghi chú có thời lượng và kết quả, thiếu mức quạt."
+    },
+    {
+      "id": "PC09a",
+      "block": "PC09",
+      "kind": "memory",
+      "query": "Sáng thứ Bảy lúc chín giờ kho đạo cụ Mỏ Sẻ mở cửa đúng không?",
+      "accept": [
+        "PC09N1"
+      ],
+      "polarity": "yes",
+      "why": "Xác nhận bằng ghi chú PC09N1.",
+      "evidence": [
+        {
+          "source_id": "PC09N1",
+          "field": "note",
+          "excerpt": "Sáng thứ Bảy, kho đạo cụ Mỏ Sẻ mở từ tám giờ đến mười một giờ."
+        }
+      ]
+    },
+    {
+      "id": "PC09b",
+      "block": "PC09",
+      "kind": "memory",
+      "query": "Hai giờ chiều thứ Bảy còn vào được kho đạo cụ Mỏ Sẻ chứ?",
+      "accept": [
+        "PC09N1"
+      ],
+      "polarity": "no",
+      "why": "Bác bỏ bằng ghi chú PC09N1.",
+      "evidence": [
+        {
+          "source_id": "PC09N1",
+          "field": "note",
+          "excerpt": "Sau mười một giờ cửa kho khóa tới sáng Chủ nhật."
+        }
+      ]
+    },
+    {
+      "id": "PC09c",
+      "block": "PC09",
+      "kind": "negative",
+      "query": "Sáng thứ Bảy tới kho đạo cụ Mỏ Sẻ có cần hẹn người mở cửa trước không?",
+      "accept": [],
+      "polarity": "unknown",
+      "why": "Lịch cho biết khoảng mở và đóng cửa, thiếu yêu cầu đặt hẹn."
+    },
+    {
+      "id": "PC10a",
+      "block": "PC10",
+      "kind": "memory",
+      "query": "Dịch tay nắm ngăn kéo Đá Hát vào trong thì hết cọ nhỉ?",
+      "accept": [
+        "PC10N1"
+      ],
+      "polarity": "yes",
+      "why": "Xác nhận bằng ghi chú PC10N1.",
+      "evidence": [
+        {
+          "source_id": "PC10N1",
+          "field": "note",
+          "excerpt": "dịch tay nắm vào trong mới hết"
+        }
+      ]
+    },
+    {
+      "id": "PC10b",
+      "block": "PC10",
+      "kind": "memory",
+      "query": "Đổi bánh lăn là ngăn kéo Đá Hát hết tiếng cọ luôn phải không?",
+      "accept": [
+        "PC10N1"
+      ],
+      "polarity": "no",
+      "why": "Bác bỏ bằng ghi chú PC10N1.",
+      "evidence": [
+        {
+          "source_id": "PC10N1",
+          "field": "note",
+          "excerpt": "Thay bánh lăn vẫn còn tiếng cọ"
+        }
+      ]
+    },
+    {
+      "id": "PC10c",
+      "block": "PC10",
+      "kind": "negative",
+      "query": "Bánh lăn thay cho ngăn kéo Đá Hát là loại đường kính 18 mm à?",
+      "accept": [],
+      "polarity": "unknown",
+      "why": "Ghi chú ghi biện pháp và hiệu quả, thiếu kích cỡ bánh."
+    },
+    {
+      "id": "PC11a",
+      "block": "PC11",
+      "kind": "memory",
+      "query": "Chuyến đưa mẫu Trúc Ảnh mang gốm đến phòng chụp, đúng không?",
+      "accept": [
+        "PC11N1"
+      ],
+      "polarity": "yes",
+      "why": "Xác nhận bằng ghi chú PC11N1.",
+      "evidence": [
+        {
+          "source_id": "PC11N1",
+          "field": "note",
+          "excerpt": "Nhân viên đưa mẫu gốm Trúc Ảnh tới phòng chụp"
+        }
+      ]
+    },
+    {
+      "id": "PC11b",
+      "block": "PC11",
+      "kind": "memory",
+      "query": "Chuyến đưa mẫu Trúc Ảnh đi từ kho đã chở vải tới phòng chụp phải không?",
+      "accept": [
+        "PC11N1"
+      ],
+      "polarity": "no",
+      "why": "Bác bỏ bằng ghi chú PC11N1.",
+      "evidence": [
+        {
+          "source_id": "PC11N1",
+          "field": "note",
+          "excerpt": "Lượt đi chỉ chở gốm, lượt về mới lấy mẫu vải từ phòng ấy về kho."
+        }
+      ]
+    },
+    {
+      "id": "PC11c",
+      "block": "PC11",
+      "kind": "negative",
+      "query": "Chuyến đưa mẫu Trúc Ảnh có bọc mẫu gốm bằng giấy nâu không?",
+      "accept": [],
+      "polarity": "unknown",
+      "why": "Bảng ghi đích và chiều vận chuyển, thiếu quy cách bọc đồ."
+    },
+    {
+      "id": "PC12a",
+      "block": "PC12",
+      "kind": "memory",
+      "query": "Chè đậu quầy Mít Sương, mẻ trong nồi men đã có cốt dừa sẵn rồi phải không?",
+      "accept": [
+        "PC12N1"
+      ],
+      "polarity": "yes",
+      "why": "Xác nhận bằng ghi chú PC12N1.",
+      "evidence": [
+        {
+          "source_id": "PC12N1",
+          "field": "note",
+          "excerpt": "Tất cả cốc chè đậu đều có nước cốt dừa trộn sẵn vào nồi."
+        }
+      ]
+    },
+    {
+      "id": "PC12b",
+      "block": "PC12",
+      "kind": "memory",
+      "query": "Ở Mít Sương nhờ múc riêng một cốc chè đậu không cốt dừa thì được chứ?",
+      "accept": [
+        "PC12N1"
+      ],
+      "polarity": "no",
+      "why": "Bác bỏ bằng ghi chú PC12N1.",
+      "evidence": [
+        {
+          "source_id": "PC12N1",
+          "field": "note",
+          "excerpt": "Tất cả cốc chè đậu đều có nước cốt dừa trộn sẵn vào nồi."
+        }
+      ]
+    },
+    {
+      "id": "PC12c",
+      "block": "PC12",
+      "kind": "negative",
+      "query": "Cốt dừa trong chè đậu quầy Mít Sương là loại đóng lon à?",
+      "accept": [],
+      "polarity": "unknown",
+      "why": "Sổ ghi cốt dừa có sẵn trong cả nồi, thiếu thông tin nguồn nguyên liệu."
+    }
+  ]
+}

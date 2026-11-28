@@ -1,0 +1,1301 @@
+{
+  "rule": {
+    "intent": "Chỉ gắn nhãn cho câu xác nhận một mệnh đề rõ ràng về sự kiện, trạng thái hay quy định. Đọc toàn câu và xác định chủ thể, người nhận, đối tượng, thời điểm, điều kiện ngoại lệ và bộ lọc trước khi đối chiếu.",
+    "yes": "Ghi chú trong phạm vi khẳng định mệnh đề. Một câu hỏi về sự tồn tại của cách làm hoặc ngoại lệ có thể có đáp án có khi nguồn nêu ví dụ cụ thể.",
+    "no": "Ghi chú trong phạm vi bác bỏ mệnh đề bằng điều cấm, phủ định rõ, quyết định trái ngược hoặc giá trị xung đột ở cùng vai trò của cùng lần, quy định hoặc tình huống. Một phương án từng xảy ra chưa đủ bác một phương án khác có thể cùng tồn tại.",
+    "wrapper_or_unknown": "Các câu tìm trang, lời dặn, đoạn ghi hay cách làm thường dùng «có … không» để gọi lại ghi chú. Loại khỏi nhãn cực tính nếu yêu cầu chính là lấy ghi chú, hỏi một tham số, câu lẫn đối tượng, hoặc nếu mệnh đề còn thiếu bằng chứng để xác nhận hay bác bỏ.",
+    "frozen_gold": "Giữ nguyên `frozen_accept` và `frozen_why`. Một câu tìm kiếm có thể có gold rỗng vì không có nguồn khẳng định mệnh đề được hỏi, đồng thời có bằng chứng cho câu trả lời không khi đánh giá hỏi đáp. Không cộng các nguồn bác bỏ vào gold tìm kiếm gốc.",
+    "audit_scope": "Dùng câu hỏi, ghi chú, đáp án và lý do đã khóa. Các ID không xuất hiện trong `suites` hoặc `ambiguous_exclusions` nằm ngoài danh sách nhãn cực tính nghiêm ngặt. `ambiguous_exclusions` ghi các ví dụ có nguồn đính chính, có giả định chưa kiểm chứng hoặc có mục tiêu tìm ghi chú."
+  },
+  "counts": {
+    "48": {
+      "frozen": 48,
+      "yes": 0,
+      "no": 13,
+      "noWithEmptySearchGold": 13,
+      "ambiguous": 4
+    },
+    "120": {
+      "frozen": 120,
+      "yes": 3,
+      "no": 2,
+      "noWithEmptySearchGold": 1,
+      "ambiguous": 1
+    },
+    "400": {
+      "frozen": 400,
+      "yes": 5,
+      "no": 18,
+      "noWithEmptySearchGold": 16,
+      "ambiguous": 44
+    }
+  },
+  "suites": {
+    "48": {
+      "B02Q1": {
+        "polarity": "no",
+        "query": "[topic: bếp] Mai pha trà gừng bằng bột gừng phải không?",
+        "filters": {
+          "topic": "bếp",
+          "owner": "main"
+        },
+        "frozen_accept": [],
+        "frozen_why": "Her note specifies fresh ginger slices rather than powdered ginger.",
+        "evidence": [
+          {
+            "source_id": "B02N1",
+            "field": "note",
+            "excerpt": "Mai pha trà gừng bằng ba lát gừng tươi, không dùng bột gừng."
+          }
+        ]
+      },
+      "B03Q2": {
+        "polarity": "no",
+        "query": "Đèn đọc sách của Khoa dùng ánh sáng trắng lạnh à?",
+        "frozen_accept": [],
+        "frozen_why": "The note specifies gentle yellow light, the opposite of cold white.",
+        "evidence": [
+          {
+            "source_id": "B03N2",
+            "field": "note",
+            "excerpt": "Đèn đọc sách dùng bóng ánh sáng vàng dịu"
+          }
+        ]
+      },
+      "B03Q4": {
+        "polarity": "no",
+        "query": "Kính đọc sách của Khoa nằm trong ngăn thứ hai của kệ đầu giường?",
+        "frozen_accept": [],
+        "frozen_why": "The nightstand has only one drawer, where the glasses are kept.",
+        "evidence": [
+          {
+            "source_id": "B03N4",
+            "field": "note",
+            "excerpt": "Kệ đầu giường chỉ có một ngăn, Khoa để kính đọc sách ở đó."
+          }
+        ]
+      },
+      "B05Q2": {
+        "polarity": "no",
+        "query": "[owner: main, topic: ban công] Bình tưới màu trắng đang để dưới bồn rửa trong bếp à?",
+        "filters": {
+          "owner": "main",
+          "topic": "ban công"
+        },
+        "frozen_accept": [],
+        "frozen_why": "The note locates it under the balcony sink, not the kitchen sink.",
+        "evidence": [
+          {
+            "source_id": "B05N1",
+            "field": "note",
+            "excerpt": "Bình tưới cây màu trắng được đặt dưới bồn rửa ban công."
+          }
+        ]
+      },
+      "B06Q2": {
+        "polarity": "no",
+        "query": "Sau khi chạy Phúc kéo giãn cơ đùi khoảng năm phút đúng không?",
+        "frozen_accept": [],
+        "frozen_why": "The note names calves, not thighs, as the muscle group he stretches.",
+        "evidence": [
+          {
+            "source_id": "B06N3",
+            "field": "note",
+            "excerpt": "Sau khi chạy, Phúc dành khoảng năm phút kéo giãn bắp chân."
+          }
+        ]
+      },
+      "B06Q3": {
+        "polarity": "no",
+        "query": "Đôi giày màu xám đang phơi trong phòng khách sau khi giặt à?",
+        "frozen_accept": [],
+        "frozen_why": "The gray running shoes are noted as drying on the balcony, while this query places them in the living room.",
+        "evidence": [
+          {
+            "source_id": "B06N2",
+            "field": "note",
+            "excerpt": "Đôi giày chạy màu xám của Phúc đang phơi ở ban công sau khi giặt."
+          }
+        ]
+      },
+      "B07Q2": {
+        "polarity": "no",
+        "query": "Bộ dây dự phòng nằm trong ngăn chính rộng của bao đàn chứ?",
+        "frozen_accept": [],
+        "frozen_why": "It is in the small compartment, not the main large section.",
+        "evidence": [
+          {
+            "source_id": "B07N2",
+            "field": "note",
+            "excerpt": "Bộ dây guitar dự phòng của Hà nằm trong ngăn nhỏ của bao đàn."
+          }
+        ]
+      },
+      "B08Q3": {
+        "polarity": "no",
+        "query": "[topic: liên lạc] Sơn chắc chắn sẽ về thăm nhà cuối tháng chứ?",
+        "filters": {
+          "topic": "liên lạc",
+          "owner": "main"
+        },
+        "frozen_accept": [],
+        "frozen_why": "The plan is conditional on changing his work shift, so certainty is unsupported.",
+        "evidence": [
+          {
+            "source_id": "B08N4",
+            "field": "note",
+            "excerpt": "Sơn dự tính về thăm nhà vào cuối tháng, nếu đổi được ca làm."
+          }
+        ]
+      },
+      "B09Q2": {
+        "polarity": "no",
+        "query": "Phiếu bảo hành nồi cơm điện hết hạn từ cuối tháng Mười Một?",
+        "frozen_accept": [],
+        "frozen_why": "The warranty remains valid through the end of December.",
+        "evidence": [
+          {
+            "source_id": "B09N3",
+            "field": "note",
+            "excerpt": "Phiếu bảo hành nồi cơm điện còn hạn đến hết tháng Mười Hai."
+          }
+        ]
+      },
+      "B09Q4": {
+        "polarity": "no",
+        "query": "Biên nhận gửi xe được kẹp với chìa khóa xe trong ví của Thảo à?",
+        "frozen_accept": [],
+        "frozen_why": "It is kept with the parking card, not a vehicle key.",
+        "evidence": [
+          {
+            "source_id": "B09N2",
+            "field": "note",
+            "excerpt": "Biên nhận gửi xe tháng này được kẹp chung với thẻ xe trong ví của Thảo."
+          }
+        ]
+      },
+      "B10Q2": {
+        "polarity": "no",
+        "query": "Dũng đón xe trước siêu thị phải không?",
+        "frozen_accept": [],
+        "frozen_why": "The stop is opposite the pharmacy, explicitly not in front of the supermarket.",
+        "evidence": [
+          {
+            "source_id": "B10N2",
+            "field": "note",
+            "excerpt": "Dũng đón xe buýt ở trạm đối diện hiệu thuốc, không phải trước siêu thị."
+          }
+        ]
+      },
+      "B11Q1": {
+        "polarity": "no",
+        "query": "[topic: trang trí] Lan chọn xanh khói cho bức tường đối diện bàn làm việc à?",
+        "filters": {
+          "topic": "trang trí",
+          "owner": "main"
+        },
+        "frozen_accept": [],
+        "frozen_why": "The selected wall is behind the desk, not opposite it.",
+        "evidence": [
+          {
+            "source_id": "B11N1",
+            "field": "note",
+            "excerpt": "Lan chọn màu xanh khói cho mảng tường phía sau bàn làm việc."
+          }
+        ]
+      },
+      "B12Q2": {
+        "polarity": "no",
+        "query": "Tối thứ Bảy nhóm bạn của Minh đã chốt quán cà phê gần công viên để ăn chưa?",
+        "frozen_accept": [],
+        "frozen_why": "The dinner location is still undecided; the café is associated with their game sessions.",
+        "evidence": [
+          {
+            "source_id": "B12N3",
+            "field": "note",
+            "excerpt": "địa điểm vẫn chưa chốt."
+          }
+        ]
+      }
+    },
+    "120": {
+      "L11": {
+        "polarity": "yes",
+        "query": "Có trường hợp nào đi giày đế cứng tập nhảy được, miễn đứng trên mặt kê riêng?",
+        "frozen_accept": [
+          "LN11"
+        ],
+        "frozen_why": "Ngoại lệ dành cho người tập nhảy gõ khi đứng trên tấm ván chuyên dụng. Sàn chính vẫn cấm giày đế cứng.",
+        "evidence": [
+          {
+            "source_id": "LN11",
+            "field": "note",
+            "excerpt": "Riêng người tập nhảy gõ được mang giày gõ khi đứng trên tấm ván chuyên dụng."
+          }
+        ]
+      },
+      "L14": {
+        "polarity": "no",
+        "query": "Đi ngang khu trưng bày, chụp bảng chỉ chỗ các gian để dễ đi có cần hỏi trước không?",
+        "frozen_accept": [
+          "LN14"
+        ],
+        "frozen_why": "Sơ đồ gian hàng được phép chụp. Việc hỏi trước chỉ áp dụng khi chụp rõ mặt một người.",
+        "evidence": [
+          {
+            "source_id": "LN14",
+            "field": "note",
+            "excerpt": "Khách được chụp sơ đồ phân bố gian hàng để tìm đường. Nếu muốn chụp rõ mặt một người ở góc trưng bày thì phải hỏi người đó trước."
+          }
+        ]
+      },
+      "L25": {
+        "polarity": "yes",
+        "query": "Có lần nào diễn trọn vở trong bộ đồ biểu diễn dù không mở hệ thống tiếng?",
+        "frozen_accept": [
+          "LN25"
+        ],
+        "frozen_why": "Đoàn diễn hết các cảnh với đủ phục trang và tắt loa suốt lượt. Diễn viên vẫn nói bằng giọng thật.",
+        "evidence": [
+          {
+            "source_id": "LN25",
+            "field": "note",
+            "excerpt": "Đoàn vẫn mặc đủ phục trang và diễn hết các cảnh trong lượt chạy sân khấu chiều nay. Hệ thống loa tắt suốt lượt"
+          }
+        ]
+      },
+      "L28": {
+        "polarity": "yes",
+        "query": "Quên đem vé giấy đi nghe nhạc, mở email xác nhận ở điện thoại là vào được chứ?",
+        "frozen_accept": [
+          "LN28"
+        ],
+        "frozen_why": "Soát cửa chấp nhận một trong hai minh chứng, gồm vé giấy hoặc thư xác nhận hiển thị trên điện thoại.",
+        "evidence": [
+          {
+            "source_id": "LN28",
+            "field": "note",
+            "excerpt": "Khách đưa vé giấy hoặc mở email xác nhận trên điện thoại. Nhân viên soát cửa chỉ cần xem một trong hai"
+          }
+        ]
+      },
+      "L35": {
+        "polarity": "no",
+        "query": "Có phải hôm tặng dải băng tím, phụ trách đạo cụ đem màu tím sang biếu nhóm hợp xướng?",
+        "frozen_accept": [],
+        "frozen_why": "LN07 ghi nhóm hợp xướng tặng vật này cho nhà hát, phụ trách đạo cụ là bên nhận.",
+        "evidence": [
+          {
+            "source_id": "LN07",
+            "field": "note",
+            "excerpt": "Nhóm hợp xướng tặng nhà hát một cuộn băng vải tím để trang trí màn chào. Cuộn vải được trao cho phụ trách đạo cụ"
+          }
+        ]
+      }
+    },
+    "400": {
+      "T02a": {
+        "polarity": "no",
+        "query": "Ở Hộc Giấy lần đầu tạt vô coi vài trang tại chỗ thì có cần đăng ký dài hạn không?",
+        "frozen_accept": [
+          "TN02a"
+        ],
+        "frozen_why": "Ghi tên vào sổ là đủ lấy thẻ ngày đọc tại chỗ.",
+        "evidence": [
+          {
+            "source_id": "TN02a",
+            "field": "note",
+            "excerpt": "Hộc Giấy cấp thẻ khách dùng trong ngày khi ghi tên vào sổ dưới trệt. Thẻ chỉ để ngồi xem tại phòng"
+          }
+        ]
+      },
+      "T02c": {
+        "polarity": "no",
+        "query": "Trong mục Phòng đọc dân cư, có chính sách thẻ vãng lai cầm sách về ngủ một đêm không?",
+        "filters": {
+          "topic": "Phòng đọc dân cư"
+        },
+        "frozen_accept": [],
+        "frozen_why": "Chỗ cho mượn bằng thẻ ngày nằm ở mục bến đò.",
+        "evidence": [
+          {
+            "source_id": "TN02a",
+            "field": "note",
+            "excerpt": "Thẻ chỉ để ngồi xem tại phòng, chưa được mang sách về."
+          }
+        ]
+      },
+      "T05a": {
+        "polarity": "yes",
+        "query": "Bánh tới băng gỗ xuống ghe Cát Nêm, có phải gỡ đồ gì gắn trên xe không?",
+        "frozen_accept": [
+          "TN05a"
+        ],
+        "frozen_why": "Phải tháo túi hông trước khi dắt qua cầu ván.",
+        "evidence": [
+          {
+            "source_id": "TN05a",
+            "field": "note",
+            "excerpt": "Chuyến sớm Cát Nêm chở xe đạp nếu tháo túi bên hông trước khi dắt qua cầu ván."
+          }
+        ]
+      },
+      "T05c": {
+        "polarity": "no",
+        "query": "Trong Đạp xe qua lạch ghi nhà đò thả mình bên cái cân của vựa đá chứ?",
+        "filters": {
+          "project": "Đạp xe qua lạch"
+        },
+        "frozen_accept": [],
+        "frozen_why": "Cầu cân là điểm trả của chuyến kiểm kê riêng.",
+        "evidence": [
+          {
+            "source_id": "TN05a",
+            "field": "note",
+            "excerpt": "Đò cập sân gạch sau lò nước mắm."
+          }
+        ]
+      },
+      "T08b": {
+        "polarity": "yes",
+        "query": "Chân khó bước lên buýt Mái Rong, có chỗ ngồi nào đưa ra gần cửa giúp không?",
+        "frozen_accept": [
+          "TN08c"
+        ],
+        "frozen_why": "Ghế xoay gần cửa giữa và phụ xe hỗ trợ.",
+        "evidence": [
+          {
+            "source_id": "TN08c",
+            "field": "note",
+            "excerpt": "Buýt nhánh Mái Rong có ghế xoay sát cửa khi khách khó lên xuống."
+          }
+        ]
+      },
+      "T12a": {
+        "polarity": "yes",
+        "query": "Bé dòm kính ở Đồi Mõ hụt tầm thì lấy đồ kê chân ở chỗ phát lượt phải không?",
+        "frozen_accept": [
+          "TN12a"
+        ],
+        "frozen_why": "Bục gỗ thấp đặt ngay dưới bàn phiếu.",
+        "evidence": [
+          {
+            "source_id": "TN12a",
+            "field": "note",
+            "excerpt": "Trẻ không tới thị kính mượn bục gỗ thấp dưới bàn phiếu."
+          }
+        ]
+      },
+      "T13a": {
+        "polarity": "no",
+        "query": "Ngại loạng choạng khi thử miếng ván nổi Vỏ Ốc, buổi ở chỗ cạn có bắt đứng liền không?",
+        "frozen_accept": [
+          "TN13a"
+        ],
+        "frozen_why": "Lớp ở đầu bể nông cho quỳ trên ván trước.",
+        "evidence": [
+          {
+            "source_id": "TN13a",
+            "field": "note",
+            "excerpt": "Lớp làm quen ván đứng tập đầu bể nông, cho khách thử quỳ trên ván trước."
+          }
+        ]
+      },
+      "T18a": {
+        "polarity": "yes",
+        "query": "Chờ mở cửa Bốn Bậc mà lưng đau, cái ghế tựa cao lấy từ chỗ bày hình quảng cáo hả?",
+        "frozen_accept": [
+          "TN18a"
+        ],
+        "frozen_why": "Ghế gấp lưng cao đặt dưới kệ áp phích trong sảnh.",
+        "evidence": [
+          {
+            "source_id": "TN18a",
+            "field": "note",
+            "excerpt": "Quầy tiếp khách giữ ghế gấp lưng cao dưới kệ áp phích."
+          }
+        ]
+      },
+      "T18c": {
+        "polarity": "no",
+        "query": "Ghi chú của mình có cho đem ghế tựa mượn ngoài sảnh Bốn Bậc vào xem phim không?",
+        "filters": {
+          "owner": "main"
+        },
+        "frozen_accept": [],
+        "frozen_why": "Ghi chú chủ main chỉ cho dùng ở sảnh; sổ tổng duyệt chủ guest cho mang vào.",
+        "evidence": [
+          {
+            "source_id": "TN18a",
+            "field": "note",
+            "excerpt": "Người khó đứng lâu dùng ở sảnh rồi trả trước khi vào rạp."
+          }
+        ]
+      },
+      "T19c": {
+        "polarity": "no",
+        "query": "Lọ dầu rửa qua đem lĩnh hạt rau Vườn Hạt Dẻ có tính không?",
+        "frozen_accept": [],
+        "frozen_why": "Bàn đổi giống loại trừ chai dầu vì còn mùi sau khi tráng.",
+        "evidence": [
+          {
+            "source_id": "TN19c",
+            "field": "note",
+            "excerpt": "Chai đựng dầu phải đem về vì mùi còn bám."
+          }
+        ]
+      },
+      "T27c": {
+        "polarity": "no",
+        "query": "Bỏ phiếu đường vòng rồi, có đường theo cọc lam tới chòi Khe Mỏm mà đi khi trời mưa không?",
+        "filters": {
+          "exclude": "TN27b"
+        },
+        "frozen_accept": [],
+        "frozen_why": "Sau khi loại đường vòng đi mưa, lối còn cọc lam chỉ dùng lúc ráo.",
+        "evidence": [
+          {
+            "source_id": "TN27c",
+            "field": "note",
+            "excerpt": "Đường ngầm sau phiến đá phẳng có cọc đầu lam dẫn qua đoạn nước tới bậc dưới chòi. Lối này đi được lúc trời ráo, mưa thì nước phủ bậc."
+          }
+        ]
+      },
+      "T28a": {
+        "polarity": "yes",
+        "query": "Lên đoàn tàu chở xe hai bánh chỗ hàng cháo Nếp Xanh, phải vặn rời món giúp nhìn phía sau phải không?",
+        "frozen_accept": [
+          "TN28a"
+        ],
+        "frozen_why": "Ghi chú toa xe đạp yêu cầu tháo gương rời.",
+        "evidence": [
+          {
+            "source_id": "TN28a",
+            "field": "note",
+            "excerpt": "Khách tháo gương rời trước rồi móc bánh trước lên móc treo."
+          }
+        ]
+      },
+      "T32c": {
+        "polarity": "no",
+        "query": "Tấm chỉ lối hôm họp Thềm Mây sờ tay có đọc được tên hội trường bằng chữ gỗ nhô không?",
+        "frozen_accept": [],
+        "frozen_why": "Bảng tên hẻm mới có chữ gỗ; tấm chỉ tạm chỉ là mũi tên bìa.",
+        "evidence": [
+          {
+            "source_id": "TN32b",
+            "field": "note",
+            "excerpt": "Tấm bìa hình mũi tên tạm buộc vào cột điện đối diện hàng chè để khách tìm hội trường."
+          }
+        ]
+      },
+      "C20c": {
+        "polarity": "no",
+        "query": "Bản khớp hình ba bước trên cầu lấy mốc tiếng vang trước để kéo hình chạm chân về đúng sau à?",
+        "frozen_accept": [],
+        "frozen_why": "Mốc là hình chân chạm ván rồi mới kéo âm theo.",
+        "evidence": [
+          {
+            "source_id": "CN20c",
+            "field": "note",
+            "excerpt": "Hình bàn chân chạm ván dùng làm mốc, sau đó mới kéo bản tiếng dội khớp theo."
+          }
+        ]
+      },
+      "C30d": {
+        "polarity": "no",
+        "query": "Có chốt lau phủ thêm một lớp dầu rồi giữ kín tủ gỗ để mùi bay trong lúc dọn phòng không?",
+        "frozen_accept": [],
+        "frozen_why": "Họ mở tủ và lót khô, không lau thêm dầu.",
+        "evidence": [
+          {
+            "source_id": "CN30b",
+            "field": "note",
+            "excerpt": "Mở nắp phía sau tủ trong buổi dọn phòng rồi đặt bệ lên giấy lót khô."
+          }
+        ]
+      },
+      "H04c": {
+        "polarity": "no",
+        "query": "Dự án Giá đồ giặt B49 còn dặn xoay dấu tròn vào sát sườn sắt để mặt kệ đứng yên à?",
+        "filters": {
+          "project": "Giá đồ giặt B49"
+        },
+        "frozen_accept": [],
+        "frozen_why": "Dấu tròn hướng vào chỉ có ở kệ mẫu ngoài dự án.",
+        "evidence": [
+          {
+            "source_id": "HN04a",
+            "field": "note",
+            "excerpt": "Mặt có ba vết bút chì phải quay vào khung sắt, dấu tròn để hướng ra ngoài."
+          }
+        ]
+      },
+      "H17c": {
+        "polarity": "no",
+        "query": "Tất gần cửa chớp bị chấm cam vì kẹp nhựa bạc màu, có thử giặt hai nước vẫn lem thêm không?",
+        "frozen_accept": [],
+        "frozen_why": "Dấu cam do kẹp kim loại, hai lượt giặt với kẹp nhựa không có vết.",
+        "evidence": [
+          {
+            "source_id": "HN17c",
+            "field": "note",
+            "excerpt": "Kẹp kim loại trên dây để lại vệt cam tròn ngay gót tất sáng. Kẹp nhựa cũ trông bạc màu nhưng giặt thêm hai lượt cũng không thấy vết ở gót."
+          }
+        ]
+      },
+      "H19c": {
+        "polarity": "no",
+        "query": "Tranh nhà chim có lần lóa vì vải nâu nhám ở quai móc, phải bỏ miếng vải mới nhìn ra mái tổ không?",
+        "frozen_accept": [],
+        "frozen_why": "Miếng vải chống xoay tranh, lóa đến từ đèn rọi vào tấm nhựa.",
+        "evidence": [
+          {
+            "source_id": "HN19c",
+            "field": "note",
+            "excerpt": "Đèn nhỏ rọi từ dưới phản bóng trên tấm nhựa che tranh. Chuyển vị trí đèn sang bên cầu thang thì nhìn rõ mảng xanh trên mái tổ."
+          }
+        ]
+      },
+      "H22c": {
+        "polarity": "no",
+        "query": "Có phải hộp nhạc cối xay chỉ chạy nửa vòng do chân đế thấp, kê hai đồng xu vào thì chạy tiếp dù đóng nắp?",
+        "frozen_accept": [],
+        "frozen_why": "Đồng xu dành cho hộp toa tàu, cối xay vướng miếng lót ở nắp.",
+        "evidence": [
+          {
+            "source_id": "HN22a",
+            "field": "note",
+            "excerpt": "Hộp nhạc cối xay chạy đều khi tháo nắp, gắn nắp lại quay được nửa vòng thì dừng. Tôi lùi miếng lót nắp có mép thừa ra, cánh xay không cạ nữa."
+          }
+        ]
+      },
+      "H23c": {
+        "polarity": "no",
+        "query": "Gói bánh phồng có mè ở xóm Gò buộc dây gai vì mặt bánh kéo tơ khi bóc ra, phải không?",
+        "frozen_accept": [],
+        "frozen_why": "Dây thô đánh dấu nhân mè, kéo tơ là sự cố của khâu ép.",
+        "evidence": [
+          {
+            "source_id": "HN23c",
+            "field": "note",
+            "excerpt": "Tôi buộc dây gai thô vào gói có mè để sờ là biết."
+          }
+        ]
+      },
+      "H29c": {
+        "polarity": "no",
+        "query": "Chấm bé trên thân đom đóm rõ lên do cữ gỗ giữ riêng miếng giẻ vàng khỏi quét vào chấm, có đúng lần đó không?",
+        "frozen_accept": [],
+        "frozen_why": "Chấm rõ nhờ đổi giẻ xanh dệt sít; cữ giữ bìa khi nhấc khuôn.",
+        "evidence": [
+          {
+            "source_id": "HN29c",
+            "field": "note",
+            "excerpt": "Giẻ màu vàng dính sợi vào chấm trắng nhỏ giữa thân con đom đóm. Tôi dùng miếng vải xanh dệt sít lau lượt sau, chấm in ra sắc hơn."
+          }
+        ]
+      },
+      "H30d": {
+        "polarity": "no",
+        "query": "Ở ghi chõng ăn sáng, để khoai đỏ bổ miếng trong nồi lâu hơn củ nguyên mới giữ được vỏ nguyên hả?",
+        "frozen_accept": [],
+        "frozen_why": "Phần đã bổ được vớt sớm hơn để giữ vỏ.",
+        "evidence": [
+          {
+            "source_id": "HN30c",
+            "field": "note",
+            "excerpt": "Tôi vớt phần bổ sớm hơn để gói đi ăn sáng, lần đó vỏ còn dính."
+          }
+        ]
+      },
+      "H34d": {
+        "polarity": "no",
+        "query": "Gói kim trả bên bàn Gò Trúc bị méo khi băng quấn sát, mình còn trét bấc lên đầu gói để kim thẳng lại à?",
+        "frozen_accept": [],
+        "frozen_why": "Ghi gói đem trả nói tấm thiếc đỡ bìa và quấn nhẹ, bấc chỉ dùng chặn vách hộp.",
+        "evidence": [
+          {
+            "source_id": "HN34c",
+            "field": "note",
+            "excerpt": "Lần đóng sau, tôi đặt tấm thiếc cứng dưới bìa rồi quấn nhẹ hai vòng."
+          }
+        ]
+      }
+    }
+  },
+  "ambiguous_exclusions": {
+    "48": {
+      "B01Q2": {
+        "reason": "Một lời hứa chưa xác định việc trả máy đã diễn ra.",
+        "query": "Nam đã trả máy khoan cho Linh vào thứ Bảy chưa?",
+        "frozen_accept": [],
+        "frozen_why": "The note only records Nam’s promise to return it Saturday, not whether he did.",
+        "evidence": [
+          {
+            "source_id": "B01N3",
+            "field": "note",
+            "excerpt": "hứa trả vào thứ Bảy."
+          }
+        ]
+      },
+      "B04Q2": {
+        "reason": "Ghi chú xác nhận sáng Chủ nhật, chưa nêu đó là ngày duy nhất hay loại cả sáng thứ Bảy.",
+        "query": "Vy thường đi chợ sáng thứ Bảy?",
+        "frozen_accept": [],
+        "frozen_why": "The note says she goes on Sunday morning, not Saturday.",
+        "evidence": [
+          {
+            "source_id": "B04N2",
+            "field": "note",
+            "excerpt": "Vy ghé chợ vào sáng Chủ nhật trước khi quầy rau đông khách."
+          }
+        ]
+      },
+      "B04Q3": {
+        "reason": "Câu hỏi đặt Vy làm chủ thể có mặt trong danh sách. Gold đọc thành hỏi ba món có trong danh sách của Vy hay không.",
+        "query": "Vy có trong danh sách mua cà chua, đậu hũ và rau thơm không?",
+        "frozen_accept": [
+          "B04N3"
+        ],
+        "frozen_why": "All three items are explicitly listed for this shopping trip.",
+        "evidence": [
+          {
+            "source_id": "B04N3",
+            "field": "note",
+            "excerpt": "Trong danh sách lần này của Vy có cà chua, đậu hũ và một bó rau thơm."
+          }
+        ]
+      },
+      "B12Q4": {
+        "reason": "Thói quen cuối tuần có thể cùng tồn tại với thói quen giữa tuần.",
+        "query": "Nhóm của Minh thường chơi Codenames vào giữa tuần?",
+        "frozen_accept": [],
+        "frozen_why": "The note says they play on weekends, not midweek.",
+        "evidence": [
+          {
+            "source_id": "B12N1",
+            "field": "note",
+            "excerpt": "Cuối tuần, nhóm của Minh hay chơi Codenames"
+          }
+        ]
+      }
+    },
+    "120": {
+      "L38": {
+        "reason": "Hỏi có ghi chú nêu hiệu lệnh đó hay không. Câu cũng có thể được đọc thành hỏi đâu là hiệu lệnh thật.",
+        "query": "Có ghi chú nào bảo nghe hai tiếng gõ thì diễn viên ra diễn cảnh tiếp theo?",
+        "frozen_accept": [],
+        "frozen_why": "LN39 dùng hai tiếng gõ để nhắc vào đúng vạch thử đèn. Tín hiệu ra diễn là lúc trợ lý gọi tên qua bộ đàm.",
+        "evidence": [
+          {
+            "source_id": "LN39",
+            "field": "note",
+            "excerpt": "Hai tiếng gõ từ phòng điều khiển nhắc diễn viên đứng đúng vạch để thử đèn."
+          }
+        ]
+      }
+    },
+    "400": {
+      "C02d": {
+        "reason": "Hỏi có ghi một tình tiết hay không. Nguồn ghi vị trí vết mưa, thiếu thông tin đường nước đi.",
+        "query": "Có ghi là nước theo nét R vào sau bảng chữ nổi ở hiên không?",
+        "frozen_accept": [],
+        "frozen_why": "Nét R liên quan độ nhô, còn vết mưa nằm quanh vít.",
+        "evidence": [
+          {
+            "source_id": "CN02a",
+            "field": "note",
+            "excerpt": "Vết hiện ở các đầu đinh vì thợ bỏ sót lớp sơn lót quanh chỗ bắt vít."
+          }
+        ]
+      },
+      "C10c": {
+        "reason": "Câu xác nhận đi cùng yêu cầu lấy biên bản mang mệnh đề sai.",
+        "query": "Xưởng chọn ngửa phần xoắn của vỏ ốc bằng lót dưới đuôi như bệ con cá đúng không, lấy biên bản ấy.",
+        "frozen_accept": [],
+        "frozen_why": "Nêm vỏ ốc chống lăn sát gờ đáy; cách kê dưới đuôi thuộc mẫu cá.",
+        "evidence": [
+          {
+            "source_id": "CN10c",
+            "field": "note",
+            "excerpt": "Chêm nêm nhỏ sát gờ đáy trong suốt để khách từ lối ghế vẫn thấy hết đường xoắn."
+          }
+        ]
+      },
+      "C12c": {
+        "reason": "Hỏi tìm lệnh bỏ sọc trong sổ, còn nguồn ghi quyết định đổi màu.",
+        "query": "Trong sổ dệt khăn kẻ ô có lệnh bỏ hẳn đường chỉ giữa sau lần giặt đầu không?",
+        "frozen_accept": [],
+        "frozen_why": "Đổi màu sọc giữa để nhìn rõ hơn, không bỏ.",
+        "evidence": [
+          {
+            "source_id": "CN12b",
+            "field": "note",
+            "excerpt": "Tổ dệt đổi sọc đó sang cùng màu với dải biên nhạt để mắt nhận ra."
+          }
+        ]
+      },
+      "C23c": {
+        "reason": "Hỏi về sự tồn tại của một bản chính thức mô tả vị trí khác.",
+        "query": "Có bản chính thức phân biệt hai yếm cùng màu bằng dấu hồng ở mặt ngoài lưng để thấy ngay trên sân không?",
+        "frozen_accept": [],
+        "frozen_why": "Chấm chỉ nằm kín trong nách để nhận đồ lúc thay.",
+        "evidence": [
+          {
+            "source_id": "CN23c",
+            "field": "note",
+            "excerpt": "Tổ đồ thêm chấm chỉ hồng ở trong nách của chiếc dành cho vai cầm khăn."
+          }
+        ]
+      },
+      "C26c": {
+        "reason": "Có thể là yêu cầu tìm ghi chú nói đến phương án phủ bóng. Phủ mờ là thao tác được ghi.",
+        "query": "Có ghi đổi sang lớp sơn bóng cho càng rối cáy để lượt sau màu nâu bám chiếu rõ hơn không?",
+        "frozen_accept": [],
+        "frozen_why": "Một lớp mờ nhằm tránh hằn màu lên chiếu.",
+        "evidence": [
+          {
+            "source_id": "CN26a",
+            "field": "note",
+            "excerpt": "phun một lớp phủ mờ trước buổi sau."
+          }
+        ]
+      },
+      "C28c": {
+        "reason": "Có thể là yêu cầu tìm phiếu với dấu ở mặt trước. Vị trí được ghi nằm ở mặt sau.",
+        "query": "Có phiếu LT-11 yêu cầu chữ kiểm nằm ở mặt trước bên phải cho khách nhìn thấy không?",
+        "frozen_accept": [],
+        "frozen_why": "Phiếu đặt dấu kiểm ở mặt sau bên trái.",
+        "evidence": [
+          {
+            "source_id": "CN28c",
+            "field": "note",
+            "excerpt": "Dấu kiểm phải ghi vào góc trái mặt sau"
+          }
+        ]
+      },
+      "C31b": {
+        "reason": "Câu thêm yêu cầu trực tiếp «Lấy trang đó», nên mục tiêu là tìm trang. Gold gốc có nguồn.",
+        "query": "Có lần nét con 6 chìm vào đường màu xanh, thợ bổ sung màu sáng ngay trong khoang số phải không? Lấy trang đó.",
+        "frozen_accept": [
+          "CN31b"
+        ],
+        "frozen_why": "Bột trắng dặm lòng số, gạt phần tràn khỏi nét.",
+        "evidence": [
+          {
+            "source_id": "CN31b",
+            "field": "note",
+            "excerpt": "Dặm lớp bột trắng vào lòng số rồi lau sạch phần bột tràn qua mép"
+          }
+        ]
+      },
+      "T14c": {
+        "reason": "Tự chụp và được gửi thêm ảnh có thể cùng tồn tại. Sổ thiếu quy định gửi ảnh qua mã.",
+        "query": "Cổng Lò gửi ảnh chụp trước tấm vải qua mã trên vé phải không?",
+        "frozen_accept": [],
+        "frozen_why": "Khách tự chụp, không có hướng dẫn nhận ảnh qua mã.",
+        "evidence": [
+          {
+            "source_id": "TN14c",
+            "field": "note",
+            "excerpt": "khách tự chụp bằng máy của mình."
+          }
+        ]
+      },
+      "T22c": {
+        "reason": "Điều kiện ngồi chờ đề cập lượt tiếp đã mua, nhưng thiếu quy định riêng về chuyển vé.",
+        "query": "Đồi Rạ cho chuyển vé lượt trước sang lượt leo dốc sau khi xe quay đầu miễn phí hả?",
+        "frozen_accept": [],
+        "frozen_why": "Chờ trong xe chỉ khi đã mua lượt tiếp.",
+        "evidence": [
+          {
+            "source_id": "TN22c",
+            "field": "note",
+            "excerpt": "Khách có thể ngồi trong xe nếu đã mua lượt tiếp."
+          }
+        ]
+      },
+      "T26d": {
+        "reason": "Đây là quy tắc kẹp tên. Sổ thiếu một quy định riêng về cộng điểm.",
+        "query": "Đội ném trúng ba lần cùng rổ Nhà Lưới có được cộng điểm theo số lần trúng không?",
+        "frozen_accept": [],
+        "frozen_why": "Chỉ có quy tắc kẹp tên khi trúng hai rổ khác nhau, không có điểm lũy kế cho một rổ.",
+        "evidence": [
+          {
+            "source_id": "TN26c",
+            "field": "note",
+            "excerpt": "Nhóm nào trúng hai rổ khác nhau trong một lượt thì được kẹp tên lên dây phía trên."
+          }
+        ]
+      },
+      "T28c": {
+        "reason": "Ghi chú xác nhận nhận túi nhỏ và thiếu thông tin về xe đạp gửi tới tối.",
+        "query": "Quầy vé ga Nếp Xanh nhận khóa cả xe đạp tới tối như túi nhỏ được không?",
+        "frozen_accept": [],
+        "frozen_why": "Quầy hành lý chỉ ghi nhận túi vải nhỏ, xe đạp có toa riêng.",
+        "evidence": [
+          {
+            "source_id": "TN28c",
+            "field": "note",
+            "excerpt": "Kệ có khóa phía quầy vé nhận túi vải nhỏ trong giờ có nhân viên trực."
+          }
+        ]
+      },
+      "T29c": {
+        "reason": "Ghi chú xác nhận cho mượn xe thường, thiếu quy định loại trừ cho mượn xe đạp tay.",
+        "query": "Bên bàn giàn chanh Vành Sen có mượn được xe đạp tay tự đi khi hết ca người hướng dẫn không?",
+        "frozen_accept": [],
+        "frozen_why": "Bàn giàn chanh chỉ có xe đạp thường; xe đạp tay thuộc buổi làm quen.",
+        "evidence": [
+          {
+            "source_id": "TN29c",
+            "field": "note",
+            "excerpt": "Sau giờ có hướng dẫn, xe đạp hai bánh thường được mượn ở bàn gần giàn chanh và đi vòng ngoài."
+          }
+        ]
+      },
+      "H01c": {
+        "reason": "Hỏi có ghi lại buổi với tình tiết đó hay không. Sổ có buổi tương tự với kết quả khác.",
+        "query": "Hũ lùn để tới cữ cơm tối bị lợn cợn vì bưng qua nồi giữa lúc ủ, có ghi bữa đó không?",
+        "frozen_accept": [],
+        "frozen_why": "Hũ lùn ủ lâu chỉ bị chua gắt, còn hiện tượng lợn cợn thuộc hũ nắp đỏ.",
+        "evidence": [
+          {
+            "source_id": "HN01c",
+            "field": "note",
+            "excerpt": "Khuấy lên thấy mịn, chỉ có vị chua gắt hơn mẻ lấy ra từ xế chiều."
+          }
+        ]
+      },
+      "H02c": {
+        "reason": "Hỏi «có lần nào» trong phạm vi. Một lần chỉnh nam châm thành công chưa xác định mọi lần.",
+        "query": "Trong mục Tủ chân cầu thang có lần nào phải thay pin mới hết nhấp nháy khi cửa hờ chứ canh nam châm không được?",
+        "filters": {
+          "topic": "Tủ chân cầu thang"
+        },
+        "frozen_accept": [],
+        "frozen_why": "Đổi pin chỉ có ở ghi đèn gương hành lang ngoài phạm vi.",
+        "evidence": [
+          {
+            "source_id": "HN02a",
+            "field": "note",
+            "excerpt": "Tôi dịch miếng nam châm sát mép bản lề hơn, từ đó đóng tới đâu tắt hẳn tới đó."
+          }
+        ]
+      },
+      "H02d": {
+        "reason": "Hỏi có đoạn nào nói đến một tình tiết chưa được ghi; nguồn mô tả quy trình khác.",
+        "query": "Có đoạn nào nói sau khi rửa chụp đèn, cửa tủ giày vẫn mở và đèn tự tắt do hơi nước chưa khô?",
+        "frozen_accept": [],
+        "frozen_why": "Chụp được để ráo trước khi lắp và chỉ đổi màu ánh sáng.",
+        "evidence": [
+          {
+            "source_id": "HN02c",
+            "field": "note",
+            "excerpt": "Tôi tháo tấm chụp đem rửa, để ráo rồi gắn lại nên ánh sáng trắng hơn."
+          }
+        ]
+      },
+      "H03c": {
+        "reason": "Hỏi có thấy ghi vụ dời chậu hay không. Ghi chú về cùng cây mô tả sự cố lỗ xả.",
+        "query": "Húng lủi bị sém một bên vì nắng hắt từ kính, có thấy mình ghi chậu nhựa đó nhấc ra xa cửa không?",
+        "frozen_accept": [],
+        "frozen_why": "Vết viền bạc thuộc húng quế, ghi húng lủi nói về lỗ xả bị đá chắn.",
+        "evidence": [
+          {
+            "source_id": "HN03c",
+            "field": "note",
+            "excerpt": "Chậu húng lủi bằng nhựa lúc nhấc lên nặng chịch vì lỗ xả bị đá kê chắn."
+          }
+        ]
+      },
+      "H05c": {
+        "reason": "Câu hỏi «đúng ghi chú đó không» tập trung vào định vị ghi chú theo chi tiết nhớ nhầm.",
+        "query": "Gói xôi bắp giao sân giếng bọc giấy ghi giờ vì hơi nóng từ đáy giỏ làm mực loang, đúng ghi chú đó không?",
+        "frozen_accept": [],
+        "frozen_why": "Tờ giấy được bảo vệ vì trời mưa, hơi nước ở đáy thuộc xôi đậu.",
+        "evidence": [
+          {
+            "source_id": "HN05c",
+            "field": "note",
+            "excerpt": "Gặp mưa lâm râm, tôi bọc riêng tờ giấy trong túi trong để chữ khỏi nhòe."
+          }
+        ]
+      },
+      "H06c": {
+        "reason": "Câu hỏi có ghi tình huống kêu lúc nhấc hay không. Có thể hiểu là tìm lời ghi khẳng định hoặc hỏi lại đặc điểm chiếc ghế.",
+        "query": "Có ghi chiếc ghế bên chiếu nhấc hẳn khỏi nẹp đồng vẫn nghe lộc cộc nên phải chêm mộng không?",
+        "frozen_accept": [],
+        "frozen_why": "Chỉ ghế bàn cờ kêu khi nhấc, ghế bên chiếu kêu khi qua nẹp.",
+        "evidence": [
+          {
+            "source_id": "HN06a",
+            "field": "note",
+            "excerpt": "Chiếc ghế nan chỉ kêu khi kéo ngang qua nẹp đồng sát chiếu."
+          }
+        ]
+      },
+      "H06d": {
+        "reason": "Câu hỏi «có ai ghi» mang nghĩa tìm lời ghi khẳng định; sổ nói cách xử lý lúc kéo ngang.",
+        "query": "Sau khi lót nỉ ghế nan, có ai ghi ghế vẫn kêu ngay cả khi kéo dọc theo vách, không đi qua nẹp?",
+        "frozen_accept": [],
+        "frozen_why": "Tiếng được ghi chỉ ở lúc kéo ngang qua nẹp và đã hết sau khi lót.",
+        "evidence": [
+          {
+            "source_id": "HN06a",
+            "field": "note",
+            "excerpt": "Dán miếng nỉ dưới hai chân gần vách làm lúc kéo ngang êm hẳn."
+          }
+        ]
+      },
+      "H07c": {
+        "reason": "Đoạn mẫu xác nhận cách đối chiếu màu. Nó có thể cùng tồn tại với một nét đánh dấu trên vỏ cuộn.",
+        "query": "Ở ghi rèm ca rô, có đánh dấu màu chỉ đúng bằng nét phấn vàng sau vỏ cuộn không?",
+        "frozen_accept": [],
+        "frozen_why": "Nét phấn xác định cuộn chỉ cho nệm, còn cuộn rèm được nhận diện bằng đoạn mẫu.",
+        "evidence": [
+          {
+            "source_id": "HN07a",
+            "field": "note",
+            "excerpt": "Tôi quấn một đoạn mẫu vào kẹp gỗ để ban ngày đem đi mua cho đúng màu."
+          }
+        ]
+      },
+      "H09c": {
+        "reason": "Câu trộn rau bẹp với thao tác để nguội của đậu phộng; phần đã làm hay chưa có đối tượng không rõ.",
+        "query": "Bún tập sáo có bữa rau bị bẹp vì bỏ thẳng vào hộp lúc vừa rang còn nóng, đã để riêng ra đĩa chờ nguội chưa?",
+        "frozen_accept": [],
+        "frozen_why": "Đồ mới rang phải để nguội là đậu phộng, rau bẹp vì nằm bên dưới bún.",
+        "evidence": [
+          {
+            "source_id": "HN09a",
+            "field": "note",
+            "excerpt": "Đợt sau cho riêng rau vào túi lưới đặt dưới nắp nên còn tươi."
+          }
+        ]
+      },
+      "H10c": {
+        "reason": "Hỏi có nhắc phương án trên áo vàng; ghi về móc dày nói đến áo xanh.",
+        "query": "Có nhắc áo mưa vàng đổi móc dày vì nếp giữa lưng dính nhau ở dây phơi mái sau không?",
+        "frozen_accept": [],
+        "frozen_why": "Móc dày giải quyết hai vạt dính trên áo xanh ở tiền sảnh.",
+        "evidence": [
+          {
+            "source_id": "HN10b",
+            "field": "note",
+            "excerpt": "Hai vạt áo mưa xanh dính nhau làm đường gấp dọc lưng còn ẩm. Tôi đổi sang móc dày"
+          }
+        ]
+      },
+      "H10d": {
+        "reason": "Ghi chú bác nguyên nhân gỉ, còn việc thay khóa sau đó thiếu xác nhận.",
+        "query": "Đoạn kéo khóa ở cổ áo vàng kẹt vì răng bị gỉ qua đêm, cuối cùng mình thay cả dây kéo phải không?",
+        "frozen_accept": [],
+        "frozen_why": "Vạt trong chui vào là nguyên nhân và có thể kéo gỡ, ghi chú không nói thay khóa.",
+        "evidence": [
+          {
+            "source_id": "HN10c",
+            "field": "note",
+            "excerpt": "Khóa áo vàng mắc ở quãng sát cổ vì vạt trong hay chui vào răng."
+          }
+        ]
+      },
+      "H11c": {
+        "reason": "Hỏi có ghi tình tiết đó hay không. Nguồn về đúng bình bác tình tiết bã lá.",
+        "query": "Có ghi bã lá trong đầu sen làm hạt mới gieo bị lộ khi tưới bằng bình hai tai không?",
+        "frozen_accept": [],
+        "frozen_why": "Bình hai tai có đầu sen sạch, bã lá làm lệch tia ở bình tím.",
+        "evidence": [
+          {
+            "source_id": "HN11b",
+            "field": "note",
+            "excerpt": "Luống sen cạn mới gieo có vài hạt trồi lên khi dùng bình hai tai dù đầu sen sạch."
+          }
+        ]
+      },
+      "H13c": {
+        "reason": "Câu hỏi «có ghi» hướng đến một đoạn khẳng định nguyên nhân cụ thể, còn nguồn xác lập lý do khác.",
+        "query": "Có ghi đổi mặt bìa cắt bánh ghe vì cần khỏi nhầm phần khoai với phần đậu lúc trời tối không?",
+        "frozen_accept": [],
+        "frozen_why": "Bìa nhẵn giúp cắt đều, việc phân nhân lúc tối dùng thẻ vát.",
+        "evidence": [
+          {
+            "source_id": "HN13a",
+            "field": "note",
+            "excerpt": "Tôi xoay tấm sang mặt nhẵn, các phần ra khá bằng nhau."
+          }
+        ]
+      },
+      "H14c": {
+        "reason": "Hỏi có đoạn ghi cách xử lý đó hay không. Nguồn mô tả làm ẩm lại đầu lau.",
+        "query": "Nền nhám ở buồng trong có đoạn ghi kéo lùi qua một ngạch lồi để bớt giật khi đầu lau sắp khô không?",
+        "frozen_accept": [],
+        "frozen_why": "Kéo lùi qua ngạch thuộc cán đỏ, đầu gần khô xử lý bằng nhúng nước.",
+        "evidence": [
+          {
+            "source_id": "HN14b",
+            "field": "note",
+            "excerpt": "Nhúng lại rồi vắt sơ, lượt kéo trên nền buồng trong nhẹ hơn."
+          }
+        ]
+      },
+      "H14d": {
+        "reason": "Nguồn cho nguyên nhân trước khi thêm cữ, thiếu dữ kiện thấm nước hay mùi sau đó.",
+        "query": "Có vụ sau cửa gỗ, ủ mùi vì nước thấm từ tường vào dù đầu cây lau đã được chèn cữ cách ra không?",
+        "frozen_accept": [],
+        "frozen_why": "Ghi mùi xảy ra trước lúc thêm cữ, không có bằng chứng nước từ tường.",
+        "evidence": [
+          {
+            "source_id": "HN14c",
+            "field": "note",
+            "excerpt": "Móc sau cửa để đầu lau sát chân tường quá nên bông ủ mùi đến hôm sau."
+          }
+        ]
+      },
+      "H15c": {
+        "reason": "Hỏi có lần nào dùng vật khác. Một lần dùng cao su chưa đủ để bác mọi lần dùng chỉ.",
+        "query": "Móng cọp tím có lần lấy chỉ trắng lót dưới nút bám cột để gió khỏi kéo cả dây xuống không?",
+        "frozen_accept": [],
+        "frozen_why": "Chỉ trắng nhận dạng cành giâm, dải cao su giữ nút trên cột.",
+        "evidence": [
+          {
+            "source_id": "HN15a",
+            "field": "note",
+            "excerpt": "Tôi lồng một dải cao su cũ dưới nút trên cột tròn"
+          }
+        ]
+      },
+      "H16c": {
+        "reason": "Hỏi có ghi cách kê trên vành phẳng mà chắc không. Nguồn trong dự án ghi kết quả ngược.",
+        "query": "Trong Xửng Hồ Lụa có ghi cách đặt chân rổ ngay trên mặt vành phẳng rồi gõ hai bên mà chân vẫn chắc chứ?",
+        "filters": {
+          "project": "Xửng Hồ Lụa"
+        },
+        "frozen_accept": [],
+        "frozen_why": "Rổ kê trên vành phẳng chỉ đứng chắc ở bộ trưng thuộc dự án khác.",
+        "evidence": [
+          {
+            "source_id": "HN16a",
+            "field": "note",
+            "excerpt": "Rổ thấp nghiêng khi dựng chân tre lên mặt vành phẳng phía trên."
+          }
+        ]
+      },
+      "H18c": {
+        "reason": "Câu hỏi «có nói» có thể là tìm lời ghi nguyên nhân cụ thể, còn nguồn xác lập nguyên nhân khác.",
+        "query": "Có nói quả mận dập dưới rổ hiên làm lớp phấn trên vỏ mận đãi cơm trôi loang không?",
+        "frozen_accept": [],
+        "frozen_why": "Nước tạt làm loang phấn vỏ dưới hiên, quả dập làm ướt giấy gói ở bàn.",
+        "evidence": [
+          {
+            "source_id": "HN18a",
+            "field": "note",
+            "excerpt": "Mận tím trong rổ đặt ngay dưới dàn hiên đón nước tạt có lớp phấn mờ trôi loang trên vỏ."
+          }
+        ]
+      },
+      "H18d": {
+        "reason": "Hỏi đã chép tình tiết chưa. Sổ ghi nguyên nhân khác cho cùng rổ mận.",
+        "query": "Rổ mận xanh trong chạn nẫu do chuyển lên ghế trong sảnh bị mưa tạt, có nhớ mình đã chép cụ thể chưa?",
+        "frozen_accept": [],
+        "frozen_why": "Ghi mận xanh nẫu do lẫn quả mềm trong chạn, còn rổ tím được dời vào sảnh để tránh mưa.",
+        "evidence": [
+          {
+            "source_id": "HN18c",
+            "field": "note",
+            "excerpt": "Đống mận xanh trong chạn để lẫn quả đã chín mềm làm phần bên trong nẫu trước."
+          }
+        ]
+      },
+      "H20c": {
+        "reason": "Hỏi tìm chỉ dẫn nhúng khay trong nhãn, có thể đọc thành hỏi phương pháp thật.",
+        "query": "Có ghi ở nhãn Ngăn đá Gió Nồm phải cho đáy khay chữ L xuống nước thì viên góc mới ra nguyên không?",
+        "filters": {
+          "tag": "Ngăn đá Gió Nồm"
+        },
+        "frozen_accept": [],
+        "frozen_why": "Cách nhúng khay vào nước chỉ ở nhãn ngoài phạm vi.",
+        "evidence": [
+          {
+            "source_id": "HN20a",
+            "field": "note",
+            "excerpt": "Tôi để yên trên bàn hai phút rồi mới bẻ, viên ra nguyên cạnh."
+          }
+        ]
+      },
+      "H22d": {
+        "reason": "Nguồn ghi gắn vòng vàng, chưa xác định có đổi màu lần sau hay hai chìa từng cùng màu.",
+        "query": "Chìa hộp nhạc cối xay bị lẫn với chìa ngăn kéo vì đều có vòng len vàng, đã thay màu cuối cùng chưa?",
+        "frozen_accept": [],
+        "frozen_why": "Ghi chú chỉ nói gắn vòng vàng vào chìa cối xay để phân biệt.",
+        "evidence": [
+          {
+            "source_id": "HN22c",
+            "field": "note",
+            "excerpt": "Tôi xâu một vòng len vàng vào cán, dễ tìm trên khay nhỏ."
+          }
+        ]
+      },
+      "H24c": {
+        "reason": "Hỏi đã ghi thao tác cụ thể chưa. Nguồn trong chủ đề ghi thao tác khác.",
+        "query": "Trong Rổ hội Đồi Cát có ghi bóc mép giấy dính vào nan rồi ép lại bằng thước để quạt bung hết chưa?",
+        "filters": {
+          "topic": "Rổ hội Đồi Cát"
+        },
+        "frozen_accept": [],
+        "frozen_why": "Thao tác bóc mép chỉ ở ghi bàn hướng dẫn khác topic.",
+        "evidence": [
+          {
+            "source_id": "HN24a",
+            "field": "note",
+            "excerpt": "Nới vòng buộc ở chân nan một chút thì mở rộng hết"
+          }
+        ]
+      },
+      "H25c": {
+        "reason": "Câu có đuôi «có tờ nào chỉ vậy không», yêu cầu tìm tờ nêu một công dụng. Nguồn ghi công dụng khác.",
+        "query": "Tấm bìa ép của nệm đàn nguyệt lót giữa hai lớp khi gập để dàn ruột, có tờ nào chỉ vậy không?",
+        "frozen_accept": [],
+        "frozen_why": "Tấm bìa chỉ kê dưới góc thấp khi trải, giũ và cuộn mới sửa ruột dồn.",
+        "evidence": [
+          {
+            "source_id": "HN25c",
+            "field": "note",
+            "excerpt": "Tôi nhét một tấm bìa ép mỏng bên dưới góc đó cho mặt nệm ngang."
+          }
+        ]
+      },
+      "H26c": {
+        "reason": "Sửa vòng van giải quyết vấn đề, nhưng không trực tiếp nói đã kiểm tra có lỗ thủng hay không.",
+        "query": "Cánh phao cam xẹp một bên vì quai lưới cọ trắng làm thủng chỗ đó, có lần nào tìm ra vết thủng ấy không?",
+        "frozen_accept": [],
+        "frozen_why": "Quai để vệt trên nhựa, việc giữ hơi được khắc phục bằng nắn vòng ở van.",
+        "evidence": [
+          {
+            "source_id": "HN26a",
+            "field": "note",
+            "excerpt": "Tôi soi thấy vòng cao su dưới nắp van xoắn, vuốt phẳng rồi bơm lại thì cánh giữ hơi."
+          }
+        ]
+      },
+      "H26d": {
+        "reason": "Nguồn không mô tả bơm lại, cũng không khẳng định chấm đã biến mất; cấu trúc là hỏi việc đã làm hay chưa.",
+        "query": "Nếp phao chim cánh cụt có chấm xanh do vòng cao su dưới nắp van bị xoắn, đã bơm lại để chấm lặn chưa?",
+        "frozen_accept": [],
+        "frozen_why": "Chấm nằm ở nếp gấp khi úp sát bậu, vòng van chỉ được nói trong ghi phao cam.",
+        "evidence": [
+          {
+            "source_id": "HN26b",
+            "field": "note",
+            "excerpt": "Phao tròn mới rửa xuất hiện hai chấm xanh trong nếp gấp khi úp sát mặt bậu."
+          }
+        ]
+      },
+      "H27c": {
+        "reason": "Có thể là tìm một ghi chú khẳng định nguyên nhân nhầm hoặc hỏi nguyên nhân thật.",
+        "query": "Có ghi lọ bầu Bàn Vệt Chàm ngã vì vải lót cọ khô bị ngấm nước làm cán tre trượt không?",
+        "frozen_accept": [],
+        "frozen_why": "Lọ bầu bị đổ sau khi nhét que khuấy dài, vải lót dùng trên giá cọ ướt.",
+        "evidence": [
+          {
+            "source_id": "HN27c",
+            "field": "note",
+            "excerpt": "Lọ bầu để cọ khô bị đổ khi nhét thêm que khuấy dài ở mép."
+          }
+        ]
+      },
+      "H28c": {
+        "reason": "Hỏi tìm một đoạn ra chỉ dẫn trong dự án. Nguồn được chốt mô tả cách vỗ đáy.",
+        "query": "Trong Bánh Trăng mang nhà bà, có đoạn bảo nghiêng rây kê theo cạnh cho vụn lọt vào lòng khay không?",
+        "filters": {
+          "project": "Bánh Trăng mang nhà bà"
+        },
+        "frozen_accept": [],
+        "frozen_why": "Rây nghiêng thuộc dự án lớp thử, rây mang nhà bà thử cách vỗ đáy.",
+        "evidence": [
+          {
+            "source_id": "HN28a",
+            "field": "note",
+            "excerpt": "Tôi đổi sang vỗ nhẹ theo đáy, vụn rơi đều mà không văng."
+          }
+        ]
+      },
+      "H30c": {
+        "reason": "Nguồn đính chính nguyên nhân mầm mọc. Việc xé giấy có thể là câu hỏi riêng về hành động khác.",
+        "query": "Khoai đỏ nằm dưới bàn vuông nảy mầm sớm do tờ giấy lót kín đáy, mình đã xé giấy ra từng dải ở thúng đó chưa?",
+        "frozen_accept": [],
+        "frozen_why": "Xé giấy dành cho thúng khoai vàng bị ẩm, khoai đỏ được dời sâu vào bóng.",
+        "evidence": [
+          {
+            "source_id": "HN30a",
+            "field": "note",
+            "excerpt": "Tôi kéo thúng sâu hơn vào gầm bàn vuông, lượt khoai sau mọc chậm thấy rõ."
+          }
+        ]
+      },
+      "H31c": {
+        "reason": "Hỏi có lần nào từng gỡ kim sa. Nguồn chỉ chốt lần gỡ sợi len.",
+        "query": "Có lần gỡ hạt kim sa ra khỏi trục bánh trong của cổng Đèn Đất, từ đó thôi nghe rít không?",
+        "frozen_accept": [],
+        "frozen_why": "Kim sa vướng bạt vào chóp, trục rít do sợi len nâu.",
+        "evidence": [
+          {
+            "source_id": "HN31a",
+            "field": "note",
+            "excerpt": "Tôi gỡ sợi len quấn ở trục bánh trong, cánh lăn qua rãnh dễ dàng."
+          }
+        ]
+      },
+      "H32c": {
+        "reason": "Hỏi ghi chú có mô tả thao tác dùng núm lưng hay không. Nguồn trong nhãn ghi thao tác đổi mặt đặt cân.",
+        "query": "Ở Xe Xanh Lá làm bánh có ghi dùng núm lưng đưa kim cân về không trong khi đặt cân ở mặt phẳng rồi không?",
+        "filters": {
+          "tag": "Xe Xanh Lá làm bánh"
+        },
+        "frozen_accept": [],
+        "frozen_why": "Núm lưng chỉ thuộc bản trưng bày có nhãn khác.",
+        "evidence": [
+          {
+            "source_id": "HN32a",
+            "field": "note",
+            "excerpt": "Dời cân ra tấm ván ngang bên hông xe rồi mới cân lại."
+          }
+        ]
+      },
+      "H33c": {
+        "reason": "Hỏi có lần nào buộc lạt vào chân lọ. Nguồn chỉ mô tả cách giữ lọ bằng khoanh tre.",
+        "query": "Có lần buộc dây lạt dài một gang vào chân lọ tròn để lúc bước xuống hiên lọ khỏi trượt không?",
+        "frozen_accept": [],
+        "frozen_why": "Lạt giữ nắp khỏi rơi, khoanh tre giữ thân lọ khỏi trượt.",
+        "evidence": [
+          {
+            "source_id": "HN33a",
+            "field": "note",
+            "excerpt": "Tôi đặt lọ trong một khoanh tre mỏng vừa sít thân"
+          }
+        ]
+      },
+      "H34c": {
+        "reason": "Có thể là tìm một đoạn khẳng định biện pháp nhầm. Ghi chú mô tả vật chèn khác.",
+        "query": "Có ghi chia lại kim ngắn và kim dài trong hộp Gò Trúc bằng một nắp mica chừa lỗ đầu ngón không?",
+        "frozen_accept": [],
+        "frozen_why": "Nắp mica chống bụi ở miệng, nêm bấc mới giữ các loại kim khỏi lẫn vào nhau.",
+        "evidence": [
+          {
+            "source_id": "HN34a",
+            "field": "note",
+            "excerpt": "Tôi luồn một miếng nêm bấc ở mép trên tấm vách, lắc thử kim vẫn ở yên."
+          }
+        ]
+      }
+    }
+  },
+  "wrapper_examples": {
+    "S20": "Hỏi tìm mẫu đã gập để thử xem màu có in qua. SN21 ghi cách thử, còn kết quả in sang bên kia chưa được ghi.",
+    "L17": "Hỏi chọn một trong hai mô tả trạng thái dự án, không đặt một mệnh đề để xác nhận bằng có hoặc không.",
+    "H03b": "«Có ghi lại cách xử lý … không» dùng để tìm cách xử lý lá húng.",
+    "C14b": "«Có ghi cách cứu nền … không» dùng để tìm phương pháp xử lý nền.",
+    "C31b": "Câu hỏi xác nhận là lời dẫn cho yêu cầu rõ ràng «Lấy trang đó»."
+  }
+}

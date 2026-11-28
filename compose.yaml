@@ -40,7 +40,12 @@ services:
   api:
     build: ./apps/backend
     image: kho-tri-thuc-backend:dev
-    environment: *django-environment
+    environment:
+      <<: *django-environment
+      SEARCH_QUOTE_EVIDENCE_ENABLED: ${SEARCH_QUOTE_EVIDENCE_ENABLED:-0}
+      SEARCH_QUOTE_READER_URL: ${SEARCH_QUOTE_READER_URL:-http://127.0.0.1:19587/v1/chat/completions}
+      SEARCH_QUOTE_READER_MODEL: ${SEARCH_QUOTE_READER_MODEL:-qwen3-4b-instruct-2507-q4_k_m}
+      SEARCH_QUOTE_TIMEOUT_SECONDS: ${SEARCH_QUOTE_TIMEOUT_SECONDS:-45}
     volumes:
       - upload-staging:/var/lib/kho-tri-thuc/staging
       - thumbnail-cache:/var/lib/kho-tri-thuc/thumbnails
