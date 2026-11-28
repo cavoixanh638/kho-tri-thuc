@@ -1,0 +1,11 @@
+.vault-panel { border: 1px solid var(--mantine-color-default-border); border-radius: 12px; padding: 1rem; max-width: 100%; }
+.vault-panel p { max-width: 75ch; }
+.vault-preview { margin-top: 1rem; border-top: 1px solid var(--mantine-color-default-border); padding-top: .8rem; }
+.vault-entries { list-style: none; padding: 0; margin: 0; }
+.vault-entries li { border-bottom: 1px solid var(--mantine-color-default-border); padding: .7rem .3rem; overflow-wrap: anywhere; }
+.vault-entries small { display: block; opacity: .75; margin-left: 2rem; }
+.vault-diff { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,220px),1fr)); gap: .7rem; }
+.vault-diff pre { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 10rem; overflow-y: auto; }
+.vault-error { color: var(--mantine-color-red-7); }
+.vault-warning { border-left: 3px solid var(--mantine-color-yellow-6); padding-left: .6rem; }
+@media (max-width: 480px) { .vault-panel { padding: .65rem; } }

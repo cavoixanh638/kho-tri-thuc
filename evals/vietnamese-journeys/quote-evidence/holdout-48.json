@@ -1,0 +1,1002 @@
+{
+  "items": [
+    {
+      "id": "B01N1",
+      "title": "Hộp dụng cụ của Linh",
+      "note": "Linh cất bộ tua vít nhỏ trong ngăn kéo dưới cùng của bàn làm việc.",
+      "owner": "main",
+      "topics": [
+        "đồ đạc",
+        "sửa chữa"
+      ]
+    },
+    {
+      "id": "B01N2",
+      "title": "Băng keo dự phòng",
+      "note": "Cuộn băng keo vải màu xanh nằm trong chiếc hộp thiếc cạnh kệ giày.",
+      "owner": "main",
+      "topics": [
+        "đồ đạc",
+        "sửa chữa"
+      ]
+    },
+    {
+      "id": "B01N3",
+      "title": "Mượn máy khoan",
+      "note": "Tuần trước Nam mượn máy khoan của Linh và hứa trả vào thứ Bảy.",
+      "owner": "main",
+      "topics": [
+        "đồ đạc",
+        "sửa chữa"
+      ]
+    },
+    {
+      "id": "B01N4",
+      "title": "Bóng đèn hành lang",
+      "note": "Bóng đèn hành lang vẫn chưa được thay vì Linh chưa mua đúng loại đui.",
+      "owner": "main",
+      "topics": [
+        "đồ đạc",
+        "sửa chữa"
+      ]
+    },
+    {
+      "id": "B02N1",
+      "title": "Trà gừng",
+      "note": "Mai pha trà gừng bằng ba lát gừng tươi, không dùng bột gừng.",
+      "owner": "main",
+      "topics": [
+        "bếp",
+        "đồ uống"
+      ]
+    },
+    {
+      "id": "B02N2",
+      "title": "Hũ mật ong",
+      "note": "Hũ mật ong nhỏ để ở ngăn trên bên trái của tủ lạnh.",
+      "owner": "main",
+      "topics": [
+        "bếp",
+        "đồ uống"
+      ]
+    },
+    {
+      "id": "B02N3",
+      "title": "Cốc giữ nhiệt",
+      "note": "Chiếc cốc giữ nhiệt màu kem là quà sinh nhật của dì Mai.",
+      "owner": "main",
+      "topics": [
+        "bếp",
+        "đồ uống"
+      ]
+    },
+    {
+      "id": "B02N4",
+      "title": "Nước ép cam",
+      "note": "Mai thường uống nước cam sau bữa sáng, nhưng chỉ vào những ngày ở nhà.",
+      "owner": "main",
+      "topics": [
+        "bếp",
+        "đồ uống"
+      ]
+    },
+    {
+      "id": "B03N1",
+      "title": "Góc đọc sách",
+      "note": "Khoa kê chiếc ghế lười màu rêu sát cửa sổ phòng ngủ để đọc sách.",
+      "owner": "main",
+      "topics": [
+        "nhà cửa",
+        "đọc sách"
+      ]
+    },
+    {
+      "id": "B03N2",
+      "title": "Đèn bàn",
+      "note": "Đèn đọc sách dùng bóng ánh sáng vàng dịu, công tắc nằm trên dây.",
+      "owner": "main",
+      "topics": [
+        "nhà cửa",
+        "đọc sách"
+      ]
+    },
+    {
+      "id": "B03N3",
+      "title": "Cuốn đang đọc",
+      "note": "Khoa đang đọc một tập truyện ngắn của Nguyễn Ngọc Tư mượn từ thư viện.",
+      "owner": "main",
+      "topics": [
+        "nhà cửa",
+        "đọc sách"
+      ]
+    },
+    {
+      "id": "B03N4",
+      "title": "Kệ cạnh giường",
+      "note": "Kệ đầu giường chỉ có một ngăn, Khoa để kính đọc sách ở đó.",
+      "owner": "main",
+      "topics": [
+        "nhà cửa",
+        "đọc sách"
+      ]
+    },
+    {
+      "id": "B04N1",
+      "title": "Túi đi chợ",
+      "note": "Vy gấp túi vải đi chợ và nhét vào ngăn ngoài của ba lô.",
+      "owner": "main",
+      "topics": [
+        "thói quen",
+        "mua sắm"
+      ]
+    },
+    {
+      "id": "B04N2",
+      "title": "Chợ cuối tuần",
+      "note": "Vy ghé chợ vào sáng Chủ nhật trước khi quầy rau đông khách.",
+      "owner": "main",
+      "topics": [
+        "thói quen",
+        "mua sắm"
+      ]
+    },
+    {
+      "id": "B04N3",
+      "title": "Danh sách mua",
+      "note": "Trong danh sách lần này của Vy có cà chua, đậu hũ và một bó rau thơm.",
+      "owner": "main",
+      "topics": [
+        "thói quen",
+        "mua sắm"
+      ]
+    },
+    {
+      "id": "B04N4",
+      "title": "Thanh toán",
+      "note": "Vy hay trả tiền ở chợ bằng mã QR vì ít khi mang đủ tiền mặt.",
+      "owner": "main",
+      "topics": [
+        "thói quen",
+        "mua sắm"
+      ]
+    },
+    {
+      "id": "B05N1",
+      "title": "Bình tưới",
+      "note": "Bình tưới cây màu trắng được đặt dưới bồn rửa ban công.",
+      "owner": "main",
+      "topics": [
+        "ban công",
+        "cây cối"
+      ]
+    },
+    {
+      "id": "B05N2",
+      "title": "Cây húng quế",
+      "note": "Chậu húng quế của An cần nắng buổi sáng, nên An xoay chậu mỗi vài ngày.",
+      "owner": "main",
+      "topics": [
+        "ban công",
+        "cây cối"
+      ]
+    },
+    {
+      "id": "B05N3",
+      "title": "Lịch bón phân",
+      "note": "An ghi lần bón phân tiếp theo cho cây cảnh vào ngày mười lăm tháng sau.",
+      "owner": "main",
+      "topics": [
+        "ban công",
+        "cây cối"
+      ]
+    },
+    {
+      "id": "B05N4",
+      "title": "Chậu bị nứt",
+      "note": "Chậu đất nung nhỏ bị nứt ở miệng, An lót đĩa bên dưới để giữ nước.",
+      "owner": "main",
+      "topics": [
+        "ban công",
+        "cây cối"
+      ]
+    },
+    {
+      "id": "B06N1",
+      "title": "Đường chạy",
+      "note": "Phúc chạy vòng quanh hồ gần nhà vào tối thứ Ba và thứ Năm.",
+      "owner": "main",
+      "topics": [
+        "vận động",
+        "sức khỏe"
+      ]
+    },
+    {
+      "id": "B06N2",
+      "title": "Giày tập",
+      "note": "Đôi giày chạy màu xám của Phúc đang phơi ở ban công sau khi giặt.",
+      "owner": "main",
+      "topics": [
+        "vận động",
+        "sức khỏe"
+      ]
+    },
+    {
+      "id": "B06N3",
+      "title": "Bài giãn cơ",
+      "note": "Sau khi chạy, Phúc dành khoảng năm phút kéo giãn bắp chân.",
+      "owner": "main",
+      "topics": [
+        "vận động",
+        "sức khỏe"
+      ]
+    },
+    {
+      "id": "B06N4",
+      "title": "Chai nước",
+      "note": "Phúc dùng chai nước có vạch chia dung tích, không phải bình kim loại.",
+      "owner": "main",
+      "topics": [
+        "vận động",
+        "sức khỏe"
+      ]
+    },
+    {
+      "id": "B07N1",
+      "title": "Buổi học đàn",
+      "note": "Hà học guitar với cô giáo vào chiều thứ Tư, mỗi buổi kéo dài nửa tiếng.",
+      "owner": "main",
+      "topics": [
+        "âm nhạc",
+        "lịch học"
+      ]
+    },
+    {
+      "id": "B07N2",
+      "title": "Dây dự phòng",
+      "note": "Bộ dây guitar dự phòng của Hà nằm trong ngăn nhỏ của bao đàn.",
+      "owner": "main",
+      "topics": [
+        "âm nhạc",
+        "lịch học"
+      ]
+    },
+    {
+      "id": "B07N3",
+      "title": "Bài tập hợp âm",
+      "note": "Tuần này Hà cần luyện chuyển giữa hợp âm Sol và Rê thật chậm.",
+      "owner": "main",
+      "topics": [
+        "âm nhạc",
+        "lịch học"
+      ]
+    },
+    {
+      "id": "B07N4",
+      "title": "Máy lên dây",
+      "note": "Hà kẹp máy lên dây điện tử vào đầu cần đàn trước khi tập.",
+      "owner": "main",
+      "topics": [
+        "âm nhạc",
+        "lịch học"
+      ]
+    },
+    {
+      "id": "B08N1",
+      "title": "Cuộc gọi cho bà",
+      "note": "Sơn gọi video cho bà ngoại vào tối thứ Sáu, sau giờ ăn tối.",
+      "owner": "main",
+      "topics": [
+        "gia đình",
+        "liên lạc"
+      ]
+    },
+    {
+      "id": "B08N2",
+      "title": "Ảnh gia đình",
+      "note": "Bức ảnh cả nhà chụp ở biển được Sơn gửi trong nhóm chat gia đình hôm Tết.",
+      "owner": "main",
+      "topics": [
+        "gia đình",
+        "liên lạc"
+      ]
+    },
+    {
+      "id": "B08N3",
+      "title": "Địa chỉ gửi quà",
+      "note": "Sơn lưu địa chỉ nhà cậu Tư trong ghi chú điện thoại để gửi quà dịp lễ.",
+      "owner": "main",
+      "topics": [
+        "gia đình",
+        "liên lạc"
+      ]
+    },
+    {
+      "id": "B08N4",
+      "title": "Ngày về thăm",
+      "note": "Sơn dự tính về thăm nhà vào cuối tháng, nếu đổi được ca làm.",
+      "owner": "main",
+      "topics": [
+        "gia đình",
+        "liên lạc"
+      ]
+    },
+    {
+      "id": "B09N1",
+      "title": "Tủ hồ sơ",
+      "note": "Thảo xếp hóa đơn điện nước vào bìa màu vàng trong tủ hồ sơ.",
+      "owner": "main",
+      "topics": [
+        "giấy tờ",
+        "sắp xếp"
+      ]
+    },
+    {
+      "id": "B09N2",
+      "title": "Biên nhận gửi xe",
+      "note": "Biên nhận gửi xe tháng này được kẹp chung với thẻ xe trong ví của Thảo.",
+      "owner": "main",
+      "topics": [
+        "giấy tờ",
+        "sắp xếp"
+      ]
+    },
+    {
+      "id": "B09N3",
+      "title": "Giấy bảo hành",
+      "note": "Phiếu bảo hành nồi cơm điện còn hạn đến hết tháng Mười Hai.",
+      "owner": "main",
+      "topics": [
+        "giấy tờ",
+        "sắp xếp"
+      ]
+    },
+    {
+      "id": "B09N4",
+      "title": "Bản scan",
+      "note": "Thảo đã quét hợp đồng thuê nhà thành PDF và lưu trong thư mục Tài liệu.",
+      "owner": "main",
+      "topics": [
+        "giấy tờ",
+        "sắp xếp"
+      ]
+    },
+    {
+      "id": "B10N1",
+      "title": "Món ăn mang đi",
+      "note": "Dũng chuẩn bị bánh mì trứng mang theo cho chuyến xe buýt sáng mai.",
+      "owner": "main",
+      "topics": [
+        "đi lại",
+        "ăn uống"
+      ]
+    },
+    {
+      "id": "B10N2",
+      "title": "Điểm đón",
+      "note": "Dũng đón xe buýt ở trạm đối diện hiệu thuốc, không phải trước siêu thị.",
+      "owner": "main",
+      "topics": [
+        "đi lại",
+        "ăn uống"
+      ]
+    },
+    {
+      "id": "B10N3",
+      "title": "Tai nghe trên xe",
+      "note": "Dũng để tai nghe chụp tai trong túi vải vì không muốn nghe nhạc trên xe.",
+      "owner": "main",
+      "topics": [
+        "đi lại",
+        "ăn uống"
+      ]
+    },
+    {
+      "id": "B10N4",
+      "title": "Thẻ tháng",
+      "note": "Thẻ xe buýt tháng của Dũng hết hạn vào ngày cuối cùng của tháng này.",
+      "owner": "main",
+      "topics": [
+        "đi lại",
+        "ăn uống"
+      ]
+    },
+    {
+      "id": "B11N1",
+      "title": "Màu sơn phòng",
+      "note": "Lan chọn màu xanh khói cho mảng tường phía sau bàn làm việc.",
+      "owner": "main",
+      "topics": [
+        "trang trí",
+        "nhà cửa"
+      ]
+    },
+    {
+      "id": "B11N2",
+      "title": "Rèm cửa",
+      "note": "Rèm phòng khách của Lan màu trắng ngà, vải dày để giảm nắng chiều.",
+      "owner": "main",
+      "topics": [
+        "trang trí",
+        "nhà cửa"
+      ]
+    },
+    {
+      "id": "B11N3",
+      "title": "Khung tranh",
+      "note": "Lan muốn treo ba khung tranh gỗ nhỏ thành một hàng ngang ở hành lang.",
+      "owner": "main",
+      "topics": [
+        "trang trí",
+        "nhà cửa"
+      ]
+    },
+    {
+      "id": "B11N4",
+      "title": "Bàn phụ",
+      "note": "Chiếc bàn phụ tròn màu đen được Lan chuyển từ phòng khách sang cạnh giường.",
+      "owner": "main",
+      "topics": [
+        "trang trí",
+        "nhà cửa"
+      ]
+    },
+    {
+      "id": "B12N1",
+      "title": "Trò chơi bàn",
+      "note": "Cuối tuần, nhóm của Minh hay chơi Codenames ở quán cà phê gần công viên.",
+      "owner": "main",
+      "topics": [
+        "bạn bè",
+        "giải trí"
+      ]
+    },
+    {
+      "id": "B12N2",
+      "title": "Người giữ điểm",
+      "note": "Minh thường ghi điểm bằng ứng dụng ghi chú trên điện thoại khi cả nhóm chơi.",
+      "owner": "main",
+      "topics": [
+        "bạn bè",
+        "giải trí"
+      ]
+    },
+    {
+      "id": "B12N3",
+      "title": "Bữa gặp mặt",
+      "note": "Nhóm bạn hẹn ăn tối thứ Bảy, địa điểm vẫn chưa chốt.",
+      "owner": "main",
+      "topics": [
+        "bạn bè",
+        "giải trí"
+      ]
+    },
+    {
+      "id": "B12N4",
+      "title": "Bộ bài cũ",
+      "note": "Minh mang theo bộ bài Uno cũ có vài lá bị sờn góc.",
+      "owner": "main",
+      "topics": [
+        "bạn bè",
+        "giải trí"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "B01Q1",
+      "block": "B01",
+      "kind": "memory",
+      "query": "Bộ tua vít nhỏ của Linh được cất ở đâu vậy?",
+      "accept": [
+        "B01N1"
+      ],
+      "why": "The note places Linh’s small screwdriver set in the lowest desk drawer."
+    },
+    {
+      "id": "B01Q2",
+      "block": "B01",
+      "kind": "negative",
+      "query": "Nam đã trả máy khoan cho Linh vào thứ Bảy chưa?",
+      "accept": [],
+      "why": "The note only records Nam’s promise to return it Saturday, not whether he did."
+    },
+    {
+      "id": "B01Q3",
+      "block": "B01",
+      "kind": "control",
+      "query": "Bóng đèn hành lang vẫn chưa được thay vì lý do gì?",
+      "accept": [
+        "B01N4"
+      ],
+      "why": "This directly asks for the stated reason that the hallway bulb remains unchanged."
+    },
+    {
+      "id": "B01Q4",
+      "block": "B01",
+      "kind": "memory",
+      "query": "Cuộn băng dính vải màu xanh ở nhà nằm cạnh món nào?",
+      "accept": [
+        "B01N2"
+      ],
+      "why": "The blue fabric tape is in a tin box beside the shoe rack."
+    },
+    {
+      "id": "B02Q1",
+      "block": "B02",
+      "kind": "negative",
+      "query": "[topic: bếp] Mai pha trà gừng bằng bột gừng phải không?",
+      "filters": {
+        "topic": "bếp",
+        "owner": "main"
+      },
+      "accept": [],
+      "why": "Her note specifies fresh ginger slices rather than powdered ginger."
+    },
+    {
+      "id": "B02Q2",
+      "block": "B02",
+      "kind": "memory",
+      "query": "[topic: bếp] Hũ mật ong nhỏ để phía nào trong tủ lạnh?",
+      "filters": {
+        "topic": "bếp",
+        "owner": "main"
+      },
+      "accept": [
+        "B02N2"
+      ],
+      "why": "The small honey jar is in the upper left refrigerator compartment."
+    },
+    {
+      "id": "B02Q3",
+      "block": "B02",
+      "kind": "multi",
+      "query": "[topic: đồ uống] Mai được tặng chiếc cốc nào, và cô ấy uống nước cam khi nào?",
+      "filters": {
+        "topic": "đồ uống",
+        "owner": "main"
+      },
+      "accept": [
+        "B02N3",
+        "B02N4"
+      ],
+      "why": "The gift is the cream thermal cup, while orange juice is usual after breakfast only on at-home days."
+    },
+    {
+      "id": "B02Q4",
+      "block": "B02",
+      "kind": "memory",
+      "query": "[topic: đồ uống] Chiếc cốc giữ nhiệt màu kem từ đâu mà có?",
+      "filters": {
+        "topic": "đồ uống",
+        "owner": "main"
+      },
+      "accept": [
+        "B02N3"
+      ],
+      "why": "The cream thermal mug was a birthday gift from Mai’s aunt."
+    },
+    {
+      "id": "B03Q1",
+      "block": "B03",
+      "kind": "memory",
+      "query": "Khoa kê ghế lười đọc sách ở đâu?",
+      "accept": [
+        "B03N1"
+      ],
+      "why": "The moss-colored beanbag is by the bedroom window."
+    },
+    {
+      "id": "B03Q2",
+      "block": "B03",
+      "kind": "negative",
+      "query": "Đèn đọc sách của Khoa dùng ánh sáng trắng lạnh à?",
+      "accept": [],
+      "why": "The note specifies gentle yellow light, the opposite of cold white."
+    },
+    {
+      "id": "B03Q3",
+      "block": "B03",
+      "kind": "memory",
+      "query": "Khoa đang đọc sách của ai mượn ở đâu?",
+      "accept": [
+        "B03N3"
+      ],
+      "why": "He is reading Nguyễn Ngọc Tư short stories borrowed from the library."
+    },
+    {
+      "id": "B03Q4",
+      "block": "B03",
+      "kind": "negative",
+      "query": "Kính đọc sách của Khoa nằm trong ngăn thứ hai của kệ đầu giường?",
+      "accept": [],
+      "why": "The nightstand has only one drawer, where the glasses are kept."
+    },
+    {
+      "id": "B04Q1",
+      "block": "B04",
+      "kind": "memory",
+      "query": "Vy nhét túi vải đi chợ vào chỗ nào của ba lô?",
+      "accept": [
+        "B04N1"
+      ],
+      "why": "She puts the folded market tote in the backpack’s outer pocket."
+    },
+    {
+      "id": "B04Q2",
+      "block": "B04",
+      "kind": "negative",
+      "query": "Vy thường đi chợ sáng thứ Bảy?",
+      "accept": [],
+      "why": "The note says she goes on Sunday morning, not Saturday."
+    },
+    {
+      "id": "B04Q3",
+      "block": "B04",
+      "kind": "control",
+      "query": "Vy có trong danh sách mua cà chua, đậu hũ và rau thơm không?",
+      "accept": [
+        "B04N3"
+      ],
+      "why": "All three items are explicitly listed for this shopping trip."
+    },
+    {
+      "id": "B04Q4",
+      "block": "B04",
+      "kind": "memory",
+      "query": "Ở chợ Vy thường quét mã gì để trả tiền?",
+      "accept": [
+        "B04N4"
+      ],
+      "why": "She generally pays by QR code because she rarely carries enough cash."
+    },
+    {
+      "id": "B05Q1",
+      "block": "B05",
+      "kind": "memory",
+      "query": "[owner: main, topic: cây cối] An xoay chậu húng quế để làm gì hoặc theo cách nào?",
+      "filters": {
+        "owner": "main",
+        "topic": "cây cối"
+      },
+      "accept": [
+        "B05N2"
+      ],
+      "why": "The basil needs morning sun, so An rotates the pot every few days."
+    },
+    {
+      "id": "B05Q2",
+      "block": "B05",
+      "kind": "negative",
+      "query": "[owner: main, topic: ban công] Bình tưới màu trắng đang để dưới bồn rửa trong bếp à?",
+      "filters": {
+        "owner": "main",
+        "topic": "ban công"
+      },
+      "accept": [],
+      "why": "The note locates it under the balcony sink, not the kitchen sink."
+    },
+    {
+      "id": "B05Q3",
+      "block": "B05",
+      "kind": "multi",
+      "query": "[owner: main, topic: cây cối] Ngày nào An ghi lịch bón phân tiếp theo, và cái chậu đất nung bị hỏng ở đâu?",
+      "filters": {
+        "owner": "main",
+        "topic": "cây cối"
+      },
+      "accept": [
+        "B05N3",
+        "B05N4"
+      ],
+      "why": "The next fertilizer date is the fifteenth of next month and the pot is cracked at its rim."
+    },
+    {
+      "id": "B05Q4",
+      "block": "B05",
+      "kind": "memory",
+      "query": "[owner: main, topic: ban công] Chậu đất nung nhỏ bị nứt chỗ nào?",
+      "filters": {
+        "owner": "main",
+        "topic": "ban công"
+      },
+      "accept": [
+        "B05N4"
+      ],
+      "why": "Its rim is cracked, and An sets a saucer beneath it."
+    },
+    {
+      "id": "B06Q1",
+      "block": "B06",
+      "kind": "memory",
+      "query": "Phúc chạy bộ ở hồ vào những buổi tối nào?",
+      "accept": [
+        "B06N1"
+      ],
+      "why": "He runs around the nearby lake on Tuesday and Thursday evenings."
+    },
+    {
+      "id": "B06Q2",
+      "block": "B06",
+      "kind": "negative",
+      "query": "Sau khi chạy Phúc kéo giãn cơ đùi khoảng năm phút đúng không?",
+      "accept": [],
+      "why": "The note names calves, not thighs, as the muscle group he stretches."
+    },
+    {
+      "id": "B06Q3",
+      "block": "B06",
+      "kind": "negative",
+      "query": "Đôi giày màu xám đang phơi trong phòng khách sau khi giặt à?",
+      "accept": [],
+      "why": "The gray running shoes are noted as drying on the balcony, while this query places them in the living room."
+    },
+    {
+      "id": "B06Q4",
+      "block": "B06",
+      "kind": "memory",
+      "query": "Phúc mang theo loại chai nước nào khi tập?",
+      "accept": [
+        "B06N4"
+      ],
+      "why": "He uses a bottle with volume markings rather than a metal flask."
+    },
+    {
+      "id": "B07Q1",
+      "block": "B07",
+      "kind": "memory",
+      "query": "Hà học guitar vào chiều ngày nào?",
+      "accept": [
+        "B07N1"
+      ],
+      "why": "Her weekly guitar lesson is Wednesday afternoon."
+    },
+    {
+      "id": "B07Q2",
+      "block": "B07",
+      "kind": "negative",
+      "query": "Bộ dây dự phòng nằm trong ngăn chính rộng của bao đàn chứ?",
+      "accept": [],
+      "why": "It is in the small compartment, not the main large section."
+    },
+    {
+      "id": "B07Q3",
+      "block": "B07",
+      "kind": "control",
+      "query": "Tuần này Hà luyện chuyển giữa hai hợp âm nào?",
+      "accept": [
+        "B07N3"
+      ],
+      "why": "The assigned change is between G and D chords, practiced slowly."
+    },
+    {
+      "id": "B07Q4",
+      "block": "B07",
+      "kind": "memory",
+      "query": "Máy lên dây của Hà kẹp vào bộ phận nào của guitar?",
+      "accept": [
+        "B07N4"
+      ],
+      "why": "She clips the electronic tuner onto the headstock before practice."
+    },
+    {
+      "id": "B08Q1",
+      "block": "B08",
+      "kind": "memory",
+      "query": "[topic: liên lạc] Sơn thường gọi video cho bà ngoại lúc nào?",
+      "filters": {
+        "topic": "liên lạc",
+        "owner": "main"
+      },
+      "accept": [
+        "B08N1"
+      ],
+      "why": "He video-calls his maternal grandmother Friday evening after dinner."
+    },
+    {
+      "id": "B08Q2",
+      "block": "B08",
+      "kind": "multi",
+      "query": "[topic: gia đình] Bức ảnh biển được gửi ở đâu, và Sơn ghi địa chỉ nhà cậu Tư vào đâu?",
+      "filters": {
+        "topic": "gia đình",
+        "owner": "main"
+      },
+      "accept": [
+        "B08N2",
+        "B08N3"
+      ],
+      "why": "He shared the beach family photo in the family chat and saved the uncle’s address in his phone notes."
+    },
+    {
+      "id": "B08Q3",
+      "block": "B08",
+      "kind": "negative",
+      "query": "[topic: liên lạc] Sơn chắc chắn sẽ về thăm nhà cuối tháng chứ?",
+      "filters": {
+        "topic": "liên lạc",
+        "owner": "main"
+      },
+      "accept": [],
+      "why": "The plan is conditional on changing his work shift, so certainty is unsupported."
+    },
+    {
+      "id": "B08Q4",
+      "block": "B08",
+      "kind": "memory",
+      "query": "[topic: gia đình] Sơn dự tính về thăm nhà vào thời điểm nào?",
+      "filters": {
+        "topic": "gia đình",
+        "owner": "main"
+      },
+      "accept": [
+        "B08N4"
+      ],
+      "why": "He is considering a visit at the end of the month if he can switch shifts."
+    },
+    {
+      "id": "B09Q1",
+      "block": "B09",
+      "kind": "memory",
+      "query": "Hóa đơn điện nước của Thảo được xếp vào bìa màu gì?",
+      "accept": [
+        "B09N1"
+      ],
+      "why": "She keeps those bills in the yellow folder in the file cabinet."
+    },
+    {
+      "id": "B09Q2",
+      "block": "B09",
+      "kind": "negative",
+      "query": "Phiếu bảo hành nồi cơm điện hết hạn từ cuối tháng Mười Một?",
+      "accept": [],
+      "why": "The warranty remains valid through the end of December."
+    },
+    {
+      "id": "B09Q3",
+      "block": "B09",
+      "kind": "memory",
+      "query": "Thảo lưu bản scan hợp đồng thuê nhà ở dạng nào và thư mục nào?",
+      "accept": [
+        "B09N4"
+      ],
+      "why": "She saved it as a PDF in the Documents folder."
+    },
+    {
+      "id": "B09Q4",
+      "block": "B09",
+      "kind": "negative",
+      "query": "Biên nhận gửi xe được kẹp với chìa khóa xe trong ví của Thảo à?",
+      "accept": [],
+      "why": "It is kept with the parking card, not a vehicle key."
+    },
+    {
+      "id": "B10Q1",
+      "block": "B10",
+      "kind": "memory",
+      "query": "Dũng chuẩn bị ăn gì trên chuyến xe buýt sáng mai?",
+      "accept": [
+        "B10N1"
+      ],
+      "why": "He is bringing an egg bánh mì for the morning bus trip."
+    },
+    {
+      "id": "B10Q2",
+      "block": "B10",
+      "kind": "negative",
+      "query": "Dũng đón xe trước siêu thị phải không?",
+      "accept": [],
+      "why": "The stop is opposite the pharmacy, explicitly not in front of the supermarket."
+    },
+    {
+      "id": "B10Q3",
+      "block": "B10",
+      "kind": "control",
+      "query": "Tai nghe chụp tai của Dũng đang ở đâu?",
+      "accept": [
+        "B10N3"
+      ],
+      "why": "He has put the over-ear headphones in a cloth bag."
+    },
+    {
+      "id": "B10Q4",
+      "block": "B10",
+      "kind": "memory",
+      "query": "Thẻ xe buýt tháng của Dũng hết hạn khi nào?",
+      "accept": [
+        "B10N4"
+      ],
+      "why": "It expires on the last day of the current month."
+    },
+    {
+      "id": "B11Q1",
+      "block": "B11",
+      "kind": "negative",
+      "query": "[topic: trang trí] Lan chọn xanh khói cho bức tường đối diện bàn làm việc à?",
+      "filters": {
+        "topic": "trang trí",
+        "owner": "main"
+      },
+      "accept": [],
+      "why": "The selected wall is behind the desk, not opposite it."
+    },
+    {
+      "id": "B11Q2",
+      "block": "B11",
+      "kind": "memory",
+      "query": "[topic: nhà cửa] Rèm phòng khách của Lan có màu gì và giúp hạn chế nắng lúc nào?",
+      "filters": {
+        "topic": "nhà cửa",
+        "owner": "main"
+      },
+      "accept": [
+        "B11N2"
+      ],
+      "why": "The curtains are ivory and thick enough to reduce afternoon sun."
+    },
+    {
+      "id": "B11Q3",
+      "block": "B11",
+      "kind": "multi",
+      "query": "[topic: trang trí] Lan muốn treo mấy khung tranh, còn chiếc bàn phụ tròn được chuyển đi đâu?",
+      "filters": {
+        "topic": "trang trí",
+        "owner": "main"
+      },
+      "accept": [
+        "B11N3",
+        "B11N4"
+      ],
+      "why": "She plans three small frames in a row, and moved the round side table beside the bed."
+    },
+    {
+      "id": "B11Q4",
+      "block": "B11",
+      "kind": "memory",
+      "query": "[topic: nhà cửa] Bàn phụ tròn màu đen hiện ở đâu?",
+      "filters": {
+        "topic": "nhà cửa",
+        "owner": "main"
+      },
+      "accept": [
+        "B11N4"
+      ],
+      "why": "Lan moved it from the living room to beside the bed."
+    },
+    {
+      "id": "B12Q1",
+      "block": "B12",
+      "kind": "memory",
+      "query": "Minh ghi điểm cho cả nhóm chơi bằng cách nào?",
+      "accept": [
+        "B12N2"
+      ],
+      "why": "He tracks the score in the phone’s notes app."
+    },
+    {
+      "id": "B12Q2",
+      "block": "B12",
+      "kind": "negative",
+      "query": "Tối thứ Bảy nhóm bạn của Minh đã chốt quán cà phê gần công viên để ăn chưa?",
+      "accept": [],
+      "why": "The dinner location is still undecided; the café is associated with their game sessions."
+    },
+    {
+      "id": "B12Q3",
+      "block": "B12",
+      "kind": "memory",
+      "query": "Bộ Uno Minh mang theo bị làm sao?",
+      "accept": [
+        "B12N4"
+      ],
+      "why": "Some corners of his old Uno cards are worn."
+    },
+    {
+      "id": "B12Q4",
+      "block": "B12",
+      "kind": "negative",
+      "query": "Nhóm của Minh thường chơi Codenames vào giữa tuần?",
+      "accept": [],
+      "why": "The note says they play on weekends, not midweek."
+    }
+  ]
+}

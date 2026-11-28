@@ -1,10 +1,140 @@
 # HIỆN TRẠNG THỰC TẾ — KHO TRI THỨC
 
+## Trích bằng chứng ở lượt Tìm gần đúng
+
+Ngày 28/11/2026, bản thử `4fc2578` giữ nguyên nội dung phản hồi mặc định ở cả 568 câu và xác minh tối đa năm ghi chú sau khi người dùng bấm nút. Điểm tìm kiếm sau khi bấm lần lượt là **117/120, 256/400 và 33/48**, so với **117/120, 235/400 và 33/48** khi tắt. Trên bộ 400, tìm đúng ít đi hai câu có đáp án và trả rỗng đúng thêm 23 câu. Cả 604 câu đều dùng ghi chú tự soạn, gồm thêm 36 câu đối chiếu **Có / Không / thiếu thông tin**.
+
+Trong 33 câu có đáp án **Không** ở ba bộ chính, có 13 câu trả đúng nhãn kèm đúng ghi chú và chỉ hai trích dẫn đủ chứng minh câu trả lời. Trong 80 lượt thực sự qua bộ đọc, trung vị một lượt bấm là **8,08 giây**, P95 **9,80 giây**, điện gói xử lý trung bình **0,070 Wh/lượt**, phí API ngoài **0 USD**. Giữ `SEARCH_QUOTE_EVIDENCE_ENABLED=0` cho cấu hình mặc định. [Kết quả, lỗi điển hình và cách bật thử](../evals/vietnamese-journeys/quote-evidence/README.md)
+
+## Thử mở rộng ứng viên cho câu chỉ nhớ ý
+
+Ngày 27/11/2026, bản thử `f6c7a21` được so với `f62b32c` trên 120 câu cũ và 400 câu mới, gồm 100 tình huống với 304 ghi chú tự soạn ở bộ mới. Cả **520 phản hồi mặc định** trùng nguyên JSON giữa hai bản. Khi dùng **Tìm gần đúng** nếu có nút, mở rộng danh sách ngắn giúp bộ cũ tăng **117 lên 118/120**, bộ mới tăng **235 lên 236/400**, nhóm nhớ ý một đáp án giữ **179/224**. Chênh lệch bộ mới là +0,25 điểm phần trăm, khoảng bootstrap theo cụm 95% từ 0 đến +0,75. Cả hai bản đều có kết quả sai ở **108/125** câu khó không có đáp án, gồm 105 câu có kết quả sai sau khi bấm và 3 câu chỉ có kết quả mặc định. P95 một lượt bấm tăng từ 638 lên 1.113 ms. Phép thử qua API tiếp tục tắt sẵn.
+
+Một phép thăm dò ngoại tuyến mở rộng bằng Vietnamese Embedding v2, kể cả khi đã có năm ứng viên, đạt **230/400** và **165/224** ở nhóm nhớ ý. Ngưỡng lọc giúp giảm số câu âm có gợi ý xuống 94/125, đồng thời làm mất đáp án ở nhiều câu nhớ ý. Chromium đã kiểm chứng được một lợi ích cụ thể của phép mở rộng hẹp khi L13 tìm thêm đúng bài ráp bè. [Thiết kế, chấm chéo, kết quả từng câu và cách tái lập](../evals/vietnamese-journeys/memory-400/README.md)
+
+## Tìm đúng ghi chú theo giá trị và trích dẫn
+
+Ngày 27/11/2026, bản `6764783` đạt **87/120 ở lượt mặc định** và **117/120 khi dùng Tìm gần đúng**, so với 77 và 107 ở bản trước. PostgreSQL tìm đúng thêm mười câu về mã, ngày giờ, số đo và trích dẫn ngay ở lượt đầu. Cả 107 ca đã đạt tiếp tục đạt, cả 13 câu nhiều đáp án tìm đủ ghi chú trong năm kết quả đầu và cả 26 câu cần trả rỗng đều trả rỗng. Ba câu còn trượt là câu hỏi nhớ ý. Phép đo dùng dữ liệu tự soạn, API có đăng nhập và mô hình BGE chạy cục bộ khi mở gợi ý. [So sánh ba cấu hình và kết quả từng câu](../evals/vietnamese-journeys/scenario-matrix/README.md#tìm-theo-mã-số-đo-ngày-giờ-và-trích-dẫn)
+
+## Xếp lại gợi ý bằng BGE cục bộ
+
+Ngày 26/11/2026, bản `d28e6a2` giữ PostgreSQL cho lượt mặc định và dùng BGE để sắp xếp tối đa năm mục đầu khi bấm **Tìm gần đúng**. Chạy lại 120 câu qua dịch vụ và API có đăng nhập cho kết quả **77/120** ở lượt đầu, **107/120** khi dùng gợi ý, tăng một ca so với **106/120**. Toàn bộ 26 câu không có đáp án đều trả rỗng. Chromium xác nhận ở L16, ghi chú đúng từ hạng 4 lên hạng 1 và nút quay lại khôi phục lượt tìm ban đầu. [Phép thử tích hợp, thứ hạng từng câu và cách chạy lại](../evals/vietnamese-journeys/scenario-matrix/README.md#bge-xếp-lại-gợi-ý-khi-bấm-tìm-gần-đúng)
+
+## Sửa gợi ý sai ở 14 câu không có đáp án
+
+Ngày 26/11/2026, bản `b284142` giữ tìm kiếm từ khóa PostgreSQL và kiểm tra bằng chứng trước khi hiển thị. Chạy lại đủ 120 câu trên 122 ghi chú tự soạn, lượt đầu tăng từ **71 lên 77/120**, khi dùng **Tìm gần đúng** tăng từ **92 lên 106/120**. Cả 26 câu không có đáp án đều trả rỗng ở hai lượt. Cả 80 câu có đáp án từng đạt khi dùng gợi ý đều tiếp tục đạt. Còn 14 câu có đáp án chưa đạt. [Nguyên nhân theo từng ca và kết quả đối chứng](../evals/vietnamese-journeys/scenario-matrix/README.md#kết-quả-sau-khi-sửa-14-câu-gợi-ý-sai) · [120 kết quả thực đo](../evals/vietnamese-journeys/scenario-matrix/results-evidence-windows.json)
+
+<a id="thu-tim-kiem-ngu-nghia-windows"></a>
+
+## Thử tìm kiếm ngữ nghĩa trên Windows
+
+Ngày 26/11/2026, nhóm đối chiếu dịch vụ tìm kiếm hiện tại với Vietnamese Embedding v2 và bộ xếp hạng lại BGE trên 120 câu đã chốt đáp án. Ngưỡng hiển thị được xác định riêng từ 51 câu cũ. Bản hiện tại đạt 92/120 khi dùng gợi ý, thêm embedding đạt 93/120, thêm cả bộ xếp hạng lại đạt 99/120. Cấu hình cuối tăng nhóm nhớ ý từ 28 lên 29/40, đồng thời làm số câu không có đáp án nhận gợi ý sai tăng từ 14 lên 18/26. Nếu chỉ thay cách xếp hạng ở nơi nút **Tìm gần đúng** vốn xuất hiện, cấu hình cuối đạt 93/120 và 14/26 câu không có đáp án vẫn nhận gợi ý sai. Mọi kết quả đều thuộc đúng phạm vi. **Đề xuất giữ cách tìm hiện tại cho người dùng.** [Phép thử, trường hợp hồi quy và cách chạy lại](../evals/vietnamese-journeys/semantic-pilot/README.md)
+
+Trên 10.000 ghi chú tự soạn và 20 truy vấn sau ba lượt làm nóng, thời gian P95 từ lúc nhận câu hỏi đến khi trả kết quả từ khóa là 1,268 giây, đến khi gộp thêm ứng viên vector là 1,326 giây, đến khi xếp hạng lại xong là 1,680 giây. Máy dùng CPU i5-12400. Quét và chọn các vector gần nhất riêng trong bộ nhớ mất 1,66 ms ở P95. [Số đo từng truy vấn](../evals/vietnamese-journeys/semantic-pilot/scale-windows.json)
+
+<a id="tim-kiem-120-ca"></a>
+
+## Tìm kiếm tiếng Việt trên 120 tình huống mới
+
+Ngày 26/11/2026, bản `059f6d4` chạy **120 ca trên 122 ghi chú tự soạn** bằng PostgreSQL 18.4. Đáp án được khóa trước khi tìm. Lượt đầu đạt **71/120**. Khi dùng thêm **Tìm gần đúng** nếu có nút, kết quả đạt **92/120**. [Bảng từng ca, đáp án và thứ tự kết quả](../evals/vietnamese-journeys/scenario-matrix/README.md)
+
+| Ca đạt theo từng tiêu chí | Lượt đầu | Khi dùng thêm **Tìm gần đúng** |
+| --- | ---: | ---: |
+| Một đáp án đứng đầu | 46/81 | 70/81 |
+| Đủ hai hoặc ba đáp án trong năm mục đầu | 5/13 | 10/13 |
+| Danh sách rỗng khi kho không có đáp án | 20/26 | 12/26 |
+
+Bộ thử phát hiện tìm nhầm ngày ký thành ngày đo, đảo chiều rộng và chiều cao, bỏ sót số thập phân viết bằng dấu chấm và gợi ý ghi chú có ý nghĩa trái với câu hỏi. Mọi kết quả đã trả đều thuộc đúng chủ kho và phạm vi đã chọn. [120 kết quả thực đo](../evals/vietnamese-journeys/scenario-matrix/results-windows.json)
+
+<a id="kiem-thu-tim-kiem-20261126"></a>
+
+## Kiểm thử tìm kiếm ngày 26/11/2026
+
+Bản Windows `ba1e751` được kiểm trên PostgreSQL 18 và Chromium. Đã bổ sung 16 ca hồi quy backend và một bộ 21 câu với đáp án khóa trước trên 10 ghi chú dễ nhầm. [PR #100](https://github.com/cavoixanh638/kho-tri-thuc/pull/100) · [Bộ câu hỏi và kết quả từng câu](../evals/vietnamese-journeys/confusable-cases/README.md)
+
+| Tình huống | Kết quả |
+| --- | --- |
+| Gõ dấu không đều và sao chép văn bản | Khi mở rộng, “bến tau” tìm được bài có “bến tàu” và phân biệt với bài có “bên tàu”. Đã thử chữ hoa, Unicode tổ hợp, khoảng trắng đặc biệt và từ lặp. Dấu hai chấm trong “Ghi chú: …” cho phép tìm tiếp. [Ca thử tiếng Việt](../apps/backend/search/test_recall.py) |
+| Mã, số và dấu phân cách | Phân biệt `AX173` với `AX1730`, `173` với `0173`, `08:15` với `15:08`, và `2,5` với `5,2`. Tiền tố `123/QD-UB` vẫn tìm được `123/QĐ-UBND`. Với mã kèm năm, các phần phải thuộc cùng một mã trong nguồn kết quả. [Ca thử ghi chú, văn bản trích xuất và ghi chú kèm liên kết](../apps/backend/search/test_identifiers.py) |
+| Ghi chú dễ nhầm | Lượt đầu đưa bài đúng lên đầu cho 3/16 câu có đáp án. Khi mở rộng, cả 16/16 có bài đúng đứng đầu và có đủ đáp án trong top 5. Trong 5 câu âm, 2 câu có kết quả ở lượt đầu và 4 câu có gợi ý khi mở rộng. Hai lỗi ở lượt đầu là trả lịch sai tháng và nhầm việc dán thẻ với bóc thẻ sau khi đóng cổng. [Đối chiếu với bản trước](../evals/vietnamese-journeys/confusable-cases/README.md) |
+| Đổi trạng thái và điều hướng | PostgreSQL cập nhật kết quả khi sửa nội dung, bỏ thẻ hoặc đưa ghi chú vào thùng rác. Chromium hoàn tất 16/16 bước đổi từ khóa, đổi chủ đề sau khi mở rộng, dùng Back/Forward và mở đúng nguyên văn M02, M14. Ca giao diện riêng kiểm tra phản hồi cũ đến chậm sau khi người dùng đổi truy vấn. [Kết quả Chromium](../evals/vietnamese-journeys/results-browser-navigation-20261126.json) |
+
+Trên Windows, cả 35 kiểm thử backend tìm kiếm và 336 kiểm thử frontend đều đạt. Toàn bộ Django ghi nhận 420 ca đạt, 9 ca bỏ qua. Bộ 86 truy vấn giữ Recall@5 73/77, Precision@5 73/76 và cả 13 câu âm đều trả rỗng. Ở kho QA 10.000 ghi chú, mã chính xác đứng đầu với P95 5,43 ms, mã nằm trong câu đứng đầu với P95 10,28 ms. Các số thời gian đo qua dịch vụ cục bộ, 20 lượt mỗi câu. [Báo cáo hồi quy và quy mô](../evals/vietnamese-journeys/edge-regression-20261126.json)
+
+<a id="ung-vien-windows-20261125"></a>
+
+## Bản ứng viên Windows ngày 25/11/2026
+
+**Bản Windows đã bổ sung tìm ghi chú theo trí nhớ.** Trong ô Tìm kiếm, nhập điều còn nhớ. Nếu từ khóa chỉ khớp yếu với một số bài, chọn **Tìm gần đúng** để xem gợi ý và đoạn văn liên quan. Các bộ lọc chủ đề, dự án và thẻ vẫn áp dụng cho lượt tìm này. Mã ứng dụng đã nghiệm thu là `a0c7dc588c98683877835aadd3669f4314813bae` trên nhánh `rc/windows-20261125`. [PR #100](https://github.com/cavoixanh638/kho-tri-thuc/pull/100) · [Mở pilot Windows](../evals/vietnamese-journeys/README-browser.md)
+
+Trước khi sửa, tìm kiếm toàn văn yêu cầu mọi từ trong câu và phép sửa lỗi gõ chỉ nhận một từ. Câu “mất đuôi câu nói” vì thế trả rỗng dù ghi chú có cả “mất” và “câu”. Bản mới giữ thứ tự kết quả ban đầu khi có kết quả. Khi lượt đầu trống, hệ thống dùng chỉ mục toàn văn để tìm từ có trong các ghi chú người dùng được phép đọc, rồi chấm theo độ hiếm, tiêu đề và cụm từ liền nhau. Những gợi ý có ít bằng chứng hơn cần người dùng chủ động mở. [Cách đo và so sánh trước/sau](../evals/vietnamese-journeys/README.md#tim-theo-tri-nho)
+
+### Kết quả trên Windows
+
+| Phần đã kiểm | Kết quả trên bản ứng viên | Ý nghĩa khi dùng |
+| --- | --- | --- |
+| Tìm lại ghi chú tiếng Việt | Trên bộ ban đầu, số câu nhớ ý tìm đúng bài trong top 5 tăng từ **3/21** lên **8/21** ngay lượt đầu và **21/21** khi dùng thêm **Tìm gần đúng**. | Với 36 cách hỏi mới do tác nhân khác soạn từ cùng kho, bản cũ đạt 0/36. Bản mới đạt 1/36 ngay lượt đầu và 34/36 nếu mở rộng khi cần. Cả 15 câu không có bài phù hợp đều trả rỗng ở lượt đầu. Sau khi mở rộng, 10/15 câu có gợi ý sai. [Phép đo bộ gốc](../evals/vietnamese-journeys/recall-original-after.json) · [Phép đo bộ mới](../evals/vietnamese-journeys/recall-frozen-after.json) |
+| Tự xếp nhóm | Trước khi sửa tay, 19/22 nhãn tự gán đúng. Máy tìm được 19/32 nhãn cần có, 16/36 bài cần thêm hoặc bỏ ít nhất một nhãn. | Đã sửa lỗi tự gán lại nhãn người dùng vừa bỏ. M14 ghi tiền cọc thuê ghế bị xếp nhầm vào “thu âm”. Sau khi bỏ nhãn trong cây thư mục và chạy lại phân nhóm, lựa chọn vẫn được giữ. Thử ghim nhãn cho M01 cũng đạt. [Bộ thử và kết quả trước/sau](../evals/vietnamese-journeys/README.md) |
+| Đọc đúng nguồn trên Drive | Hai PDF tự sinh hiển thị đúng màu cả 6 trang. MP4 trả đúng đoạn byte, Chromium tua đến 2,5 và 9,5 giây. Đã sửa lỗi từ chối nhầm khi Drive chỉ đổi metadata. | Với PDF 5 MiB, ba lần mở đọc 5.244.465 / 1 / 1 byte. Hai trang sau nhanh hơn, nhưng tổng một lần đo tăng từ 14,99 lên 17,60 giây. PDF trên 24 MiB vẫn vượt giới hạn xem đúng trang. [Số đo Drive thật](../evals/media-viewer/README.md) |
+| Giao diện, quy mô và phục hồi | 13/13 hành trình trình duyệt và 104/104 thao tác bàn phím đạt ở bốn độ rộng. Đã phân trang đủ 10.000 ghi chú văn bản, 1.000 chủ đề và khôi phục vào DB sạch với kết quả đối chiếu trùng khớp. Vault nhập lại hai lần giữ nguyên số bản ghi. | Trên dữ liệu thử, phân trang P95 là 1,42 giây, tìm 10 mã mẫu P95 là 19 ms, đo qua Django cục bộ. Khả năng đọc màn hình bằng công nghệ hỗ trợ và tải thư viện video lớn còn chưa đo. [Cổng trình duyệt](../evals/readiness/windows-20261125/gate.json) · [Quy mô](../evals/readiness/windows-20261125/j9-source.json) · [Khôi phục PostgreSQL](../evals/readiness/windows-20261125/j9-restored.json) · [Vault](../evals/readiness/windows-20261125/j8-restored.json) |
+
+Các số liệu Drive, Vault và phục hồi trong bảng được đo ở bản `376d51d`. Khi thử bản sao lưu v4 do công cụ cũ tạo, cả 17 tập dữ liệu cũ khớp sau migration, gồm 10.001 bản ghi của hai tài khoản. [Kiểm thử Windows và dữ liệu phục hồi](../evals/readiness/windows-20261125/windows-tests.json)
+
+Trên bản `a0c7dc5`, frontend đạt 335/335. Django ghi nhận 413 ca, trong đó 404 đạt và 9 bỏ qua. Chromium mở đúng nguyên văn cả 36 bài của bộ gốc qua hai lượt tìm. Bộ hồi quy PostgreSQL 86 truy vấn giữ Recall@5 73/77, Precision@5 73/76 và trả rỗng cả 13 câu âm. Trên 10.000 ghi chú, mã nằm giữa câu nhớ ý đứng đầu, P95 là 12,43 ms qua 20 lượt. Cụm có mặt ở tất cả 10.000 ghi chú vẫn chậm, P95 814 ms trong lần đo này. [Báo cáo Chromium](../evals/vietnamese-journeys/results-browser-memory-windows.json) · [Bộ hồi quy 86 câu](../evals/vietnamese-journeys/results-p16-memory-windows.json) · [Thời gian và kế hoạch truy vấn trên 10.000 ghi chú](../evals/vietnamese-journeys/recall-scale-after.json)
+
+### Việc nên làm tiếp theo
+
+1. **Đo mức hữu ích của gợi ý.** Cho người dùng tự diễn đạt câu hỏi sau vài ngày rồi ghi nhận họ mở đúng bài hay bỏ qua, đặc biệt với những câu chỉ nhắc đến chủ đề gần giống. Bộ câu hỏi thứ hai được soạn độc lập bởi một tác nhân trên dữ liệu tự soạn. [Cách đo và số liệu](../evals/vietnamese-journeys/README.md#tim-theo-tri-nho)
+2. **Đo công sửa nhãn trên tài liệu sử dụng hàng ngày.** Nhờ người dùng đánh dấu nhóm mong muốn và tự tìm lại bài sau vài ngày. Ghi số bài phải sửa, số lần mở đúng trong năm kết quả đầu và thời gian mở đúng bài. Bộ hiện tại có đáp án do người soạn đặt trước. Đợt dùng thử độc lập với người dùng và dữ liệu của họ còn ở trạng thái `NOT_RUN`. [Phiếu đánh giá độc lập](../evals/vietnamese-journeys/README.md)
+3. **Đo chi phí mở trang PDF đầu.** Lặp lại với nhiều tệp và nhiều lượt trên Drive, ghi riêng thời gian trang đầu và trang tiếp theo trước khi điều chỉnh giới hạn 24 MiB. [Hai lượt đo đối chiếu](../evals/media-viewer/README.md)
+
+## Đối chiếu GitHub ngày 22/11/2026
+
+**Nguồn:** [bảng kiểm toán đối chiếu](operations/RELEASE_READINESS_20261122.md), kiểm trực tiếp GitHub HEAD, PR, Actions. Phần dưới đây giữ **lịch sử đã kiểm trên Windows/main**, không xóa thông tin trước đó.
+
+- `main` HEAD lúc đối chiếu: `1f64f50147b9f92177b3e04f787a36fc673736d6`.
+- `PR #79` (nhiều luồng), `PR #81` (Unified Inbox), `PR #82` (Gemini model), `PR #84` (Gemini OCR) đều **OPEN/DRAFT/UNMERGED/NOT_DEPLOYED**. Các CI Actions báo SUCCESS cho từng candidate nhưng không tương đương live PASS. HEAD chính xác tại checkpoint ở bảng audit.
+- Candidate PR84 **ahead 232 / behind 26** so với `main` tại checkpoint; cần đối chiếu 26 commit và tập migration trước khi lập release candidate thực.
+- **P08 browser** trong Actions #44971811417: `9 PASS / 0 FAIL / 0 BLOCKED / 4 NOT_RUN`, `status=NOT_RUN` dù step đặt continue-on-error. P15 fatal `Cannot focus .research-clipper select`; release UAT **chưa PASS**.
+- **Chất lượng và vận hành chưa chốt:** P16 86 truy vấn chưa chạy PostgreSQL benchmark; P17 10k metadata fixture **không** là 10k video tải thật; YouTube/TikTok chưa có đường tải video gốc tương ứng Facebook; Gemini OCR 394 backend tests theo CI nhưng inference thật/CER/WER/provider ngân sách **NOT_RUN**.
+- **NEXT:** P0-01 reconcile branch và plan; P0-02 sửa P15 và làm gate fail-closed, kiểm J3/J6B/J8/J9; P0-03 kiểm media/search/group bằng dữ liệu có phép và gold. Android **DEFERRED theo người dùng**.
+
+Đây là checkpoint nguồn mã/CI, **không thay đổi** trạng thái đã triển khai Windows hay khẳng định PR Draft đã vận hành thật.
+
+## Checkpoint mới — Candidate Kho Tri Thức 21/11/2026 (chưa merge/deploy)
+
+**Phạm vi:** PR [#79](https://github.com/cavoixanh638/kho-tri-thuc/pull/79), nhánh `coord/notes-parallel-20261121-integrated`, chỉ QA độc lập và mã ứng viên, **không thay đổi phiên bản Windows đang chạy hoặc `main`**. Các PR #57–#62 và Pxx đã được ghép có kiểm soát; không merge chồng PR nguồn. P13 đã tích hợp từ PR #80. Android được người dùng yêu cầu **để sau**.
+
+- **CI thực chứng trước đợt sửa UI:** [Actions #44900611379](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44900611379) SUCCESS tại SHA `d165a76d91899eaed2b1dc90cc32433b679a08e8`: frontend, Django/PostgreSQL, migrations, worker, backup/restore, API P13 và kiểm tra URL nhạy cảm theo fixture. Những lần CI sau đó không được suy PASS từ SHA cũ.
+- **Giao diện thật đã được chụp:** [run #44900440593](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44900440593), artifact `kho-tri-thuc-actual-ui`, 7 PNG desktop/mobile/tablet từ **built React + Django + PostgreSQL CI** với tài khoản và nội dung thử nghiệm. Đây không phải ảnh mock hoặc deployment; screenshot SHA256 trong `preview-evidence.json`. Runner QA được xóa volume sau test.
+- **P08 trình duyệt thực:** ở [run #44900498799](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44900498799), AUTH và J7 (4 độ rộng, 4 chế độ thư viện, không tràn ngang) PASS; J1 chuyển thư mục FAIL, 7 ca phụ thuộc BLOCKED, J6B/J8/J9 NOT_RUN. Trên code tiếp theo đã thêm diagnostic và tìm thấy bảng cấu trúc bị remount khi `updated_at` đổi. Fix tại `ItemScreen.tsx`, chỉnh bộ thử select; **không nâng trạng thái J1 thành PASS trước khi kết quả Chromium mới xác nhận**.
+- **P15 trình duyệt thực:** báo cáo của [run #44901254396](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44901254396) có 84 hành động bàn phím, 72 PASS / 12 FAIL, 8 BLOCKED, 4 độ rộng không tràn ngang. Đã bổ sung skip link, nhãn lựa chọn tiếng Việt, heading Markdown phân cấp và sửa trả focus của dialog Esc; **trạng thái nghiệm thu P15 vẫn mở** đến khi kiểm lại.
+- **Điều chỉnh UI chờ nghiệm thu tại HEAD mới:** cây thư mục mặc định thu gọn ở màn hình hẹp (trừ người dùng đã chọn lưu), đổi cả khi resize; định vị Ctrl+K gần tiêu đề; screenshot pipeline seed 3 ghi chú Markdown mẫu. Mã source và test mới đã push; **CI của HEAD mới cần đọc riêng**. Chưa triển khai lên Windows/thật.
+- **Các cổng còn mở ngoài Android:** Drive thật với tài khoản người dùng, MP4 seek/PDF page thực, tải 100 GB/tập video >10.000 thực, kiểm thử bảo mật thực hành và trợ năng công nghệ hỗ trợ. Mock/synthetic không thay thế bằng chứng thật. Không đưa video/token/mật khẩu cá nhân lên Git.
+- **Phục hồi:** bỏ PR #79 khỏi kế hoạch merge hoặc revert các commit của candidate; không rollback schema trên hệ thống người dùng khi chưa có backup/đánh giá ảnh hưởng.
+
+Đây là trạng thái **ứng viên thử nghiệm**; các phần KT-113/Windows LIVE_PASS phía dưới phản ánh phiên bản đã chạy trước đó, không xác nhận ứng viên PR79 đã được deploy.
+
+
 **Ngày checkpoint:** 20/11/2026 (Asia/Ho_Chi_Minh).
 **Nguồn kiểm chứng:** Windows đã chạy candidate `8daa02bf7b8a45c41b65bfc2387d686beb27f5b8` của [PR #29](https://github.com/cavoixanh638/kho-tri-thuc/pull/29), từ main `8828663`; [CI #44566379899](https://github.com/cavoixanh638/kho-tri-thuc/actions/runs/44566379899) PASS. Kết quả live/restore/connector ở phần KT-113 dưới đây. Khi tiếp tục luôn kiểm GitHub head/merge/runtime thực tế, không coi SHA trong tài liệu là bất biến. Khảo sát [QLVB_System_new](https://github.com/cavoixanh638/QLVB_System_new) chỉ là tham khảo thiết kế.
 **Mục đích:** nơi duy nhất ghi **đã hoàn thành điều gì thật**. Roadmap là kế hoạch/điều kiện PASS, không là chứng cứ chạy thật.
 
 ## 1. Tình trạng tổng quát
+
+### KT-114–121 — candidate tích hợp PR57, chưa merge/chưa deploy
+
+Nhánh codex/notes-ux-integration đã ghép mã PR48–56 và nối template/review/
+minh họa vào ItemScreen, private media Range và test runner chung. Mã hành vi
+đã thử04cd942; sửa giao diện tablet/tương phản đã thửec1cdd3. Đây là candidate
+QA cô lập, **không thay trạng thái Windows LIVE_PASS của KT-113** phía dưới.
+Frontend231 PASS; backend257 PASS và2 opt-in riêng đã chạy; Chrome thật qua
+Django/PostgreSQL kiểm capture/edit/template/review/undo/backlink/4views; gate
+10000Item và restore15collection PASS. Chi tiết, SHA, ảnh, lệnh và các giới hạn
+ở [bằng chứng tích hợp](workstreams/notes-ux-20261120/INTEGRATION-EVIDENCE.md).
+[PR57](https://github.com/cavoixanh638/kho-tri-thuc/pull/57) là nơi kiểm CI
+đúng HEAD mới nhất. Không merge, không triển khai Windows; Drive thật/PDF page
+jump/Android/AIprovider vẫn chưa được nghiệm thu trong đợt này.
 
 ### KT-113 — cây thư viện và text từ liên kết, Windows LIVE_PASS
 

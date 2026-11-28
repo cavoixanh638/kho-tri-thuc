@@ -1,0 +1,346 @@
+{
+  "origin": "model_authored_provisional",
+  "provenance": "Agent-authored Vietnamese recall queries written from corpus.json alone before seeing retrieval implementation or rankings. Topic labels are reused from provisional.json. No human judgments.",
+  "judgments": [
+    {
+      "id": "M01",
+      "topics": [
+        "kỹ thuật ảnh"
+      ],
+      "query": "Trong lần chụp cạnh cửa kính, mình kê cái gì ở phía mặt bị tối cho sáng lên ấy nhỉ?",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M02",
+      "topics": [
+        "thu âm"
+      ],
+      "query": "Có ghi chú nào nhắc chờ thêm một tí mới tắt máy để khỏi nuốt mất chữ chót không?",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M03",
+      "topics": [
+        "dựng video"
+      ],
+      "query": "Tìm lại mẹo chỉnh cho mặt khách mời lên cùng tông ở cảnh gần lẫn cảnh toàn.",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M04",
+      "topics": [
+        "sao lưu dữ liệu"
+      ],
+      "query": "Sau khi đổ ảnh từ thẻ, mình phải kiểm tra bản trên đĩa phụ thế nào trước khi đem cất thẻ?",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M05",
+      "topics": [
+        "trích dẫn nguồn"
+      ],
+      "query": "Chỗ nào nhắc lúc dẫn sách thì lấy con số ở chân trang vì app tính luôn trang bìa?",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M06",
+      "topics": [
+        "tập golf"
+      ],
+      "query": "Cái lần mình căng một sợi trên sàn để xem mũi giày có chĩa sai hướng nằm đâu?",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M07",
+      "topics": [
+        "kỹ thuật ảnh"
+      ],
+      "query": "Chụp cái bảng ở ngoài nắng mà bị phản chiếu ngay dòng mực xanh thì hôm đó mình xử lý sao?",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M08",
+      "topics": [
+        "thu âm"
+      ],
+      "query": "Mình từng đổi sang ngồi sát tường để tiếng ngoài sân bớt ù mà vẫn bắt được giọng phía bên kia.",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M09",
+      "topics": [
+        "dựng video"
+      ],
+      "query": "Tìm lần mình nán hình thêm chút cho khán giả đọc kịp dòng giới thiệu người đang xuất hiện.",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M10",
+      "topics": [],
+      "query": "Nhắc lại vụ chuyển mấy bì thư lên tầng trên của tủ vì mùa mưa, bao giờ thay túi chống ẩm?",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M11",
+      "topics": [
+        "trích dẫn nguồn"
+      ],
+      "query": "Ở bản gõ lại cuộc trò chuyện, bên nào là câu của người hỏi và bên nào là phần tóm ý của người viết?",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M12",
+      "topics": [
+        "tập golf"
+      ],
+      "query": "Ghi chép nào thử cùng ba cú trên mặt dốc rồi xem quả nào trôi sang hai bên miệng hố?",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M13",
+      "topics": [
+        "sao lưu dữ liệu"
+      ],
+      "query": "Lịch đem ổ cam ra chỗ khác mỗi thứ sáu và để ổ xám ở nhà nằm ở đâu?",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M14",
+      "topics": [],
+      "query": "Mình có lưu việc lấy ghế và hoàn cọc ở chỗ có cái bảng cạnh loa, tìm hộ.",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M15",
+      "topics": [
+        "kỹ thuật ảnh"
+      ],
+      "query": "Đợt chụp vũ công thiếu sáng mình chịu ảnh lấm tấm miễn sao cánh tay không bị kéo vệt, ghi ở đâu?",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M16",
+      "topics": [
+        "dựng video"
+      ],
+      "query": "Buổi dựng bài giảng nào có nhắc vặn nhạc nhỏ khi thầy bắt đầu nói và để giọng thành kênh riêng?",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M17",
+      "topics": [
+        "trích dẫn nguồn"
+      ],
+      "query": "Mình dẫn một bài báo đổi tít mà link cũ vẫn mở, đã lưu câu trích và hôm mình đọc ở đâu?",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M18",
+      "topics": [
+        "thu âm"
+      ],
+      "query": "Tìm đoạn nhắc cuối buổi cứ để máy thu thêm lúc không ai nói, để sau này vá chỗ ráp câu.",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M19",
+      "topics": [],
+      "query": "Hóa đơn cần giữ để chia khoản nước trà của nhóm ở sân nằm ở đâu?",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M20",
+      "topics": [
+        "sao lưu dữ liệu"
+      ],
+      "query": "Có lưu vụ cúp điện làm bay cả thư mục và lôi bản cũ lên thì hụt mất phiên bản bảng vừa làm tối hôm sau không?",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M21",
+      "topics": [
+        "tập golf"
+      ],
+      "query": "Tìm lần tập sát hố cát, mỗi cú mình lại chụp chỗ quả bóng nằm và mặt gậy đang quay về đâu.",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M22",
+      "topics": [
+        "sao lưu dữ liệu"
+      ],
+      "query": "Qua máy mới chữ vẫn đọc được mà ảnh trong trang thành ô lỗi, lúc đó mình quên mang theo thư mục nào?",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M23",
+      "topics": [
+        "dựng video"
+      ],
+      "query": "Đoạn nối hai góc lúc người ta đi qua cửa, mình canh khoảnh khắc nào của bàn chân cho hình khỏi giật?",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M24",
+      "topics": [],
+      "query": "Nhắc vụ lấy chìa phòng để họp nhóm đọc sách rồi báo bác bảo vệ lúc khóa cửa.",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M25",
+      "topics": [
+        "trích dẫn nguồn"
+      ],
+      "query": "Khi hai khách kể trùng một chuyện trên phóng sự, mình ghi tên người nói với vị trí chính xác trong đoạn phát ở đâu?",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M26",
+      "topics": [
+        "kỹ thuật ảnh"
+      ],
+      "query": "Cái ảnh test dưới đèn sân khấu mà zoom vào áo trắng mới lộ mấy vạch đen nằm đâu?",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M27",
+      "topics": [
+        "thu âm"
+      ],
+      "query": "Buổi nào máy lấy tiếng từ camera thay vì mic trên áo nên bản nháp toàn nghe tiếng quạt?",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M28",
+      "topics": [],
+      "query": "Hai file gửi xưởng cùng ghi bản chốt, mình đã lưu gì để hỏi bên duyệt phiên bản nào đúng?",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M29",
+      "topics": [
+        "thu âm",
+        "sao lưu dữ liệu"
+      ],
+      "query": "Ghi chú nào nhắc cất cả file tiếng thô lẫn file đã xử lý, phòng lúc xóa lố mất âm khán giả vỗ tay?",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M30",
+      "topics": [
+        "tập golf"
+      ],
+      "query": "Mình tập gạt bóng lọt qua khe tạo bằng cặp tiền lẻ và đếm cú không đụng vật bên phải ở đâu?",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M31",
+      "topics": [
+        "trích dẫn nguồn"
+      ],
+      "query": "Đoạn về bến tàu có chữ cầu gỗ ở bản đời trước, mình ghi cách phân biệt với sách in lại chỗ nào?",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M32",
+      "topics": [
+        "dựng video"
+      ],
+      "query": "Clip lên điện thoại nhìn trời nhợt đi, mình giữ đoạn render thử với thông số màu nào để đối chiếu?",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M33",
+      "topics": [
+        "kỹ thuật ảnh"
+      ],
+      "query": "Lần bắt hình người chạy xe bằng cách khóa nét vào cột bên đường trước rồi chờ xe tới đúng chỗ nằm đâu?",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M34",
+      "topics": [],
+      "query": "Tìm cái link người ta nhắn dành xem sau, lúc gửi chưa nói đó là bài về gì.",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M35",
+      "topics": [
+        "dựng video",
+        "thu âm"
+      ],
+      "query": "Cảnh nghệ sĩ chào khán giả cuối buổi, mình canh từ lúc khán giả bắt đầu vỗ để ráp âm gốc ở đâu?",
+      "query_kind": "memory"
+    },
+    {
+      "id": "M36",
+      "topics": [
+        "tập golf"
+      ],
+      "query": "Bài gạt trên nền bằng có ba mốc xa gần, mình lấy gang tay đo cú đầu hụt bao nhiêu, tìm hộ.",
+      "query_kind": "memory"
+    }
+  ],
+  "negative_queries": [
+    {
+      "split": "holdout",
+      "query": "Ghi chú nào có mẹo chụp qua kính bể cá mà tránh bóng mình phản chiếu?"
+    },
+    {
+      "split": "development",
+      "query": "Thu ngoài sân mà vẫn có tiếng gió, mình chọn loại bọc lông nào cho micro?"
+    },
+    {
+      "split": "holdout",
+      "query": "Lúc ráp cảnh bước qua cửa, có ghi cách sửa lỗi tiếng bước chân đi trước hình không?"
+    },
+    {
+      "split": "development",
+      "query": "Ổ cam đem đi thứ sáu có mật khẩu mã hóa để ở đâu?"
+    },
+    {
+      "split": "development",
+      "query": "Mình đã ghi cách đánh số trang khi dẫn một báo cáo PDF hoàn toàn không có số trang in ở đâu?"
+    },
+    {
+      "split": "holdout",
+      "query": "Bài tập đánh bóng lên dốc dùng ba quả có ghi lực đánh bằng phần trăm cho từng quả không?"
+    },
+    {
+      "split": "holdout",
+      "query": "Chỗ nào ghi tải phụ đề tự động từ video phỏng vấn rồi xuất thành tệp SRT?"
+    },
+    {
+      "split": "holdout",
+      "query": "Sau lần ảnh mất khi chuyển máy, có hướng dẫn khôi phục cả ghi chú đã xóa từ thùng rác không?"
+    },
+    {
+      "split": "development",
+      "query": "Tìm giúp số tiền cọc và hạn chót nhận lại tiền của phòng hội thảo."
+    },
+    {
+      "split": "development",
+      "query": "Phiếu mua trà ở sân ghi mã số thuế của quầy nào nhỉ?"
+    },
+    {
+      "split": "holdout",
+      "query": "Có ghi địa chỉ trang web của bài được gửi để xem sau không?"
+    },
+    {
+      "split": "development",
+      "query": "Tìm lại mẹo dọn cặn ở vòi ấm siêu tốc bằng giấm."
+    },
+    {
+      "split": "holdout",
+      "query": "Giờ chuyến tàu cuối từ sân bay về trung tâm hôm chủ nhật."
+    },
+    {
+      "split": "holdout",
+      "query": "Mình gieo rau mùi cách nhau mấy đốt ngón tay thì lên đều?"
+    },
+    {
+      "split": "development",
+      "query": "Ghi chú nào có chỗ mua dây giày chống tuột cho đôi giày chạy?"
+    }
+  ]
+}

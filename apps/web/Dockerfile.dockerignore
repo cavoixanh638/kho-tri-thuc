@@ -1,0 +1,28 @@
+# This Dockerfile uses the repository root context, restricted to web source
+# and the two shared synthetic corpora. Never send runtime data or credentials.
+**
+!apps/
+!apps/web/
+!apps/web/**
+!apps/backend/
+!apps/backend/ingestion/
+!apps/backend/ingestion/fixtures/
+!apps/backend/ingestion/fixtures/kt117-fixtures.json
+!apps/backend/catalog/
+!apps/backend/catalog/fixtures/
+!apps/backend/catalog/fixtures/kt119-connections.json
+**/.env
+**/.env.*
+**/*.pem
+**/*.key
+**/credentials*.json
+**/client_secret*.json
+**/token*.json
+**/secrets
+**/node_modules
+**/dist
+**/coverage
+**/.vite
+**/tmp
+**/*.log
+**/*.tmp

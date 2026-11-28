@@ -15,6 +15,7 @@ def search_candidates(item, texts):
             SearchFilters(owner_id=item.owner_id, exclude_item_id=item.pk),
             " ".join(tokens)[:300],
             limit=30,
+            allow_partial=False,
         )
         candidates.update(hit.item_id for hit in page.hits)
     return tuple(candidates)

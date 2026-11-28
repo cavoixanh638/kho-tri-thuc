@@ -1,0 +1,17 @@
+.related-connections { overflow-wrap: anywhere; }
+.related-connections .list-meta { font-size: 13px; }
+.related-connections h2 { font-size: 16px; line-height: 1.4; }
+.related-connections h3, .related-connections h4 { font-size: 14px; line-height: 1.5; }
+.related-section + .related-section, .related-sources { margin-block-start: 24px; }
+.related-source-card { background: var(--canvas, #f4f4f3); padding: 12px; margin-block: 12px; border-radius: 6px; }
+.related-source-card h4 { margin: 0 0 8px; }
+.related-source-card p { margin-block: 6px; }
+.related-link-list, .related-part-list, .related-asset-references { padding-inline-start: 18px; }
+.related-link-list > li, .related-part-list > li { margin-block: 12px; }
+.related-link-list .list-meta, .related-part-list span { display: block; }
+.related-connections button { white-space: normal; height: auto; min-height: 32px; }
+.related-connections summary { cursor: pointer; }
+.related-disclosure > summary { font-size: 14px; padding-block: 6px; }
+.related-connections code { white-space: normal; }
+.related-source-card:focus { outline: 2px solid var(--signal); outline-offset: 2px; }
+@media (max-width: 600px) { .related-connections button, .related-connections summary { min-height: 44px; } }

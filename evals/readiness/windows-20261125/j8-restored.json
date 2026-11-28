@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "task": "P08/J8",
+  "status": "PASS",
+  "source_database": "kt_p08_journeys",
+  "target_database": "kt_p08_vault_clean",
+  "archive_sha256": "fc2b9ab00aa5716940bddbdcc84c4db8fd593badfebc06898266453b0021ca58",
+  "counts": {
+    "items": 2,
+    "topics": 2,
+    "item_topics": 3,
+    "events": 5,
+    "assets": 1,
+    "sources": 2
+  },
+  "created": 2,
+  "events_created": 5,
+  "assets_created": 1,
+  "replay_unchanged": true,
+  "note_sha256_verified": true,
+  "uuid_parent_verified": true,
+  "folder_hierarchy_verified": true,
+  "home_shortcut_verified": true,
+  "source_identity_verified": true,
+  "capture_time_verified": true,
+  "asset_metadata_sha256_verified": true,
+  "media_verified": 0,
+  "metadata_only": true,
+  "external_drive_calls": 0,
+  "external_ai_calls": 0
+}

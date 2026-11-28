@@ -84,6 +84,177 @@ function Probe({ path = '/fixture', maxPollMs }) {
 }
 const probe = () => JSON.parse(container.querySelector('output').textContent);
 
+test('search explains partial matches on the same results page and only for a nonempty partial response', async () => {
+  const hit = { item_id: 'note-id', title: 'Ghi chú đã lưu', evidence: [] };
+  const pages = {
+    partial: { results: [hit], match_kind: 'partial' },
+    standard: { results: [hit], match_kind: 'standard' },
+    legacy: { results: [hit] },
+    empty: { results: [], match_kind: 'partial' },
+  };
+  globalThis.fetch = async path => {
+    const url = new URL(path, window.location.origin);
+    if (url.pathname === '/api/v1/groups') return response({ topics: [], projects: [], tags: [] });
+    assert.equal(url.pathname, '/api/v1/search');
+    return response({ ...pages[url.searchParams.get('q')], next_cursor: null });
+  };
+
+  for (const mode of Object.keys(pages)) {
+    await render(ui.SearchScreen, { path: '#/tim-kiem?q=' + mode });
+    const section = container.querySelector('[aria-labelledby="search-results-title"]');
+    assert.equal(section.querySelector('h2').textContent, 'Kết quả tìm kiếm');
+    const label = section.querySelector('[role="status"]');
+    const list = section.querySelector('ol');
+    if (mode === 'partial') {
+      assert.equal(label.textContent, 'Ghi chú khớp một phần từ khóa');
+      assert.equal(list.getAttribute('aria-describedby'), label.id);
+    } else {
+      assert.equal(label, null);
+      assert.equal(list?.hasAttribute('aria-describedby') ?? false, false);
+    }
+    if (mode === 'empty') {
+      assert.equal(section.querySelector('.empty-state').textContent, 'Không tìm thấy mục phù hợp.');
+    } else {
+      assert.equal(list.querySelector('a').getAttribute('href'), '#/muc/note-id');
+    }
+  }
+});
+
+test('approximate search is explicit and keeps group filters and pagination in the chosen mode', async () => {
+  const requested = [];
+  const next = { score: 3, item_id: 'first' };
+  globalThis.fetch = async path => {
+    const url = new URL(path, window.location.origin);
+    if (url.pathname === '/api/v1/groups') return response({ topics: [], projects: [], tags: [] });
+    const params = url.searchParams;
+    requested.push(params);
+    if (params.get('expand') !== 'true') return response({ results: [], next_cursor: null, can_expand: true });
+    const id = params.has('cursor_item_id') ? 'second' : 'first';
+    return response({ match_kind: 'partial', can_expand: true,
+      results: [{ item_id: id, title: id, evidence: [] }], next_cursor: id === 'first' ? next : null });
+  };
+  const route = async hash => render(ui.SearchScreen, { key: hash, path: hash });
+  const action = label => [...container.querySelectorAll('.search-results a')].find(link => link.textContent === label);
+  await route('#/tim-kiem?q=tr%C3%AD+nh%E1%BB%9B&topic_id=4&project_id=8&tag_id=2');
+  assert.equal(requested.at(-1).has('expand'), false);
+  assert.ok(container.querySelector('.empty-state'));
+  const expand = action('Tìm gần đúng');
+  assert.ok(expand);
+  await route(expand.hash);
+  const params = requested.at(-1);
+  assert.equal(params.get('expand'), 'true');
+  assert.equal(params.get('q'), 'trí nhớ');
+  for (const [key, value] of Object.entries({ topic_id: '4', project_id: '8', tag_id: '2' })) {
+    assert.equal(params.get(key), value);
+  }
+  assert.equal(params.has('cursor_item_id'), false);
+  assert.equal(action('Tìm gần đúng'), undefined);
+  assert.ok(container.querySelector('ol[aria-describedby="search-partial-match"]'));
+  await click('Trang sau');
+  assert.equal(requested.at(-1).get('expand'), 'true');
+  assert.equal(requested.at(-1).get('cursor_item_id'), 'first');
+  assert.equal(requested.at(-1).get('cursor_score'), '3');
+  assert.equal(container.querySelector('ol a').textContent, 'second');
+
+  const back = action('Về kết quả ban đầu');
+  assert.ok(back);
+  await route(back.hash);
+  assert.equal(requested.at(-1).has('expand'), false);
+  assert.equal(requested.at(-1).has('cursor_item_id'), false);
+  assert.ok(container.querySelector('.empty-state'));
+});
+
+test('checked approximate results distinguish a cited no from a page without evidence', async () => {
+  const literal = 'Dùng ký hiệu <em>mẫu</em> & giữ nguyên.\nKý tên trước khi gửi.';
+  const next = { score: 3, item_id: 'boundary' };
+  globalThis.fetch = async path => {
+    const url = new URL(path, window.location.origin);
+    if (url.pathname === '/api/v1/groups') return response({ topics: [], projects: [], tags: [] });
+    const params = url.searchParams;
+    assert.equal(params.get('expand'), 'true');
+    assert.equal(params.get('topic_id'), '4');
+    const quote_check = { status: 'checked', elapsed_ms: 270 };
+    if (!params.has('cursor_item_id')) return response({ results: [], next_cursor: next, quote_check });
+    assert.equal(params.get('cursor_score'), '3');
+    assert.equal(params.get('cursor_item_id'), 'boundary');
+    return response({ match_kind: 'partial', next_cursor: null, quote_check, results: [
+      { item_id: 'yes-note', title: 'Bản hướng dẫn', evidence: [{ source: 'item', snippet: literal }],
+        verification: { answer: 'yes', quotes: [literal, 'Gửi bản chính cho thư ký.'] } },
+      { item_id: 'no-note', title: 'Quy định ngoại lệ', evidence: [],
+        verification: { answer: 'no', quotes: ['Bản sao không cần chữ ký.'] } },
+    ] });
+  };
+
+  await render(ui.SearchScreen, { path: '#/tim-kiem?q=ky&topic_id=4&expand=true' });
+  assert.match(container.querySelector('#search-insufficient-evidence').textContent, /trên trang này/);
+  assert.equal(container.querySelector('.search-verification'), null);
+  await click('Trang sau');
+  assert.equal(container.querySelector('#search-insufficient-evidence'), null);
+  assert.equal(container.querySelector('#search-partial-match'), null);
+  const rows = [...container.querySelectorAll('.search-list .search-result')];
+  assert.deepEqual(rows.map(row => row.querySelector('.search-verification strong').textContent), ['Có', 'Không']);
+  assert.deepEqual(rows.map(row => row.querySelector('h3 a').getAttribute('href')), ['#/muc/yes-note', '#/muc/no-note']);
+  const quotes = [...rows[0].querySelectorAll('blockquote')];
+  assert.deepEqual(quotes.map(quote => quote.textContent), [literal, 'Gửi bản chính cho thư ký.']);
+  assert.equal(quotes[0].getAttribute('cite'), '#/muc/yes-note');
+  assert.equal(rows[0].querySelector('em'), null);
+  assert.equal(rows[0].textContent.split(literal).length, 2);
+  await click('Trang trước');
+  assert.ok(container.querySelector('#search-insufficient-evidence'));
+});
+
+test('unavailable quote checks keep approximate suggestions and their original excerpts', async () => {
+  globalThis.fetch = async path => {
+    const url = new URL(path, window.location.origin);
+    if (url.pathname === '/api/v1/groups') return response({ topics: [], projects: [], tags: [] });
+    return response({ match_kind: 'partial', next_cursor: null,
+      quote_check: { status: 'unavailable', elapsed_ms: 4000 },
+      results: [{ item_id: 'suggestion', title: 'Ghi chú có liên quan', evidence: [
+        { source: 'item', snippet: 'Đoạn khớp từ khóa' },
+      ] }],
+    });
+  };
+
+  await render(ui.SearchScreen, { path: '#/tim-kiem?q=tu+khoa&expand=true' });
+  const status = container.querySelector('#search-quote-unavailable');
+  assert.equal(status.getAttribute('role'), 'status');
+  assert.match(status.textContent, /chưa được đối chiếu/);
+  const list = container.querySelector('ol[aria-describedby="search-quote-unavailable"]');
+  assert.equal(list.querySelector('.search-evidence p').textContent, 'Đoạn khớp từ khóa');
+  assert.equal(list.querySelector('blockquote'), null);
+  assert.equal(container.querySelector('#search-insufficient-evidence'), null);
+});
+
+test('a late expanded search cannot replace the current filtered query or its exact result', async () => {
+  let finishOld, oldSignal;
+  globalThis.fetch = async (path, options) => {
+    const url = new URL(path, window.location.origin);
+    if (url.pathname === '/api/v1/groups') return response({ topics: [{ id: 4, name: 'Ảnh' }], projects: [], tags: [] });
+    if (url.searchParams.get('expand') === 'true') {
+      oldSignal = options.signal;
+      return new Promise(resolve => { finishOld = () => resolve(response({
+        results: [{ item_id: 'older', title: 'Kết quả đến muộn', evidence: [] }], next_cursor: null, match_kind: 'partial',
+      })); });
+    }
+    assert.equal(url.searchParams.get('topic_id'), '4');
+    assert.equal(url.searchParams.get('q'), 'mục mới');
+    return response({ results: [{ item_id: 'current', title: 'Kết quả hiện tại', evidence: [] }], next_cursor: null });
+  };
+  const oldPath = '#/tim-kiem?q=nh%E1%BB%9B&expand=true';
+  const newPath = '#/tim-kiem?q=m%E1%BB%A5c+m%E1%BB%9Bi&topic_id=4';
+  await render(ui.SearchScreen, { path: oldPath, key: oldPath });
+  assert.ok(container.querySelector('.search-results .loading'));
+  await render(ui.SearchScreen, { path: newPath, key: newPath });
+  assert.equal(oldSignal.aborted, true);
+  const resultList = container.querySelector('.search-results ol');
+  assert.equal(resultList.querySelector('a').getAttribute('href'), '#/muc/current');
+  await ui.act(async () => { finishOld(); await settle(); });
+  assert.equal(container.querySelector('.search-results ol'), resultList);
+  assert.equal(resultList.querySelector('a').textContent, 'Kết quả hiện tại');
+  assert.equal(container.querySelector('#search-partial-match'), null);
+  assert.equal(container.querySelector('.search-form select').value, '4');
+});
+
 test('pending resources poll sequentially and stop when processing completes', async () => {
   let calls = 0;
   globalThis.fetch = async () => response({ pending: ++calls === 1, value: calls });
@@ -182,7 +353,7 @@ const item = (patch = {}) => ({
 
 test('knowledge Markdown renders structure while HTML, active URLs and remote images stay inert', async () => {
   await render(ui.KnowledgeText, { text: '# Tri thức\n\n**Ý chính**\n\n| Cột | Giá trị |\n| --- | --- |\n| A | 42 |\n\n[nguồn](https://example.com/doc)\n\n[xấu](javascript:alert%281%29)\n\n![minh họa](https://example.com/pixel.png)\n\n<script>alert(1)</script><img src=x onerror=alert(1)>' });
-  assert.equal(container.querySelector('h3').textContent, 'Tri thức');
+  assert.equal(container.querySelector('.knowledge-text h2').textContent, 'Tri thức');
   assert.equal(container.querySelector('strong').textContent, 'Ý chính');
   assert.equal(container.querySelector('td').textContent, 'A');
   assert.equal(container.querySelector('a').rel, 'noopener noreferrer');
@@ -218,6 +389,70 @@ function itemRoutes(current) {
     return response({ results: [], next_offset: null });
   };
 }
+
+test('P01: unavailable structure payload never hides the source note, editor or clipper', async () => {
+  const fallback = itemRoutes(() => item({ kind: 'text', title: 'Ghi chú có nguồn',
+    note: 'Nội dung **người dùng viết**', original_url: 'https://example.org/article' }));
+  let previewBody, previewCsrf;
+  globalThis.fetch = async (path, options) => {
+    if (path.endsWith('/clips/preview')) {
+      previewBody = JSON.parse(options.body);
+      previewCsrf = options.headers.get('X-CSRFToken');
+      return response({ receipt: 'preview-1', quote: '', url: previewBody.url,
+        page_title: 'Nguồn kiểm thử', verification: 'link_only', locator: {}, source_version: 'v1' });
+    }
+    // An older/mock server returns its ordinary empty page for unknown endpoints.
+    // This must not crash the whole item page when /structure is not yet available.
+    return fallback(path, options);
+  };
+  await render(ui.ItemScreen, { id: 'fixture-item', csrf: 'fixture-csrf' });
+  assert.equal(container.querySelector('h1').textContent, 'Ghi chú có nguồn');
+  assert.equal(container.querySelector('.knowledge-text strong').textContent, 'người dùng viết');
+  assert.ok(container.querySelector('.source-description a[href="https://example.org/article"]'));
+  assert.match(container.querySelector('[aria-label="Cấu trúc bài"]').textContent, /Chưa hiển thị được cấu trúc bài/);
+  assert.ok(container.querySelector('#item-clipper .research-clipper'), 'Clipper remains mounted');
+
+  const urlField = container.querySelector('#item-clipper input[type="url"]');
+  assert.ok(urlField);
+  await ui.act(async () => {
+    Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set.call(urlField, 'https://example.org/public');
+    urlField.dispatchEvent(new window.Event('input', { bubbles: true }));
+    await settle();
+  });
+  await click('Xem trước nguồn / đoạn trích');
+  assert.deepEqual(previewBody, { mode: 'link', url: 'https://example.org/public', quote: '', target_item_id: 'fixture-item' });
+  assert.equal(previewCsrf, 'fixture-csrf');
+  assert.ok(container.textContent.includes('Nguồn kiểm thử'));
+  await click('Chỉnh sửa');
+  assert.ok(container.querySelector('.markdown-item-detail form textarea'), 'Editable user note remains available');
+});
+
+test('P01: valid structure payload exposes children and accepts command-palette move action', async () => {
+  const fallback = itemRoutes(() => item({ kind: 'text', note: 'Bản văn giữ nguyên', original_url: '' }));
+  globalThis.fetch = async (path, options) => {
+    if (path.endsWith('/items/fixture-item/structure')) {
+      return response({ item_id: 'fixture-item', home_topic_id: 2, parent_item_id: null,
+        sort_order: 0, structure_version: 4, origin: 'user', ancestors: [],
+        children: [{ item_id: '22345678-1234-4567-89ab-123456789abc', title: 'Bài con có thật' }] });
+    }
+    if (path.endsWith('/knowledge-tree')) return response({ nodes: [{ id: 2, path: 'Sổ tay / Dự án' }] });
+    return fallback(path, options);
+  };
+  await render(ui.ItemScreen, { id: 'fixture-item', csrf: 'fixture-csrf' });
+  const panel = container.querySelector('[aria-label="Cấu trúc bài cha và bài con"]');
+  assert.ok(panel, 'Structure panel mounts when API is valid');
+  assert.match(panel.textContent, /Bài con \(1\)/);
+  assert.ok(panel.querySelector('a[href="#/muc/22345678-1234-4567-89ab-123456789abc"]'));
+  await ui.act(async () => {
+    window.dispatchEvent(new window.CustomEvent('knowledge-command', {
+      detail: { action: 'move', itemId: 'fixture-item' },
+    }));
+    await settle();
+  });
+  const controls = [...panel.querySelectorAll('details')].find((node) => node.textContent.includes('Chuyển thư mục / thêm lối tắt'));
+  assert.equal(controls?.open, true);
+  assert.ok(controls.querySelector('select'), 'Folder selector is attached to the command');
+});
 
 test('a text article reads as knowledge without misleading missing-extraction status or repeated title', async () => {
   globalThis.fetch = itemRoutes(() => item({ kind: 'text', title: 'Bài tri thức', note: '# Bài tri thức\n\nNội dung **đã có**.', original_url: '', source_fetch: 'not_applicable', asset_storage: 'not_applicable' }));
@@ -294,7 +529,8 @@ test('StrictMode share target preserves Unicode inputs after removing query para
   };
   await render(ui.CaptureScreen, { csrf: 'fixture-csrf' }, true);
   assert.equal(window.location.search, '');
-  assert.equal(container.querySelector('input[placeholder="https://…"]').value, 'https://example.invalid/video');
+  assert.ok(container.querySelector('.capture-share-source')?.textContent.includes('https://example.invalid/video'));
+  assert.equal(container.querySelectorAll('.capture-compose textarea').length, 1, 'Single unified intake input');
   assert.equal(container.querySelector('textarea').value, 'Chia sẻ\nGhi chú');
   await ui.act(async () => {
     container.querySelector('form').dispatchEvent(new window.Event('submit', { bubbles: true, cancelable: true }));

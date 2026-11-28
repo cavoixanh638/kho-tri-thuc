@@ -1,0 +1,34 @@
+{
+  "transport": "Production-built navigation fixture using actual Django session/CSRF/navigation/link/PATCH APIs and PostgreSQL; callback-only structural actions",
+  "checks": [
+    "Actual API wiki autocomplete, identical-title UUID disambiguation, native Arrow/Enter insertion, PATCH preserves raw prefix, six real TOC focus jumps PASS",
+    "20 native visible palette actions over four sizes, Ctrl+K/Esc dialog/focus and reduced-motion PASS; structural action callback only, full host journeys belong to KT128"
+  ],
+  "widths": [
+    {
+      "width": 1920,
+      "no_overflow": true,
+      "commands": 5
+    },
+    {
+      "width": 1440,
+      "no_overflow": true,
+      "commands": 5
+    },
+    {
+      "width": 768,
+      "no_overflow": true,
+      "commands": 5
+    },
+    {
+      "width": 390,
+      "no_overflow": true,
+      "commands": 5
+    }
+  ],
+  "android": "NOT_RUN",
+  "native_unikey_evkey": "NOT_RUN",
+  "browser": "Chrome/157.0.8103.79",
+  "status": "PASS",
+  "code_sha": "c5acff27ed6cc61cd31e050828e3a26f089ec357"
+}

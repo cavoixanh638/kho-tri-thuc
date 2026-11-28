@@ -1,0 +1,5 @@
+# Blind review and benchmark receipts identify input files by their exact bytes.
+*.json text eol=lf
+*.jsonl text eol=lf
+*.py text eol=lf
+*.mjs text eol=lf

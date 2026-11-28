@@ -1,0 +1,611 @@
+{
+  "title": "Tìm ghi chú theo thông số, mã và cách trình bày",
+  "items": [
+    {
+      "id": "VN01",
+      "title": "Sổ nhập ấn phẩm Mùa đò vắng",
+      "note": "Tác phẩm Mùa đò vắng của Thu Mộc, Nhà xuất bản Bến Hổ Phách, bản năm 2021. Bản này có lời tựa ghi riêng về bến cũ và kẹp một bản đồ gấp."
+    },
+    {
+      "id": "VN02",
+      "title": "Phiếu nhận Mùa đò trắng",
+      "note": "Tác phẩm Mùa đò trắng của Thu Mộc, Nhà xuất bản Bến Hổ Phách, năm 2021. Cuối sách có lời bạt về người lái đò và ba ảnh rời, bìa không kẹp bản đồ."
+    },
+    {
+      "id": "VN03",
+      "title": "Duyệt kích thước thiệp Mực Tía",
+      "note": "Bảng chốt in thiệp Mực Tía: ngang 105 mm, cao 148 mm. Khổ ngang × cao ghi trên tờ duyệt là 105 × 148 mm. Giấy tái chế hơi ngả vàng."
+    },
+    {
+      "id": "VN04",
+      "title": "Độ vang phòng Nhịp Lá",
+      "note": "Cô Vân thử vỗ tay ở ba điểm khi phòng Nhịp Lá chưa kê bàn. Số trung bình được duyệt là 0,48 s. Phép đo khi có rèm được dời sang buổi khác."
+    },
+    {
+      "id": "VN05",
+      "title": "Đo âm nền hành lang Chồi Non",
+      "note": "Hành lang Chồi Non đo 52 dB(A) sau tiết hai. Mức 67 dB(C) được lưu cùng lượt để theo dõi tiếng trầm. Bản tổng hợp chỉ lấy mức trọng số A."
+    },
+    {
+      "id": "VN06",
+      "title": "Trích bảng kiểm màu lô Giọt Sương",
+      "note": "Mỗi dòng theo thứ tự mã lô, tên màu rồi tình trạng. Dòng còn giữ để đối chiếu: GS57 ghi đá đã duyệt. Lô mực thử có mã GS75 và màu ghi ngọc."
+    },
+    {
+      "id": "VN07",
+      "title": "Bản vẽ thu nhỏ sân khấu Lồng Đèn",
+      "note": "Bản vẽ dùng tỉ lệ 1:25 để dán lên bìa thuyết trình. Trên mô hình thử ngoài hành lang, nhóm dùng tỉ lệ 1:20. Nhãn khung giấy in chữ Lồng Đèn."
+    },
+    {
+      "id": "VN08",
+      "title": "Dải hoạt động của ẩm kế Tầm Vông",
+      "note": "Tem ẩm kế Tầm Vông ghi dải công bố 30–80% RH, tính cả mức 30% và 80%. Dải 40–70% RH in trong sổ là khoảng tham khảo khi kiểm tra phòng."
+    },
+    {
+      "id": "VN09",
+      "title": "Ứng dụng Bản Nhạc Sân Trường",
+      "note": "Ghi chép chỉnh thanh trượt của Bản Nhạc Sân Trường phiên bản 2.4.10. Lỗi phát lặp đã được xử lý trong 2.4.1. Bản mới đổi bố cục hàng nút của màn hình tập."
+    },
+    {
+      "id": "VN10",
+      "title": "Nhật ký mưa trạm Dốc Nguyệt",
+      "note": "Ngày đo tại Dốc Nguyệt: 2025-06-04. Đợt đọc buổi sáng ghi 12 mm mưa. Tờ tổng hợp được ký ngày 2025-06-05."
+    },
+    {
+      "id": "VN11",
+      "title": "Phiếu tra mục lục Tuần Đèn Giấy",
+      "note": "Phiếu 14/2023-TĐG dùng để tra mục lục vở Tuần Đèn Giấy, mục mang tên Diều Sóng. Phiếu 14/2022-TĐG là bản năm trước, dùng cho danh mục đạo cụ."
+    },
+    {
+      "id": "VN12",
+      "title": "Dán nhãn cuộn phông Song Lam",
+      "note": "Cuộn phông xám mang mã phông SL-O8, chữ O đứng trước số 8. Cuộn phông trắng là SL-08, có số không. Kệ dưới cất cuộn xám và hộp ghim."
+    },
+    {
+      "id": "VN13",
+      "title": "Đối chiếu mặt trống Cỏ Voi",
+      "note": "Trống tập có mặt trống CV-4I, ký tự cuối là chữ I. Mặt CV-41 nằm trên trống biểu diễn, ký tự cuối là số 1. Hai mặt trống dùng cùng cỡ."
+    },
+    {
+      "id": "VN14",
+      "title": "Phiếu phổ màu Bãi Bạc",
+      "note": "Mã ô tra màu Bãi Bạc là BB-0042. Phải chép đủ hai số 0 đứng đầu phần số. Mẫu BB-42 là màu nhũ bạc, khác màu xám mờ của ô tra màu."
+    },
+    {
+      "id": "VN15",
+      "title": "Lần đọc lạnh trạm Cỏ Tuyết",
+      "note": "Trạm Cỏ Tuyết ghi nhiệt độ thấp nhất −2,6 °C lúc 05 giờ. Đến trưa trời ấm lên 4,2 °C. Sổ bên cạnh dùng số 2,6 °C để ghi mức dao động của lần đo mẫu."
+    },
+    {
+      "id": "VN16",
+      "title": "Lời nhắc làm diều Cánh Bấc",
+      "note": "Hồ dán giấy dó cho diều Cánh Bấc được để nguội trước khi quét. Khi hồ khô mới ngắt chỉ thừa. Mẩu giấy mẫu kẹp sau nhãn Đuôi Én."
+    },
+    {
+      "id": "VN17",
+      "title": "Hồ sơ tập Bướm Đậu Bờ Tre",
+      "note": "Đội kịch cất lời dẫn của Bướm Đậu Bờ Tre trong tệp văn bản. Nút rút dây xuất hiện ở cuối phân cảnh thứ hai. Phần mô tả sân khấu nằm riêng."
+    },
+    {
+      "id": "VN18",
+      "title": "Tờ gấp Đêm Chứa Hạt",
+      "note": "Câu thơ được duyệt là “Đêm chứa hạt — sớm mọc mây”. Người sửa in chọn chú thích dưới tranh là “Trời chứa hạt, chiều ngủ quên”."
+    },
+    {
+      "id": "VN19",
+      "title": "Sổ kỹ thuật ca tập Tán Xanh",
+      "note": "Buổi đầu kê bục bên trái, người dẫn thử lấy hơi ở sát cánh gà. Buổi sau dịch bục về giữa và đổi tấm lót sàn.\n\nDòng bàn giao cuối: kênh bè alto được giữ ở đường hồi phụ R-17."
+    },
+    {
+      "id": "VN20",
+      "title": "Đối chiếu các ngăn khay chữ chì",
+      "note": "Trên cùng có khay thiếc, ngăn C3 có các dấu hỏi rời. Khay gỗ ở tầng giữa, ngăn D3 có chữ số. Mảnh giấy chia ô ghi tên đồ trong từng ngăn."
+    },
+    {
+      "id": "VN21",
+      "title": "Trang phụ lục tập Gió Gánh Màu",
+      "note": "Quyển Gió Gánh Màu có phụ lục IV về các thế đặt tay, ở sau trang 92. Phụ lục III là danh sách các bản nhạc, và bảng ghi dấu có số trang theo số Ả Rập."
+    },
+    {
+      "id": "VN22",
+      "title": "Nhật ký sao chép ở phòng Thạch Sương",
+      "note": "Ổ đọc ở phòng Thạch Sương chép tệp âm thanh 24 MB/s. Bản ghi thử đường truyền trong cùng buổi có tốc độ 24 Mb/s. Hai giá trị thuộc hai phép đo khác nhau."
+    },
+    {
+      "id": "VN23",
+      "title": "Dấu kiểm Chổi Mây",
+      "note": "Đóng dấu mẫu kiểm Chổi Mây xong mới bó thiệp thành từng chục. Mã dấu in trên bao đựng là CM-73B. Mã thùng con CM-37B xuất hiện ở bìa ngoài."
+    },
+    {
+      "id": "VN24",
+      "title": "Phiếu xuất thẻ Hòm Vân",
+      "note": "Phiếu được chép theo dòng 'Mã kệ: HV-B6'. Thẻ nằm ở kệ có nẹp xanh. Mã phiếu xuất là PX-86 và dùng để ghi từng lượt lấy thẻ."
+    },
+    {
+      "id": "VN25",
+      "title": "Danh mục âm thanh Dế Tháng Bảy",
+      "note": "Tệp gửi cho người dựng là DeThangBay-BanCo.wav, chứa bản có giọng đọc. Bản DeThangBay-BanCo.txt chỉ là nội dung chữ đã soát để kèm cùng tệp âm thanh."
+    },
+    {
+      "id": "VN26",
+      "title": "Ghi chú chạy thử văn bản Hõm Sỏi",
+      "note": "Tờ mẫu mang tiêu đề Hõm Sỏi. Số in chìm 172 nằm dưới dấu dập ở tay gập bên phải. Mã 127 là con số trên dải gáy."
+    },
+    {
+      "id": "VN27",
+      "title": "Mặt nghiêng giá tranh Vệt Nắng",
+      "note": "Tấm nền giá tranh Vệt Nắng được dựng nghiêng 18° về sau để thử chói. Con số 18 cm trên bảng là độ sâu chân giá, còn thước kiểm dùng vạch màu lục."
+    },
+    {
+      "id": "VN28",
+      "title": "Phiếu cấp giấy tập Đốm Vàng",
+      "note": "Phiếu chốt cho tập Đốm Vàng ghi 1.250 tờ giấy lót. Bảng thông số ở phần dưới ghi độ dày 1,250 mm của tấm ép thử. Tất cả các mục dùng dấu phẩy cho phần thập phân."
+    },
+    {
+      "id": "VN29",
+      "title": "In thử Bóng Rặng Me trên giấy dó",
+      "note": "Bóng Rặng Me, đợt in thử ở Nhà xuất bản Đom Đóm Nâu. Bản giấy dó nhận mực nâu ở bìa. Số mẫu nhãn xưởng là RM-PP1."
+    },
+    {
+      "id": "VN30",
+      "title": "In thử Bóng Rặng Me trên giấy ngà",
+      "note": "Bóng Rặng Me, đợt in thử ở Nhà xuất bản Đom Đóm Nâu. Bản giấy ngà có bìa xanh nhạt. Số mẫu nhãn xưởng là RM-PP2."
+    },
+    {
+      "id": "VN31",
+      "title": "Bản phát hành Bóng Rặng Me",
+      "note": "Bóng Rặng Me do Nhà xuất bản Đom Đóm Nâu phát hành chính thức. Bìa chọn mực đen. Sổ phát hành giữ số lượng sách của đợt đóng hộp đầu."
+    },
+    {
+      "id": "VN32",
+      "title": "Bảng trực cửa phía đông Nhà Kính San Hô",
+      "note": "Bảng trực Nhà Kính San Hô, cửa phía đông, giờ mở 09:00–11:30. Bạn Nhật kiểm chốt cửa trong khoảng này rồi chuyển bộ đàm về phòng trực."
+    },
+    {
+      "id": "VN33",
+      "title": "Bảng trực cửa phía tây Nhà Kính San Hô",
+      "note": "Bảng trực Nhà Kính San Hô, cửa phía tây, giờ mở 09:00–11:30. Bạn Bình nhận bảng ghi lượng khách và đặt lại ghế khi hết giờ."
+    },
+    {
+      "id": "VN34",
+      "title": "Bảng trực cửa phía bắc Nhà Kính San Hô",
+      "note": "Bảng trực Nhà Kính San Hô, cửa phía bắc, giờ mở 08:30–11:00. Trực cửa mang biển báo đi cất ngay khi khách cuối ra hết."
+    },
+    {
+      "id": "VN35",
+      "title": "Chú thích ảnh Chiếc Vành Lá ở mã tủ KL.3",
+      "note": "Ảnh Chiếc Vành Lá tại bản lưu dùng mã tủ KL.3. Ảnh chụp mặt trước, thấy được vết xước phía dưới, nền ảnh là vải xanh."
+    },
+    {
+      "id": "VN36",
+      "title": "Chú thích ảnh Chiếc Vành Lá chụp nghiêng",
+      "note": "Đây là ảnh chụp nghiêng của vật Chiếc Vành Lá dùng chung mã tủ KL.3. Góc nghiêng làm rõ lớp nẹp gắn vào vành, được chụp muộn hơn ảnh mặt trước."
+    },
+    {
+      "id": "VN37",
+      "title": "Biên bản ảnh Chiếc Vành Lá chuyển tủ",
+      "note": "Chiếc Vành Lá từng đặt ở tủ KL.33 trước khi đổi vị trí. Một ảnh bằng máy lấy ngay ghi hiện trạng lúc gỡ nhãn cũ, nhưng vệt xước bị bàn tay che."
+    },
+    {
+      "id": "VN38",
+      "title": "Đọc mực nước ở bến Rong Mơ, cọc trên",
+      "note": "Mực nước bến Rong Mơ theo cọc trên, giờ đọc 06:15, chênh mốc +7 cm. Mốc tham chiếu là vạch sơn trắng, dùng cho cả đợt sáng thấp."
+    },
+    {
+      "id": "VN39",
+      "title": "Đọc mực nước ở bến Rong Mơ, cọc giữa",
+      "note": "Mực nước bến Rong Mơ theo cọc giữa, giờ đọc 06:15, chênh mốc +7 cm. Vạch trắng nhìn rõ sau khi mặt nước lặng."
+    },
+    {
+      "id": "VN40",
+      "title": "Đọc mực nước ở bến Rong Mơ, cọc dưới",
+      "note": "Mực nước bến Rong Mơ theo cọc dưới, giờ đọc 06:15, chênh mốc +7 cm. Người trực kiểm thêm nhìn từ trên ván bến."
+    },
+    {
+      "id": "VN41",
+      "title": "Đọc mực nước ở bến Rong Mơ, cọc phụ",
+      "note": "Mực nước bến Rong Mơ theo cọc phụ, giờ đọc 06:15, chênh mốc −7 cm vì cọc dùng vạch mốc riêng. Nền thước phía sau có vệt rêu."
+    },
+    {
+      "id": "VN42",
+      "title": "Thiệp Mực Tía ở vòng chọn bìa",
+      "note": "Phiếu vòng trước ghi khổ ngang 100 mm, cao 148 mm cho thiệp Mực Tía. Đây là bản dàn thử để xem mép trên. Phiếu không chốt khổ duyệt."
+    },
+    {
+      "id": "VN43",
+      "title": "Độ vang phòng Nhịp Lá sau khi treo rèm",
+      "note": "Lần kiểm tra phòng Nhịp Lá sau khi treo rèm cho độ vang trung bình 0,43 s. Nhóm kê ba dãy bàn và thử vỗ tay ở giữa phòng."
+    },
+    {
+      "id": "VN44",
+      "title": "Đo âm nền hành lang Chồi Non trước tiết một",
+      "note": "Phiếu đo Chồi Non trước tiết một ghi 55 dB(A) và 62 dB(C). Người trực đo lúc chưa có lớp di chuyển giữa các phòng."
+    },
+    {
+      "id": "VN45",
+      "title": "Thử chiếu sáng bản vẽ sân khấu Lồng Đèn",
+      "note": "Tờ bản vẽ thu nhỏ Lồng Đèn chia hai mảng để chiếu thử. Bản vẽ cho lượt này dùng tỉ lệ 1:24 và kẹp trong sổ giấy đen."
+    },
+    {
+      "id": "VN46",
+      "title": "Nhật ký mưa trạm Dốc Nguyệt tháng tư",
+      "note": "Ngày đo tại Dốc Nguyệt: 2025-04-06. Cả đợt đo ngày 6 tháng 4 ghi 3 mm mưa. Dùng cùng cột mốc sân như đợt tháng sáu."
+    },
+    {
+      "id": "VN47",
+      "title": "Nhật ký sao chép ở phòng Thạch Sương khi dùng ổ dự phòng",
+      "note": "Ổ đọc dự phòng tại phòng Thạch Sương chép tệp 23 MB/s. Đây là lượt đo của ngày chuyển bản nhạc sang thư mục đang dùng."
+    },
+    {
+      "id": "VN48",
+      "title": "Bản nhạc chuyển cho người dựng Dế Tháng Sáu",
+      "note": "Tệp DeThangSau-BanCo.wav gồm giọng đọc thử kèm hai khoảng lặng. Người dựng nhận xét nhạc lót chưa tới ở đoạn cuối."
+    },
+    {
+      "id": "VN49",
+      "title": "Các bản chép tay Mùa đò vắng",
+      "note": "Phiếu tặng một bản chép tay Mùa đò vắng có kẹp bản đồ gấp. Bản chép lưu tại Câu lạc bộ Sớm Lặng, ngoài đợt của Nhà xuất bản Bến Hổ Phách."
+    },
+    {
+      "id": "VN50",
+      "title": "Nhật ký bài tập Tán Xanh",
+      "note": "Sổ kỹ thuật ca tập Tán Xanh có buổi tập bè alto qua đường hồi phụ R-71. Kênh đầu nối này được sử dụng khi bục đặt sát cánh gà."
+    },
+    {
+      "id": "VN51",
+      "title": "Gió Gánh Màu, bảng tra phụ lục tuyển tập",
+      "note": "Bảng tra phụ lục IV của tuyển tập Gió Gánh Màu ghi sơ đồ chỗ ngồi. Phần các thế đặt tay nằm ở phụ lục V, cập nhật trong lượt soát gần nhất."
+    }
+  ],
+  "cases": [
+    {
+      "id": "V01",
+      "kind": "Ấn phẩm gần tên",
+      "query": "tác phẩm Mùa đò vắng của NXB Bến Hổ Phách có bản đồ gấp",
+      "accept": [
+        "VN01"
+      ],
+      "why": "Câu mô tả tác phẩm, nhà xuất bản và bản đồ cùng chỉ VN01. VN02 cùng tác giả, cùng nhà xuất bản nhưng ghi Mùa đò trắng và ba ảnh rời. VN49 là bản chép tay ở câu lạc bộ, nằm ngoài đợt xuất bản."
+    },
+    {
+      "id": "V02",
+      "kind": "Ấn phẩm gần tên",
+      "query": "lời bạt về người lái đò ở cuối Mùa đò trắng",
+      "accept": [
+        "VN02"
+      ],
+      "why": "VN02 có lời bạt cuối sách về người lái đò. VN01 có lời tựa về bến cũ, một phần khác của sách."
+    },
+    {
+      "id": "V03",
+      "kind": "Kích thước có thứ tự",
+      "query": "thiệp Mực Tía 105 x 148 mm",
+      "accept": [
+        "VN03"
+      ],
+      "why": "VN03 ghi khổ ngang × cao là 105 × 148 mm. Chữ x trong câu là cách gõ dấu nhân cho kích thước, giữ nguyên hai giá trị và thứ tự. Phiếu dàn thử VN42 ghi chiều ngang 100 mm."
+    },
+    {
+      "id": "V04",
+      "kind": "Định dạng số thập phân và hàng nghìn",
+      "query": "Nhịp Lá độ vang 0.48 s",
+      "accept": [
+        "VN04"
+      ],
+      "why": "VN04 ghi số trung bình 0,48 s với dấu phẩy thập phân. Số viết bằng dấu chấm trong câu biểu diễn cùng giá trị và đơn vị. VN43 đo sau khi treo rèm và ghi 0,43 s."
+    },
+    {
+      "id": "V05",
+      "kind": "Trọng số đo âm thanh",
+      "query": "hành lang Chồi Non 52 dB(A)",
+      "accept": [
+        "VN05"
+      ],
+      "why": "VN05 gắn 52 với trọng số A. Trong cùng ghi chú, 67 dB(C) là một phép ghi khác, giữ nguyên cả chữ trong ngoặc và giá trị. VN44 là lượt đo trước tiết một với mức trọng số A 55 dB(A)."
+    },
+    {
+      "id": "V06",
+      "kind": "Dán nội dung và dấu cách",
+      "query": "GS57\tghi đá\tđã duyệt",
+      "accept": [
+        "VN06"
+      ],
+      "why": "VN06 chứa đúng tổ hợp mã, màu và tình trạng. Các tab là ranh giới giữa ô khi dán từ bảng tính. Dòng GS75 dùng màu ghi ngọc."
+    },
+    {
+      "id": "V07",
+      "kind": "Dấu hai chấm trong văn bản",
+      "query": "bản vẽ thu nhỏ Lồng Đèn tỉ lệ 1:25",
+      "accept": [
+        "VN07"
+      ],
+      "why": "VN07 ghi 1:25 cho bản vẽ, còn 1:20 thuộc mô hình thử. Dấu hai chấm nối hai vế tỉ lệ. VN45 có bản vẽ cùng tên nhưng dùng 1:24."
+    },
+    {
+      "id": "V08",
+      "kind": "Dải giá trị và điều kiện biên",
+      "query": "ẩm kế Tầm Vông 30-80% RH theo tem",
+      "accept": [
+        "VN08"
+      ],
+      "why": "VN08 ghi 30–80% RH trên tem và 40–70% RH ở sổ tham khảo. Dấu gạch ngắn gõ tay thay dấu gạch chỉ khoảng."
+    },
+    {
+      "id": "V09",
+      "kind": "Số phiên bản và số phụ lục",
+      "query": "thanh trượt Bản Nhạc Sân Trường sửa ở bản 2.4.10",
+      "accept": [
+        "VN09"
+      ],
+      "why": "VN09 ghi đúng phiên bản 2.4.10 cho chỉnh thanh trượt. Phiên bản 2.4.1 trong bài chỉ gắn với lỗi phát lặp."
+    },
+    {
+      "id": "V10",
+      "kind": "Định dạng và vai trò ngày tháng",
+      "query": "lượng mưa Dốc Nguyệt ngày 04/06/2025",
+      "accept": [
+        "VN10"
+      ],
+      "why": "Ngày đo 2025-06-04 ở VN10 là ngày 4 tháng 6. Ngày 2025-06-05 chỉ là ngày ký tờ tổng hợp. VN46 đo ngày 6 tháng 4, đảo vị trí của tháng và ngày."
+    },
+    {
+      "id": "V11",
+      "kind": "Mã ghép và mã có dấu câu",
+      "query": "mục lục Diều Sóng phiếu 14/2023-TĐG",
+      "accept": [
+        "VN11"
+      ],
+      "why": "VN11 có đúng mã trọn vẹn cho mục lục Diều Sóng. Mã 14/2022-TĐG dành cho danh mục đạo cụ."
+    },
+    {
+      "id": "V12",
+      "kind": "Ký tự dễ nhầm trong mã",
+      "query": "mã phông SL-O8 lấy ở kệ dưới",
+      "accept": [
+        "VN12"
+      ],
+      "why": "VN12 ghi SL-O8 là cuộn xám ở kệ dưới. SL-08 dùng số 0 và chỉ cuộn trắng."
+    },
+    {
+      "id": "V13",
+      "kind": "Ký tự dễ nhầm trong mã",
+      "query": "mặt trống CV-41 biểu diễn",
+      "accept": [
+        "VN13"
+      ],
+      "why": "VN13 gắn CV-41, ký tự cuối là số 1, với trống biểu diễn. CV-4I là mặt trống tập."
+    },
+    {
+      "id": "V14",
+      "kind": "Ký tự dễ nhầm trong mã",
+      "query": "ô tra màu xám mờ BB-0042",
+      "accept": [
+        "VN14"
+      ],
+      "why": "VN14 ghi BB-0042 đầy đủ cho màu xám mờ. Bỏ hai số 0 sẽ thành mã mẫu nhũ bạc BB-42."
+    },
+    {
+      "id": "V15",
+      "kind": "Dấu âm và dấu cộng",
+      "query": "Cỏ Tuyết nhiệt độ thấp nhất -2,6 °C",
+      "accept": [
+        "VN15"
+      ],
+      "why": "VN15 lưu −2,6 °C với dấu trừ Unicode. Dấu gạch ngắn trước số trong câu có nghĩa âm. 2,6 °C trong sổ bên cạnh là số dao động."
+    },
+    {
+      "id": "V16",
+      "kind": "Cách nhập dấu tiếng Việt",
+      "query": "ho dan giay do dieu Canh Bac de nguoi",
+      "accept": [
+        "VN16"
+      ],
+      "why": "VN16 ghi hồ dán giấy dó cho Cánh Bấc, để nguội trước khi quét. Hồ và khô đều có trong bài, nhưng chỉ hồ dán là thứ để nguội."
+    },
+    {
+      "id": "V17",
+      "kind": "Cách nhập dấu tiếng Việt",
+      "query": "Bướm Đậu Bờ Tre nút rút dây",
+      "accept": [
+        "VN17"
+      ],
+      "why": "VN17 có tên Bướm Đậu Bờ Tre và nút rút dây. Các dấu tổ hợp trong chuỗi dán giữ nguyên cách đọc tiếng Việt của tên tập."
+    },
+    {
+      "id": "V18",
+      "kind": "Dán nội dung và dấu cách",
+      "query": "\"Đêm chứa hạt - sớm mọc mây\"",
+      "accept": [
+        "VN18"
+      ],
+      "why": "VN18 chứa đúng câu thơ, với ngoặc cong và gạch dài. Câu dưới tranh kể trời chứa hạt và dùng hình ảnh buổi chiều."
+    },
+    {
+      "id": "V19",
+      "kind": "Vị trí của bằng chứng",
+      "query": "đường hồi phụ R-17 cho bè alto",
+      "accept": [
+        "VN19"
+      ],
+      "why": "Thông tin quyết định nằm ở câu bàn giao cuối của VN19. Tiêu đề và hai đoạn đầu đều kể việc kê bục và tập sân khấu. VN50 ghi đường R-71 cho cùng bè alto."
+    },
+    {
+      "id": "V20",
+      "kind": "Số hoặc mã gắn với đúng đối tượng",
+      "query": "dấu hỏi ngăn C3 trong khay thiếc",
+      "accept": [
+        "VN20"
+      ],
+      "why": "VN20 gắn C3 và dấu hỏi với khay thiếc trong cùng câu. Khay gỗ nằm ở câu kế và giữ chữ số tại D3."
+    },
+    {
+      "id": "V21",
+      "kind": "Số phiên bản và số phụ lục",
+      "query": "phụ lục IV thế đặt tay Gió Gánh Màu",
+      "accept": [
+        "VN21"
+      ],
+      "why": "VN21 có phụ lục IV về cách đặt tay sau trang 92. Phụ lục III chỉ là danh sách bản nhạc. VN51 xếp các thế đặt tay ở phụ lục V của tuyển tập."
+    },
+    {
+      "id": "V22",
+      "kind": "Đơn vị và ký hiệu đại lượng",
+      "query": "tốc độ chép tệp ở Thạch Sương 24 MB/s",
+      "accept": [
+        "VN22"
+      ],
+      "why": "VN22 gắn MB/s với ổ đọc và thao tác chép tệp. Mb/s có cùng số nhưng là đơn vị cho phép thử đường truyền. VN47 ghi 23 MB/s cho ổ đọc dự phòng."
+    },
+    {
+      "id": "V23",
+      "kind": "Ký tự toàn chiều rộng",
+      "query": "mã dấu ＣＭ－７３Ｂ Chổi Mây",
+      "accept": [
+        "VN23"
+      ],
+      "why": "Dãy ký tự toàn chiều rộng vẫn ghi CM-73B, mã dấu trên bao đựng của VN23, khác mã thùng bị đảo chữ số CM-37B."
+    },
+    {
+      "id": "V24",
+      "kind": "Dấu hai chấm trong văn bản",
+      "query": "Mã kệ: HV-B6",
+      "accept": [
+        "VN24"
+      ],
+      "why": "VN24 có dòng Mã kệ: HV-B6 với dấu hai chấm là phần văn bản của phiếu. PX-86 là mã phiếu xuất, khác vai trò."
+    },
+    {
+      "id": "V25",
+      "kind": "Phần mở rộng tên tệp",
+      "query": "DeThangBay-BanCo.wav có giọng đọc",
+      "accept": [
+        "VN25"
+      ],
+      "why": "VN25 có hai tên cùng phần gốc. Đuôi .wav cùng bằng chứng giọng đọc xác định tệp âm thanh, loại bản chữ .txt. VN48 lưu tệp .wav có giọng đọc của Dế Tháng Sáu, một tác phẩm khác."
+    },
+    {
+      "id": "V26",
+      "kind": "Vị trí của bằng chứng",
+      "query": "Hõm Sỏi số in chìm dưới dấu dập tay gập phải",
+      "accept": [
+        "VN26"
+      ],
+      "why": "VN26 có số 172 dưới dấu dập ở tay gập phải. Số 127 ghi ở dải gáy nên không đáp ứng vị trí người dùng nhớ."
+    },
+    {
+      "id": "V27",
+      "kind": "Đơn vị và ký hiệu đại lượng",
+      "query": "giá tranh Vệt Nắng nghiêng 18°",
+      "accept": [
+        "VN27"
+      ],
+      "why": "VN27 gắn 18° với góc nghiêng về sau. Số 18 cm trùng phần số nhưng ghi độ sâu chân giá."
+    },
+    {
+      "id": "V28",
+      "kind": "Định dạng số thập phân và hàng nghìn",
+      "query": "tập Đốm Vàng 1250 tờ giấy lót",
+      "accept": [
+        "VN28"
+      ],
+      "why": "VN28 xác nhận 1.250 tờ, dùng dấu chấm nhóm hàng nghìn. 1,250 mm có dấu phẩy thập phân và là độ dày tấm ép."
+    },
+    {
+      "id": "V29",
+      "kind": "Ấn phẩm gần tên",
+      "query": "cả bản giấy dó lẫn giấy ngà in thử Bóng Rặng Me của Đom Đóm Nâu",
+      "accept": [
+        "VN29",
+        "VN30"
+      ],
+      "why": "Hai ghi chú khớp riêng từng vật liệu của đợt in thử. VN31 ghi phát hành chính thức nên nằm ngoài yêu cầu."
+    },
+    {
+      "id": "V30",
+      "kind": "Số hoặc mã gắn với đúng đối tượng",
+      "query": "bảng trực cửa phía đông và phía tây Nhà Kính San Hô 09:00-11:30",
+      "accept": [
+        "VN32",
+        "VN33"
+      ],
+      "why": "VN32 và VN33 lần lượt ghi cửa đông và cửa tây, cùng 09:00–11:30. VN34 là cửa bắc với giờ khác."
+    },
+    {
+      "id": "V31",
+      "kind": "Mã ghép và mã có dấu câu",
+      "query": "tất cả chú thích ảnh Chiếc Vành Lá mang mã tủ KL.3",
+      "accept": [
+        "VN35",
+        "VN36"
+      ],
+      "why": "Cần cả ảnh mặt trước và ảnh nghiêng mang đúng KL.3. Ảnh bằng máy lấy ngay trong VN37 mang mã KL.33 dài hơn."
+    },
+    {
+      "id": "V32",
+      "kind": "Dấu âm và dấu cộng",
+      "query": "mọi phiếu đọc bến Rong Mơ lúc 06:15 có chênh +7 cm",
+      "accept": [
+        "VN38",
+        "VN39",
+        "VN40"
+      ],
+      "why": "Ba cọc trên, giữa, dưới cùng khớp giờ và dấu cộng. VN41 đọc cùng giờ nhưng chênh −7 cm nên bị loại."
+    },
+    {
+      "id": "V33",
+      "kind": "Ấn phẩm gần tên",
+      "query": "Mùa đò vắng Nhà xuất bản Bến Hổ Ngọc",
+      "accept": [],
+      "why": "VN01 khớp tên tác phẩm nhưng nhà xuất bản là Bến Hổ Phách. Không có ghi chú nào ghi ấn bản Bến Hổ Ngọc."
+    },
+    {
+      "id": "V34",
+      "kind": "Trọng số đo âm thanh",
+      "query": "Chồi Non mức âm nền 52 dB(C)",
+      "accept": [],
+      "why": "VN05 có cả 52 và dB(C), nhưng tách ở hai mức 52 dB(A) và 67 dB(C). Không có phép đo 52 dB(C) ở hành lang."
+    },
+    {
+      "id": "V35",
+      "kind": "Mã ghép và mã có dấu câu",
+      "query": "phiếu mục lục Diều Sóng số 41/2023-TĐG",
+      "accept": [],
+      "why": "VN11 khớp năm và tên mục nhưng mã bắt đầu bằng 14, không thấy mã có hai chữ số đảo thứ tự thành 41."
+    },
+    {
+      "id": "V36",
+      "kind": "Kích thước có thứ tự",
+      "query": "thiệp Mực Tía in ngang 148 mm cao 105 mm",
+      "accept": [],
+      "why": "VN03 ghi ngang 105 mm, cao 148 mm. Hai kích thước đều có mặt nhưng nằm ở vị trí ngược với khổ yêu cầu."
+    },
+    {
+      "id": "V37",
+      "kind": "Định dạng và vai trò ngày tháng",
+      "query": "Dốc Nguyệt đo mưa ngày 2025-06-05",
+      "accept": [],
+      "why": "VN10 chỉ dùng ngày 2025-06-05 cho chữ ký. Tờ nhật ký có phép đo ngày 2025-06-04."
+    },
+    {
+      "id": "V38",
+      "kind": "Đơn vị và ký hiệu đại lượng",
+      "query": "tốc độ đường truyền Thạch Sương 24 MB/s",
+      "accept": [],
+      "why": "VN22 ghi đường truyền 24 Mb/s và tốc độ chép ở ổ đọc 24 MB/s. Đơn vị mang chữ B hoa thuộc phép đo chép tệp."
+    },
+    {
+      "id": "V39",
+      "kind": "Dải giá trị và điều kiện biên",
+      "query": "tem ẩm kế Tầm Vông loại không tính mức 30% và 80% RH",
+      "accept": [],
+      "why": "VN08 nói rõ tem tính cả hai mức biên. Khoảng 40–70% RH là tham khảo trong sổ, không phải tem ghi loại trừ 30% và 80%."
+    },
+    {
+      "id": "V40",
+      "kind": "Phần mở rộng tên tệp",
+      "query": "bản thu Dế Tháng Bảy DeThangBay-BanCo.mp3",
+      "accept": [],
+      "why": "VN25 chỉ nêu bản âm thanh .wav và bản chữ .txt. Cùng tên gốc chưa đủ để xác nhận có tệp .mp3."
+    }
+  ]
+}

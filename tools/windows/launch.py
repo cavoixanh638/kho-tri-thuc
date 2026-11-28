@@ -134,6 +134,17 @@ def setup():
             BACKEND / "requirements.txt",
         ]
     )
+    try:
+        run(
+            [python_path(), "-m", "search.prepare_bge"],
+            cwd=BACKEND,
+            env=runtime_env(config),
+        )
+    except subprocess.CalledProcessError:
+        print(
+            "Local BGE model setup failed. Search can use its fallback ranking.",
+            file=sys.stderr,
+        )
     run(["npm.cmd", "ci", "--no-audit", "--no-fund"], cwd=WEB)
     run(["npm.cmd", "run", "build"], cwd=WEB)
 

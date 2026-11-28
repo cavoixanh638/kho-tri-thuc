@@ -1,0 +1,482 @@
+{
+  "model_id": "18b44161e041bf1d3a333ab5144b5b7b93f914d2:7474ab8bf2271a01577f58120c21040768b90da194927cceab511fb0a219239b",
+  "reranker_revision": "6f5ff65298512715a1e669753bc754d2bc8f367b",
+  "threads": 4,
+  "backend_tree": "13d5e15337727d340c610d4b442e6e2bf023ec82",
+  "onnxruntime": "1.32.0",
+  "python": "3.13.15",
+  "scope": "local retrieval and reranking on synthetic Vietnamese notes",
+  "mode": "hybrid-with-lexical-callback",
+  "dense_k": 12,
+  "lexical_k": 5,
+  "rrf_k": 60,
+  "index_rows": 10000,
+  "index_dimension": 1024,
+  "index_dtype": "float32",
+  "index_vector_bytes": 40960000,
+  "query_batch_size": 1,
+  "candidate_k": 8,
+  "warmup_requests": 3,
+  "reference_top_k_checks": 3,
+  "measured_requests": 20,
+  "requests_per_query": {
+    "Làm sao để bánh mì tự làm có vỏ giòn lâu?": 1,
+    "Có cách nào nhận biết cây ngoài ban công đang thừa nước?": 1,
+    "Xe đạp phát tiếng lạch cạch khi chuyển số thì chỉnh gì?": 1,
+    "Gói đồ thế nào cho chuyến trekking có mưa?": 1,
+    "Khi chụp trẻ đang chạy nên chỉnh máy ảnh ra sao?": 1,
+    "Quản lý các khoản chi gia đình hay quên ghi lại bằng cách nào?": 1,
+    "Nút tai nghe không dây chỉ sạc được một bên thì kiểm tra gì?": 1,
+    "Phân biệt hai bản biên bản họp gần như giống nhau thế nào?": 1,
+    "Bé quên nhanh từ đã học, nên ôn như thế nào?": 1,
+    "Pha cà phê phin bị chua gắt thì thay đổi gì?": 1,
+    "Vì sao ống thoát dưới bồn rửa nhỏ nước dù đã vặn chặt?": 1,
+    "Để tài liệu quý khỏi mốc vào mùa nồm cần làm gì?": 1,
+    "Vì sao bản thu giọng nói lại vang như ở phòng trống?": 1,
+    "Làm sao tra chuyến xe buýt cuối về nhà sau ca tối?": 1,
+    "Cần ghi gì trước khi đem áo dài đi sửa cho vừa?": 1,
+    "Dùng gì để kiểm tra ảnh số có bị lỗi sau khi sao lưu?": 1,
+    "Nồi dùng trên bếp điện từ thì thử tại nhà bằng gì?": 1,
+    "Tại sao màn hình ngoài bị chớp lúc cắm máy tính xách tay?": 1,
+    "Muốn hạn chế thất lạc tài liệu mượn cho câu lạc bộ thì theo dõi sao?": 1,
+    "Phát hiện lịch tưới công viên chạy sai giờ thì xem ở đâu?": 1
+  },
+  "percentiles": "nearest rank",
+  "latency": {
+    "query_embedding": {
+      "count": 20,
+      "min_ms": 46.4949,
+      "p50_ms": 58.7836,
+      "p95_ms": 72.6895,
+      "max_ms": 73.4111
+    },
+    "exact_scan_top_k": {
+      "count": 20,
+      "min_ms": 1.2809,
+      "p50_ms": 1.3536,
+      "p95_ms": 1.6561,
+      "max_ms": 1.7609
+    },
+    "rerank": {
+      "count": 20,
+      "min_ms": 304.0741,
+      "p50_ms": 350.1191,
+      "p95_ms": 381.6586,
+      "max_ms": 396.2548
+    },
+    "online_overhead": {
+      "count": 20,
+      "min_ms": 0.0028,
+      "p50_ms": 0.0035,
+      "p95_ms": 0.0047,
+      "max_ms": 0.0056
+    },
+    "total": {
+      "count": 20,
+      "min_ms": 967.9992,
+      "p50_ms": 1589.3074,
+      "p95_ms": 1679.6684,
+      "max_ms": 1754.0601
+    },
+    "lexical": {
+      "count": 20,
+      "min_ms": 593.725,
+      "p50_ms": 1191.2831,
+      "p95_ms": 1268.006,
+      "max_ms": 1282.7057
+    },
+    "rrf_fusion": {
+      "count": 20,
+      "min_ms": 0.0225,
+      "p50_ms": 0.0249,
+      "p95_ms": 0.0349,
+      "max_ms": 0.0364
+    },
+    "hybrid": {
+      "count": 20,
+      "min_ms": 47.9022,
+      "p50_ms": 60.1309,
+      "p95_ms": 74.156,
+      "max_ms": 75.0955
+    },
+    "lexical_and_hybrid": {
+      "count": 20,
+      "min_ms": 647.8851,
+      "p50_ms": 1247.4651,
+      "p95_ms": 1325.9935,
+      "max_ms": 1357.8012
+    },
+    "pipeline": {
+      "count": 20,
+      "min_ms": 967.9992,
+      "p50_ms": 1589.3074,
+      "p95_ms": 1679.6684,
+      "max_ms": 1754.0601
+    }
+  },
+  "retrieval_outcomes": [
+    {
+      "query": "Làm sao để bánh mì tự làm có vỏ giòn lâu?",
+      "expected_note": "KTJ9TERM00000",
+      "expected_candidate_rank": 1,
+      "expected_reranked_rank": 1,
+      "latency_ms": {
+        "query_embedding": 46.4949,
+        "exact_scan_top_k": 1.3818,
+        "rerank": 350.1191,
+        "online_overhead": 0.003,
+        "total": 1589.3074,
+        "lexical": 1191.2831,
+        "rrf_fusion": 0.0255,
+        "hybrid": 47.9022,
+        "lexical_and_hybrid": 1239.1853,
+        "pipeline": 1589.3074
+      }
+    },
+    {
+      "query": "Có cách nào nhận biết cây ngoài ban công đang thừa nước?",
+      "expected_note": "KTJ9TERM00001",
+      "expected_candidate_rank": 8,
+      "expected_reranked_rank": 4,
+      "latency_ms": {
+        "query_embedding": 61.945,
+        "exact_scan_top_k": 1.4022,
+        "rerank": 341.0168,
+        "online_overhead": 0.0032,
+        "total": 1004.9497,
+        "lexical": 600.5586,
+        "rrf_fusion": 0.0239,
+        "hybrid": 63.3711,
+        "lexical_and_hybrid": 663.9297,
+        "pipeline": 1004.9497
+      }
+    },
+    {
+      "query": "Xe đạp phát tiếng lạch cạch khi chuyển số thì chỉnh gì?",
+      "expected_note": "KTJ9TERM00002",
+      "expected_candidate_rank": 1,
+      "expected_reranked_rank": 1,
+      "latency_ms": {
+        "query_embedding": 58.7603,
+        "exact_scan_top_k": 1.2822,
+        "rerank": 320.8787,
+        "online_overhead": 0.0029,
+        "total": 1568.3467,
+        "lexical": 1187.3976,
+        "rrf_fusion": 0.025,
+        "hybrid": 60.0675,
+        "lexical_and_hybrid": 1247.4651,
+        "pipeline": 1568.3467
+      }
+    },
+    {
+      "query": "Gói đồ thế nào cho chuyến trekking có mưa?",
+      "expected_note": "KTJ9TERM00003",
+      "expected_candidate_rank": 1,
+      "expected_reranked_rank": 1,
+      "latency_ms": {
+        "query_embedding": 53.6765,
+        "exact_scan_top_k": 1.305,
+        "rerank": 308.7165,
+        "online_overhead": 0.0035,
+        "total": 967.9992,
+        "lexical": 604.2728,
+        "rrf_fusion": 0.0249,
+        "hybrid": 55.0064,
+        "lexical_and_hybrid": 659.2792,
+        "pipeline": 967.9992
+      }
+    },
+    {
+      "query": "Khi chụp trẻ đang chạy nên chỉnh máy ảnh ra sao?",
+      "expected_note": "KTJ9TERM00004",
+      "expected_candidate_rank": 1,
+      "expected_reranked_rank": 1,
+      "latency_ms": {
+        "query_embedding": 52.8565,
+        "exact_scan_top_k": 1.2809,
+        "rerank": 339.5164,
+        "online_overhead": 0.0037,
+        "total": 987.4052,
+        "lexical": 593.725,
+        "rrf_fusion": 0.0227,
+        "hybrid": 54.1601,
+        "lexical_and_hybrid": 647.8851,
+        "pipeline": 987.4052
+      }
+    },
+    {
+      "query": "Quản lý các khoản chi gia đình hay quên ghi lại bằng cách nào?",
+      "expected_note": "KTJ9TERM00005",
+      "expected_candidate_rank": 1,
+      "expected_reranked_rank": 1,
+      "latency_ms": {
+        "query_embedding": 62.5686,
+        "exact_scan_top_k": 1.7609,
+        "rerank": 355.9266,
+        "online_overhead": 0.0035,
+        "total": 1661.374,
+        "lexical": 1241.0846,
+        "rrf_fusion": 0.0298,
+        "hybrid": 64.3593,
+        "lexical_and_hybrid": 1305.4439,
+        "pipeline": 1661.374
+      }
+    },
+    {
+      "query": "Nút tai nghe không dây chỉ sạc được một bên thì kiểm tra gì?",
+      "expected_note": "KTJ9TERM00006",
+      "expected_candidate_rank": 1,
+      "expected_reranked_rank": 1,
+      "latency_ms": {
+        "query_embedding": 62.34,
+        "exact_scan_top_k": 1.2832,
+        "rerank": 363.5237,
+        "online_overhead": 0.0033,
+        "total": 1662.4207,
+        "lexical": 1235.2341,
+        "rrf_fusion": 0.0364,
+        "hybrid": 63.6596,
+        "lexical_and_hybrid": 1298.8937,
+        "pipeline": 1662.4207
+      }
+    },
+    {
+      "query": "Phân biệt hai bản biên bản họp gần như giống nhau thế nào?",
+      "expected_note": "KTJ9TERM00007",
+      "expected_candidate_rank": 1,
+      "expected_reranked_rank": 1,
+      "latency_ms": {
+        "query_embedding": 61.2768,
+        "exact_scan_top_k": 1.3666,
+        "rerank": 351.5176,
+        "online_overhead": 0.0035,
+        "total": 1628.8131,
+        "lexical": 1214.6237,
+        "rrf_fusion": 0.0249,
+        "hybrid": 62.6683,
+        "lexical_and_hybrid": 1277.292,
+        "pipeline": 1628.8131
+      }
+    },
+    {
+      "query": "Bé quên nhanh từ đã học, nên ôn như thế nào?",
+      "expected_note": "KTJ9TERM00008",
+      "expected_candidate_rank": 1,
+      "expected_reranked_rank": 1,
+      "latency_ms": {
+        "query_embedding": 57.6782,
+        "exact_scan_top_k": 1.2973,
+        "rerank": 337.431,
+        "online_overhead": 0.0036,
+        "total": 1605.087,
+        "lexical": 1208.6509,
+        "rrf_fusion": 0.026,
+        "hybrid": 59.0015,
+        "lexical_and_hybrid": 1267.6524,
+        "pipeline": 1605.087
+      }
+    },
+    {
+      "query": "Pha cà phê phin bị chua gắt thì thay đổi gì?",
+      "expected_note": "KTJ9TERM00009",
+      "expected_candidate_rank": 1,
+      "expected_reranked_rank": 1,
+      "latency_ms": {
+        "query_embedding": 65.159,
+        "exact_scan_top_k": 1.3536,
+        "rerank": 379.0162,
+        "online_overhead": 0.0034,
+        "total": 1079.4518,
+        "lexical": 633.8946,
+        "rrf_fusion": 0.025,
+        "hybrid": 66.5376,
+        "lexical_and_hybrid": 700.4322,
+        "pipeline": 1079.4518
+      }
+    },
+    {
+      "query": "Vì sao ống thoát dưới bồn rửa nhỏ nước dù đã vặn chặt?",
+      "expected_note": "KTJ9TERM00010",
+      "expected_candidate_rank": null,
+      "expected_reranked_rank": null,
+      "latency_ms": {
+        "query_embedding": 67.5411,
+        "exact_scan_top_k": 1.3492,
+        "rerank": 374.4387,
+        "online_overhead": 0.0028,
+        "total": 1043.8772,
+        "lexical": 600.5229,
+        "rrf_fusion": 0.0225,
+        "hybrid": 68.9128,
+        "lexical_and_hybrid": 669.4357,
+        "pipeline": 1043.8772
+      }
+    },
+    {
+      "query": "Để tài liệu quý khỏi mốc vào mùa nồm cần làm gì?",
+      "expected_note": "KTJ9TERM00011",
+      "expected_candidate_rank": 2,
+      "expected_reranked_rank": 1,
+      "latency_ms": {
+        "query_embedding": 72.6895,
+        "exact_scan_top_k": 1.4423,
+        "rerank": 381.6586,
+        "online_overhead": 0.004,
+        "total": 1067.5489,
+        "lexical": 611.7303,
+        "rrf_fusion": 0.0242,
+        "hybrid": 74.156,
+        "lexical_and_hybrid": 685.8863,
+        "pipeline": 1067.5489
+      }
+    },
+    {
+      "query": "Vì sao bản thu giọng nói lại vang như ở phòng trống?",
+      "expected_note": "KTJ9TERM00012",
+      "expected_candidate_rank": 1,
+      "expected_reranked_rank": 2,
+      "latency_ms": {
+        "query_embedding": 57.6757,
+        "exact_scan_top_k": 1.32,
+        "rerank": 323.5027,
+        "online_overhead": 0.0035,
+        "total": 1003.2737,
+        "lexical": 620.7487,
+        "rrf_fusion": 0.0231,
+        "hybrid": 59.0188,
+        "lexical_and_hybrid": 679.7675,
+        "pipeline": 1003.2737
+      }
+    },
+    {
+      "query": "Làm sao tra chuyến xe buýt cuối về nhà sau ca tối?",
+      "expected_note": "KTJ9TERM00013",
+      "expected_candidate_rank": 1,
+      "expected_reranked_rank": 1,
+      "latency_ms": {
+        "query_embedding": 58.7836,
+        "exact_scan_top_k": 1.3226,
+        "rerank": 345.562,
+        "online_overhead": 0.0034,
+        "total": 1634.4292,
+        "lexical": 1228.7329,
+        "rrf_fusion": 0.0247,
+        "hybrid": 60.1309,
+        "lexical_and_hybrid": 1288.8638,
+        "pipeline": 1634.4292
+      }
+    },
+    {
+      "query": "Cần ghi gì trước khi đem áo dài đi sửa cho vừa?",
+      "expected_note": "KTJ9TERM00014",
+      "expected_candidate_rank": 1,
+      "expected_reranked_rank": 1,
+      "latency_ms": {
+        "query_embedding": 58.145,
+        "exact_scan_top_k": 1.3801,
+        "rerank": 304.0741,
+        "online_overhead": 0.0036,
+        "total": 1610.4043,
+        "lexical": 1246.7761,
+        "rrf_fusion": 0.0254,
+        "hybrid": 59.5505,
+        "lexical_and_hybrid": 1306.3266,
+        "pipeline": 1610.4043
+      }
+    },
+    {
+      "query": "Dùng gì để kiểm tra ảnh số có bị lỗi sau khi sao lưu?",
+      "expected_note": "KTJ9TERM00015",
+      "expected_candidate_rank": 1,
+      "expected_reranked_rank": 1,
+      "latency_ms": {
+        "query_embedding": 57.0975,
+        "exact_scan_top_k": 1.3099,
+        "rerank": 354.691,
+        "online_overhead": 0.0047,
+        "total": 1033.7132,
+        "lexical": 620.5862,
+        "rrf_fusion": 0.0239,
+        "hybrid": 58.4313,
+        "lexical_and_hybrid": 679.0175,
+        "pipeline": 1033.7132
+      }
+    },
+    {
+      "query": "Nồi dùng trên bếp điện từ thì thử tại nhà bằng gì?",
+      "expected_note": "KTJ9TERM00016",
+      "expected_candidate_rank": 1,
+      "expected_reranked_rank": 1,
+      "latency_ms": {
+        "query_embedding": 63.2469,
+        "exact_scan_top_k": 1.5005,
+        "rerank": 352.0379,
+        "online_overhead": 0.0038,
+        "total": 1657.9471,
+        "lexical": 1241.1306,
+        "rrf_fusion": 0.0274,
+        "hybrid": 64.7748,
+        "lexical_and_hybrid": 1305.9054,
+        "pipeline": 1657.9471
+      }
+    },
+    {
+      "query": "Tại sao màn hình ngoài bị chớp lúc cắm máy tính xách tay?",
+      "expected_note": "KTJ9TERM00017",
+      "expected_candidate_rank": 3,
+      "expected_reranked_rank": 1,
+      "latency_ms": {
+        "query_embedding": 73.4111,
+        "exact_scan_top_k": 1.6561,
+        "rerank": 396.2548,
+        "online_overhead": 0.0041,
+        "total": 1754.0601,
+        "lexical": 1282.7057,
+        "rrf_fusion": 0.0283,
+        "hybrid": 75.0955,
+        "lexical_and_hybrid": 1357.8012,
+        "pipeline": 1754.0601
+      }
+    },
+    {
+      "query": "Muốn hạn chế thất lạc tài liệu mượn cho câu lạc bộ thì theo dõi sao?",
+      "expected_note": "KTJ9TERM00018",
+      "expected_candidate_rank": 1,
+      "expected_reranked_rank": 1,
+      "latency_ms": {
+        "query_embedding": 71.1098,
+        "exact_scan_top_k": 1.3876,
+        "rerank": 353.6693,
+        "online_overhead": 0.0056,
+        "total": 1679.6684,
+        "lexical": 1253.4718,
+        "rrf_fusion": 0.0243,
+        "hybrid": 72.5217,
+        "lexical_and_hybrid": 1325.9935,
+        "pipeline": 1679.6684
+      }
+    },
+    {
+      "query": "Phát hiện lịch tưới công viên chạy sai giờ thì xem ở đâu?",
+      "expected_note": "KTJ9TERM00019",
+      "expected_candidate_rank": 1,
+      "expected_reranked_rank": 1,
+      "latency_ms": {
+        "query_embedding": 56.16,
+        "exact_scan_top_k": 1.4056,
+        "rerank": 338.357,
+        "online_overhead": 0.0046,
+        "total": 1663.9681,
+        "lexical": 1268.006,
+        "rrf_fusion": 0.0349,
+        "hybrid": 57.6005,
+        "lexical_and_hybrid": 1325.6065,
+        "pipeline": 1663.9681
+      }
+    }
+  ],
+  "postgresql_version": "18.4",
+  "rolled_back": true,
+  "corpus_sha256": "d9b00ea1a1da4edbfc3f1623a8dc1fe15f2e97aeea8ff98721248c160e5842aa"
+}

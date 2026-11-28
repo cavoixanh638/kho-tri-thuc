@@ -1,5 +1,7 @@
+import os
 import signal
-from threading import Event
+from time import monotonic
+from threading import Event, Thread
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db import DatabaseError, close_old_connections, connection
@@ -45,9 +47,36 @@ class Command(BaseCommand):
         }
 
         worker = Worker(HANDLERS)
+        refresh_running = Event()
+        catalog_thread = None
+        next_catalog_tick = 0.0
+
+        def refresh_catalog():
+            from django.db import close_old_connections, connections
+            from processing.gemini_catalog import refresh_if_due
+            try:
+                close_old_connections()
+                refresh_if_due()
+            except Exception:
+                # Do not log remote responses or credentials.
+                self.stderr.write("Gemini catalog background refresh unavailable.")
+            finally:
+                connections.close_all()
+                refresh_running.clear()
+
         self.stdout.write("Worker started.")
         try:
             while not stopped.is_set():
+                if os.getenv("GEMINI_API_KEY") and monotonic() >= next_catalog_tick:
+                    next_catalog_tick = monotonic() + 600
+                    if not refresh_running.is_set():
+                        refresh_running.set()
+                        catalog_thread = Thread(
+                            target=refresh_catalog,
+                            name="gemini-model-catalog",
+                            daemon=True,
+                        )
+                        catalog_thread.start()
                 close_old_connections()
                 try:
                     worked = worker.run_once()

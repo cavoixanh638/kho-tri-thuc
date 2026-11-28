@@ -120,6 +120,16 @@ export function useResource<T>(path: string, options: ResourceOptions<T> = {}) {
 export const itemHref = (id: string) => `#/muc/${encodeURIComponent(id)}`;
 export const kindLabels: Record<Item['kind'], string> = { link: 'Nguồn liên kết', text: 'Tri thức văn bản', file: 'Tài liệu nguồn' };
 
+/** File media type comes from verified or pending Asset metadata, not AI/OCR. */
+export function itemKindLabel(item: Item): string {
+  if (item.kind !== 'file') return kindLabels[item.kind];
+  const mime = item.assets[0]?.mime?.toLowerCase() ?? '';
+  if (mime.startsWith('image/')) return 'Ảnh';
+  if (mime.startsWith('video/')) return 'Video';
+  if (mime.startsWith('audio/')) return 'Âm thanh';
+  return kindLabels.file;
+}
+
 export function itemTitle(item: Item) {
   const label = item.title.trim() || (item.kind === 'link' ? item.original_url : item.note.trim().split('\n', 1)[0].replace(/^#{1,6}\s+/, ''));
   const characters = Array.from(label || kindLabels[item.kind]);

@@ -1,0 +1,52 @@
+.note-outline { margin: 16px 0; padding: 12px 16px; border: 1px solid var(--rule, #ddd); border-radius: 5px; font-size: 14px; }
+.note-outline > p { margin: 0 0 6px; }
+.note-outline ul { margin: 0; padding-inline-start: 20px; }
+.note-outline a { color: inherit; }
+.note-outline li[data-depth="2"] { margin-inline-start: 12px; }
+.note-outline li[data-depth="3"] { margin-inline-start: 24px; }
+.note-outline li[data-depth="4"] { margin-inline-start: 36px; }
+.note-outline li[data-depth="5"] { margin-inline-start: 48px; }
+.note-outline li[data-depth="6"] { margin-inline-start: 60px; }
+.wiki-completion { margin: 8px 0; border: 1px solid var(--rule, #ddd); background: #fff; padding: 8px; border-radius: 5px; }
+.wiki-completion button { display: block; width: 100%; border: 0; text-align: start; font: inherit; color: inherit; background: transparent; padding: 9px; cursor: pointer; }
+.wiki-completion button[aria-selected="true"] { background: #eee; }
+.wiki-completion small { display: block; color: #555; }
+.knowledge-palette-trigger { margin: 8px 0; min-height: 40px; padding: 8px 12px; border: 1px solid #aaa; border-radius: 5px; color: #222; background: #fff; font: inherit; cursor: pointer; }
+.knowledge-text h5, .knowledge-text h6 { font-size: 14px; line-height: 1.5; }
+.knowledge-palette { width: min(640px, calc(100vw - 32px)); max-height: min(80vh, 720px); overflow: auto; color: #222; background: #fff; border: 1px solid #aaa; border-radius: 8px; padding: 20px; }
+.knowledge-palette::backdrop { background: rgb(0 0 0 / 35%); }
+.knowledge-palette input { width: 100%; padding: 10px; border: 1px solid #aaa; font: inherit; color: inherit; box-sizing: border-box; }
+.knowledge-palette button { font: inherit; }
+.knowledge-palette [role="option"] { display: block; width: 100%; background: #fff; border: 0; padding: 10px; text-align: start; color: inherit; }
+.knowledge-palette [role="option"][aria-selected="true"] { background: #eee; }
+.knowledge-palette header { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+.note-link-context { margin-top: 20px; }
+.note-link-context h3 { font-size: 15px; }
+.note-link-context ul { padding-inline-start: 20px; }
+.note-link-context small { display: block; color: #555; overflow-wrap: anywhere; }
+@media (prefers-reduced-motion: reduce) { .note-outline { scroll-behavior: auto; } }
+
+/* Keep the command palette reachable without taking an extra row above every
+   page heading or covering the detail screen's back-to-library link. */
+.shell.canvas { position: relative; }
+.shell.canvas > .knowledge-palette-trigger {
+  position: absolute;
+  top: 30px;
+  inset-inline-end: 0;
+  margin: 0;
+  min-height: 34px;
+  padding: 6px 10px;
+  font-size: 12px;
+  border-color: var(--control, #d4d4d4);
+}
+.shell.canvas > .page-title { padding-inline-end: 200px; }
+@media (max-width: 640px) {
+  .shell.canvas > .knowledge-palette-trigger {
+    position: static;
+    display: inline-flex;
+    align-items: center;
+    margin: 0 0 10px;
+    min-height: 34px;
+  }
+  .shell.canvas > .page-title { padding-inline-end: 0; }
+}

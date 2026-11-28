@@ -1,0 +1,766 @@
+{
+  "seed": 20261127,
+  "sample": "8 of each author’s 33 or 34 blocks; four queries per block",
+  "frozen_fixtures": {
+    "home.json": "79d4ceac0699f430fcd5cee3edb14756c17b15954a795e1b7784d3792cb17cd5",
+    "craft.json": "2a6aa4c9e2245a2a9b30914877db47611e2ca8ff8303453b211fff5179a665a2",
+    "community.json": "c773c4e5a85efe98ca362337127dbf937a017dd4beb1c5d018900b6631cc3618"
+  },
+  "recorded": {
+    "home": {
+      "H03a": {
+        "gold": [
+          "HN03a"
+        ],
+        "first": [
+          "HN03a"
+        ]
+      },
+      "H03b": {
+        "gold": [
+          "HN03b"
+        ],
+        "first": [
+          "HN03b"
+        ]
+      },
+      "H03c": {
+        "gold": [],
+        "first": []
+      },
+      "H03d": {
+        "gold": [
+          "HN03c"
+        ],
+        "first": [
+          "HN03c"
+        ]
+      },
+      "H05a": {
+        "gold": [
+          "HN05a"
+        ],
+        "first": [
+          "HN05a"
+        ]
+      },
+      "H05b": {
+        "gold": [
+          "HN05b"
+        ],
+        "first": [
+          "HN05b"
+        ]
+      },
+      "H05c": {
+        "gold": [],
+        "first": []
+      },
+      "H05d": {
+        "gold": [
+          "HN05b",
+          "HN05c"
+        ],
+        "first": [
+          "HN05b",
+          "HN05c"
+        ]
+      },
+      "H06a": {
+        "gold": [
+          "HN06a"
+        ],
+        "first": [
+          "HN06a"
+        ]
+      },
+      "H06b": {
+        "gold": [
+          "HN06b"
+        ],
+        "first": [
+          "HN06b"
+        ]
+      },
+      "H06c": {
+        "gold": [],
+        "first": []
+      },
+      "H06d": {
+        "gold": [],
+        "first": []
+      },
+      "H10a": {
+        "gold": [
+          "HN10a"
+        ],
+        "first": [
+          "HN10a"
+        ]
+      },
+      "H10b": {
+        "gold": [
+          "HN10b"
+        ],
+        "first": [
+          "HN10b"
+        ]
+      },
+      "H10c": {
+        "gold": [],
+        "first": []
+      },
+      "H10d": {
+        "gold": [],
+        "first": []
+      },
+      "H17a": {
+        "gold": [
+          "HN17a"
+        ],
+        "first": [
+          "HN17a"
+        ]
+      },
+      "H17b": {
+        "gold": [
+          "HN17b"
+        ],
+        "first": [
+          "HN17b"
+        ]
+      },
+      "H17c": {
+        "gold": [],
+        "first": []
+      },
+      "H17d": {
+        "gold": [
+          "HN17a",
+          "HN17c"
+        ],
+        "first": [
+          "HN17a",
+          "HN17c"
+        ]
+      },
+      "H18a": {
+        "gold": [
+          "HN18a"
+        ],
+        "first": [
+          "HN18a"
+        ]
+      },
+      "H18b": {
+        "gold": [
+          "HN18b"
+        ],
+        "first": [
+          "HN18b"
+        ]
+      },
+      "H18c": {
+        "gold": [],
+        "first": []
+      },
+      "H18d": {
+        "gold": [],
+        "first": []
+      },
+      "H20a": {
+        "gold": [
+          "HN20a"
+        ],
+        "first": [
+          "HN20a"
+        ]
+      },
+      "H20b": {
+        "gold": [
+          "HN20b"
+        ],
+        "first": [
+          "HN20b"
+        ]
+      },
+      "H20c": {
+        "gold": [],
+        "first": []
+      },
+      "H20d": {
+        "gold": [
+          "HN20b"
+        ],
+        "first": [
+          "HN20b"
+        ]
+      },
+      "H27a": {
+        "gold": [
+          "HN27a"
+        ],
+        "first": [
+          "HN27a"
+        ]
+      },
+      "H27b": {
+        "gold": [
+          "HN27b"
+        ],
+        "first": [
+          "HN27b"
+        ]
+      },
+      "H27c": {
+        "gold": [],
+        "first": []
+      },
+      "H27d": {
+        "gold": [
+          "HN27c"
+        ],
+        "first": [
+          "HN27c"
+        ]
+      }
+    },
+    "craft": {
+      "C03a": {
+        "gold": [
+          "CN03a"
+        ],
+        "first": [
+          "CN03a"
+        ],
+        "second": [
+          "CN03a"
+        ]
+      },
+      "C03b": {
+        "gold": [
+          "CN03b"
+        ],
+        "first": [
+          "CN03b"
+        ],
+        "second": [
+          "CN03b"
+        ]
+      },
+      "C03c": {
+        "gold": [],
+        "first": [
+          "CN03c"
+        ],
+        "second": []
+      },
+      "C03d": {
+        "gold": [
+          "CN03c"
+        ],
+        "first": [
+          "CN03c"
+        ],
+        "second": [
+          "CN03c"
+        ]
+      },
+      "C05a": {
+        "gold": [
+          "CN05a"
+        ],
+        "first": [
+          "CN05a"
+        ],
+        "second": [
+          "CN05a"
+        ]
+      },
+      "C05b": {
+        "gold": [
+          "CN05b"
+        ],
+        "first": [
+          "CN05b"
+        ],
+        "second": [
+          "CN05b"
+        ]
+      },
+      "C05c": {
+        "gold": [],
+        "first": [],
+        "second": []
+      },
+      "C05d": {
+        "gold": [
+          "CN05a",
+          "CN05b"
+        ],
+        "first": [
+          "CN05a",
+          "CN05b"
+        ],
+        "second": [
+          "CN05a",
+          "CN05b"
+        ]
+      },
+      "C06a": {
+        "gold": [
+          "CN06a"
+        ],
+        "first": [
+          "CN06a"
+        ],
+        "second": [
+          "CN06a"
+        ]
+      },
+      "C06b": {
+        "gold": [
+          "CN06b"
+        ],
+        "first": [
+          "CN06b"
+        ],
+        "second": [
+          "CN06b"
+        ]
+      },
+      "C06c": {
+        "gold": [],
+        "first": [
+          "CN06c"
+        ],
+        "second": []
+      },
+      "C06d": {
+        "gold": [],
+        "first": [
+          "CN06a"
+        ],
+        "second": []
+      },
+      "C10a": {
+        "gold": [
+          "CN10a"
+        ],
+        "first": [
+          "CN10a"
+        ],
+        "second": [
+          "CN10a"
+        ]
+      },
+      "C10b": {
+        "gold": [
+          "CN10b"
+        ],
+        "first": [
+          "CN10b"
+        ],
+        "second": [
+          "CN10b"
+        ]
+      },
+      "C10c": {
+        "gold": [],
+        "first": [
+          "CN10c"
+        ],
+        "second": []
+      },
+      "C10d": {
+        "gold": [],
+        "first": [],
+        "second": []
+      },
+      "C17a": {
+        "gold": [
+          "CN17a"
+        ],
+        "first": [
+          "CN17a"
+        ],
+        "second": [
+          "CN17a"
+        ]
+      },
+      "C17b": {
+        "gold": [
+          "CN17b"
+        ],
+        "first": [
+          "CN17b"
+        ],
+        "second": [
+          "CN17b"
+        ]
+      },
+      "C17c": {
+        "gold": [],
+        "first": [],
+        "second": []
+      },
+      "C17d": {
+        "gold": [
+          "CN17a",
+          "CN17b"
+        ],
+        "first": [
+          "CN17a",
+          "CN17b"
+        ],
+        "second": [
+          "CN17a",
+          "CN17b"
+        ]
+      },
+      "C18a": {
+        "gold": [
+          "CN18a"
+        ],
+        "first": [
+          "CN18a"
+        ],
+        "second": [
+          "CN18a"
+        ]
+      },
+      "C18b": {
+        "gold": [
+          "CN18b"
+        ],
+        "first": [
+          "CN18b"
+        ],
+        "second": [
+          "CN18b"
+        ]
+      },
+      "C18c": {
+        "gold": [],
+        "first": [
+          "CN18c"
+        ],
+        "second": []
+      },
+      "C18d": {
+        "gold": [],
+        "first": [],
+        "second": []
+      },
+      "C27a": {
+        "gold": [
+          "CN27a"
+        ],
+        "first": [
+          "CN27a"
+        ],
+        "second": [
+          "CN27a"
+        ]
+      },
+      "C27b": {
+        "gold": [
+          "CN27b"
+        ],
+        "first": [
+          "CN27b"
+        ],
+        "second": [
+          "CN27b"
+        ]
+      },
+      "C27c": {
+        "gold": [],
+        "first": [
+          "CN27c"
+        ],
+        "second": []
+      },
+      "C27d": {
+        "gold": [
+          "CN27c"
+        ],
+        "first": [
+          "CN27c"
+        ],
+        "second": [
+          "CN27c"
+        ]
+      },
+      "C31a": {
+        "gold": [
+          "CN31a"
+        ],
+        "first": [
+          "CN31a"
+        ],
+        "second": [
+          "CN31a"
+        ]
+      },
+      "C31b": {
+        "gold": [
+          "CN31b"
+        ],
+        "first": [
+          "CN31b"
+        ],
+        "second": [
+          "CN31b"
+        ]
+      },
+      "C31c": {
+        "gold": [],
+        "first": [
+          "CN31c"
+        ],
+        "second": []
+      },
+      "C31d": {
+        "gold": [
+          "CN31c"
+        ],
+        "first": [
+          "CN31c"
+        ],
+        "second": [
+          "CN31c"
+        ]
+      }
+    },
+    "community": {
+      "T03a": {
+        "gold": [
+          "TN03b"
+        ],
+        "first": [
+          "TN03b"
+        ]
+      },
+      "T03b": {
+        "gold": [
+          "TN03c"
+        ],
+        "first": [
+          "TN03c"
+        ]
+      },
+      "T03c": {
+        "gold": [],
+        "first": []
+      },
+      "T03d": {
+        "gold": [
+          "TN03a"
+        ],
+        "first": [
+          "TN03a"
+        ]
+      },
+      "T05a": {
+        "gold": [
+          "TN05a"
+        ],
+        "first": [
+          "TN05a"
+        ]
+      },
+      "T05b": {
+        "gold": [
+          "TN05b"
+        ],
+        "first": [
+          "TN05b"
+        ]
+      },
+      "T05c": {
+        "gold": [],
+        "first": []
+      },
+      "T05d": {
+        "gold": [
+          "TN05a",
+          "TN05b"
+        ],
+        "first": [
+          "TN05a",
+          "TN05b"
+        ]
+      },
+      "T06a": {
+        "gold": [
+          "TN06a"
+        ],
+        "first": [
+          "TN06a"
+        ]
+      },
+      "T06b": {
+        "gold": [
+          "TN06b"
+        ],
+        "first": [
+          "TN06b"
+        ]
+      },
+      "T06c": {
+        "gold": [],
+        "first": []
+      },
+      "T06d": {
+        "gold": [],
+        "first": []
+      },
+      "T10a": {
+        "gold": [
+          "TN10a"
+        ],
+        "first": [
+          "TN10a"
+        ]
+      },
+      "T10b": {
+        "gold": [
+          "TN10b"
+        ],
+        "first": [
+          "TN10b"
+        ]
+      },
+      "T10c": {
+        "gold": [],
+        "first": []
+      },
+      "T10d": {
+        "gold": [],
+        "first": []
+      },
+      "T17a": {
+        "gold": [
+          "TN17a"
+        ],
+        "first": [
+          "TN17a"
+        ]
+      },
+      "T17b": {
+        "gold": [
+          "TN17b"
+        ],
+        "first": [
+          "TN17b"
+        ]
+      },
+      "T17c": {
+        "gold": [],
+        "first": []
+      },
+      "T17d": {
+        "gold": [
+          "TN17a",
+          "TN17b"
+        ],
+        "first": [
+          "TN17a",
+          "TN17b"
+        ]
+      },
+      "T18a": {
+        "gold": [
+          "TN18a"
+        ],
+        "first": [
+          "TN18a"
+        ]
+      },
+      "T18b": {
+        "gold": [
+          "TN18b"
+        ],
+        "first": [
+          "TN18b"
+        ]
+      },
+      "T18c": {
+        "gold": [],
+        "first": []
+      },
+      "T18d": {
+        "gold": [],
+        "first": []
+      },
+      "T27a": {
+        "gold": [
+          "TN27a"
+        ],
+        "first": [
+          "TN27a"
+        ]
+      },
+      "T27b": {
+        "gold": [
+          "TN27b"
+        ],
+        "first": [
+          "TN27b"
+        ]
+      },
+      "T27c": {
+        "gold": [],
+        "first": []
+      },
+      "T27d": {
+        "gold": [
+          "TN27c"
+        ],
+        "first": [
+          "TN27c"
+        ]
+      },
+      "T31a": {
+        "gold": [
+          "TN31a"
+        ],
+        "first": [
+          "TN31a"
+        ]
+      },
+      "T31b": {
+        "gold": [
+          "TN31b"
+        ],
+        "first": [
+          "TN31b"
+        ]
+      },
+      "T31c": {
+        "gold": [],
+        "first": []
+      },
+      "T31d": {
+        "gold": [
+          "TN31c"
+        ],
+        "first": [
+          "TN31c"
+        ]
+      }
+    }
+  },
+  "review_notes": {
+    "C06d": "Clarified request for a note asserting an action; it previously permitted a yes/no reading. Final independent craft review used the revised query and corrected owner filters.",
+    "H10b": "Removed an unsupported assumption about the outer surface being dry.",
+    "H18a": "Aligned the incidental occasion with the note.",
+    "T03a": "Asked for a passable route at high tide, removing the stronger claim that it stays dry.",
+    "T06b": "Asked for the mark for the small group, removing the assumption about participants’ age."
+  },
+  "scope_repairs": {
+    "craft_owner": "Explicit requesting owner set for nine positive queries before evaluation.",
+    "community_exclude": "Converted one single-element exclusion to the supported scalar item ID."
+  }
+}

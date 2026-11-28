@@ -1,0 +1,25 @@
+{
+  "backup_checksum_verified": true,
+  "backup_sha256": "79720cf0938fff3404fc801261613b6e725844fa23ca4a553fd8010bf6e83350",
+  "counts": {
+    "events": 2,
+    "foreign_items": 1,
+    "items": 10000,
+    "jobs": 1,
+    "memberships": 10000,
+    "sources": 1,
+    "topics": 1000
+  },
+  "external_calls": 0,
+  "fingerprint_sha256": "0c07480d21b5cda4b736cedd600dd2c42864bf2a038ec6fa39ce9a7b40383fc8",
+  "media_drive_verified": false,
+  "post_restore_digest_equal": true,
+  "post_restore_same_key_no_new_event": true,
+  "postgres_custom_restore": true,
+  "restore_database": "kt_p08_scale_restored",
+  "source_database": "kt_p08_scale",
+  "stage": "restored",
+  "status": "PASS",
+  "synthetic_only": true,
+  "task": "P08/J9"
+}

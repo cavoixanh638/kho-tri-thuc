@@ -1,0 +1,43 @@
+{
+  "task": "P08/J6B",
+  "status": "PASS_SYNTHETIC_PRIVATE_END_TO_END",
+  "scope": "REAL_APP_DJANGO_ISOLATED_SYNTHETIC_STORAGE",
+  "provider_drive": "NOT_RUN",
+  "native_android": "NOT_RUN",
+  "external_calls": 0,
+  "pdf": {
+    "color": [
+      0,
+      255,
+      0
+    ],
+    "width": 857,
+    "height": 1109,
+    "alt": "Nội dung trang PDF số 2",
+    "state": "AVAILABLE",
+    "source_sha256": "1682ef74c68534761a6c9755e9445125a2f65056ac093b775f62f2c5335b52ca",
+    "page": 2,
+    "proof": "actual pixels of PDFium-rendered authenticated SHA-pinned page two"
+  },
+  "mp4": {
+    "currentTime": 2.5,
+    "duration": 12,
+    "width": 320,
+    "height": 180,
+    "path": "/api/v1/assets/9e903499-8f4e-400f-bb77-b888ddadd443/content/1/d7dcd81aa5c9896356541bbbeec1a585d0772d0f761b978b27112db09bb928c8",
+    "state": "AVAILABLE",
+    "range": {
+      "status": 206,
+      "bytes": 256,
+      "range": "bytes 0-255/140549",
+      "mime": "video/mp4",
+      "cache": "private, no-store"
+    },
+    "source_sha256": "d7dcd81aa5c9896356541bbbeec1a585d0772d0f761b978b27112db09bb928c8",
+    "target_seconds": 2.5,
+    "error_seconds": 0
+  },
+  "foreign_owner_rejected": true,
+  "note_preserved": true,
+  "synthetic_only": true
+}

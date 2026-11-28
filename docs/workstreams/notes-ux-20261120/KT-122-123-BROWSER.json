@@ -1,0 +1,39 @@
+{
+  "code_sha": "3603db9ea5a146bbed2b781139627a244a12781f",
+  "scope": "Actual React build/Django/PostgreSQL QA; no mocked HTTP, Drive or worker",
+  "checks": [
+    "Actual UI folder/subfolder + parent note + child note creation retainsraw and commits home/structure PASS",
+    "Actual menu adds shortcut without movinghome/changing ItemUUID/CaptureEvent PASS",
+    "Native Chromium drag delivery performs actual versioned move without newEvent or duplicateItem PASS",
+    "Actual Chromium4widths nooverflow/treevisible/sameUUID + native keyboardarrow PASS"
+  ],
+  "viewports": [
+    {
+      "width": 1920,
+      "tree_visible": true,
+      "overflow": false,
+      "same_uuid": "912b531b-1749-42f3-8678-345fda63763f"
+    },
+    {
+      "width": 1440,
+      "tree_visible": true,
+      "overflow": false,
+      "same_uuid": "912b531b-1749-42f3-8678-345fda63763f"
+    },
+    {
+      "width": 768,
+      "tree_visible": true,
+      "overflow": false,
+      "same_uuid": "912b531b-1749-42f3-8678-345fda63763f"
+    },
+    {
+      "width": 390,
+      "tree_visible": true,
+      "overflow": false,
+      "same_uuid": "912b531b-1749-42f3-8678-345fda63763f"
+    }
+  ],
+  "status": "PASS",
+  "parent_id": "912b531b-1749-42f3-8678-345fda63763f",
+  "child_id": "b5e4e6a0-eb4d-46d2-a932-76f158462421"
+}

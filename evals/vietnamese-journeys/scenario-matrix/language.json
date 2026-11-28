@@ -1,0 +1,550 @@
+{
+  "title": "Tìm lại ý và phân biệt ngữ nghĩa trong ghi chú tiếng Việt",
+  "items": [
+    {
+      "id": "LN01",
+      "title": "Bữa sáng ở nhà sinh hoạt",
+      "note": "Nồi chè ngô nếp chia sẵn vào cốc giấy. Để riêng một phần ít ngọt cho bác trông nhà. Tráng nồi xong thì úp lên giá ráo."
+    },
+    {
+      "id": "LN02",
+      "title": "Góc nghỉ của đội trực đêm",
+      "note": "Màn chống muỗi mới giặt còn ướt. Đêm nay lấy chiếc màn dự phòng trong ngăn trên của tủ chăn, loại có dây buộc màu cam."
+    },
+    {
+      "id": "LN03",
+      "title": "Gửi vòng hoa thay mặt tổ",
+      "note": "Gia đình cô Mận có tang. Chị Mai đặt một vòng hoa có dòng chữ 'Tổ văn nghệ kính viếng' và xin người giao mang thẳng đến nhà tang lễ."
+    },
+    {
+      "id": "LN04",
+      "title": "Mẫu áo cho ban đồng ca",
+      "note": "Khi cắt nách áo, nhớ chừa phần vải ngoài đường ráp rộng một đốt tay. Bản rập chỉ đánh dấu đường may nên phần dư này do người cắt tự cộng."
+    },
+    {
+      "id": "LN05",
+      "title": "Lối chờ của diễn viên nhí",
+      "note": "Trong màn mở đầu, nhóm diễn viên nhí đợi sau rèm phía bên phải sân khấu. Khi người dẫn giơ cánh tay lên, cả nhóm bước ra từ khoảng khuất đó."
+    },
+    {
+      "id": "LN06",
+      "title": "Mẻ nướng bán gây quỹ",
+      "note": "Cánh gà nướng hay dính vào vỉ. Đợi mặt dưới tự róc rồi mới lật. Đừng kéo mạnh khi da còn bám."
+    },
+    {
+      "id": "LN07",
+      "title": "Một dải màu cho màn chào",
+      "note": "Nhóm hợp xướng tặng nhà hát một cuộn băng vải tím để trang trí màn chào. Cuộn vải được trao cho phụ trách đạo cụ ngay buổi ráp tiết mục."
+    },
+    {
+      "id": "LN08",
+      "title": "Cách phân biệt hai túi suốt",
+      "note": "Túi vải in hình cá đựng suốt tre để dệt thử. Suốt nhựa dùng để tập xỏ sợi nằm trong túi in hình mèo."
+    },
+    {
+      "id": "LN09",
+      "title": "Phông vải nổi nếp",
+      "note": "Phông cảnh bến đò bị hằn nếp do cuộn lại lúc còn ẩm. Cuộn được mở ra hong sau khi phát hiện vết hằn. Tấm phông chưa phai màu."
+    },
+    {
+      "id": "LN10",
+      "title": "Bài tập nghe nhịp nền",
+      "note": "Nếu em lỡ nhịp ở điệp khúc, cứ ngừng hát và nghe trống thêm một ô nhịp rồi vào lại. Người giữ nhịp vẫn đánh đều để cả lớp hát tiếp."
+    },
+    {
+      "id": "LN11",
+      "title": "Nội quy sàn tập",
+      "note": "Giày đế cứng không được dùng trên sàn chính. Riêng người tập nhảy gõ được mang giày gõ khi đứng trên tấm ván chuyên dụng."
+    },
+    {
+      "id": "LN12",
+      "title": "Quầy bánh gạo ở sân đình",
+      "note": "Hết kẹp tre để gắp bánh gạo thì tạm dừng bán. Bánh còn trong khay vẫn để nguyên cho tới khi có thêm kẹp, dù hàng khách chưa tan."
+    },
+    {
+      "id": "LN13",
+      "title": "Việc của tiết thanh nhạc chiều nay",
+      "note": "Thầy cho ráp riêng bè cao với bè trầm ở đoạn kết. Buổi này chưa hát liền mạch từ đầu đến cuối vì phần mở vẫn chưa tập xong."
+    },
+    {
+      "id": "LN14",
+      "title": "Góc trưng bày của tổ dân phố",
+      "note": "Khách được chụp sơ đồ phân bố gian hàng để tìm đường. Nếu muốn chụp rõ mặt một người ở góc trưng bày thì phải hỏi người đó trước."
+    },
+    {
+      "id": "LN15",
+      "title": "Thao tác lúc kẹt thoi",
+      "note": "Khi sợi quấn chặt trong thoi, rút suốt ra trước rồi tháo nút ở đầu sợi. Đặt suốt lên khay màu xanh để khỏi lăn dưới máy."
+    },
+    {
+      "id": "LN16",
+      "title": "Buổi luyện thanh gặp sự cố điện",
+      "note": "Phòng tập mất điện. Giữ nguyên buổi luyện thanh chiều nay, chuyển cả lớp qua gian hội trường nhỏ. Gác đàn ở gian cũ để thợ kiểm tra ổ điện."
+    },
+    {
+      "id": "LN17",
+      "title": "Nháp trang trí ngày hội",
+      "note": "Phương án dùng vải mộc chưa tẩy làm phông chụp hình mới được đề nghị trong nhóm chat. Trưởng ban sẽ chốt chất liệu sau khi xem mẫu của hai xưởng."
+    },
+    {
+      "id": "LN18",
+      "title": "Tấm biển cho người giao sớm",
+      "note": "Khi dọn xong tối thứ bảy, dựng biển nhận hàng cạnh cửa phụ. Để biển ở đó qua đêm để người giao hàng lúc tinh mơ chủ nhật biết nơi bấm chuông."
+    },
+    {
+      "id": "LN19",
+      "title": "Chia bao tay cho đội kéo màn",
+      "note": "Đội kéo màn nhận sáu đôi bao tay sợi, mỗi đôi gồm một chiếc trái và một chiếc phải. Hai chiếc lẻ màu xám để lại phòng đạo cụ."
+    },
+    {
+      "id": "LN20",
+      "title": "Ai mang ý kiến đến cuộc họp",
+      "note": "Mỗi nhóm sinh hoạt cử đúng một đại diện dự buổi góp ý về tiếng ồn. Những người còn lại có thể gửi lời nhắn cho đại diện của nhóm mình."
+    },
+    {
+      "id": "LN21",
+      "title": "Một tuần trước buổi diễn cuối khóa",
+      "note": "Cô dặn nhóm ráp đàn từ đầu tuần. Đợt trước mọi người đợi tới hôm chót mới tập chung, đến lúc ghép mới phát hiện hai đàn lên giọng khác nhau."
+    },
+    {
+      "id": "LN22",
+      "title": "Đổi cảnh trong đoạn thoại thì thầm",
+      "note": "Thay vòng sắt của rèm bằng vòng gỗ lót vải. Rèm mới kéo ngang mà khán giả hàng đầu vẫn nghe được lời nói rất khẽ của diễn viên."
+    },
+    {
+      "id": "LN23",
+      "title": "Đánh dấu trên bản luyện đọc nhạc",
+      "note": "Bản của Hòa có hai dấu sao. Dấu đầu đánh ở chỗ cô đọc mẫu, dấu sau là nơi Hòa tự đọc lại. Mũi tên cuối trang nhắc chuyển sang bài khác."
+    },
+    {
+      "id": "LN24",
+      "title": "Lời nhắn về hộp phấn vạch",
+      "note": "Bác Tịnh nhắn qua chị Duyên rằng hộp phấn vạch đường cắt cứ để nguyên ở bàn của thợ cả. Chị Duyên chỉ chuyển lời cho người đến lấy dụng cụ."
+    },
+    {
+      "id": "LN25",
+      "title": "Chạy sân khấu với loa tắt",
+      "note": "Đoàn vẫn mặc đủ phục trang và diễn hết các cảnh trong lượt chạy sân khấu chiều nay. Hệ thống loa tắt suốt lượt, diễn viên nói bằng giọng thật."
+    },
+    {
+      "id": "LN26",
+      "title": "Chọn kim cho sọc nổi",
+      "note": "Kim đầu tròn đi xuyên qua kẽ sợi mà ít mắc hơn kim đầu nhọn. Vì vậy tổ dùng kim đầu tròn cho đoạn khăn có sọc nổi, nơi sợi rất dễ bị kéo xù."
+    },
+    {
+      "id": "LN27",
+      "title": "Đăng ký gian triển lãm vải",
+      "note": "Hồ sơ gian triển lãm cần cả sơ đồ kích thước quầy lẫn ảnh mẫu hàng. Thiếu một trong hai thì bộ phận tiếp nhận giữ hồ sơ ở trạng thái chờ bổ sung."
+    },
+    {
+      "id": "LN28",
+      "title": "Minh chứng để vào buổi nghe nhạc",
+      "note": "Khách đưa vé giấy hoặc mở email xác nhận trên điện thoại. Nhân viên soát cửa chỉ cần xem một trong hai trước khi cho vào."
+    },
+    {
+      "id": "LN29",
+      "title": "Khách hỏi đường trong phiên sách",
+      "note": "Phiên đổi sách ở sân B có bảng mũi tên dẫn từ cổng bên tới từng khu. Ban hướng dẫn sẽ bổ sung ký hiệu bằng hình để khách ít thạo tiếng Việt cũng dùng được."
+    },
+    {
+      "id": "LN30",
+      "title": "Bạn dẫn lối ở phiên sách",
+      "note": "Phiên đổi sách ở sân B bố trí tình nguyện viên đứng tại bàn thông tin. Nếu khách nói tiếng Việt chưa quen, bạn trực sẽ đi cùng khách đến khu cần tìm."
+    },
+    {
+      "id": "LN31",
+      "title": "Mẫu nhuộm trên đũi",
+      "note": "Với cùng một mẻ nước chàm, mảnh đũi lên xanh xám sau lần nhúng đầu. Tổ đính mảnh đó vào đầu trang sổ để so với mẫu trên vải gai."
+    },
+    {
+      "id": "LN32",
+      "title": "Mẫu nhuộm trên gai",
+      "note": "Mảnh vải gai nhúng vào cùng mẻ nước chàm với mẫu đũi, lên xanh đậm rõ sau lần nhúng đầu. Mẫu vải gai được dán cuối trang sổ."
+    },
+    {
+      "id": "LN33",
+      "title": "Quầy đồ uống của tối sân đình",
+      "note": "Ngày hội Gió Nồm sẽ dành quầy phía trước cho các món có sữa. Quầy thay thế chỉ pha trà và nước quả, dùng riêng bình rót và muỗng, phục vụ khách muốn tránh sữa."
+    },
+    {
+      "id": "LN34",
+      "title": "Khâu đóng gói bánh cho khách kiêng sữa",
+      "note": "Ngày hội Gió Nồm đặt riêng một lô bánh từ bếp không dùng sữa. Các phần giữ nguyên gói từ bếp đến tay khách và được bày ở đầu bàn tiếp đón."
+    },
+    {
+      "id": "LN35",
+      "title": "Chi phí mở lớp nhạc hè",
+      "note": "Tờ kê học phí lớp hòa tấu hè dành cho phụ huynh tách riêng tiền học và tiền thuê đàn. Học viên tự mang đàn thì bỏ khoản thuê khi đăng ký."
+    },
+    {
+      "id": "LN36",
+      "title": "Hỗ trợ học viên lớp hòa tấu",
+      "note": "Quỹ mái hiên hỗ trợ tiền học lớp hòa tấu hè cho học viên thuộc diện được miễn giảm. Phần thuê đàn do gia đình tự thanh toán nếu cần mượn đàn của lớp."
+    },
+    {
+      "id": "LN37",
+      "title": "Mẻ đậu nấu thêm trước giờ đón khách",
+      "note": "Bếp nấu bù một nồi đậu vì đoàn khách đăng ký thêm người. Nồi men cũ được đem đi sửa quai, còn mẻ đậu đầu vẫn đủ mềm và được dọn hết."
+    },
+    {
+      "id": "LN38",
+      "title": "Hẹn tập trung đồ đã dệt",
+      "note": "Tổ nhận khăn mẫu ở phòng sinh hoạt từ sáng thứ năm đến hết trưa thứ bảy. Chiều thứ bảy ban thu gom chuyển toàn bộ mẫu sang xưởng giặt."
+    },
+    {
+      "id": "LN39",
+      "title": "Ám hiệu trong lượt thử ánh sáng",
+      "note": "Hai tiếng gõ từ phòng điều khiển nhắc diễn viên đứng đúng vạch để thử đèn. Đến lúc bước ra diễn cảnh kế tiếp, từng người chờ trợ lý gọi tên qua bộ đàm."
+    }
+  ],
+  "cases": [
+    {
+      "id": "L01",
+      "kind": "từ địa phương",
+      "query": "Nồi chè bắp chia sẵn hôm đó, phần bớt đường chừa cho ai?",
+      "accept": [
+        "LN01"
+      ],
+      "why": "Ghi chú dùng từ ngô nếp cho bắp và để một phần ít ngọt cho bác trông nhà."
+    },
+    {
+      "id": "L02",
+      "kind": "từ địa phương",
+      "query": "Cái mùng thay tạm cho ca ngủ đêm cất ở đâu? Nhớ cái có dây cam.",
+      "accept": [
+        "LN02"
+      ],
+      "why": "Mùng là màn chống muỗi. Chiếc dự phòng có dây màu cam nằm ở ngăn trên của tủ chăn."
+    },
+    {
+      "id": "L03",
+      "kind": "nói giảm",
+      "query": "Nhà cô Mận có việc buồn, mình đã lưu lời ghi trên vòng hoa của tổ ở đâu?",
+      "accept": [
+        "LN03"
+      ],
+      "why": "Ghi chú nói gia đình cô Mận có tang và chép nguyên dòng chữ trên vòng hoa."
+    },
+    {
+      "id": "L04",
+      "kind": "diễn đạt vòng",
+      "query": "Lúc cắt vải ở nách áo đồng ca, phần nằm ngoài đường khâu chừa cỡ nào?",
+      "accept": [
+        "LN04"
+      ],
+      "why": "Mẫu áo quy định phần vải ngoài đường ráp rộng một đốt tay và nói rõ bản rập chưa tính phần đó."
+    },
+    {
+      "id": "L05",
+      "kind": "đa nghĩa",
+      "query": "Tụi nhỏ đứng cánh gà bên nào trong tiết mục đầu tiên?",
+      "accept": [
+        "LN05"
+      ],
+      "why": "Chỗ khuất sau rèm ở bên phải sân khấu là nơi nhóm diễn viên nhí chờ trong màn mở đầu."
+    },
+    {
+      "id": "L06",
+      "kind": "dấu hiệu thay cho thời lượng",
+      "query": "Nướng cánh gà thì nhìn dấu hiệu nào để biết lật được, khỏi giật rách da?",
+      "accept": [
+        "LN06"
+      ],
+      "why": "Mặt dưới tự róc khỏi vỉ là dấu hiệu để lật. Ghi chú sân khấu chỉ nói chỗ đợi của diễn viên."
+    },
+    {
+      "id": "L07",
+      "kind": "vai người trao và người nhận",
+      "query": "Tìm lần nhà hát được nhóm hát biếu đồ để điểm màu lúc chào khán giả.",
+      "accept": [
+        "LN07"
+      ],
+      "why": "Nhóm hợp xướng là bên trao cuộn băng vải tím, phụ trách đạo cụ của nhà hát là bên nhận."
+    },
+    {
+      "id": "L08",
+      "kind": "thuộc tính phân biệt",
+      "query": "Cái túi hình mèo bên khung dệt chứa loại ống quấn sợi làm từ gì?",
+      "accept": [
+        "LN08"
+      ],
+      "why": "Túi hình mèo chứa suốt nhựa. Suốt tre nằm trong túi hình cá."
+    },
+    {
+      "id": "L09",
+      "kind": "nguyên nhân",
+      "query": "Tại sao tấm vải dựng cảnh bến đò lại nhăn, mình có ghi nguyên do đâu đó.",
+      "accept": [
+        "LN09"
+      ],
+      "why": "Việc cuộn phông khi còn ẩm được ghi là nguyên nhân tạo nếp hằn. Việc hong vải diễn ra sau khi phát hiện."
+    },
+    {
+      "id": "L10",
+      "kind": "ứng phó khi có sự cố",
+      "query": "Đang hát đoạn lặp mà hụt phách thì nghe tiếng gì để bắt đầu lại?",
+      "accept": [
+        "LN10"
+      ],
+      "why": "Khi lỡ nhịp ở điệp khúc, người hát nghe trống thêm một ô nhịp rồi vào lại."
+    },
+    {
+      "id": "L11",
+      "kind": "ngoại lệ có điều kiện",
+      "query": "Có trường hợp nào đi giày đế cứng tập nhảy được, miễn đứng trên mặt kê riêng?",
+      "accept": [
+        "LN11"
+      ],
+      "why": "Ngoại lệ dành cho người tập nhảy gõ khi đứng trên tấm ván chuyên dụng. Sàn chính vẫn cấm giày đế cứng."
+    },
+    {
+      "id": "L12",
+      "kind": "điều kiện dừng",
+      "query": "Món bánh gạo còn nguyên mà khách vẫn phải chờ, thiếu dụng cụ nào thì quầy ngừng phục vụ vậy?",
+      "accept": [
+        "LN12"
+      ],
+      "why": "Quầy tạm ngừng bán khi hết kẹp tre để gắp bánh, kể cả lúc trong khay còn bánh và còn khách."
+    },
+    {
+      "id": "L13",
+      "kind": "phạm vi phủ định",
+      "query": "Bữa nào thầy bảo ghép giọng ở khúc chót thôi, khoan hát nguyên bài?",
+      "accept": [
+        "LN13"
+      ],
+      "why": "Chiều nay chỉ ráp bè cao và bè trầm ở đoạn kết. Cả lớp chưa hát liền mạch vì phần mở chưa tập xong."
+    },
+    {
+      "id": "L14",
+      "kind": "quyền theo đối tượng",
+      "query": "Đi ngang khu trưng bày, chụp bảng chỉ chỗ các gian để dễ đi có cần hỏi trước không?",
+      "accept": [
+        "LN14"
+      ],
+      "why": "Sơ đồ gian hàng được phép chụp. Việc hỏi trước chỉ áp dụng khi chụp rõ mặt một người."
+    },
+    {
+      "id": "L15",
+      "kind": "thứ tự thao tác",
+      "query": "Sợi mắc trong thoi dệt, cho mình xem tờ dặn lấy ống ra rồi mới tháo chỗ thắt.",
+      "accept": [
+        "LN15"
+      ],
+      "why": "Khi sợi quấn chặt, người dệt rút suốt ra trước rồi mới tháo nút ở đầu sợi."
+    },
+    {
+      "id": "L16",
+      "kind": "giữ giờ đổi địa điểm",
+      "query": "Cúp điện chỗ học hát, cuối cùng học bên nào mà vẫn tập đúng buổi?",
+      "accept": [
+        "LN16"
+      ],
+      "why": "Cả lớp chuyển sang hội trường nhỏ và giữ nguyên buổi luyện thanh chiều nay."
+    },
+    {
+      "id": "L17",
+      "kind": "đề nghị chưa duyệt",
+      "query": "Tấm nền chụp ảnh bằng vải chưa tẩy là ý kiến mới nêu hay trưởng ban đã quyết rồi?",
+      "accept": [
+        "LN17"
+      ],
+      "why": "Vải mộc chưa tẩy mới được đề nghị trong nhóm chat. Trưởng ban còn đợi xem hai mẫu trước khi quyết định chất liệu."
+    },
+    {
+      "id": "L18",
+      "kind": "thời gian qua nửa đêm",
+      "query": "Tối trước hôm giao hàng sớm, vật gì phải để ngoài tới sáng để họ tìm được chuông cửa bên hông?",
+      "accept": [
+        "LN18"
+      ],
+      "why": "Biển nhận hàng được đặt ở cửa phụ tối thứ bảy và để qua đêm cho người giao sớm chủ nhật."
+    },
+    {
+      "id": "L19",
+      "kind": "đơn vị tính và phần lẻ",
+      "query": "Tính riêng đám kéo màn nhận mấy chiếc găng, đừng cộng hai chiếc xám nằm lại.",
+      "accept": [
+        "LN19"
+      ],
+      "why": "Sáu đôi, mỗi đôi một chiếc trái và một chiếc phải, là mười hai chiếc cho đội kéo màn. Hai chiếc xám không được phát."
+    },
+    {
+      "id": "L20",
+      "kind": "lượng từ theo nhóm",
+      "query": "Vụ họp về ồn ào ấy, mỗi nhóm được đưa bao nhiêu người tới thay mặt cả nhóm?",
+      "accept": [
+        "LN20"
+      ],
+      "why": "Mỗi nhóm cử đúng một đại diện. Người khác gửi ý kiến qua đại diện."
+    },
+    {
+      "id": "L21",
+      "kind": "thành ngữ",
+      "query": "Bài cô dặn đừng để nước đến chân mới nhảy khi ghép đàn nằm đâu?",
+      "accept": [
+        "LN21"
+      ],
+      "why": "Cô yêu cầu ráp đàn từ đầu tuần vì lần trước chờ đến hôm chót mới phát hiện hai đàn lên giọng khác nhau."
+    },
+    {
+      "id": "L22",
+      "kind": "mục đích suy ra từ kết quả",
+      "query": "Kéo rèm giữa câu thoại nhỏ mà không át tiếng người diễn, hồi đó sửa cái gì?",
+      "accept": [
+        "LN22"
+      ],
+      "why": "Đổi vòng sắt sang vòng gỗ lót vải khiến người xem hàng đầu vẫn nghe được lời thoại thì thầm khi rèm di chuyển."
+    },
+    {
+      "id": "L23",
+      "kind": "tham chiếu theo thứ tự",
+      "query": "Hòa thấy hai hình ngôi sao trên tờ nhạc. Chỗ nào mới là lượt em tự đọc?",
+      "accept": [
+        "LN23"
+      ],
+      "why": "Dấu sao thứ hai đánh chỗ Hòa tự đọc. Dấu thứ nhất là chỗ cô đọc mẫu, còn mũi tên dùng để chuyển bài."
+    },
+    {
+      "id": "L24",
+      "kind": "người nói và người chuyển lời",
+      "query": "Ai nhờ chị Duyên nhắn lại là cứ để hộp phấn ở bàn thợ cả?",
+      "accept": [
+        "LN24"
+      ],
+      "why": "Bác Tịnh là người dặn. Chị Duyên chỉ chuyển lời tới người lấy dụng cụ."
+    },
+    {
+      "id": "L25",
+      "kind": "nghĩa của việc tắt thiết bị",
+      "query": "Có lần nào diễn trọn vở trong bộ đồ biểu diễn dù không mở hệ thống tiếng?",
+      "accept": [
+        "LN25"
+      ],
+      "why": "Đoàn diễn hết các cảnh với đủ phục trang và tắt loa suốt lượt. Diễn viên vẫn nói bằng giọng thật."
+    },
+    {
+      "id": "L26",
+      "kind": "so sánh theo đặc tính",
+      "query": "Thứ gì luồn qua đoạn khăn gồ mà bớt móc xù sợi hơn loại mũi bén?",
+      "accept": [
+        "LN26"
+      ],
+      "why": "Kim đầu tròn ít mắc hơn kim đầu nhọn và được dùng cho đoạn khăn có sọc nổi."
+    },
+    {
+      "id": "L27",
+      "kind": "điều kiện đồng thời",
+      "query": "Muốn hồ sơ xin bày hàng vải qua khâu tiếp nhận, ảnh sản phẩm phải gửi kèm giấy thể hiện gì?",
+      "accept": [
+        "LN27"
+      ],
+      "why": "Hồ sơ cần đồng thời có ảnh mẫu hàng và sơ đồ kích thước quầy. Thiếu một thì hồ sơ chờ bổ sung."
+    },
+    {
+      "id": "L28",
+      "kind": "điều kiện thay thế",
+      "query": "Quên đem vé giấy đi nghe nhạc, mở email xác nhận ở điện thoại là vào được chứ?",
+      "accept": [
+        "LN28"
+      ],
+      "why": "Soát cửa chấp nhận một trong hai minh chứng, gồm vé giấy hoặc thư xác nhận hiển thị trên điện thoại."
+    },
+    {
+      "id": "L29",
+      "kind": "hai hình thức hỗ trợ",
+      "query": "Ở buổi đổi sách sân B, tìm đủ ghi chú về cách tự nhìn biển để đi và cách nhờ một người dẫn nếu chưa rành tiếng Việt.",
+      "accept": [
+        "LN29",
+        "LN30"
+      ],
+      "why": "LN29 mô tả bảng mũi tên và hình. LN30 mô tả tình nguyện viên dẫn khách. Mỗi ghi chú chỉ nêu một hình thức."
+    },
+    {
+      "id": "L30",
+      "kind": "đối chiếu cùng điều kiện",
+      "query": "Cho mình cả hai mẫu xem đũi với gai ăn màu khác nhau ra sao ngay khi vừa nhúng chàm lượt đầu.",
+      "accept": [
+        "LN31",
+        "LN32"
+      ],
+      "why": "LN31 ghi đũi lên xanh xám sau lần nhúng đầu. LN32 ghi gai lên xanh đậm sau cùng lượt nhúng trong cùng mẻ chàm."
+    },
+    {
+      "id": "L31",
+      "kind": "phạm vi qua hai khâu phục vụ",
+      "query": "Ngày hội Gió Nồm có gì dành cho người tránh sữa? Lấy giúp cả ghi chép về nước uống lẫn phần đồ ăn.",
+      "accept": [
+        "LN33",
+        "LN34"
+      ],
+      "why": "LN33 nêu quầy pha trà và nước quả dùng dụng cụ riêng. LN34 nêu lô bánh riêng và cách giữ gói cho tới khi phát."
+    },
+    {
+      "id": "L32",
+      "kind": "đối chiếu hai nguồn về khoản phải trả",
+      "query": "Tìm giúp bảng khoản gia đình phải trả cho khóa hòa tấu hè và tờ về phần quỹ có thể đỡ tiền.",
+      "accept": [
+        "LN35",
+        "LN36"
+      ],
+      "why": "LN35 liệt kê học phí cùng khoản thuê đàn. LN36 giới hạn hỗ trợ quỹ ở phần học phí, nên cần cả hai nguồn."
+    },
+    {
+      "id": "L33",
+      "kind": "nguyên nhân bị gán nhầm",
+      "query": "Tìm tờ bếp ghi phải nấu bù mẻ đậu vì nồi men cũ làm cháy mẻ đầu.",
+      "accept": [],
+      "why": "LN37 ghi bếp nấu thêm vì có thêm khách. Nồi cũ chỉ đem sửa quai và mẻ đầu vẫn được dọn."
+    },
+    {
+      "id": "L34",
+      "kind": "áp ngoại lệ sai chỗ",
+      "query": "Hướng dẫn mang giày gõ đi thẳng lên sàn chính khỏi cần tấm kê ở đâu?",
+      "accept": [],
+      "why": "LN11 chỉ cho dùng giày gõ trên ván chuyên dụng và cấm giày đế cứng trên sàn chính."
+    },
+    {
+      "id": "L35",
+      "kind": "đảo bên trao và bên nhận",
+      "query": "Có phải hôm tặng dải băng tím, phụ trách đạo cụ đem màu tím sang biếu nhóm hợp xướng?",
+      "accept": [],
+      "why": "LN07 ghi nhóm hợp xướng tặng vật này cho nhà hát, phụ trách đạo cụ là bên nhận."
+    },
+    {
+      "id": "L36",
+      "kind": "quá hạn giao nhận",
+      "query": "Tờ hẹn sáng chủ nhật đem khăn dệt mẫu đến phòng sinh hoạt vẫn kịp gửi sang xưởng giặt.",
+      "accept": [],
+      "why": "LN38 đóng nhận mẫu vào trưa thứ bảy rồi chuyển toàn bộ mẫu đi giặt trong chiều thứ bảy."
+    },
+    {
+      "id": "L37",
+      "kind": "nhầm loại khoản hỗ trợ",
+      "query": "Đâu là giấy quỹ mái hiên trả luôn cả phí thuê đàn cho gia đình?",
+      "accept": [],
+      "why": "LN36 chỉ hỗ trợ học phí và ghi gia đình tự trả khoản thuê đàn. LN35 chỉ bỏ khoản thuê khi học viên tự mang đàn."
+    },
+    {
+      "id": "L38",
+      "kind": "gán nhầm tín hiệu cho hành động",
+      "query": "Có ghi chú nào bảo nghe hai tiếng gõ thì diễn viên ra diễn cảnh tiếp theo?",
+      "accept": [],
+      "why": "LN39 dùng hai tiếng gõ để nhắc vào đúng vạch thử đèn. Tín hiệu ra diễn là lúc trợ lý gọi tên qua bộ đàm."
+    },
+    {
+      "id": "L39",
+      "kind": "ghép nhầm đối tượng và đặc tính",
+      "query": "Tờ nhuộm vải gai ra xanh xám ngay nước đầu, dán mẫu vào cuối trang.",
+      "accept": [],
+      "why": "LN32 đúng là mẫu gai ở cuối trang nhưng mẫu lên xanh đậm. Xanh xám là màu của đũi ở LN31."
+    },
+    {
+      "id": "L40",
+      "kind": "đánh đồng điều kiện đồng thời với lựa chọn",
+      "query": "Hồ sơ gian vải được xác nhận chỉ bằng ảnh hàng, sơ đồ quầy thiếu cũng không sao.",
+      "accept": [],
+      "why": "LN27 yêu cầu cả hai và chuyển hồ sơ thiếu sơ đồ sang chờ bổ sung. Quy tắc chỉ cần một giấy tờ của LN28 áp dụng cho khách nghe nhạc."
+    }
+  ]
+}

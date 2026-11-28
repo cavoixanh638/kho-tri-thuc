@@ -1,0 +1,121 @@
+{
+  "environment": "Windows, separate ephemeral PostgreSQL; Django test client; Chromium video element",
+  "storage_mode": "drive",
+  "sources": {
+    "pdf_small": {
+      "source_bytes": 1206,
+      "samples": [
+        {
+          "page_or_byte_offset": 1,
+          "http": 409,
+          "elapsed_ms": 2175.0,
+          "range_requests": 1,
+          "range_reads": 0,
+          "source_bytes_read": 0,
+          "provider_error": [
+            "viewer_source_changed"
+          ]
+        }
+      ],
+      "foreign_owner_and_stale_denied_before_read": true
+    },
+    "pdf_medium": {
+      "source_bytes": 5244465,
+      "samples": [
+        {
+          "page_or_byte_offset": 1,
+          "http": 409,
+          "elapsed_ms": 3381.0,
+          "range_requests": 1,
+          "range_reads": 0,
+          "source_bytes_read": 0,
+          "provider_error": [
+            "viewer_source_changed"
+          ]
+        }
+      ],
+      "foreign_owner_and_stale_denied_before_read": true
+    },
+    "pdf_over_limit": {
+      "source_bytes": 26215987,
+      "samples": [
+        {
+          "page_or_byte_offset": 1,
+          "http": 413,
+          "elapsed_ms": 4.1,
+          "range_requests": 0,
+          "range_reads": 0,
+          "source_bytes_read": 0
+        },
+        {
+          "page_or_byte_offset": 2,
+          "http": 413,
+          "elapsed_ms": 4.6,
+          "range_requests": 0,
+          "range_reads": 0,
+          "source_bytes_read": 0
+        },
+        {
+          "page_or_byte_offset": 3,
+          "http": 413,
+          "elapsed_ms": 3.6,
+          "range_requests": 0,
+          "range_reads": 0,
+          "source_bytes_read": 0
+        }
+      ],
+      "foreign_owner_and_stale_denied_before_read": true
+    },
+    "mp4": {
+      "source_bytes": 140549,
+      "samples": [
+        {
+          "page_or_byte_offset": 0,
+          "http": 409,
+          "elapsed_ms": 1913.9,
+          "range_requests": 1,
+          "range_reads": 0,
+          "source_bytes_read": 0,
+          "provider_error": [
+            "viewer_source_changed"
+          ]
+        }
+      ],
+      "foreign_owner_and_stale_denied_before_read": true
+    }
+  },
+  "status": "FAIL",
+  "failed_checks": [
+    "pdf_small",
+    "pdf_medium",
+    "mp4"
+  ],
+  "source_sha256": {
+    "apps/backend/storage/pdf_page_api.py": "e777871c0ff1ed8c79c395d6d9588fe580c001dc44df9d21f1c58ace9c472a37",
+    "apps/backend/storage/viewer_api.py": "305fc09f84256f56455162faa1d406f2ab47294f2b027d8304f9dfb886d7fdb6",
+    "apps/backend/storage/drive.py": "07809e972478ea6af879ec7445ef75a68114c39b38f7f6dd719fe1931cb658a9",
+    "apps/backend/storage/service.py": "af9212f16eacbd890b20f5e21c8c21ee9d111f07185006ccfc44aa99ffbb5893"
+  },
+  "qa_folder_created": true,
+  "http_range_examples": [
+    {
+      "status": 206,
+      "content_range": "bytes 0-1205/1206",
+      "length": "1206",
+      "encoding": null
+    },
+    {
+      "status": 206,
+      "content_range": "bytes 0-4194303/5244465",
+      "length": "4194304",
+      "encoding": null
+    },
+    {
+      "status": 206,
+      "content_range": "bytes 0-511/140549",
+      "length": "512",
+      "encoding": null
+    }
+  ],
+  "qa_folder_trashed": true
+}

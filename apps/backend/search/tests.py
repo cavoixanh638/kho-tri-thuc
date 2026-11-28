@@ -124,6 +124,16 @@ class SearchServiceTests(TestCase):
                 self.assertEqual(hit.item_id, item.pk)
         self.assertEqual(self.hits("123/%UB"), ())
 
+    def test_digit_bearing_identifiers_avoid_noisy_fuzzy_candidate_expansion(self):
+        exact = self.item(title="KTJ9TERM00000 tài liệu chính xác")
+        near = self.item(title="KTJ9TERM00001 tài liệu tương tự")
+        params = _search_params(self.filters, "KTJ9TERM00000", None, 5)
+        self.assertTrue(params["substring"])
+        self.assertFalse(params["typo"])
+        self.assertTrue(_search_params(self.filters, "handbok", None, 5)["typo"])
+        self.assertEqual([hit.item_id for hit in self.hits("KTJ9TERM00000")], [exact.pk])
+        self.assertNotEqual(exact.pk, near.pk)
+
     def test_owner_soft_delete_and_group_intersection_apply_to_every_source(self):
         topic = Topic.objects.create(owner=self.owner, name="Topic")
         project = Project.objects.create(owner=self.owner, name="Project")
@@ -182,6 +192,28 @@ class SearchServiceTests(TestCase):
         self.assertEqual(ids, sorted((item.pk for item in items), reverse=True))
         self.assertIsNotNone(first.next_cursor)
         self.assertIsNone(second.next_cursor)
+
+    def test_fts_full_first_page_skips_fuzzy_without_losing_later_cursor_hits(self):
+        exact = [self.item(title="handbok") for _ in range(20)]
+        near = self.item(title="handbook")
+        cursor = None
+        seen = []
+        pages = 0
+        while True:
+            page = self.service.search(self.filters, "handbok", cursor, limit=5)
+            ids = [hit.item_id for hit in page.hits]
+            self.assertLessEqual(len(ids), 5)
+            self.assertFalse(set(ids).intersection(seen))
+            seen.extend(ids)
+            pages += 1
+            cursor = page.next_cursor
+            if cursor is None:
+                break
+            self.assertLess(pages, 10)
+        self.assertEqual(pages, 5)
+        self.assertEqual(len(seen), 21)
+        self.assertEqual(set(seen[:20]), {row.pk for row in exact})
+        self.assertEqual(seen[-1], near.pk)
 
     def test_query_validation(self):
         self.assertEqual(self.hits("   --   "), ())

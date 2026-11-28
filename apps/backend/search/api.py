@@ -7,6 +7,7 @@ from ninja.security import django_auth
 
 from catalog.models import Item
 
+from .quote_reader import QuoteCheck, Verification
 from .services import MAX_PAGE_SIZE, SearchCursor, SearchFilters, SearchService
 
 router = Router(tags=["Search"], auth=django_auth)
@@ -24,6 +25,7 @@ class Hit(Schema):
     title: str
     score: float
     evidence: list[Evidence]
+    verification: Verification | None = None
 
 
 class Cursor(Schema):
@@ -34,18 +36,24 @@ class Cursor(Schema):
 class Page(Schema):
     results: list[Hit]
     next_cursor: Cursor | None
+    match_kind: str = "standard"
+    can_expand: bool = False
+    ranking: str = "lexical"
+    quote_check: QuoteCheck | None = None
 
 
 class Error(Schema):
     code: str
 
 
-def browse_groups(owner, group_filters, cursor, limit):
+def browse_groups(owner, group_filters, cursor, limit, exclude_item_id=None):
     if not group_filters:
         return {"results": [], "next_cursor": None}
     queryset = Item.objects.filter(
         owner=owner, deleted_at__isnull=True, **group_filters
     )
+    if exclude_item_id is not None:
+        queryset = queryset.exclude(pk=exclude_item_id)
     if cursor:
         if cursor.score != 0:
             raise ValueError("group cursors must have a zero score")
@@ -62,7 +70,7 @@ def browse_groups(owner, group_filters, cursor, limit):
     }
 
 
-@router.get("/search", response={200: Page, 422: Error})
+@router.get("/search", response={200: Page, 422: Error}, exclude_unset=True)
 def search(
     request,
     q: str = "",
@@ -72,6 +80,8 @@ def search(
     cursor_score: float | None = None,
     cursor_item_id: UUID | None = None,
     limit: int = 20,
+    expand: bool = False,
+    exclude_item_id: UUID | None = None,
 ):
     if (
         (cursor_score is None) != (cursor_item_id is None)
@@ -100,16 +110,28 @@ def search(
                 )
                 if value is not None
             }
-            return browse_groups(request.user, group_filters, cursor, limit)
+            return {"match_kind": "standard", "can_expand": False, "ranking": "lexical",
+                    **browse_groups(request.user, group_filters, cursor, limit, exclude_item_id)}
         page = SearchService().search(
-            SearchFilters(request.user.pk, topic_id, project_id, tag_id),
+            SearchFilters(request.user.pk, topic_id, project_id, tag_id, exclude_item_id),
             q,
             cursor,
             limit=limit,
+            expand=expand,
         )
+        results = []
+        for hit in page.hits:
+            row = asdict(hit)
+            if hit.verification is None:
+                del row["verification"]
+            results.append(row)
         return {
-            "results": [asdict(hit) for hit in page.hits],
+            "results": results,
             "next_cursor": asdict(page.next_cursor) if page.next_cursor else None,
+            "match_kind": page.match_kind,
+            "can_expand": page.can_expand,
+            "ranking": page.ranking,
+            **({"quote_check": asdict(page.quote_check)} if page.quote_check is not None else {}),
         }
     except (ValueError, UnicodeError):
         return Status(422, {"code": "invalid_search"})

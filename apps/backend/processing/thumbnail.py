@@ -17,6 +17,7 @@ from uuid import UUID
 import pypdfium2 as pdfium
 from PIL import Image, ImageOps
 
+from .pdfium_lock import PDFIUM_LOCK
 from .thumbnail_video import VideoThumbnailError, read_video_frame
 
 ThumbnailFormat = Literal["webp", "jpeg"]
@@ -25,7 +26,6 @@ ThumbnailFormat = Literal["webp", "jpeg"]
 _CACHE_VERSION = "v1"
 _OUTPUTS = {"webp": (".webp", "WEBP"), "jpeg": (".jpg", "JPEG")}
 _MAX_IMAGE_PIXELS = 64_000_000
-_PDFIUM_LOCK = Lock()
 _CACHE_WRITE_LOCK = Lock()
 
 
@@ -203,7 +203,7 @@ def _read_image(stream: BinaryIO) -> Image.Image:
 def _read_pdf(stream: BinaryIO, max_edge: int) -> Image.Image:
     # PDFium calls, including handle cleanup, must be serialized in a process.
     try:
-        with _PDFIUM_LOCK, closing(pdfium.PdfDocument(stream)) as document:
+        with PDFIUM_LOCK, closing(pdfium.PdfDocument(stream)) as document:
             if len(document) == 0:
                 raise _Placeholder("invalid_pdf")
             with closing(document[0]) as page:

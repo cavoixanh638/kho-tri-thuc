@@ -28,14 +28,30 @@ class Item(models.Model):
     source_fetch = models.CharField(max_length=16, default="pending")
     asset_storage = models.CharField(max_length=16, default="pending")
     content_extract = models.CharField(max_length=16, default="pending")
+    home_topic = models.ForeignKey(
+        "Topic", null=True, blank=True, on_delete=models.SET_NULL,
+        related_name="home_items",
+    )
+    parent_item = models.ForeignKey(
+        "self", null=True, blank=True, on_delete=models.SET_NULL,
+        related_name="structural_children",
+    )
+    outline_order = models.PositiveIntegerField(default=0)
+    structure_version = models.PositiveIntegerField(default=0)
+    structure_origin = models.CharField(max_length=12, default="user")
 
     class Meta:
         indexes = [
+            models.Index(fields=["owner", "home_topic", "parent_item", "outline_order", "id"], name="item_explorer_home_idx"),
+            models.Index(fields=["owner", "parent_item", "outline_order", "id"], name="item_outline_parent_idx"),
             models.Index(
                 fields=["owner", "-saved_at", "id"],
                 name="item_owner_saved_idx",
                 condition=Q(deleted_at__isnull=True),
             ),
+        ]
+        constraints = [
+            models.CheckConstraint(condition=~Q(id=F("parent_item_id")), name="item_not_own_parent"),
         ]
 
 
@@ -137,6 +153,18 @@ class ItemTopic(Assignment):
         ]
 
 
+class ItemTopicExclusion(models.Model):
+    """A user's explicit removal stays in effect until they add the folder back."""
+
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["item", "topic"], name="item_topic_exclusion_uniq"),
+        ]
+
+
 class ItemProject(Assignment):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
@@ -187,3 +215,6 @@ class RelatedItem(models.Model):
                 fields=["item_a", "item_b"], name="related_pair_uniq"
             ),
         ]
+
+
+from .collection_models import SavedCollection  # noqa: E402,F401

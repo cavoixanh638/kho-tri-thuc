@@ -1,13 +1,19 @@
 import json
 import math
-import unicodedata
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Literal
 from uuid import UUID
 
+from django.conf import settings
 from django.db import connection
 
+from . import quote_reader, reranking
+from .claims import claim_params
+from .identifiers import identifier_patterns
+from .quantities import quantity_params
 from .queries import SEARCH_SQL
+from .recall import RECALL_SQL, recall_params
+from .structured import ASCII_GRAPHIC, VI_LOWER, WIDE_GRAPHIC, digit_probes, lookup, normalize_query
 
 
 CAPTURE_SCAN_LIMIT = 1000
@@ -44,12 +50,17 @@ class SearchHit:
     title: str
     score: float
     evidence: tuple[SearchEvidence, ...]
+    verification: quote_reader.Verification | None = None
 
 
 @dataclass(frozen=True)
 class SearchPage:
     hits: tuple[SearchHit, ...] = ()
     next_cursor: SearchCursor | None = None
+    match_kind: Literal["standard", "partial"] = "standard"
+    can_expand: bool = False
+    ranking: Literal["lexical", "bge"] = "lexical"
+    quote_check: quote_reader.QuoteCheck | None = None
 
 
 class SearchService:
@@ -60,6 +71,8 @@ class SearchService:
         cursor: SearchCursor | None = None,
         *,
         limit: int = 20,
+        allow_partial: bool = True,
+        expand: bool = False,
     ) -> SearchPage:
         """Return visible items in rank order with the best match per source.
 
@@ -70,15 +83,95 @@ class SearchService:
             raise ValueError(f"limit must be between 1 and {MAX_PAGE_SIZE}")
         if cursor is not None and not math.isfinite(cursor.score):
             raise ValueError("cursor score must be finite")
-        query = " ".join(unicodedata.normalize("NFC", query).split())
+        query = normalize_query(query)
         if len(query) > MAX_QUERY_LENGTH or "\0" in query:
             raise ValueError(f"query must be at most {MAX_QUERY_LENGTH} characters without NUL")
         if not any(character.isalnum() for character in query):
             return SearchPage()
 
+        params = _search_params(filters, query, cursor, limit)
+        probes, quoted, contextual = lookup(query)
+        params["fts_probes"] = probes
+        if quoted:
+            params["quote_pattern"], params["quote_fold"] = quoted
+        elif probes:
+            params["digit_probes"], params["indexed_digits"] = digit_probes(query)
+        match_kind = "standard"
+        can_expand = False
+        passages = []
+        added = False
+        quote_sources = {}
+        quote_mode = None
         with connection.cursor() as db_cursor:
-            db_cursor.execute(SEARCH_SQL, _search_params(filters, query, cursor, limit))
+            db_cursor.execute(SEARCH_SQL, params)
             rows = db_cursor.fetchall()
+            if not rows and allow_partial and not quoted:
+                partial = recall_params(query)
+                if contextual and (contextual["lookup_names"] or not partial or "lookup_key" not in partial):
+                    if contextual["fts_probes"] == probes:
+                        return SearchPage()
+                    partial = contextual
+                if not partial:
+                    return SearchPage()
+                if cursor is not None:
+                    # Existing clients carry only a score and UUID. Never append
+                    # the partial ranking to the end of a nonempty standard one.
+                    db_cursor.execute(SEARCH_SQL, {**params, "cursor_id": None, "cursor_score": None,
+                                                   "page_size": 1})
+                    if db_cursor.fetchone():
+                        return SearchPage()
+                if "fts_probes" in partial:
+                    db_cursor.execute(SEARCH_SQL, {
+                        **params, **partial, "substring": False, "typo": False,
+                        "claim_patterns": [*(params["claim_patterns"] or []), *partial["lookup_names"]] or None,
+                    })
+                    rows = db_cursor.fetchall()
+                elif "lookup_key" in partial:
+                    # Use the indexed literal lookup. Keep the original patterns
+                    # so every other written number/code must be present on the same source.
+                    db_cursor.execute(SEARCH_SQL, {**params, "query": partial["lookup_key"],
+                                                   "fts_probes": None, "substring": True, "typo": False})
+                    rows = db_cursor.fetchall()
+                else:
+                    window = min(limit, reranking.WINDOW_SIZE) if (
+                        expand and cursor is None and settings.SEARCH_BGE_MODEL_DIR
+                    ) else 0
+                    if expand and settings.SEARCH_QUOTE_EVIDENCE_ENABLED:
+                        quote_mode = quote_reader.intent(query)
+                    quote_window = min(limit, quote_reader.MAX_DOCUMENTS) if quote_mode else 0
+                    db_cursor.execute(RECALL_SQL, {**params, **partial, "rerank_window": max(window, quote_window),
+                                                   "passage_chars": reranking.MAX_PASSAGE_CHARS})
+                    candidates = db_cursor.fetchall()
+                    has_suggestions = any(not row[-2] for row in candidates)
+                    can_expand = not expand and has_suggestions
+                    rows = [row[:-2] for row in candidates if expand or row[-2]]
+                    if quote_window and has_suggestions:
+                        quote_sources = {row[0]: row[-1] for row in candidates[:quote_window]}
+                    if window and has_suggestions:
+                        passages = [row[-1] for row in candidates[:window]]
+                        if (settings.SEARCH_MEMORY_CANDIDATES and len(candidates) < window
+                                and len(partial["terms"]) >= 4 and not probes
+                                and not any(char.isdigit() for char in query)
+                                and not params["claim_patterns"] and not params["claim_opposite"]
+                                and not params["quantity_required"]):
+                            # This page already has a button and no next cursor. Add at
+                            # most one hit in the free space, without displacing any page.
+                            db_cursor.execute(RECALL_SQL, {
+                                **params, **partial, "widen_memory": True,
+                                "existing_ids": [row[0] for row in candidates], "suggestion_count": 1,
+                                "page_size": reranking.EXTRA_CANDIDATES, "rerank_window": reranking.EXTRA_CANDIDATES,
+                                "passage_chars": reranking.MAX_PASSAGE_CHARS,
+                            })
+                            extra = db_cursor.fetchall()
+                            if extra:
+                                selected = reranking.best_addition(query, passages, [row[-1] for row in extra])
+                                if selected is not None:
+                                    rows.append(extra[selected][:-2])
+                                    added = True
+                                    if quote_sources:
+                                        quote_sources[extra[selected][0]] = extra[selected][-1]
+                if rows:
+                    match_kind = "partial"
 
         summaries = {}
         for item_id, title, score, source, snippet, locator, provenance in rows:
@@ -98,7 +191,28 @@ class SearchService:
         if len(hits) > limit:
             hits = hits[:limit]
             next_cursor = SearchCursor(hits[-1].score, hits[-1].item_id)
-        return SearchPage(hits, next_cursor)
+        checked_cursor = next_cursor
+        if quote_sources and len(hits) > quote_window:
+            boundary = hits[quote_window - 1]
+            checked_cursor = SearchCursor(boundary.score, boundary.item_id)
+        # The cursor is the original lexical page boundary. The lookahead
+        # row is never scored, so the next page cannot repeat or skip items.
+        ranking = "lexical"
+        if len(passages) >= 2 and (order := reranking.rerank_order(query, passages)) is not None:
+            hits = tuple(hits[index] for index in order) + hits[len(order):]
+            ranking = "bge"
+        if added:
+            # The winning challenger was appended after the original candidates.
+            hits = (hits[-1], *hits[:-1])
+            ranking = "bge"
+        checked = None
+        if quote_sources and hits:
+            window_hits = hits[:quote_window]
+            matches, checked = quote_reader.verify(query, quote_mode, [quote_sources[h.item_id] for h in window_hits])
+            if matches is not None:
+                hits = tuple(replace(hit, verification=matches[i]) for i, hit in enumerate(window_hits) if i in matches)
+                next_cursor = checked_cursor
+        return SearchPage(hits, next_cursor, match_kind, can_expand, ranking, checked)
 
 
 def _search_params(filters, query, cursor, limit):
@@ -109,8 +223,20 @@ def _search_params(filters, query, cursor, limit):
         "project_id": filters.project_id,
         "tag_id": filters.tag_id,
         "query": query,
+        "fts_probes": None, "lookup_min": 0, "lookup_clues": [],
+        "quote_pattern": None, "quote_fold": False,
+        "width_from": WIDE_GRAPHIC, "width_to": ASCII_GRAPHIC,
+        "vi_lower": VI_LOWER, "vi_upper": VI_LOWER.upper(),
+        "digit_probes": None, "indexed_digits": False,
+        "widen_memory": False, "existing_ids": [],
+        **claim_params(query),
+        **quantity_params(query),
+        "identifier_patterns": identifier_patterns(query),
         "substring": len(query) >= 3,
-        "typo": len(query) >= 4 and query.isalnum(),
+        # Identifiers with digits are exact keys. Trigram fuzzy matching of
+        # such keys produces thousands of near-identical candidates and
+        # distracts from the precise indexed FTS/substring hit.
+        "typo": len(query) >= 4 and query.isalnum() and not any(ch.isdigit() for ch in query),
         "capture_limit": CAPTURE_SCAN_LIMIT,
         "cursor_id": cursor.item_id if cursor else None,
         "cursor_score": cursor.score if cursor else None,

@@ -1,0 +1,500 @@
+{
+  "scope": "synthetic same-origin cookie-authenticated Range fixture; no Drive/provider traffic",
+  "browser": "Chrome/157.0.8103.79",
+  "device": "win32 headless desktop",
+  "tolerance_seconds": 1,
+  "audio": [
+    {
+      "target": 0,
+      "actual": 0,
+      "duration": 30,
+      "tag": "AUDIO",
+      "video_width": null,
+      "video_height": null,
+      "status": "Đã đến 0:00.",
+      "codec": "PCM signed 16-bit mono 8kHz WAV",
+      "source_version": "396fe3c1483af61908c0ab9e5b518010b097a61e6d628ceba6f434758d3ca35d"
+    },
+    {
+      "target": 0.125,
+      "actual": 0.125,
+      "duration": 30,
+      "tag": "AUDIO",
+      "video_width": null,
+      "video_height": null,
+      "status": "Đã đến 0:00.125.",
+      "codec": "PCM signed 16-bit mono 8kHz WAV",
+      "source_version": "396fe3c1483af61908c0ab9e5b518010b097a61e6d628ceba6f434758d3ca35d"
+    },
+    {
+      "target": 0.5,
+      "actual": 0.5,
+      "duration": 30,
+      "tag": "AUDIO",
+      "video_width": null,
+      "video_height": null,
+      "status": "Đã đến 0:00.5.",
+      "codec": "PCM signed 16-bit mono 8kHz WAV",
+      "source_version": "396fe3c1483af61908c0ab9e5b518010b097a61e6d628ceba6f434758d3ca35d"
+    },
+    {
+      "target": 1,
+      "actual": 1,
+      "duration": 30,
+      "tag": "AUDIO",
+      "video_width": null,
+      "video_height": null,
+      "status": "Đã đến 0:01.",
+      "codec": "PCM signed 16-bit mono 8kHz WAV",
+      "source_version": "396fe3c1483af61908c0ab9e5b518010b097a61e6d628ceba6f434758d3ca35d"
+    },
+    {
+      "target": 1.25,
+      "actual": 1.25,
+      "duration": 30,
+      "tag": "AUDIO",
+      "video_width": null,
+      "video_height": null,
+      "status": "Đã đến 0:01.25.",
+      "codec": "PCM signed 16-bit mono 8kHz WAV",
+      "source_version": "396fe3c1483af61908c0ab9e5b518010b097a61e6d628ceba6f434758d3ca35d"
+    },
+    {
+      "target": 2.5,
+      "actual": 2.5,
+      "duration": 30,
+      "tag": "AUDIO",
+      "video_width": null,
+      "video_height": null,
+      "status": "Đã đến 0:02.5.",
+      "codec": "PCM signed 16-bit mono 8kHz WAV",
+      "source_version": "396fe3c1483af61908c0ab9e5b518010b097a61e6d628ceba6f434758d3ca35d"
+    },
+    {
+      "target": 3,
+      "actual": 3,
+      "duration": 30,
+      "tag": "AUDIO",
+      "video_width": null,
+      "video_height": null,
+      "status": "Đã đến 0:03.",
+      "codec": "PCM signed 16-bit mono 8kHz WAV",
+      "source_version": "396fe3c1483af61908c0ab9e5b518010b097a61e6d628ceba6f434758d3ca35d"
+    },
+    {
+      "target": 4.125,
+      "actual": 4.125,
+      "duration": 30,
+      "tag": "AUDIO",
+      "video_width": null,
+      "video_height": null,
+      "status": "Đã đến 0:04.125.",
+      "codec": "PCM signed 16-bit mono 8kHz WAV",
+      "source_version": "396fe3c1483af61908c0ab9e5b518010b097a61e6d628ceba6f434758d3ca35d"
+    },
+    {
+      "target": 5,
+      "actual": 5,
+      "duration": 30,
+      "tag": "AUDIO",
+      "video_width": null,
+      "video_height": null,
+      "status": "Đã đến 0:05.",
+      "codec": "PCM signed 16-bit mono 8kHz WAV",
+      "source_version": "396fe3c1483af61908c0ab9e5b518010b097a61e6d628ceba6f434758d3ca35d"
+    },
+    {
+      "target": 6.5,
+      "actual": 6.5,
+      "duration": 30,
+      "tag": "AUDIO",
+      "video_width": null,
+      "video_height": null,
+      "status": "Đã đến 0:06.5.",
+      "codec": "PCM signed 16-bit mono 8kHz WAV",
+      "source_version": "396fe3c1483af61908c0ab9e5b518010b097a61e6d628ceba6f434758d3ca35d"
+    },
+    {
+      "target": 7.75,
+      "actual": 7.75,
+      "duration": 30,
+      "tag": "AUDIO",
+      "video_width": null,
+      "video_height": null,
+      "status": "Đã đến 0:07.75.",
+      "codec": "PCM signed 16-bit mono 8kHz WAV",
+      "source_version": "396fe3c1483af61908c0ab9e5b518010b097a61e6d628ceba6f434758d3ca35d"
+    },
+    {
+      "target": 8,
+      "actual": 8,
+      "duration": 30,
+      "tag": "AUDIO",
+      "video_width": null,
+      "video_height": null,
+      "status": "Đã đến 0:08.",
+      "codec": "PCM signed 16-bit mono 8kHz WAV",
+      "source_version": "396fe3c1483af61908c0ab9e5b518010b097a61e6d628ceba6f434758d3ca35d"
+    },
+    {
+      "target": 9.5,
+      "actual": 9.5,
+      "duration": 30,
+      "tag": "AUDIO",
+      "video_width": null,
+      "video_height": null,
+      "status": "Đã đến 0:09.5.",
+      "codec": "PCM signed 16-bit mono 8kHz WAV",
+      "source_version": "396fe3c1483af61908c0ab9e5b518010b097a61e6d628ceba6f434758d3ca35d"
+    },
+    {
+      "target": 10.25,
+      "actual": 10.25,
+      "duration": 30,
+      "tag": "AUDIO",
+      "video_width": null,
+      "video_height": null,
+      "status": "Đã đến 0:10.25.",
+      "codec": "PCM signed 16-bit mono 8kHz WAV",
+      "source_version": "396fe3c1483af61908c0ab9e5b518010b097a61e6d628ceba6f434758d3ca35d"
+    },
+    {
+      "target": 11,
+      "actual": 11,
+      "duration": 30,
+      "tag": "AUDIO",
+      "video_width": null,
+      "video_height": null,
+      "status": "Đã đến 0:11.",
+      "codec": "PCM signed 16-bit mono 8kHz WAV",
+      "source_version": "396fe3c1483af61908c0ab9e5b518010b097a61e6d628ceba6f434758d3ca35d"
+    },
+    {
+      "target": 12.5,
+      "actual": 12.5,
+      "duration": 30,
+      "tag": "AUDIO",
+      "video_width": null,
+      "video_height": null,
+      "status": "Đã đến 0:12.5.",
+      "codec": "PCM signed 16-bit mono 8kHz WAV",
+      "source_version": "396fe3c1483af61908c0ab9e5b518010b097a61e6d628ceba6f434758d3ca35d"
+    },
+    {
+      "target": 14,
+      "actual": 14,
+      "duration": 30,
+      "tag": "AUDIO",
+      "video_width": null,
+      "video_height": null,
+      "status": "Đã đến 0:14.",
+      "codec": "PCM signed 16-bit mono 8kHz WAV",
+      "source_version": "396fe3c1483af61908c0ab9e5b518010b097a61e6d628ceba6f434758d3ca35d"
+    },
+    {
+      "target": 16.25,
+      "actual": 16.25,
+      "duration": 30,
+      "tag": "AUDIO",
+      "video_width": null,
+      "video_height": null,
+      "status": "Đã đến 0:16.25.",
+      "codec": "PCM signed 16-bit mono 8kHz WAV",
+      "source_version": "396fe3c1483af61908c0ab9e5b518010b097a61e6d628ceba6f434758d3ca35d"
+    },
+    {
+      "target": 18,
+      "actual": 18,
+      "duration": 30,
+      "tag": "AUDIO",
+      "video_width": null,
+      "video_height": null,
+      "status": "Đã đến 0:18.",
+      "codec": "PCM signed 16-bit mono 8kHz WAV",
+      "source_version": "396fe3c1483af61908c0ab9e5b518010b097a61e6d628ceba6f434758d3ca35d"
+    },
+    {
+      "target": 20,
+      "actual": 20,
+      "duration": 30,
+      "tag": "AUDIO",
+      "video_width": null,
+      "video_height": null,
+      "status": "Đã đến 0:20.",
+      "codec": "PCM signed 16-bit mono 8kHz WAV",
+      "source_version": "396fe3c1483af61908c0ab9e5b518010b097a61e6d628ceba6f434758d3ca35d"
+    }
+  ],
+  "video": [
+    {
+      "target": 0,
+      "actual": 0,
+      "duration": 21.795365,
+      "tag": "VIDEO",
+      "video_width": 320,
+      "video_height": 180,
+      "status": "Đã đến 0:00.",
+      "codec": "VP8 WebM 320x180 canvas capture 10fps",
+      "source_version": "3528481985001c1d239afd2de0845bb85ba7d46c4d0c9930f59e1975cbbf6d68"
+    },
+    {
+      "target": 0.125,
+      "actual": 0.125,
+      "duration": 21.795365,
+      "tag": "VIDEO",
+      "video_width": 320,
+      "video_height": 180,
+      "status": "Đã đến 0:00.125.",
+      "codec": "VP8 WebM 320x180 canvas capture 10fps",
+      "source_version": "3528481985001c1d239afd2de0845bb85ba7d46c4d0c9930f59e1975cbbf6d68"
+    },
+    {
+      "target": 0.5,
+      "actual": 0.5,
+      "duration": 21.795365,
+      "tag": "VIDEO",
+      "video_width": 320,
+      "video_height": 180,
+      "status": "Đã đến 0:00.5.",
+      "codec": "VP8 WebM 320x180 canvas capture 10fps",
+      "source_version": "3528481985001c1d239afd2de0845bb85ba7d46c4d0c9930f59e1975cbbf6d68"
+    },
+    {
+      "target": 1,
+      "actual": 1,
+      "duration": 21.795365,
+      "tag": "VIDEO",
+      "video_width": 320,
+      "video_height": 180,
+      "status": "Đã đến 0:01.",
+      "codec": "VP8 WebM 320x180 canvas capture 10fps",
+      "source_version": "3528481985001c1d239afd2de0845bb85ba7d46c4d0c9930f59e1975cbbf6d68"
+    },
+    {
+      "target": 1.25,
+      "actual": 1.25,
+      "duration": 21.795365,
+      "tag": "VIDEO",
+      "video_width": 320,
+      "video_height": 180,
+      "status": "Đã đến 0:01.25.",
+      "codec": "VP8 WebM 320x180 canvas capture 10fps",
+      "source_version": "3528481985001c1d239afd2de0845bb85ba7d46c4d0c9930f59e1975cbbf6d68"
+    },
+    {
+      "target": 2.5,
+      "actual": 2.5,
+      "duration": 21.795365,
+      "tag": "VIDEO",
+      "video_width": 320,
+      "video_height": 180,
+      "status": "Đã đến 0:02.5.",
+      "codec": "VP8 WebM 320x180 canvas capture 10fps",
+      "source_version": "3528481985001c1d239afd2de0845bb85ba7d46c4d0c9930f59e1975cbbf6d68"
+    },
+    {
+      "target": 3,
+      "actual": 3,
+      "duration": 21.795365,
+      "tag": "VIDEO",
+      "video_width": 320,
+      "video_height": 180,
+      "status": "Đã đến 0:03.",
+      "codec": "VP8 WebM 320x180 canvas capture 10fps",
+      "source_version": "3528481985001c1d239afd2de0845bb85ba7d46c4d0c9930f59e1975cbbf6d68"
+    },
+    {
+      "target": 4.125,
+      "actual": 4.125,
+      "duration": 21.795365,
+      "tag": "VIDEO",
+      "video_width": 320,
+      "video_height": 180,
+      "status": "Đã đến 0:04.125.",
+      "codec": "VP8 WebM 320x180 canvas capture 10fps",
+      "source_version": "3528481985001c1d239afd2de0845bb85ba7d46c4d0c9930f59e1975cbbf6d68"
+    },
+    {
+      "target": 5,
+      "actual": 5,
+      "duration": 21.795365,
+      "tag": "VIDEO",
+      "video_width": 320,
+      "video_height": 180,
+      "status": "Đã đến 0:05.",
+      "codec": "VP8 WebM 320x180 canvas capture 10fps",
+      "source_version": "3528481985001c1d239afd2de0845bb85ba7d46c4d0c9930f59e1975cbbf6d68"
+    },
+    {
+      "target": 6.5,
+      "actual": 6.5,
+      "duration": 21.795365,
+      "tag": "VIDEO",
+      "video_width": 320,
+      "video_height": 180,
+      "status": "Đã đến 0:06.5.",
+      "codec": "VP8 WebM 320x180 canvas capture 10fps",
+      "source_version": "3528481985001c1d239afd2de0845bb85ba7d46c4d0c9930f59e1975cbbf6d68"
+    },
+    {
+      "target": 7.75,
+      "actual": 7.75,
+      "duration": 21.795365,
+      "tag": "VIDEO",
+      "video_width": 320,
+      "video_height": 180,
+      "status": "Đã đến 0:07.75.",
+      "codec": "VP8 WebM 320x180 canvas capture 10fps",
+      "source_version": "3528481985001c1d239afd2de0845bb85ba7d46c4d0c9930f59e1975cbbf6d68"
+    },
+    {
+      "target": 8,
+      "actual": 8,
+      "duration": 21.795365,
+      "tag": "VIDEO",
+      "video_width": 320,
+      "video_height": 180,
+      "status": "Đã đến 0:08.",
+      "codec": "VP8 WebM 320x180 canvas capture 10fps",
+      "source_version": "3528481985001c1d239afd2de0845bb85ba7d46c4d0c9930f59e1975cbbf6d68"
+    },
+    {
+      "target": 9.5,
+      "actual": 9.5,
+      "duration": 21.795365,
+      "tag": "VIDEO",
+      "video_width": 320,
+      "video_height": 180,
+      "status": "Đã đến 0:09.5.",
+      "codec": "VP8 WebM 320x180 canvas capture 10fps",
+      "source_version": "3528481985001c1d239afd2de0845bb85ba7d46c4d0c9930f59e1975cbbf6d68"
+    },
+    {
+      "target": 10.25,
+      "actual": 10.25,
+      "duration": 21.795365,
+      "tag": "VIDEO",
+      "video_width": 320,
+      "video_height": 180,
+      "status": "Đã đến 0:10.25.",
+      "codec": "VP8 WebM 320x180 canvas capture 10fps",
+      "source_version": "3528481985001c1d239afd2de0845bb85ba7d46c4d0c9930f59e1975cbbf6d68"
+    },
+    {
+      "target": 11,
+      "actual": 11,
+      "duration": 21.795365,
+      "tag": "VIDEO",
+      "video_width": 320,
+      "video_height": 180,
+      "status": "Đã đến 0:11.",
+      "codec": "VP8 WebM 320x180 canvas capture 10fps",
+      "source_version": "3528481985001c1d239afd2de0845bb85ba7d46c4d0c9930f59e1975cbbf6d68"
+    },
+    {
+      "target": 12.5,
+      "actual": 12.5,
+      "duration": 21.795365,
+      "tag": "VIDEO",
+      "video_width": 320,
+      "video_height": 180,
+      "status": "Đã đến 0:12.5.",
+      "codec": "VP8 WebM 320x180 canvas capture 10fps",
+      "source_version": "3528481985001c1d239afd2de0845bb85ba7d46c4d0c9930f59e1975cbbf6d68"
+    },
+    {
+      "target": 14,
+      "actual": 14,
+      "duration": 21.795365,
+      "tag": "VIDEO",
+      "video_width": 320,
+      "video_height": 180,
+      "status": "Đã đến 0:14.",
+      "codec": "VP8 WebM 320x180 canvas capture 10fps",
+      "source_version": "3528481985001c1d239afd2de0845bb85ba7d46c4d0c9930f59e1975cbbf6d68"
+    },
+    {
+      "target": 16.25,
+      "actual": 16.25,
+      "duration": 21.795365,
+      "tag": "VIDEO",
+      "video_width": 320,
+      "video_height": 180,
+      "status": "Đã đến 0:16.25.",
+      "codec": "VP8 WebM 320x180 canvas capture 10fps",
+      "source_version": "3528481985001c1d239afd2de0845bb85ba7d46c4d0c9930f59e1975cbbf6d68"
+    },
+    {
+      "target": 18,
+      "actual": 18,
+      "duration": 21.795365,
+      "tag": "VIDEO",
+      "video_width": 320,
+      "video_height": 180,
+      "status": "Đã đến 0:18.",
+      "codec": "VP8 WebM 320x180 canvas capture 10fps",
+      "source_version": "3528481985001c1d239afd2de0845bb85ba7d46c4d0c9930f59e1975cbbf6d68"
+    },
+    {
+      "target": 20,
+      "actual": 20,
+      "duration": 21.795365,
+      "tag": "VIDEO",
+      "video_width": 320,
+      "video_height": 180,
+      "status": "Đã đến 0:20.",
+      "codec": "VP8 WebM 320x180 canvas capture 10fps",
+      "source_version": "3528481985001c1d239afd2de0845bb85ba7d46c4d0c9930f59e1975cbbf6d68"
+    }
+  ],
+  "http": [
+    {
+      "mime": "audio/wav",
+      "range": "bytes=0-31",
+      "authenticated": true,
+      "status": 206
+    },
+    {
+      "mime": "audio/wav",
+      "range": "bytes=0-",
+      "authenticated": true,
+      "status": 206
+    },
+    {
+      "mime": "video/webm",
+      "range": "bytes=0-31",
+      "authenticated": true,
+      "status": 206
+    },
+    {
+      "mime": "video/webm",
+      "range": "bytes=0-",
+      "authenticated": true,
+      "status": 206
+    }
+  ],
+  "screenshots": [
+    {
+      "width": 1440,
+      "filename": "kt116-1440.png",
+      "viewport": 1440,
+      "scroll": 1425
+    },
+    {
+      "width": 768,
+      "filename": "kt116-768.png",
+      "viewport": 768,
+      "scroll": 753
+    },
+    {
+      "width": 390,
+      "filename": "kt116-390.png",
+      "viewport": 390,
+      "scroll": 375
+    }
+  ],
+  "console_errors": [],
+  "production_private_stream": "NOT_RUN",
+  "pdf_navigation": "NOT_RUN",
+  "android": "NOT_RUN"
+}

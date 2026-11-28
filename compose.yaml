@@ -6,6 +6,7 @@ x-django-environment: &django-environment
   DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1,api}
   UPLOAD_STAGING_ROOT: /var/lib/kho-tri-thuc/staging
   THUMBNAIL_CACHE_DIR: /var/lib/kho-tri-thuc/thumbnails
+  SEARCH_BGE_MODEL_DIR: "${SEARCH_BGE_MODEL_DIR-/var/lib/kho-tri-thuc/models/bge-reranker-v2-m3}"
   POSTGRES_HOST: db
   POSTGRES_PORT: "5432"
   POSTGRES_DB: ${POSTGRES_DB:?Set POSTGRES_DB}
@@ -15,6 +16,11 @@ x-django-environment: &django-environment
   GOOGLE_DRIVE_CLIENT_SECRET: ${GOOGLE_DRIVE_CLIENT_SECRET:-}
   GOOGLE_DRIVE_REDIRECT_URI: ${GOOGLE_DRIVE_REDIRECT_URI:-}
   GOOGLE_DRIVE_TOKEN_KEY: ${GOOGLE_DRIVE_TOKEN_KEY:-}
+  SUGGESTION_REVIEW_POC_ENABLED: ${SUGGESTION_REVIEW_POC_ENABLED:-0}
+  GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+  GEMINI_ALLOW_PREMIUM_MODELS: ${GEMINI_ALLOW_PREMIUM_MODELS:-0}
+  GEMINI_OCR_ENABLED: ${GEMINI_OCR_ENABLED:-0}
+  GEMINI_MAX_LOCAL_REQUESTS_PER_DAY: ${GEMINI_MAX_LOCAL_REQUESTS_PER_DAY:-80}
 
 services:
   db:
@@ -34,10 +40,16 @@ services:
   api:
     build: ./apps/backend
     image: kho-tri-thuc-backend:dev
-    environment: *django-environment
+    environment:
+      <<: *django-environment
+      SEARCH_QUOTE_EVIDENCE_ENABLED: ${SEARCH_QUOTE_EVIDENCE_ENABLED:-0}
+      SEARCH_QUOTE_READER_URL: ${SEARCH_QUOTE_READER_URL:-http://127.0.0.1:19587/v1/chat/completions}
+      SEARCH_QUOTE_READER_MODEL: ${SEARCH_QUOTE_READER_MODEL:-qwen3-4b-instruct-2507-q4_k_m}
+      SEARCH_QUOTE_TIMEOUT_SECONDS: ${SEARCH_QUOTE_TIMEOUT_SECONDS:-45}
     volumes:
       - upload-staging:/var/lib/kho-tri-thuc/staging
       - thumbnail-cache:/var/lib/kho-tri-thuc/thumbnails
+      - search-models:/var/lib/kho-tri-thuc/models
     command:
       - sh
       - -ec
@@ -62,13 +74,16 @@ services:
     volumes:
       - upload-staging:/var/lib/kho-tri-thuc/staging
       - thumbnail-cache:/var/lib/kho-tri-thuc/thumbnails
+      - search-models:/var/lib/kho-tri-thuc/models
     command: ["python", "manage.py", "run_worker"]
     depends_on:
       api:
         condition: service_healthy
 
   web:
-    build: ./apps/web
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
     environment:
       API_PROXY_TARGET: http://api:8000
     depends_on:
@@ -86,3 +101,4 @@ volumes:
   postgres-data:
   upload-staging:
   thumbnail-cache:
+  search-models:

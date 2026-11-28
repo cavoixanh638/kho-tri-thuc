@@ -1,0 +1,87 @@
+{
+  "tested_source": "d28e6a22ab939b74d0e365420ed165f5ea693011",
+  "backend_tree": "fbb442e4f3db1d907984563f0bac4acee2f75711",
+  "browser": "Chrome/158.0.8127.88",
+  "fixture_sha256": {
+    "language.json": "d87dbd94e996ed5be8bf2817dc008acf942a13e5bee830eb8a1f3c8791fbe753",
+    "values.json": "dd3764fd89ab210b847d1899aa718c834cba313db4c9b0a114b600eb7503dafd",
+    "scope.json": "f55703ff82ef434d0258de0d330f74e9cb7b400ea625c5cde41e15e2c99f79cd"
+  },
+  "case_id": "L16",
+  "target": "LN16",
+  "model": {
+    "repository": "onnx-community/bge-reranker-v2-m3-ONNX",
+    "revision": "6f5ff65298512715a1e669753bc754d2bc8f367b",
+    "graph_sha256": "912fc1215c2dbff6499700534bd8d31253af01573861abbfc43afd1fab6cce5d"
+  },
+  "local_versions": {
+    "numpy": "2.5.5",
+    "onnxruntime": "1.32.0",
+    "tokenizers": "0.23.3"
+  },
+  "scope": "Windows loopback Chromium against the authenticated application. Compared the same synthetic query and topic at the UI page size of 25. Both runs capture rendered list and matching API responses.",
+  "before": {
+    "initial": {
+      "step": "initial",
+      "route": "q=C%C3%BAp+%C4%91i%E1%BB%87n+ch%E1%BB%97+h%E1%BB%8Dc+h%C3%A1t%2C+cu%E1%BB%91i+c%C3%B9ng+h%E1%BB%8Dc+b%C3%AAn+n%C3%A0o+m%C3%A0+v%E1%BA%ABn+t%E1%BA%ADp+%C4%91%C3%BAng+bu%E1%BB%95i%3F&topic_id=15",
+      "limit": 25,
+      "ranking": "lexical",
+      "results": [],
+      "target_rank": 0
+    },
+    "expanded": {
+      "step": "expanded",
+      "route": "q=C%C3%BAp+%C4%91i%E1%BB%87n+ch%E1%BB%97+h%E1%BB%8Dc+h%C3%A1t%2C+cu%E1%BB%91i+c%C3%B9ng+h%E1%BB%8Dc+b%C3%AAn+n%C3%A0o+m%C3%A0+v%E1%BA%ABn+t%E1%BA%ADp+%C4%91%C3%BAng+bu%E1%BB%95i%3F&topic_id=15&expand=true",
+      "limit": 25,
+      "ranking": "lexical",
+      "results": [
+        "LN13",
+        "VN19",
+        "LN21",
+        "LN16",
+        "VN13"
+      ],
+      "target_rank": 4
+    },
+    "returned": {
+      "step": "returned",
+      "route": "q=C%C3%BAp+%C4%91i%E1%BB%87n+ch%E1%BB%97+h%E1%BB%8Dc+h%C3%A1t%2C+cu%E1%BB%91i+c%C3%B9ng+h%E1%BB%8Dc+b%C3%AAn+n%C3%A0o+m%C3%A0+v%E1%BA%ABn+t%E1%BA%ADp+%C4%91%C3%BAng+bu%E1%BB%95i%3F&topic_id=15",
+      "limit": 25,
+      "ranking": "lexical",
+      "results": [],
+      "target_rank": 0
+    }
+  },
+  "after": {
+    "initial": {
+      "step": "initial",
+      "route": "q=C%C3%BAp+%C4%91i%E1%BB%87n+ch%E1%BB%97+h%E1%BB%8Dc+h%C3%A1t%2C+cu%E1%BB%91i+c%C3%B9ng+h%E1%BB%8Dc+b%C3%AAn+n%C3%A0o+m%C3%A0+v%E1%BA%ABn+t%E1%BA%ADp+%C4%91%C3%BAng+bu%E1%BB%95i%3F&topic_id=15",
+      "limit": 25,
+      "ranking": "lexical",
+      "results": [],
+      "target_rank": 0
+    },
+    "expanded": {
+      "step": "expanded",
+      "route": "q=C%C3%BAp+%C4%91i%E1%BB%87n+ch%E1%BB%97+h%E1%BB%8Dc+h%C3%A1t%2C+cu%E1%BB%91i+c%C3%B9ng+h%E1%BB%8Dc+b%C3%AAn+n%C3%A0o+m%C3%A0+v%E1%BA%ABn+t%E1%BA%ADp+%C4%91%C3%BAng+bu%E1%BB%95i%3F&topic_id=15&expand=true",
+      "limit": 25,
+      "ranking": "bge",
+      "results": [
+        "LN16",
+        "LN13",
+        "LN21",
+        "VN19",
+        "VN13"
+      ],
+      "target_rank": 1
+    },
+    "returned": {
+      "step": "returned",
+      "route": "q=C%C3%BAp+%C4%91i%E1%BB%87n+ch%E1%BB%97+h%E1%BB%8Dc+h%C3%A1t%2C+cu%E1%BB%91i+c%C3%B9ng+h%E1%BB%8Dc+b%C3%AAn+n%C3%A0o+m%C3%A0+v%E1%BA%ABn+t%E1%BA%ADp+%C4%91%C3%BAng+bu%E1%BB%95i%3F&topic_id=15",
+      "limit": 25,
+      "ranking": "lexical",
+      "results": [],
+      "target_rank": 0
+    }
+  }
+}

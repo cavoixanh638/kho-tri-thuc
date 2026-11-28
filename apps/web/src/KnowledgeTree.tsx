@@ -14,15 +14,16 @@ export const nodeKindLabels: Record<KnowledgeNode['node_kind'], string> = {
   library: 'Kho con', field: 'Lĩnh vực', series: 'Bộ sách', book: 'Sách', chapter: 'Chương', folder: 'Nhánh',
 };
 export const knowledgeNodeHref = (id?: number | null) => id == null ? '#/thu-vien' : `#/thu-vien?node=${id}`;
-type Editor = { node?: KnowledgeNode; parentId: number | null };
+export type Editor = { node?: KnowledgeNode; parentId: number | null };
 
-function NodeEditor({ nodes, editor, csrf, onCancel, onSaved }: {
+export function NodeEditor({ nodes, editor, csrf, onCancel, onSaved }: {
   nodes: KnowledgeNode[]; editor: Editor; csrf: string; onCancel: () => void; onSaved: (node: KnowledgeNode) => void;
 }) {
   const [name, setName] = useState(editor.node?.name ?? '');
   const [kind, setKind] = useState<KnowledgeNode['node_kind']>(editor.node?.node_kind ?? (editor.parentId == null ? 'library' : 'folder'));
   const [parentId, setParentId] = useState<string | null>(editor.parentId == null ? 'root' : String(editor.parentId));
   const [busy, setBusy] = useState(false);
+  const [order, setOrder] = useState(editor.node?.sort_order ?? 0);
   const [error, setError] = useState('');
   const inFlight = useRef(false);
   const available = nodes.filter((node) => !editor.node || !node.path_ids.includes(editor.node.id));
@@ -33,7 +34,7 @@ function NodeEditor({ nodes, editor, csrf, onCancel, onSaved }: {
     try {
       const node = await request<KnowledgeNode>(editor.node ? `/knowledge-tree/${editor.node.id}` : '/knowledge-tree', {
         method: editor.node ? 'PATCH' : 'POST', csrf,
-        body: { name, node_kind: kind, parent_id: parentId === 'root' ? null : Number(parentId), sort_order: editor.node?.sort_order ?? 0 },
+        body: { name, node_kind: kind, parent_id: parentId === 'root' ? null : Number(parentId), sort_order: order },
       });
       onSaved(node);
     } catch (failure) {
@@ -49,6 +50,7 @@ function NodeEditor({ nodes, editor, csrf, onCancel, onSaved }: {
         onChange={(value) => { if (value && Object.hasOwn(nodeKindLabels, value)) setKind(value as KnowledgeNode['node_kind']); }} />
       <Select label="Nằm trong" value={parentId} onChange={setParentId} searchable allowDeselect={false} disabled={busy}
         data={[{ value: 'root', label: 'Kho Tri Thức (cấp gốc)' }, ...available.map((node) => ({ value: String(node.id), label: node.path }))]} />
+      <TextInput label="Thứ tự nhánh" type="number" min={0} max={1000000} value={order} disabled={busy} onChange={(event) => setOrder(Number(event.currentTarget.value))} />
       <p className="list-meta">Loại nhánh giúp nhận biết mục lục. Bạn có thể chia nhỏ hoặc chuyển nhánh khi cần; bài tri thức giữ nguyên.</p>
       {error && <ErrorNotice>{error}</ErrorNotice>}
       <div className="form-actions"><Button type="submit" loading={busy} disabled={!name.trim() || parentId == null}>Lưu nhánh</Button><Button variant="default" onClick={onCancel} disabled={busy}>Hủy</Button></div>

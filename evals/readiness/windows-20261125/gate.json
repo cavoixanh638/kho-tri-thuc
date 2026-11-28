@@ -1,0 +1,35 @@
+{
+  "gate": "G2_CI_BROWSER_ACCEPTANCE",
+  "status": "PASS_SYNTHETIC_BROWSER_ONLY",
+  "ready": true,
+  "tested_sha": "376d51d5bf78404b5f22c042c555b059225bd92a",
+  "p08": {
+    "counts": {
+      "PASS": 13,
+      "FAIL": 0,
+      "BLOCKED": 0,
+      "NOT_RUN": 0
+    },
+    "required": 13,
+    "completed": 13,
+    "executed": 13,
+    "pass_rate": 1,
+    "completion": 1,
+    "incomplete_cases": []
+  },
+  "p15": {
+    "gate": "BROWSER_DOM_AND_KEYBOARD_PASS_SCREEN_READER_NOT_RUN",
+    "keyboard_actions": 104,
+    "keyboard_failures": 0,
+    "blocked_cases": 0,
+    "viewports": [
+      1920,
+      1440,
+      768,
+      390
+    ],
+    "fatal": false
+  },
+  "issues": [],
+  "scope": "Only isolated synthetic browser. Screen reader, native Android, real Drive, Gemini and production UAT remain separate."
+}

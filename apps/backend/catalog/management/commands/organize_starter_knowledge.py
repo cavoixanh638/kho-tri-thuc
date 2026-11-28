@@ -11,7 +11,7 @@ from processing.source_cleaning import source_metadata, source_text
 from storage.models import Asset
 
 from catalog.knowledge_tree import save_node, tree
-from catalog.models import Item, ItemTopic, Source
+from catalog.models import Item, ItemTopic, ItemTopicExclusion, Source
 
 ARTICLES = {
     "giao-dich-va-tac-vu-nen.md": [
@@ -96,6 +96,8 @@ class Command(BaseCommand):
                             owner.pk, name=name, node_kind=kind, parent_id=parent
                         )
                         parent = node.pk
+                    if ItemTopicExclusion.objects.filter(item=item, topic_id=parent).exists():
+                        continue
                     ItemTopic.objects.update_or_create(
                         item=item,
                         topic_id=parent,

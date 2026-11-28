@@ -1,0 +1,17 @@
+.note-template-picker { min-width: 0; color: var(--text, #171717); }
+.note-template-picker > p { color: var(--muted, #646464); margin-block: 8px 16px; }
+.note-template-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.note-template-options > button { display: grid; text-align: left; gap: 4px; border: 1px solid var(--control, #d4d4d4); border-radius: 6px; background: var(--surface, #fff); color: inherit; padding: 12px; font: inherit; cursor: pointer; }
+.note-template-options > button[aria-pressed='true'], .note-template-options > button:hover { background: var(--raised, #eee); }
+.note-template-options span { color: var(--muted, #646464); font-size: 14px; }
+.note-template-options > button:disabled { cursor: default; color: var(--muted, #646464); }
+.note-template-selection { display: grid; gap: 12px; margin-top: 16px; }
+.note-template-selection > p { margin: 0; }
+.note-template-selection summary { cursor: pointer; min-height: 44px; align-content: center; }
+.note-template-fields { display: grid; gap: 12px; margin-block: 8px; }
+.note-template-fields input { font-size: 16px; }
+.note-template-preview { max-height: 300px; overflow: auto; background: var(--ground, #f4f4f3); padding: 16px; border-radius: 6px; }
+.note-template-preview .knowledge-text { margin-top: 0; }
+.note-template-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.note-template-actions button { min-height: 44px; }
+@media (max-width: 480px) { .note-template-options { grid-template-columns: minmax(0, 1fr); } }

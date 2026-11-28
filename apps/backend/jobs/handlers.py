@@ -36,6 +36,12 @@ def export_knowledge(job: Job) -> None:
     synchronize(job)
 
 
+def run_image_ocr(job: Job) -> None:
+    from processing.gemini_ocr_job import process_image_ocr
+
+    process_image_ocr(job)
+
+
 def transcribe(job: Job) -> None:
     from processing.transcript_job import transcribe_media
 
@@ -49,6 +55,7 @@ HANDLERS: dict[str, Callable[[Job], None]] = {
     "download_video": retrieve_video,
     "export_knowledge": export_knowledge,
     "transcribe_media": transcribe,
+    "gemini_image_ocr": run_image_ocr,
 }
 
 

@@ -186,7 +186,8 @@ class BackupRoundTripTests(unittest.TestCase):
             {name: len(rows) for name, rows in collections.items()},
             {"items": 2, "capture_events": 3, "sources": 1, "topics": 2, "projects": 1,
              "tags": 1, "item_topics": 1, "item_projects": 1, "item_tags": 1, "assets": 1,
-             "storage_locations": 1, "derived_contents": 1, "related_items": 1, "jobs": 1, "knowledge_exports": 1},
+             "storage_locations": 1, "derived_contents": 1, "related_items": 1, "jobs": 1, "knowledge_exports": 1,
+             "saved_collections": 0, "clip_annotations": 0, "excluded_topics": 0},
         )
         event = next(row for row in collections["capture_events"] if row["id"] == str(self.fixture.event.pk))
         self.assertEqual(event["raw_text"], RAW_NOTE)

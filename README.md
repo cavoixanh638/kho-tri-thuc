@@ -1,7 +1,9 @@
 # Kho Tri Thức — Lưu khoa học, mở rộng bền vững
 
+**Bản thử Windows ngày 26/11/2026.** Nhập điều còn nhớ vào ô tìm kiếm và chọn **Tìm gần đúng** khi có gợi ý. [Mở kho thử 36 ghi chú tiếng Việt](evals/vietnamese-journeys/README-browser.md) · [Kiểm thử dấu tiếng Việt, mã gần giống và ghi chú dễ nhầm](docs/CURRENT_STATE.md#kiem-thu-tim-kiem-20261126) · [Kết quả tìm theo trí nhớ](evals/vietnamese-journeys/README.md#tim-theo-tri-nho)
+
 **Kế hoạch hiện hành: V4.7 (18/11/2026) — tiếp nhận tức thì, tự tổ chức và bảo toàn lịch sử; PostgreSQL đã chốt.**
-**Trạng thái triển khai và kết quả kiểm thử:** [CURRENT_STATE.md](docs/CURRENT_STATE.md). **Chạy scaffold:** [LOCAL_SETUP.md](docs/operations/LOCAL_SETUP.md).
+**Trạng thái triển khai và kết quả kiểm thử:** [CURRENT_STATE.md](docs/CURRENT_STATE.md). **Đối chiếu kế hoạch–mã nguồn–nghiệm thu 22/11/2026:** [Bảng kiểm toán G00](docs/operations/RELEASE_READINESS_20261122.md). **Chạy scaffold:** [LOCAL_SETUP.md](docs/operations/LOCAL_SETUP.md).
 
 Kho Tri Thức lấy **văn bản/Markdown làm nội dung chính** để đọc, tìm kiếm và tổ chức. Media và tài liệu nguồn đi kèm để minh họa và truy nguyên. Có thể viết/dán bài văn bản hoặc gửi URL/tệp → **lưu ngay nội dung và thời điểm nhận** → thu thập nội dung khả dụng → **tự xếp vào nhóm hiện có khi đủ tin cậy và tìm các mục liên quan**. File gốc lưu Google Drive, danh mục/lịch sử trong PostgreSQL. Gửi lại link tạo lượt tiếp nhận mới nhưng không nhân đôi file; HTTP retry cùng request key không tạo lượt mới. [Đọc và viết Markdown](docs/operations/TEXT_KNOWLEDGE.md), [quy trình](docs/CAPTURE_AND_ORGANIZE.md).
 
