@@ -1,5 +1,11 @@
 # HIỆN TRẠNG THỰC TẾ — KHO TRI THỨC
 
+## Trích bằng chứng ở lượt Tìm gần đúng
+
+Ngày 28/11/2026, bản thử `4fc2578` giữ nguyên nội dung phản hồi mặc định ở cả 568 câu và xác minh tối đa năm ghi chú sau khi người dùng bấm nút. Điểm tìm kiếm sau khi bấm lần lượt là **117/120, 256/400 và 33/48**, so với **117/120, 235/400 và 33/48** khi tắt. Trên bộ 400, tìm đúng ít đi hai câu có đáp án và trả rỗng đúng thêm 23 câu. Cả 604 câu đều dùng ghi chú tự soạn, gồm thêm 36 câu đối chiếu **Có / Không / thiếu thông tin**.
+
+Trong 33 câu có đáp án **Không** ở ba bộ chính, có 13 câu trả đúng nhãn kèm đúng ghi chú và chỉ hai trích dẫn đủ chứng minh câu trả lời. Trong 80 lượt thực sự qua bộ đọc, trung vị một lượt bấm là **8,08 giây**, P95 **9,80 giây**, điện gói xử lý trung bình **0,070 Wh/lượt**, phí API ngoài **0 USD**. Giữ `SEARCH_QUOTE_EVIDENCE_ENABLED=0` cho cấu hình mặc định. [Kết quả, lỗi điển hình và cách bật thử](../evals/vietnamese-journeys/quote-evidence/README.md)
+
 ## Thử mở rộng ứng viên cho câu chỉ nhớ ý
 
 Ngày 27/11/2026, bản thử `f6c7a21` được so với `f62b32c` trên 120 câu cũ và 400 câu mới, gồm 100 tình huống với 304 ghi chú tự soạn ở bộ mới. Cả **520 phản hồi mặc định** trùng nguyên JSON giữa hai bản. Khi dùng **Tìm gần đúng** nếu có nút, mở rộng danh sách ngắn giúp bộ cũ tăng **117 lên 118/120**, bộ mới tăng **235 lên 236/400**, nhóm nhớ ý một đáp án giữ **179/224**. Chênh lệch bộ mới là +0,25 điểm phần trăm, khoảng bootstrap theo cụm 95% từ 0 đến +0,75. Cả hai bản đều có kết quả sai ở **108/125** câu khó không có đáp án, gồm 105 câu có kết quả sai sau khi bấm và 3 câu chỉ có kết quả mặc định. P95 một lượt bấm tăng từ 638 lên 1.113 ms. Phép thử qua API tiếp tục tắt sẵn.

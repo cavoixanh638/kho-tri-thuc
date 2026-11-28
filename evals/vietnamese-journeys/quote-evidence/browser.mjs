@@ -30,7 +30,11 @@ try {
       if (value) return value;
       await pause(40);
     } while (performance.now() < deadline);
-    throw new Error('Chromium timed out waiting for ' + description);
+    const state = await page.eval(() => ({
+      route: location.hash, title: document.querySelector('h1')?.textContent,
+      recent: window.quoteQaRequests?.slice(-3).map(({ url, status }) => [new URL(url).pathname, status]),
+    }));
+    throw new Error('Chromium timed out waiting for ' + description + ' ' + JSON.stringify(state));
   }
 
   async function type(selector, text) {
@@ -43,10 +47,10 @@ try {
     const point = await waitFor(({ selector, label }) => {
       const element = [...document.querySelectorAll(selector)].find(node => label === null || node.textContent === label);
       if (!element?.getClientRects().length) return null;
-      const rect = element.getBoundingClientRect();
-      if (rect.top < 0 || rect.bottom > window.innerHeight) window.scrollBy(0, rect.top - 80);
-      const visible = element.getBoundingClientRect();
-      return { x: visible.x + visible.width / 2, y: visible.y + visible.height / 2 };
+      element.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'instant' });
+      const rect = element.getClientRects()[0];
+      const point = { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 };
+      return element.contains(document.elementFromPoint(point.x, point.y)) ? point : null;
     }, { selector, label }, label ?? selector);
     await page.send('Input.dispatchMouseEvent', { type: 'mousePressed', ...point, button: 'left', clickCount: 1 });
     await page.send('Input.dispatchMouseEvent', { type: 'mouseReleased', ...point, button: 'left', clickCount: 1 });
@@ -136,17 +140,28 @@ try {
       click_to_render_ms: Math.round(expanded.clickRenderMs * 10) / 10, server_quote_check_ms: result.quote_check.elapsed_ms,
       results: expanded.rows.map(({ item_id, answer, quotes }) => ({ item_id, answer, quote_count: quotes.length })),
     };
-    await click('.search-results a', 'Về kết quả ban đầu');
-    const returned = await waitFor(hash => {
-      const panel = document.querySelector('.search-results');
-      if (location.hash !== hash || !panel?.querySelector('ol, .empty-state')) return null;
-      if (![...panel.querySelectorAll('a')].some(a => a.textContent === 'Tìm gần đúng')) return null;
-      return { ids: [...panel.querySelectorAll('li h3 a')].map(a => a.hash) };
-    }, initialHash, entry.id + ' returned results');
-    assert.deepEqual(returned.ids, initial.ids);
-    report.returned_to_initial = true;
+    if (entry.expected.next_cursor) {
+      assert.deepEqual(result.next_cursor, entry.expected.next_cursor);
+      const offset = await page.eval(() => window.quoteQaRequests.length);
+      await click('.search-results button', 'Trang sau');
+      const next = await waitFor(({ offset, cursor }) => {
+        const request = window.quoteQaRequests.slice(offset).find(r => new URL(r.url).searchParams.get('cursor_item_id') === cursor);
+        if (!request?.body || !document.querySelector('.search-results .search-list, .search-results .empty-state')) return null;
+        return { url: request.url, status: request.status, page: request.body };
+      }, { offset, cursor: result.next_cursor.item_id }, entry.id + ' next page');
+      assert.equal(next.status, 200);
+      assert.deepEqual(Object.fromEntries(new URL(next.url).searchParams), {
+        ...expectedParams, expand: 'true', limit: '25', cursor_score: String(result.next_cursor.score),
+        cursor_item_id: result.next_cursor.item_id,
+      });
+      assert.equal(next.page.quote_check.status, 'checked');
+      for (const hit of next.page.results) {
+        assert.ok(hit.verification.quotes.length > 0);
+        assert.ok(!expanded.rows.some(prior => prior.item_id === hit.item_id));
+      }
+      report.next_page = { checked: true, results: next.page.results.length };
+    }
     if (expanded.rows.length) {
-      await page.send('Page.navigateToHistoryEntry', { entryId: await page.send('Page.getNavigationHistory').then(history => history.entries[history.currentIndex - 1].id) });
       const source = expanded.rows[0];
       const href = '#/muc/' + source.item_id;
       await click('.search-results h3 a[href="' + href + '"]');
@@ -158,7 +173,19 @@ try {
       const sourceText = [item.title, item.description, item.note].filter(Boolean).join('\n');
       for (const quote of source.quotes) assert.ok(sourceText.includes(quote), 'Source contains the exact quote');
       report.source_opened = true;
+      const history = await page.send('Page.getNavigationHistory');
+      await page.send('Page.navigateToHistoryEntry', { entryId: history.entries[history.currentIndex - 1].id });
+      await waitFor(() => Boolean(document.querySelector('.search-results .search-quote p')), null, entry.id + ' restored citation');
     }
+    await click('.search-results a', 'Về kết quả ban đầu');
+    const returned = await waitFor(hash => {
+      const panel = document.querySelector('.search-results');
+      if (location.hash !== hash || !panel?.querySelector('ol, .empty-state')) return null;
+      if (![...panel.querySelectorAll('a')].some(a => a.textContent === 'Tìm gần đúng')) return null;
+      return { ids: [...panel.querySelectorAll('li h3 a')].map(a => a.hash) };
+    }, initialHash, entry.id + ' returned results');
+    assert.deepEqual(returned.ids, initial.ids);
+    report.returned_to_initial = true;
     results.push(report);
   }
 
