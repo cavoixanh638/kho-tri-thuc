@@ -97,6 +97,10 @@ LOCAL_ASR_MODEL_DIR = os.getenv("LOCAL_ASR_MODEL_DIR", "")
 _bge_model_dir = model_directory()
 SEARCH_BGE_MODEL_DIR = str(_bge_model_dir) if _bge_model_dir is not None else ""
 SEARCH_MEMORY_CANDIDATES = os.getenv("SEARCH_MEMORY_CANDIDATES", "0") == "1"
+SEARCH_QUOTE_EVIDENCE_ENABLED = os.getenv("SEARCH_QUOTE_EVIDENCE_ENABLED", "0") == "1"
+SEARCH_QUOTE_READER_URL = os.getenv("SEARCH_QUOTE_READER_URL", "http://127.0.0.1:19587/v1/chat/completions")
+SEARCH_QUOTE_READER_MODEL = os.getenv("SEARCH_QUOTE_READER_MODEL", "qwen3-4b-instruct-2507-q4_k_m")
+SEARCH_QUOTE_TIMEOUT_SECONDS = max(1, min(120, int(os.getenv("SEARCH_QUOTE_TIMEOUT_SECONDS", "45"))))
 # Explicit development opt-in. This enables manual review only, never an AI provider.
 SUGGESTION_REVIEW_POC_ENABLED = os.getenv("SUGGESTION_REVIEW_POC_ENABLED", "0") == "1"
 

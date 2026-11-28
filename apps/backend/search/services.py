@@ -1,13 +1,13 @@
 import json
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Literal
 from uuid import UUID
 
 from django.conf import settings
 from django.db import connection
 
-from . import reranking
+from . import quote_reader, reranking
 from .claims import claim_params
 from .identifiers import identifier_patterns
 from .quantities import quantity_params
@@ -50,6 +50,7 @@ class SearchHit:
     title: str
     score: float
     evidence: tuple[SearchEvidence, ...]
+    verification: quote_reader.Verification | None = None
 
 
 @dataclass(frozen=True)
@@ -59,6 +60,7 @@ class SearchPage:
     match_kind: Literal["standard", "partial"] = "standard"
     can_expand: bool = False
     ranking: Literal["lexical", "bge"] = "lexical"
+    quote_check: quote_reader.QuoteCheck | None = None
 
 
 class SearchService:
@@ -98,6 +100,8 @@ class SearchService:
         can_expand = False
         passages = []
         added = False
+        quote_sources = {}
+        quote_mode = None
         with connection.cursor() as db_cursor:
             db_cursor.execute(SEARCH_SQL, params)
             rows = db_cursor.fetchall()
@@ -132,12 +136,17 @@ class SearchService:
                     window = min(limit, reranking.WINDOW_SIZE) if (
                         expand and cursor is None and settings.SEARCH_BGE_MODEL_DIR
                     ) else 0
-                    db_cursor.execute(RECALL_SQL, {**params, **partial, "rerank_window": window,
+                    if expand and settings.SEARCH_QUOTE_EVIDENCE_ENABLED:
+                        quote_mode = quote_reader.intent(query)
+                    quote_window = min(limit, quote_reader.MAX_DOCUMENTS) if quote_mode else 0
+                    db_cursor.execute(RECALL_SQL, {**params, **partial, "rerank_window": max(window, quote_window),
                                                    "passage_chars": reranking.MAX_PASSAGE_CHARS})
                     candidates = db_cursor.fetchall()
                     has_suggestions = any(not row[-2] for row in candidates)
                     can_expand = not expand and has_suggestions
                     rows = [row[:-2] for row in candidates if expand or row[-2]]
+                    if quote_window and has_suggestions:
+                        quote_sources = {row[0]: row[-1] for row in candidates[:quote_window]}
                     if window and has_suggestions:
                         passages = [row[-1] for row in candidates[:window]]
                         if (settings.SEARCH_MEMORY_CANDIDATES and len(candidates) < window
@@ -159,6 +168,8 @@ class SearchService:
                                 if selected is not None:
                                     rows.append(extra[selected][:-2])
                                     added = True
+                                    if quote_sources:
+                                        quote_sources[extra[selected][0]] = extra[selected][-1]
                 if rows:
                     match_kind = "partial"
 
@@ -180,6 +191,10 @@ class SearchService:
         if len(hits) > limit:
             hits = hits[:limit]
             next_cursor = SearchCursor(hits[-1].score, hits[-1].item_id)
+        checked_cursor = next_cursor
+        if quote_sources and len(hits) > quote_window:
+            boundary = hits[quote_window - 1]
+            checked_cursor = SearchCursor(boundary.score, boundary.item_id)
         # The cursor is the original lexical page boundary. The lookahead
         # row is never scored, so the next page cannot repeat or skip items.
         ranking = "lexical"
@@ -190,7 +205,14 @@ class SearchService:
             # The winning challenger was appended after the original candidates.
             hits = (hits[-1], *hits[:-1])
             ranking = "bge"
-        return SearchPage(hits, next_cursor, match_kind, can_expand, ranking)
+        checked = None
+        if quote_sources and hits:
+            window_hits = hits[:quote_window]
+            matches, checked = quote_reader.verify(query, quote_mode, [quote_sources[h.item_id] for h in window_hits])
+            if matches is not None:
+                hits = tuple(replace(hit, verification=matches[i]) for i, hit in enumerate(window_hits) if i in matches)
+                next_cursor = checked_cursor
+        return SearchPage(hits, next_cursor, match_kind, can_expand, ranking, checked)
 
 
 def _search_params(filters, query, cursor, limit):
